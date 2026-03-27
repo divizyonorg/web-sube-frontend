@@ -6,8 +6,11 @@ Bu depo, Alliance Partnerimiz İnteraktif Kredi iş birliği ile yürütülen We
 Proje Odak Noktaları
 
 Mimari Yapı: Razor Pages mimarisiyle sıfırdan inşa edilen Web 2.0 platformu.
+
 Süreç Yönetimi: Agile/Scrum metodolojisi, Weekly Scrum oturumları ve sürekli entegrasyon (CI) disiplini.
+
 Operasyonel Modüller: Akıllı Dashboard, Dinamik Raporlama ve Analiz, Dijital Danışmanlık Merkezi, MERNİS ve 2FA Güvenlik katmanları.
+
 Üretim Teknolojileri: Yeni nesil AI araçları (Cursor, Claude) desteğiyle yüksek verimlilikte kod üretimi.
 
 Bu Repo Divizyon Case-Sprint süreçlerinde ekipler tarafından yönetilmektedir.
