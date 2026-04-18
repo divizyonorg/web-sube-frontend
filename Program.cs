@@ -21,6 +21,9 @@ else
 
 builder.Services.AddRazorPages();
 
+builder.Services.AddHealthChecks();   // builder'dan sonra
+app.MapHealthChecks("/health"); 
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

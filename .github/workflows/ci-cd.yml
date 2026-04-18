@@ -2,27 +2,36 @@ name: CI/CD — Build & Deploy
 
 # ─────────────────────────────────────────────────────────
 # AKIŞ:
-#   develop push  → CI (deploy yok)
-#   staging push  → CI → Docker push → TEST deploy
-#   preprod push  → CI → Docker push → PRE-PROD deploy (onaylı)
+#   dev   (push + PR)  → CI (deploy yok, sadece doğrulama)
+#   test  push         → CI → Docker push → TEST deploy
+#   preprod push       → CI → Docker push → PRE-PROD deploy (onaylı)
 # ─────────────────────────────────────────────────────────
 
 on:
   push:
     branches:
-      - develop
-      - staging
+      - dev
+      - test
       - preprod
+  pull_request:
+    branches:
+      - dev
+      - test
+      - preprod
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: emirklc/webshube
+  DOTNET_VERSION: '8.0.x'
 
 jobs:
 
   # ══════════════════════════════════════════════════════
-  # 1. CI — Her push'ta çalışır
-  #    Başarısız olursa docker ve deploy başlamaz
+  # 1. CI — Her push ve PR'da çalışır
   # ══════════════════════════════════════════════════════
   ci:
     name: CI — Build & Test
@@ -32,10 +41,10 @@ jobs:
       - name: Kodu çek
         uses: actions/checkout@v4
 
-      - name: .NET 8 kur
+      - name: .NET kur
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: NuGet cache
         uses: actions/cache@v4
@@ -48,28 +57,45 @@ jobs:
       - name: Restore
         run: dotnet restore
 
+      - name: Format check
+        run: dotnet format --verify-no-changes --no-restore
+
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test --configuration Release --no-build --verbosity normal
+        run: dotnet test --configuration Release --no-build --logger trx --results-directory TestResults
+
+      - name: Test sonuçlarını yükle
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ github.run_id }}
+          path: TestResults/
+          retention-days: 7
+
+      - name: Güvenlik açığı taraması
+        run: dotnet list package --vulnerable --include-transitive
 
   # ══════════════════════════════════════════════════════
   # 2. DOCKER — CI geçtikten sonra
-  #    Sadece staging ve preprod'da çalışır
+  #    Sadece test ve preprod push'larında çalışır
   # ══════════════════════════════════════════════════════
   docker:
     name: Docker Build & Push
     needs: ci
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/preprod'
+    if: |
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/test' || github.ref == 'refs/heads/preprod')
     permissions:
       contents: read
       packages: write
 
     outputs:
       image_tag: ${{ steps.meta.outputs.tag }}
-      latest_tag: ${{ steps.meta.outputs.latest_tag }}
+      previous_tag: ${{ steps.meta.outputs.previous_tag }}
+      env_name: ${{ steps.meta.outputs.env_name }}
 
     steps:
       - name: Kodu çek
@@ -85,18 +111,29 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Image tag belirle
+      - name: Image tag ve env belirle
         id: meta
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/staging" ]; then
-            echo "tag=test-${{ github.sha }}" >> $GITHUB_OUTPUT
-            echo "latest_tag=test-latest" >> $GITHUB_OUTPUT
-          elif [ "${{ github.ref }}" = "refs/heads/preprod" ]; then
-            echo "tag=preprod-${{ github.sha }}" >> $GITHUB_OUTPUT
-            echo "latest_tag=preprod-latest" >> $GITHUB_OUTPUT
+          if [ "${{ github.ref }}" = "refs/heads/test" ]; then
+            ENV_NAME="test"
+          else
+            ENV_NAME="preprod"
           fi
 
-      - name: Docker image build & push
+          echo "env_name=${ENV_NAME}" >> $GITHUB_OUTPUT
+          echo "tag=${ENV_NAME}-${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "previous_tag=${ENV_NAME}-previous" >> $GITHUB_OUTPUT
+
+      - name: Önceki latest'i "previous" olarak etiketle (rollback için)
+        continue-on-error: true
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.env_name }}-latest || exit 0
+          docker tag \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.env_name }}-latest \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.previous_tag }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.previous_tag }}
+
+      - name: Yeni image build & push
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -104,18 +141,22 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tag }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.latest_tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.env_name }}-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
 
   # ══════════════════════════════════════════════════════
-  # 3. TEST DEPLOY — staging branch
+  # 3. TEST DEPLOY — test branch
   # ══════════════════════════════════════════════════════
   deploy-test:
     name: Deploy → TEST
     needs: docker
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/staging'
+    if: github.ref == 'refs/heads/test'
     environment:
       name: test
       url: http://${{ secrets.SERVER_IP }}:5001
@@ -128,46 +169,54 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
           script: |
-            set -e
+            set -euo pipefail
             cd /app/webshube
 
             echo "→ Compose dosyasını güncelle"
-            git fetch origin staging
-            git checkout staging
-            git pull origin staging
+            git fetch origin test
+            git reset --hard origin/test
 
             echo "→ GHCR login"
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
               -u ${{ secrets.GHCR_USER }} --password-stdin
 
-            echo "→ Image çek"
-            export REGISTRY=ghcr.io/emirklc
-            export IMAGE_TAG=test-${{ github.sha }}
-            docker compose --profile test pull
+            echo "→ Image çek (tag: ${{ needs.docker.outputs.image_tag }})"
+            IMAGE_TAG="${{ needs.docker.outputs.image_tag }}" \
+              docker compose --profile test pull
 
             echo "→ Container yeniden başlat"
-            docker compose --profile test up -d --no-build
+            IMAGE_TAG="${{ needs.docker.outputs.image_tag }}" \
+              docker compose --profile test up -d --no-build
 
             echo "→ Healthcheck (max 60sn)"
+            HEALTHY=0
             for i in {1..12}; do
               if curl -fs http://localhost:5001/health > /dev/null; then
                 echo "✓ Sağlıklı"
-                docker image prune -f
-                exit 0
+                HEALTHY=1
+                break
               fi
               echo "  [$i/12] bekleniyor..."
               sleep 5
             done
 
-            echo "✗ Healthcheck başarısız — rollback"
-            export IMAGE_TAG=test-latest
-            docker compose --profile test up -d --no-build
+            if [ "$HEALTHY" = "1" ]; then
+              docker image prune -f
+              exit 0
+            fi
+
+            echo "✗ Healthcheck başarısız — önceki image'a rollback"
+            IMAGE_TAG="${{ needs.docker.outputs.previous_tag }}" \
+              docker compose --profile test pull
+            IMAGE_TAG="${{ needs.docker.outputs.previous_tag }}" \
+              docker compose --profile test up -d --no-build
             exit 1
 
   # ══════════════════════════════════════════════════════
   # 4. PRE-PROD DEPLOY — preprod branch
-  #    GitHub Environment'ta required reviewers tanımlı olmalı
+  #    GitHub Settings → Environments → preprod → Required reviewers
   # ══════════════════════════════════════════════════════
   deploy-preprod:
     name: Deploy → PRE-PROD
@@ -186,39 +235,47 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
           script: |
-            set -e
+            set -euo pipefail
             cd /app/webshube
 
             echo "→ Compose dosyasını güncelle"
             git fetch origin preprod
-            git checkout preprod
-            git pull origin preprod
+            git reset --hard origin/preprod
 
             echo "→ GHCR login"
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
               -u ${{ secrets.GHCR_USER }} --password-stdin
 
-            echo "→ Image çek"
-            export REGISTRY=ghcr.io/emirklc
-            export IMAGE_TAG=preprod-${{ github.sha }}
-            docker compose --profile preprod pull
+            echo "→ Image çek (tag: ${{ needs.docker.outputs.image_tag }})"
+            IMAGE_TAG="${{ needs.docker.outputs.image_tag }}" \
+              docker compose --profile preprod pull
 
             echo "→ Container yeniden başlat"
-            docker compose --profile preprod up -d --no-build
+            IMAGE_TAG="${{ needs.docker.outputs.image_tag }}" \
+              docker compose --profile preprod up -d --no-build
 
             echo "→ Healthcheck (max 60sn)"
+            HEALTHY=0
             for i in {1..12}; do
               if curl -fs http://localhost:5002/health > /dev/null; then
                 echo "✓ Sağlıklı"
-                docker image prune -f
-                exit 0
+                HEALTHY=1
+                break
               fi
               echo "  [$i/12] bekleniyor..."
               sleep 5
             done
 
-            echo "✗ Healthcheck başarısız — rollback"
-            export IMAGE_TAG=preprod-latest
-            docker compose --profile preprod up -d --no-build
+            if [ "$HEALTHY" = "1" ]; then
+              docker image prune -f
+              exit 0
+            fi
+
+            echo "✗ Healthcheck başarısız — önceki image'a rollback"
+            IMAGE_TAG="${{ needs.docker.outputs.previous_tag }}" \
+              docker compose --profile preprod pull
+            IMAGE_TAG="${{ needs.docker.outputs.previous_tag }}" \
+              docker compose --profile preprod up -d --no-build
             exit 1
