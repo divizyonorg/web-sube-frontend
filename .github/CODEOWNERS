@@ -1,0 +1,23 @@
+# ─────────────────────────────────────────────────────────
+# CODEOWNERS — Web Şube 2.0
+#
+# Kural: en alttaki eşleşen pattern kazanır.
+# Ekip adlarını GitHub org → Teams bölümünden doğrula.
+# ─────────────────────────────────────────────────────────
+
+# Varsayılan — eşleşmeyen her dosya için
+*  @emirklc @samet-gecgel
+
+# ── Frontend ──────────────────────────────────────────────
+*.cshtml                      @emirklc @samet-gecgel
+*.cs                          @emirklc @samet-gecgel
+*.csproj                      @emirklc @samet-gecgel
+*.sln                         @emirklc @samet-gecgel
+wwwroot/                      @emirklc @samet-gecgel
+appsettings*.json             @emirklc @samet-gecgel
+Program.cs                    @emirklc @samet-gecgel
+
+# ── DevOps / CI-CD ────────────────────────────────────────
+.github/                      @emirklc @samet-gecgel
+Dockerfile                    @emirklc @samet-gecgel
+docker-compose*.yml           @emirklc @samet-gecgel
