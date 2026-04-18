@@ -10,14 +10,14 @@ name: CI/CD — Build & Deploy
 on:
   push:
     branches:
-      - dev
-      - test
-      - preprod
+      - Dev
+      - Test
+      - Preprod
   pull_request:
     branches:
-      - dev
-      - test
-      - preprod
+      - Dev
+      - Test
+      - Preprod
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
