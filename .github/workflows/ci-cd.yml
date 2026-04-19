@@ -10,12 +10,12 @@ name: CI/CD — Build & Deploy
 on:
   push:
     branches:
-      - Deveploment
+      - Development
       - Test
       - Preprod
   pull_request:
     branches:
-      - Deveploment
+      - Development
       - Test
       - Preprod
 
