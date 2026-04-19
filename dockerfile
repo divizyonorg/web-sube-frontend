@@ -11,7 +11,6 @@ WORKDIR /src
 # Önce proje dosyalarını kopyala → NuGet cache korunur
 COPY *.sln ./
 COPY *.csproj ./
-COPY NuGet.config* ./
 RUN dotnet restore
 
 # Kaynak kodu kopyala ve publish et
