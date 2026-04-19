@@ -159,7 +159,7 @@ jobs:
     if: github.ref == 'refs/heads/Test'
     environment:
       name: Test
-      url: http://${{ secrets.SERVER_IP }}:5001
+      url: http://34.185.143.147:5001
 
     steps:
       - name: Sunucuya deploy et
@@ -225,7 +225,7 @@ jobs:
     if: github.ref == 'refs/heads/Preprod'
     environment:
       name: Preprod
-      url: http://${{ secrets.SERVER_IP }}:5002
+      url: http://34.185.143.147:5002
 
     steps:
       - name: Sunucuya deploy et
