@@ -36,31 +36,6 @@ builder.Services.AddHealthChecks();   // builder'dan sonra
 
 var app = builder.Build();
 
-// YALNIZCA GELİŞTİRME ORTAMINDA: Arka planda Tailwind Watcher'ı başlat
-if (app.Environment.IsDevelopment())
-{
-    var processInfo = new System.Diagnostics.ProcessStartInfo
-    {
-        FileName = OperatingSystem.IsWindows() ? "cmd.exe" : "npm",
-        Arguments = OperatingSystem.IsWindows() ? "/c npm run watch:css" : "run watch:css",
-        WorkingDirectory = app.Environment.ContentRootPath,
-        CreateNoWindow = true,
-        UseShellExecute = false
-    };
-
-    var process = System.Diagnostics.Process.Start(processInfo);
-
-    // Uygulama kapatıldığında (örn. Visual Studio'da Stop'a basıldığında) npm process'ini temizle
-    app.Lifetime.ApplicationStopping.Register(() => 
-    {
-        if (process != null && !process.HasExited)
-        {
-            process.Kill(entireProcessTree: true);
-            process.Dispose();
-        }
-    });
-}
-
 if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
 
