@@ -10,12 +10,12 @@ name: CI/CD — Build & Deploy
 on:
   push:
     branches:
-      - Deveploment
+      - Development
       - Test
       - Preprod
   pull_request:
     branches:
-      - Deveploment
+      - Development
       - Test
       - Preprod
 
@@ -58,7 +58,7 @@ jobs:
         run: dotnet restore
 
       - name: Format check
-        run: dotnet format --verify-no-changes --no-restore
+        run: dotnet format MyApp.Web.sln --verify-no-changes --no-restore
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'push' &&
-      (github.ref == 'refs/heads/test' || github.ref == 'refs/heads/preprod')
+      (github.ref == 'refs/heads/Test' || github.ref == 'refs/heads/Preprod')
     permissions:
       contents: read
       packages: write
@@ -114,7 +114,7 @@ jobs:
       - name: Image tag ve env belirle
         id: meta
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/test" ]; then
+          if [ "${{ github.ref }}" = "refs/heads/Test" ]; then
             ENV_NAME="test"
           else
             ENV_NAME="preprod"
@@ -156,10 +156,10 @@ jobs:
     name: Deploy → TEST
     needs: docker
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/test'
+    if: github.ref == 'refs/heads/Test'
     environment:
-      name: test
-      url: http://${{ secrets.SERVER_IP }}:5001
+      name: Test
+      url: http://34.185.143.147:5001
 
     steps:
       - name: Sunucuya deploy et
@@ -175,8 +175,8 @@ jobs:
             cd /app/webshube
 
             echo "→ Compose dosyasını güncelle"
-            git fetch origin test
-            git reset --hard origin/test
+            git fetch origin Test
+            git reset --hard origin/Test
 
             echo "→ GHCR login"
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
@@ -222,10 +222,10 @@ jobs:
     name: Deploy → PRE-PROD
     needs: docker
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/preprod'
+    if: github.ref == 'refs/heads/Preprod'
     environment:
-      name: preprod
-      url: http://${{ secrets.SERVER_IP }}:5002
+      name: Preprod
+      url: http://34.185.143.147:5002
 
     steps:
       - name: Sunucuya deploy et
@@ -241,8 +241,8 @@ jobs:
             cd /app/webshube
 
             echo "→ Compose dosyasını güncelle"
-            git fetch origin preprod
-            git reset --hard origin/preprod
+            git fetch origin Preprod
+            git reset --hard origin/Preprod
 
             echo "→ GHCR login"
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
