@@ -1,0 +1,28 @@
+appsettings.json dosyasındaki API yapılandırmasını mikroservis mimarisine uygun hale getir.
+
+Mevcut yapı:
+- appsettings.json'da tek bir "ApiSettings.BaseUrl" var, bunu kaldır.
+
+Yapılacaklar:
+
+1. appsettings.json'a "ServiceUrls" bölümü ekle. 5 mikroservis olacak:
+   - AuthService (https://auth.your-api.com/api)
+   - ProductService (https://product.your-api.com/api)
+   - PaymentService (https://payment.your-api.com/api)
+   - NotificationService (https://notification.your-api.com/api)
+   - ReportService (https://report.your-api.com/api)
+   Her servis bir obje olsun ve içinde "BaseUrl" property'si bulunsun.
+   "ApiSettings" bölümünde sadece "UseMockData" ve "TimeoutSeconds: 30" kalsın.
+
+2. Models klasörüne "ServiceUrlOptions.cs" dosyası oluştur:
+   - ServiceEndpoint sınıfı: BaseUrl (string) ve TimeoutSeconds (int, default 30) property'leri olsun.
+   - ServiceUrls sınıfı: 5 servis için ServiceEndpoint tipinde property'ler içersin.
+
+3. Program.cs'de ServiceUrls'i DI container'a register et:
+   builder.Services.Configure<ServiceUrls>(builder.Configuration.GetSection("ServiceUrls"));
+
+4. Projede mevcut olan tüm Razor Page'lerde ve servislerde eski "ApiSettings.BaseUrl" kullanımlarını bul ve yeni ServiceUrls yapısına göre güncelle. IOptions<ServiceUrls> inject et.
+
+5. appsettings.Development.json varsa orada da aynı ServiceUrls yapısını oluştur, URL'leri localhost veya dev ortamına göre ayarla.
+
+Proje Razor Pages (.NET) kullanıyor. Mevcut kodu bozmadan, derleme hatası bırakmadan yap.

@@ -1,10 +1,28 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MyApp.Web</title>
     <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
+
+    <!-- Grid.js -->
+    <link rel="stylesheet" href="~/lib/gridjs/mermaid.min.css" asp-append-version="true" />
+
+    <!-- Swiper.js -->
+    <link rel="stylesheet" href="~/lib/swiper/swiper-bundle.min.css" asp-append-version="true" />
+
+    <!-- FilePond -->
+    <link rel="stylesheet" href="~/lib/filepond/filepond.min.css" asp-append-version="true" />
+
+    <!-- Toastify.js -->
+    <link rel="stylesheet" href="~/lib/toastify-js/toastify.css" asp-append-version="true" />
+
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css" asp-append-version="true" />
+
+    <!-- TOM Select -->
+    <link rel="stylesheet" href="~/lib/tom-select/tom-select.default.min.css" asp-append-version="true" />
 </head>
 <body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
     <header class="border-b border-gray-200 bg-white shadow-sm">
@@ -25,6 +43,37 @@
     <footer class="border-t border-gray-200 bg-white py-6 text-center text-sm text-gray-500">
         &copy; @DateTime.UtcNow.Year - MyApp.Web — <a class="text-blue-600 hover:underline" asp-page="/Privacy">Gizlilik</a>
     </footer>
+
+    <!-- Alpine.js — defer zorunlu -->
+    <script defer src="~/lib/alpinejs/cdn.min.js" asp-append-version="true"></script>
+
+    <!-- HTMX -->
+    <script src="~/lib/htmx/htmx.min.js" asp-append-version="true"></script>
+
+    <!-- Grid.js -->
+    <script src="~/lib/gridjs/gridjs.umd.js" asp-append-version="true"></script>
+
+    <!-- Swiper.js -->
+    <script src="~/lib/swiper/swiper-bundle.min.js" asp-append-version="true"></script>
+
+    <!-- FilePond -->
+    <script src="~/lib/filepond/filepond.min.js" asp-append-version="true"></script>
+
+    <!-- IMask.js -->
+    <script src="~/lib/imask/imask.min.js" asp-append-version="true"></script>
+
+    <!-- Toastify.js -->
+    <script src="~/lib/toastify-js/toastify.js" asp-append-version="true"></script>
+
+    <!-- JustValidate -->
+    <script src="~/lib/just-validate/just-validate.production.min.js" asp-append-version="true"></script>
+
+    <!-- Flatpickr + Türkçe dil paketi -->
+    <script src="~/lib/flatpickr/flatpickr.min.js" asp-append-version="true"></script>
+    <script src="~/lib/flatpickr/l10n/tr.js" asp-append-version="true"></script>
+
+    <!-- TOM Select -->
+    <script src="~/lib/tom-select/tom-select.complete.min.js" asp-append-version="true"></script>
 
     <script src="~/js/app.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

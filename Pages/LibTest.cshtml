@@ -1,0 +1,192 @@
+@page
+@{
+    ViewData["Title"] = "Kütüphane Test";
+    Layout = "_Layout";
+}
+
+<div class="space-y-12 py-8">
+    <h1 class="text-2xl font-semibold">Kütüphane Test Sayfası</h1>
+
+    <!-- ───── 1. FLATPICKR ───── -->
+    <section class="space-y-2">
+        <h2 class="font-medium text-gray-700">1. Flatpickr — Tarih seçici</h2>
+        <input id="testDate" type="text" placeholder="Tarihe tıkla"
+               class="w-64 rounded border border-gray-300 px-3 py-2 text-sm" />
+        <p id="flatpickr-result" class="text-xs text-gray-400">Tarih seçilmedi</p>
+    </section>
+
+    <!-- ───── 2. TOM SELECT ───── -->
+    <section class="space-y-2">
+        <h2 class="font-medium text-gray-700">2. TOM Select — Gelişmiş dropdown</h2>
+        <select id="testSelect" class="w-64">
+            <option value="">İl seçiniz...</option>
+            <option value="34">İstanbul</option>
+            <option value="06">Ankara</option>
+            <option value="35">İzmir</option>
+        </select>
+    </section>
+
+    <!-- ───── 3. IMASK ───── -->
+    <section class="space-y-2">
+        <h2 class="font-medium text-gray-700">3. IMask — Girdi maskeleme</h2>
+        <input id="testPhone" type="text" placeholder="GSM: 0(5__) ___ __ __"
+               class="w-64 rounded border border-gray-300 px-3 py-2 text-sm" />
+    </section>
+
+    <!-- ───── 4. ALPINE.JS ───── -->
+    <section class="space-y-2">
+        <h2 class="font-medium text-gray-700">4. Alpine.js — Reaktif UI</h2>
+        <div x-data="{ count: 0 }" class="flex items-center gap-3">
+            <button @@click="count++"
+                    class="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+                Tıkla
+            </button>
+            <span class="text-sm">Tıklama: <strong x-text="count"></strong></span>
+        </div>
+    </section>
+
+    <!-- ───── 5. TOASTIFY ───── -->
+    <section class="space-y-2">
+        <h2 class="font-medium text-gray-700">5. Toastify — Bildirim</h2>
+        <button id="testToast"
+                class="rounded bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">
+            Bildirim Göster
+        </button>
+    </section>
+
+    <!-- ───── 6. FILEPOND ───── -->
+    <section class="space-y-2">
+        <h2 class="font-medium text-gray-700">6. FilePond — Dosya yükleme</h2>
+        <input id="testFile" type="file" multiple />
+    </section>
+
+    <!-- ───── 7. JUSTVALIDATE ───── -->
+    <section class="space-y-2">
+        <h2 class="font-medium text-gray-700">7. JustValidate — Form doğrulama</h2>
+        <form id="testForm" class="flex flex-col gap-2 w-64" novalidate>
+            <input id="testEmail" type="text" placeholder="E-posta girin"
+                   class="rounded border border-gray-300 px-3 py-2 text-sm" />
+            <button type="submit"
+                    class="rounded bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700">
+                Doğrula
+            </button>
+        </form>
+    </section>
+
+    <!-- ───── 8. SWIPER ───── -->
+    <section class="space-y-2">
+        <h2 class="font-medium text-gray-700">8. Swiper — Carousel</h2>
+        <div class="swiper w-full max-w-sm rounded border border-gray-200">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide flex h-24 items-center justify-center bg-blue-100 text-sm font-medium">Slide 1</div>
+                <div class="swiper-slide flex h-24 items-center justify-center bg-green-100 text-sm font-medium">Slide 2</div>
+                <div class="swiper-slide flex h-24 items-center justify-center bg-yellow-100 text-sm font-medium">Slide 3</div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- ───── 9. GRID.JS ───── -->
+    <section class="space-y-2">
+        <h2 class="font-medium text-gray-700">9. Grid.js — Veri tablosu</h2>
+        <div id="testGrid"></div>
+    </section>
+
+    <!-- ───── 10. HTMX ───── -->
+    <section class="space-y-2">
+        <h2 class="font-medium text-gray-700">10. HTMX — Partial reload</h2>
+        <button hx-get="/LibTest?handler=HtmxTest"
+                hx-target="#htmx-result"
+                hx-swap="innerHTML"
+                class="rounded bg-purple-600 px-4 py-2 text-sm text-white hover:bg-purple-700">
+            Sunucudan Yükle
+        </button>
+        <div id="htmx-result" class="rounded border border-gray-200 p-3 text-sm text-gray-500">
+            Butona bas, sunucudan içerik gelecek.
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+<script>
+    // 1. Flatpickr — zaten init edildiyse atla
+    const dateEl = document.getElementById("testDate");
+    if (!dateEl._flatpickr) {
+        flatpickr(dateEl, {
+            locale: "tr",
+            dateFormat: "d.m.Y",
+            onChange: (_, dateStr) => {
+                document.getElementById("flatpickr-result").textContent = "Seçilen: " + dateStr;
+            }
+        });
+    }
+
+    // 2. TOM Select — zaten init edildiyse atla
+    const selectEl = document.getElementById("testSelect");
+    if (!selectEl.tomselect) {
+        new TomSelect(selectEl, { allowEmptyOption: true });
+    }
+
+    // 3. IMask — zaten init edildiyse atla
+    const phoneEl = document.getElementById("testPhone");
+    if (!phoneEl.imask) {
+        IMask(phoneEl, { mask: "0(000) 000 00 00" });
+    }
+
+    // 5. Toastify — addEventListener yerine onclick ile çift kayıt önle
+    document.getElementById("testToast").onclick = () => {
+        Toastify({
+            text: "Toastify çalışıyor!",
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            style: { background: "#22c55e" }
+        }).showToast();
+    };
+
+    // 6. FilePond — zaten init edildiyse atla
+    const fileEl = document.getElementById("testFile");
+    if (!fileEl._filepond) {
+        FilePond.create(fileEl, {
+            labelIdle: "Dosya sürükle veya <span class='filepond--label-action'>seç</span>"
+        });
+    }
+
+    // 7. JustValidate — zaten init edildiyse atla
+    const formEl = document.getElementById("testForm");
+    if (!formEl._justValidate) {
+        formEl._justValidate = new JustValidate("#testForm")
+            .addField("#testEmail", [
+                { rule: "required", errorMessage: "E-posta zorunludur" },
+                { rule: "email",    errorMessage: "Geçerli bir e-posta girin" }
+            ]);
+    }
+
+    // 8. Swiper — zaten init edildiyse atla
+    const swiperEl = document.querySelector(".swiper");
+    if (!swiperEl.swiper) {
+        new Swiper(swiperEl, {
+            loop: true,
+            autoplay: { delay: 2000 },
+            pagination: { el: ".swiper-pagination", clickable: true }
+        });
+    }
+
+    // 9. Grid.js — zaten render edildiyse atla
+    const gridEl = document.getElementById("testGrid");
+    if (!gridEl._gridjs) {
+        gridEl._gridjs = new gridjs.Grid({
+            columns: ["Ad", "Soyad", "Durum"],
+            data: [
+                ["Ahmet", "Yılmaz", "Aktif"],
+                ["Ayşe",  "Kaya",   "Pasif"],
+                ["Mehmet","Demir",  "Aktif"]
+            ],
+            search: true,
+            sort: true,
+            pagination: { limit: 5 },
+            language: { search: { placeholder: "Ara..." } }
+        }).render(gridEl);
+    }
+</script>
+}
