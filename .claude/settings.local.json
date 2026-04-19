@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build *)",
+      "Bash(npm view *)",
+      "Bash(rm -rf node_modules package-lock.json)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "WebSearch",
+      "WebFetch(domain:www.jsdelivr.com)",
+      "Bash(node scripts/copy-libs.js)"
+    ]
+  }
+}
