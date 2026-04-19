@@ -33,7 +33,6 @@ builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(se
 builder.Services.AddRazorPages();
 
 builder.Services.AddHealthChecks();   // builder'dan sonra
-app.MapHealthChecks("/health"); 
 
 var app = builder.Build();
 
@@ -69,5 +68,6 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 app.MapRazorPages();
+app.MapHealthChecks("/health");
 
 app.Run();
