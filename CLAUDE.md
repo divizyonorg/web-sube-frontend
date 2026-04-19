@@ -687,153 +687,166 @@ Magic String için:
 
 ### 8.1 Özet — hangi kütüphane nerede
 
-| Kütüphane | Kullanım yeri |
-|-----------|---------------|
-| AG Grid / DataTables.js | Raporlarım, Kredi Danışmanlık listesi, Faturalarım, Talep Geçmişi |
-| Flatpickr | Raporlarım tarih filtresi, doğum tarihi girişi |
-| Select2 | İl/İlçe seçimi, Meslek, Çalışma Şekli dropdown'ları |
-| Inputmask | GSM numarası, IBAN/kart numarası alanları |
-| jQuery Validation | Tüm form adımlarında unobtrusive validation |
-| noUiSlider | Kredi Simülatörü tutar slider'ı (1.000 TL — limit arası) |
-| SweetAlert2 | OTP doğrulama modalı, iptal onayı, hata/başarı durumları |
-| Toastr.js | Profil güncelleme, dosya yükleme gibi anlık bildirimler |
-| Dropzone.js / FilePond | Evrak Bekleniyor adımında belge yükleme ekranı |
-| Chart.js / ApexCharts | Kredi skoru görselleştirme (Kredi Profili bileşeni) |
-| Alpine.js | Dinamik form adımları, medeni hal → eş geliri gibi koşullu alanlar |
-| Day.js | Tarih formatlama, son giriş tarihi, rapor tarihleri |
-| HTMX | Rapor oluşturma wizard'ında adımlar arası partial reload |
+| Kütüphane | Kategori | Kullanım Yeri |
+|-----------|----------|---------------|
+| Grid.js | Veri tablosu | Raporlarım listesi, Kredi Danışmanlık Süreci listesi, Faturalarım, Talep Geçmişi |
+| Swiper.js | Carousel | Görsel/içerik slider ihtiyaçları |
+| FilePond | Dosya yükleme | Evrak Bekleniyor adımında belge yükleme ekranı |
+| IMask.js | Girdi maskeleme | GSM numarası, IBAN/kart numarası alanları |
+| Toastify.js | Anlık bildirim | Profil güncelleme, dosya yükleme gibi kullanıcı aksiyonu gerektirmeyen bildirimler |
+| SweetAlert2 | Modal / OnaSwiper.js Kurulumuy | OTP doğrulama modalı, iptal onayı, kritik hata durumları |
+| JustValidate | Form doğrulama | Tüm form adımlarında client-side validasyon |
+| Tailwind CSS | Stil | Tüm arayüz bileşenleri |
+| Flatpickr | Tarih seçici | Raporlarım tarih filtresi, doğum tarihi girişi |
+| Alpine.js | Reaktif UI | Medeni hal → eş geliri gibi koşullu alanlar, form adımları arası geçiş |
+| TOM Select | Dropdown | İl/İlçe seçimi, Meslek, Çalışma Şekli dropdown'ları |
+| HTMX | Partial reload | Rapor oluşturma wizard'ında adımlar arası geçiş |
 
 ---
 
-### 8.2 DataTables.js — Veri tabloları
+### 8.2 Grid.js — Veri tabloları
 
 ```html
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.min.css">
 
-<table id="clientTable" class="w-full text-sm">
-    <thead>...</thead>
-    <tbody>...</tbody>
-</table>
+<div id="clientTable"></div>
 
 <script>
-    $('#clientTable').DataTable({
-        language: { url: '//cdn.datatables.net/plug-ins/tr.json' },
-        pageLength: 25,
-        order: [[0, 'desc']]
+    new gridjs.Grid({
+        columns: ['Ad Soyad', 'E-posta', 'Telefon', 'Durum', 'Kayıt Tarihi'],
+        server: {
+            url: '/api/clients',
+            then: data => data.map(c => [c.fullName, c.email, c.phone, c.statusLabel, c.joinedDate])
+        },
+        pagination: { limit: 25 },
+        sort: true,
+        search: true,
+        language: {
+            search: { placeholder: 'Ara...' },
+            pagination: { previous: 'Önceki', next: 'Sonraki' }
+        }
+    }).render(document.getElementById('clientTable'));
+</script>
+```
+
+---
+
+### 8.3 Swiper.js — Carousel
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css">
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+
+<div class="swiper">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide">Slide 1</div>
+        <div class="swiper-slide">Slide 2</div>
+        <div class="swiper-slide">Slide 3</div>
+    </div>
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+</div>
+
+<script>
+    new Swiper('.swiper', {
+        loop: true,
+        pagination: { el: '.swiper-pagination', clickable: true },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev'
+        }
     });
 </script>
 ```
 
 ---
 
-### 8.3 Flatpickr — Tarih seçici
+### 8.4 FilePond — Dosya yükleme
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/filepond/dist/filepond.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/filepond/dist/filepond.min.js"></script>
 
-<input id="birthDate" type="text" placeholder="Doğum tarihi">
+<input type="file" id="documentUpload" multiple>
 
 <script>
-    flatpickr("#birthDate", {
-        locale: "tr",
-        dateFormat: "d.m.Y",
-        maxDate: "today"
+    FilePond.create(document.getElementById('documentUpload'), {
+        server: '/api/documents/upload',
+        allowMultiple: true,
+        maxFiles: 5,
+        maxFileSize: '10MB',
+        acceptedFileTypes: ['application/pdf', 'image/jpeg', 'image/png'],
+        labelIdle: 'Dosyaları buraya sürükleyin veya <span class="filepond--label-action">seçin</span>',
+        labelFileTypeNotAllowed: 'Bu dosya türü desteklenmiyor',
+        labelMaxFileSizeExceeded: 'Dosya çok büyük (max 10MB)'
     });
 </script>
 ```
 
 ---
 
-### 8.4 Select2 — Gelişmiş dropdown
+### 8.5 IMask.js — Girdi maskeleme
 
 ```html
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<select id="citySelect">
-    <option value="">İl seçiniz...</option>
-</select>
-
-<script>
-    $('#citySelect').select2({
-        placeholder: 'İl seçiniz',
-        allowClear: true,
-        language: 'tr'
-    });
-</script>
-```
-
----
-
-### 8.5 Inputmask — Girdi maskeleme
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/imask/dist/imask.min.js"></script>
 
 <input id="phone" type="text" placeholder="GSM numarası">
 <input id="iban"  type="text" placeholder="IBAN">
 
 <script>
-    Inputmask("0(999) 999 99 99").mask("#phone");
-    Inputmask("TR99 9999 9999 9999 9999 9999 99").mask("#iban");
+    IMask(document.getElementById('phone'), {
+        mask: '0(000) 000 00 00'
+    });
+
+    IMask(document.getElementById('iban'), {
+        mask: 'TR00 0000 0000 0000 0000 0000 00'
+    });
 </script>
 ```
 
 ---
 
-### 8.6 jQuery Validation — Form doğrulama
+### 8.6 Toastify.js — Anlık bildirimler
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-```
-
-ASP.NET Core tag helper'larıyla otomatik çalışır:
-
-```html
-<form asp-page-handler="Submit">
-    <input asp-for="Phone" class="border rounded px-3 py-2">
-    <span asp-validation-for="Phone" class="text-red-500 text-sm"></span>
-</form>
-```
-
----
-
-### 8.7 noUiSlider — Kredi simülatörü
-
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/dist/nouislider.min.css">
-<script src="https://cdn.jsdelivr.net/npm/nouislider/dist/nouislider.min.js"></script>
-
-<div id="amountSlider"></div>
-<p>Tutar: <span id="amountLabel">10.000</span> TL</p>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
 
 <script>
-    const slider = document.getElementById('amountSlider');
+    // Başarı bildirimi
+    Toastify({
+        text: "Profil bilgileri güncellendi.",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        style: { background: "#22c55e" }
+    }).showToast();
 
-    noUiSlider.create(slider, {
-        start: [10000],
-        range: { min: 1000, max: 500000 },
-        step: 1000,
-        tooltips: true,
-        format: {
-            to:   value => new Intl.NumberFormat('tr-TR').format(value),
-            from: value => Number(value.replace('.', ''))
-        }
-    });
+    // Hata bildirimi
+    Toastify({
+        text: "Bir hata oluştu, lütfen tekrar deneyin.",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        style: { background: "#ef4444" }
+    }).showToast();
 
-    slider.noUiSlider.on('update', (values) => {
-        document.getElementById('amountLabel').textContent = values[0];
-    });
+    // Bilgi bildirimi
+    Toastify({
+        text: "Dosyanız işleniyor...",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        style: { background: "#3b82f6" }
+    }).showToast();
 </script>
 ```
 
 ---
 
-### 8.8 SweetAlert2 — Modal ve onay diyalogları
+### 8.7 SweetAlert2 — Modal ve onay diyalogları
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -867,105 +880,61 @@ ASP.NET Core tag helper'larıyla otomatik çalışır:
 
 ---
 
-### 8.9 Toastr.js — Anlık bildirimler
+### 8.8 JustValidate — Form doğrulama
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr/build/toastr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/toastr/build/toastr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/just-validate/dist/just-validate.production.min.js"></script>
 
-<script>
-    toastr.options = {
-        positionClass: 'toast-top-right',
-        timeOut: 3000,
-        progressBar: true
-    };
-
-    toastr.success('Profil bilgileri güncellendi.');
-    toastr.error('Bir hata oluştu, lütfen tekrar deneyin.');
-    toastr.info('Dosyanız işleniyor...');
-</script>
-```
-
----
-
-### 8.10 Dropzone.js — Dosya yükleme
-
-```html
-<link rel="stylesheet" href="https://unpkg.com/dropzone@6/dist/dropzone.css">
-<script src="https://unpkg.com/dropzone@6/dist/dropzone-min.js"></script>
-
-<form id="documentUpload" class="dropzone border-2 border-dashed border-gray-300 rounded-xl p-6">
-    <div class="dz-message text-gray-500">
-        Dosyaları buraya sürükleyin veya tıklayın
-    </div>
+<form id="clientForm">
+    <input id="phone" type="text" placeholder="GSM numarası">
+    <input id="email" type="text" placeholder="E-posta">
+    <button type="submit">Kaydet</button>
 </form>
 
 <script>
-    Dropzone.autoDiscover = false;
+    const validation = new JustValidate('#clientForm', {
+        errorFieldCssClass: 'border-red-500',
+        errorLabelCssClass: 'text-red-500 text-sm mt-1'
+    });
 
-    new Dropzone("#documentUpload", {
-        url: "/api/documents/upload",
-        maxFilesize: 10,
-        acceptedFiles: ".pdf,.jpg,.jpeg,.png",
-        maxFiles: 5,
-        dictDefaultMessage:  "Dosyaları buraya sürükleyin veya tıklayın",
-        dictFileTooBig:      "Dosya çok büyük (max 10MB)",
-        dictInvalidFileType: "Bu dosya türü desteklenmiyor"
+    validation
+        .addField('#phone', [
+            { rule: 'required', errorMessage: 'GSM numarası zorunludur' },
+            { rule: 'minLength', value: 10, errorMessage: 'Geçerli bir numara giriniz' }
+        ])
+        .addField('#email', [
+            { rule: 'required', errorMessage: 'E-posta zorunludur' },
+            { rule: 'email', errorMessage: 'Geçerli bir e-posta giriniz' }
+        ])
+        .onSuccess((event) => {
+            // form submit işlemi
+        });
+</script>
+```
+
+---
+
+### 8.9 Flatpickr — Tarih seçici
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
+
+<input id="birthDate" type="text" placeholder="Doğum tarihi">
+
+<script>
+    flatpickr("#birthDate", {
+        locale: "tr",
+        dateFormat: "d.m.Y",
+        maxDate: "today"
     });
 </script>
 ```
 
 ---
 
-### 8.11 Chart.js / ApexCharts — Kredi skoru görselleştirme
-
-```html
-{{!-- Chart.js --}}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<canvas id="creditScoreChart" width="300" height="300"></canvas>
-
-<script>
-    new Chart(document.getElementById('creditScoreChart'), {
-        type: 'doughnut',
-        data: {
-            datasets: [{
-                data: [720, 280],
-                backgroundColor: ['#22c55e', '#e5e7eb'],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            cutout: '75%',
-            plugins: { legend: { display: false }, tooltip: { enabled: false } }
-        }
-    });
-</script>
-```
-
-```html
-{{!-- ApexCharts — alternatif --}}
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<div id="scoreChart"></div>
-
-<script>
-    new ApexCharts(document.getElementById('scoreChart'), {
-        chart: { type: 'radialBar', height: 300 },
-        series: [72],
-        labels: ['Kredi Skoru'],
-        plotOptions: {
-            radialBar: {
-                hollow: { size: '65%' },
-                dataLabels: { value: { fontSize: '28px', fontWeight: 600 } }
-            }
-        },
-        colors: ['#22c55e']
-    }).render();
-</script>
-```
-
----
-
-### 8.12 Alpine.js — Koşullu alanlar
+### 8.10 Alpine.js — Koşullu alanlar
 
 ```html
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
@@ -986,25 +955,28 @@ ASP.NET Core tag helper'larıyla otomatik çalışır:
 
 ---
 
-### 8.13 Day.js — Tarih formatlama
+### 8.11 TOM Select — Dropdown
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dayjs/dayjs.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dayjs/locale/tr.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dayjs/plugin/relativeTime.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+
+<select id="citySelect">
+    <option value="">İl seçiniz...</option>
+</select>
 
 <script>
-    dayjs.locale('tr');
-    dayjs.extend(window.dayjs_plugin_relativeTime);
-
-    dayjs('2024-03-15').format('DD MMMM YYYY');  // "15 Mart 2024"
-    dayjs('2024-03-15').fromNow();               // "3 ay önce"
+    new TomSelect('#citySelect', {
+        placeholder: 'İl seçiniz',
+        allowEmptyOption: true,
+        create: false
+    });
 </script>
 ```
 
 ---
 
-### 8.14 HTMX — Wizard adımları arası partial reload
+### 8.12 HTMX — Wizard adımları arası partial reload
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/htmx.org/dist/htmx.min.js"></script>
