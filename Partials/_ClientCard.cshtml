@@ -1,0 +1,13 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.ClientListViewModel
+@{ Layout = null; }
+
+<div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-200 p-4">
+    <div>
+        <a class="font-medium text-gray-900 hover:text-blue-600" asp-page="/Clients/Detail" asp-route-id="@Model.Id">@Model.FullName</a>
+        <p class="text-sm text-gray-500">@Model.Email</p>
+    </div>
+    <span class="rounded-full bg-green-100 px-2 py-1 text-sm text-green-800">
+        @Model.StatusLabel
+    </span>
+</div>
