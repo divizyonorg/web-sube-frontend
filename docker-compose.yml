@@ -50,7 +50,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Test
       - ASPNETCORE_URLS=http://+:8080
     env_file:
-      - .env.test
+      - .env.Test
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
@@ -78,7 +78,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=PreProd
       - ASPNETCORE_URLS=http://+:8080
     env_file:
-      - .env.preprod
+      - .env.Preprod
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
