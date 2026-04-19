@@ -32,6 +32,9 @@ builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(se
 
 builder.Services.AddRazorPages();
 
+builder.Services.AddHealthChecks();   // builder'dan sonra
+app.MapHealthChecks("/health"); 
+
 var app = builder.Build();
 
 // YALNIZCA GELİŞTİRME ORTAMINDA: Arka planda Tailwind Watcher'ı başlat
