@@ -177,6 +177,7 @@ jobs:
             echo "→ Compose dosyasını güncelle"
             git fetch origin Test
             git reset --hard origin/Test
+            echo "${{ secrets.ENV_TEST }}" > .env.Test
 
             echo "→ GHCR login"
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
@@ -243,6 +244,7 @@ jobs:
             echo "→ Compose dosyasını güncelle"
             git fetch origin Preprod
             git reset --hard origin/Preprod
+            echo "${{ secrets.ENV_TEST }}" > .env.Preprod
 
             echo "→ GHCR login"
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
