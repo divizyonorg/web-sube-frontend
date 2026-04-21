@@ -25,7 +25,7 @@ concurrency:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: emirklc/webshube
+  IMAGE_NAME: divizyon/webshube
   DOTNET_VERSION: '8.0.x'
 
 jobs:
