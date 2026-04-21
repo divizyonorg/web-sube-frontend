@@ -184,11 +184,11 @@ jobs:
 
             echo "→ Image çek (tag: ${{ needs.docker.outputs.image_tag }})"
             IMAGE_TAG="${{ needs.docker.outputs.image_tag }}" \
-              docker-compose --profile test pull
+              docker compose --profile test pull
 
             echo "→ Container yeniden başlat"
             IMAGE_TAG="${{ needs.docker.outputs.image_tag }}" \
-              docker-compose --profile test up -d --no-build
+              docker compose --profile test up -d --no-build
 
             echo "→ Healthcheck (max 60sn)"
             HEALTHY=0
@@ -209,9 +209,9 @@ jobs:
 
             echo "✗ Healthcheck başarısız — önceki image'a rollback"
             IMAGE_TAG="${{ needs.docker.outputs.previous_tag }}" \
-              docker-compose --profile test pull
+              docker compose --profile test pull
             IMAGE_TAG="${{ needs.docker.outputs.previous_tag }}" \
-              docker-compose --profile test up -d --no-build
+              docker compose --profile test up -d --no-build
             exit 1
 
   # ══════════════════════════════════════════════════════
@@ -250,11 +250,11 @@ jobs:
 
             echo "→ Image çek (tag: ${{ needs.docker.outputs.image_tag }})"
             IMAGE_TAG="${{ needs.docker.outputs.image_tag }}" \
-              docker-compose --profile preprod pull
+              docker compose --profile preprod pull
 
             echo "→ Container yeniden başlat"
             IMAGE_TAG="${{ needs.docker.outputs.image_tag }}" \
-              docker-compose --profile preprod up -d --no-build
+              docker compose --profile preprod up -d --no-build
 
             echo "→ Healthcheck (max 60sn)"
             HEALTHY=0
@@ -275,7 +275,7 @@ jobs:
 
             echo "✗ Healthcheck başarısız — önceki image'a rollback"
             IMAGE_TAG="${{ needs.docker.outputs.previous_tag }}" \
-              docker-compose --profile preprod pull
+              docker compose --profile preprod pull
             IMAGE_TAG="${{ needs.docker.outputs.previous_tag }}" \
-              docker-compose --profile preprod up -d --no-build
+              docker compose --profile preprod up -d --no-build
             exit 1
