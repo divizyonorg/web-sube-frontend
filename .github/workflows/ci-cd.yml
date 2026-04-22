@@ -159,7 +159,7 @@ jobs:
     if: github.ref == 'refs/heads/Test'
     environment:
       name: Test
-      url: http://34.185.143.147:5001
+      url: http://34.185.143.147:5000
 
     steps:
       - name: Sunucuya deploy et
@@ -194,7 +194,7 @@ jobs:
             echo "→ Healthcheck (max 60sn)"
             HEALTHY=0
             for i in {1..12}; do
-              if curl -fs http://localhost:5001/health > /dev/null; then
+              if curl -fs http://localhost:5000/health > /dev/null; then
                 echo "✓ Sağlıklı"
                 HEALTHY=1
                 break
@@ -226,7 +226,7 @@ jobs:
     if: github.ref == 'refs/heads/Preprod'
     environment:
       name: Preprod
-      url: http://34.185.143.147:5002
+      url: http://34.185.143.147:5001
 
     steps:
       - name: Sunucuya deploy et
@@ -244,7 +244,7 @@ jobs:
             echo "→ Compose dosyasını güncelle"
             git fetch origin Preprod
             git reset --hard origin/Preprod
-            echo "${{ secrets.ENV_TEST }}" > .env.Preprod
+            echo "${{ secrets.ENV_PREPROD }}" > .env.Preprod
 
             echo "→ GHCR login"
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
@@ -261,7 +261,7 @@ jobs:
             echo "→ Healthcheck (max 60sn)"
             HEALTHY=0
             for i in {1..12}; do
-              if curl -fs http://localhost:5002/health > /dev/null; then
+              if curl -fs http://localhost:5001/health > /dev/null; then
                 echo "✓ Sağlıklı"
                 HEALTHY=1
                 break
