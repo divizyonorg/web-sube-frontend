@@ -1,0 +1,60 @@
+# ─────────────────────────────────────────────────────────
+# Docker build context'e alınmayacak dosyalar
+# ─────────────────────────────────────────────────────────
+
+# .NET build çıktıları
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+# IDE / Editor
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# GitHub Actions
+.github/
+
+# Docker dosyaları
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Dokümantasyon
+*.md
+CLAUDE.md
+LICENSE
+docs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+**/TestResults/
+**/coverage/
+*.trx
+
+# Logs
+*.log
+logs/
+
+# Secrets
+*.env
+.env*
+!.env.example
+secrets/
+appsettings.Local.json
+appsettings.*.Local.json
+
+# Node (Tailwind build)
+node_modules/
+npm-debug.log*

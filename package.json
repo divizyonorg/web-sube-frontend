@@ -2,9 +2,25 @@
   "name": "myapp.web",
   "private": true,
   "scripts": {
-    "build:css": "tailwindcss -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/app.css --minify"
+    "build:css": "tailwindcss -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/app.css --minify",
+    "watch:css": "tailwindcss -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/app.css --watch",
+    "build:libs": "node scripts/copy-libs.js",
+    "build": "npm run build:libs && npm run build:css"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.17"
+    "@tailwindcss/cli": "^4.2.0",
+    "tailwindcss": "^4.2.0"
+  },
+  "dependencies": {
+    "alpinejs": "^3.14.0",
+    "filepond": "^4.32.0",
+    "flatpickr": "^4.6.13",
+    "gridjs": "^6.2.0",
+    "htmx.org": "^2.0.0",
+    "imask": "^7.6.0",
+    "just-validate": "^4.3.0",
+    "swiper": "^11.2.0",
+    "tom-select": "^2.3.0",
+    "toastify-js": "^1.12.0"
   }
 }
