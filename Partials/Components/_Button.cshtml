@@ -1,0 +1,22 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.ButtonViewModel
+@{ Layout = null; }
+
+@{
+    var width  = Model.Width  ?? 361;
+    var height = Model.Height ?? 48; // h-12 = 48px
+
+    var buttonClasses = Model.Variant switch
+    {
+        MyApp.Web.ViewModels.Components.ButtonVariant.Primary =>
+            "flex flex-row items-center py-3 px-0 bg-[#0056B3] shadow-[0_4px_6px_rgba(0,0,0,0.2)] rounded-[40px] hover:bg-[#003F75]",
+
+        _ => "" // Secondary, Ghost, Icon, Cta — stillendirme eklenecek
+    };
+}
+
+<button type="button" class="@buttonClasses" style="width: @(width)px; height: @(height)px;">
+    <span class="grow font-[Poppins] font-bold text-[16px] leading-[24px] text-center text-white">
+        @Model.Label
+    </span>
+</button>

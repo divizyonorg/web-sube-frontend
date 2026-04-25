@@ -1,0 +1,26 @@
+@model MyApp.Web.ViewModels.Components.ModalViewModel
+@{ Layout = null; }
+
+@* Saat ikonu — gradient daire *@
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center; flex-shrink: 0; width: 80px; height: 80px; background: linear-gradient(135deg, #2E6DF8 0%, #0056B3 100%); border-radius: 9999px;">
+    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="15" stroke="white" stroke-width="3"/>
+        <path d="M20 10V20H27" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+</div>
+
+@* Badge + açıklama *@
+<div style="position: relative; flex-shrink: 0; width: 320px; height: 98px;">
+
+    @* Gradient badge pill *@
+    <div style="position: absolute; display: flex; align-items: center; justify-content: center; width: 143.7px; height: 44px; left: 88.14px; top: 0; background: linear-gradient(90deg, #2E6DF8 0%, #0056B3 100%); border-radius: 9999px;">
+        <span style="font-family: 'Poppins'; font-style: normal; font-weight: 700; font-size: 18px; line-height: 28px; letter-spacing: 1.8px; color: #FFFFFF;">
+            @Model.BadgeText
+        </span>
+    </div>
+
+    @* Açıklama metni *@
+    <p style="position: absolute; width: 320px; left: 0; top: 56px; font-family: 'Poppins'; font-style: normal; font-weight: 300; font-size: 14px; line-height: 21px; text-align: center; color: #4A5565;">
+        @Model.Description
+    </p>
+</div>
