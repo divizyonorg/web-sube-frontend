@@ -1,0 +1,32 @@
+@model MyApp.Web.ViewModels.Components.InputOtpViewModel
+@{ Layout = null; }
+
+<div x-data="{ focused: false, value: '' }"
+     style="border-color: #C0D3E8"
+     :style="(focused || value !== '') ? 'border-color: #0056B3' : 'border-color: #C0D3E8'"
+     class="relative w-[416px] h-14 bg-white border-2 shadow-[0_4px_6px_rgba(0,0,0,0.1)] rounded-lg overflow-hidden transition">
+
+    <label for="@Model.Name"
+           style="top: 20px; font-size: 16px; font-weight: 400; line-height: 16px; color: #B0C4D8;"
+           :style="(focused || value !== '')
+               ? 'top: 9px; font-size: 10px; font-weight: 500; line-height: 10px; color: #739FCC;'
+               : 'top: 20px; font-size: 16px; font-weight: 400; line-height: 16px; color: #B0C4D8;'"
+           class="absolute left-[17px] font-[Poppins] pointer-events-none transition-all cursor-text select-none">
+        SMS Kodunu Girin
+    </label>
+
+    <input id="@Model.Name"
+           name="@Model.Name"
+           type="text"
+           inputmode="numeric"
+           maxlength="@Model.Length"
+           autocomplete="one-time-code"
+           x-model="value"
+           @@focus="focused = true"
+           @@blur="focused = false"
+           style="padding-top: 12px; padding-bottom: 12px;"
+           :style="(focused || value !== '')
+               ? 'padding-top: 20px; padding-bottom: 4px;'
+               : 'padding-top: 12px; padding-bottom: 12px;'"
+           class="absolute left-[2px] top-[2px] w-[412px] h-[52px] bg-transparent px-[15px] font-[Poppins] font-bold text-[16px] leading-6 tracking-[-0.48px] text-[#0056B3] outline-none" />
+</div>

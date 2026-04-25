@@ -1,0 +1,23 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.AvatarViewModel
+@{ Layout = null; }
+
+@* Avatar componenti — image/icon/initials varyantları. Dropdown varsa Alpine.js ile yönetilecek. Stillendirme detayları eklenecek. *@
+<div x-data="{ open: false }" data-avatar-type="@Model.Type.ToString().ToLowerInvariant()">
+    @switch (Model.Type)
+    {
+        case MyApp.Web.ViewModels.Components.AvatarType.Image:
+            <img src="@Model.ImageUrl" alt="" />
+            break;
+        case MyApp.Web.ViewModels.Components.AvatarType.Icon:
+            <i class="@Model.IconClass"></i>
+            break;
+        case MyApp.Web.ViewModels.Components.AvatarType.Initials:
+            <span>@Model.Initials</span>
+            break;
+    }
+    @if (Model.HasDropdown)
+    {
+        @* Dropdown içeriği stillendirme aşamasında eklenecek *@
+    }
+</div>

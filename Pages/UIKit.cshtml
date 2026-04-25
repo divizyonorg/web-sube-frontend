@@ -1,0 +1,225 @@
+@page
+
+
+@model UIKitModel
+@{
+    ViewData["Title"] = "UI Kit";
+}
+
+<div class="p-8 space-y-12">
+
+    <div>
+        <h1 class="font-[Poppins] font-bold text-2xl text-gray-900 mb-1">UI Kit</h1>
+        <p class="text-sm text-gray-500">Global component kataloğu — stillendirme aşamalarında güncellenir.</p>
+    </div>
+
+    @* ─── BUTTON ───────────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Button</h2>
+
+        <div class="space-y-3">
+            <div>
+                <p class="text-xs text-gray-400 mb-2">Primary</p>
+                <partial name="~/Partials/Components/_Button.cshtml"
+                         model='new MyApp.Web.ViewModels.Components.ButtonViewModel { Label = "Devam Et", Variant = MyApp.Web.ViewModels.Components.ButtonVariant.Primary }' />
+            </div>
+            <div class="opacity-25 cursor-not-allowed">
+                <p class="text-xs text-gray-400 mb-2">Secondary — stillendirilecek</p>
+                <partial name="~/Partials/Components/_Button.cshtml"
+                         model='new MyApp.Web.ViewModels.Components.ButtonViewModel { Label = "Secondary", Variant = MyApp.Web.ViewModels.Components.ButtonVariant.Secondary }' />
+            </div>
+            <div class="opacity-25 cursor-not-allowed">
+                <p class="text-xs text-gray-400 mb-2">Ghost — stillendirilecek</p>
+                <partial name="~/Partials/Components/_Button.cshtml"
+                         model='new MyApp.Web.ViewModels.Components.ButtonViewModel { Label = "Ghost", Variant = MyApp.Web.ViewModels.Components.ButtonVariant.Ghost }' />
+            </div>
+            <div class="opacity-25 cursor-not-allowed">
+                <p class="text-xs text-gray-400 mb-2">CTA — stillendirilecek</p>
+                <partial name="~/Partials/Components/_Button.cshtml"
+                         model='new MyApp.Web.ViewModels.Components.ButtonViewModel { Label = "Başvur", Variant = MyApp.Web.ViewModels.Components.ButtonVariant.Cta }' />
+            </div>
+        </div>
+    </section>
+
+    @* ─── INPUT ────────────────────────────────────────────────── *@
+    <section class="space-y-6">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Input</h2>
+
+        <div>
+            <p class="text-xs text-gray-400 mb-3">Text / Phone / TCKN — Floating label (idle)</p>
+            <partial name="~/Partials/Components/_Input.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.InputViewModel { Label = "GSM", Name = "phone-idle", Type = MyApp.Web.ViewModels.Components.InputFieldType.Phone }' />
+        </div>
+
+        <div>
+            <p class="text-xs text-gray-400 mb-3">Text / Phone / TCKN — Floating label (dolu)</p>
+            <partial name="~/Partials/Components/_Input.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.InputViewModel { Label = "GSM", Name = "phone-filled", Type = MyApp.Web.ViewModels.Components.InputFieldType.Phone, Value = "+90 552 265 94 90" }' />
+        </div>
+
+        <div>
+            <p class="text-xs text-gray-400 mb-3">Search — Small (pill)</p>
+            <partial name="~/Partials/Components/_Input.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.InputViewModel { Name = "search-small", Type = MyApp.Web.ViewModels.Components.InputFieldType.Search, SearchSize = MyApp.Web.ViewModels.Components.SearchSize.Small }' />
+        </div>
+
+        <div>
+            <p class="text-xs text-gray-400 mb-3">Search — Large (masaüstü)</p>
+            <partial name="~/Partials/Components/_Input.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.InputViewModel { Name = "search-large", Type = MyApp.Web.ViewModels.Components.InputFieldType.Search, SearchSize = MyApp.Web.ViewModels.Components.SearchSize.Large }' />
+        </div>
+
+        <div>
+            <p class="text-xs text-gray-400 mb-3">OTP / SMS Kodu</p>
+            <partial name="~/Partials/Components/_InputOtp.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.InputOtpViewModel { Name = "otp-code", Length = 6 }' />
+        </div>
+
+        <div>
+            <p class="text-xs text-gray-400 mb-3">Register — Floating label (412px)</p>
+            <partial name="~/Partials/Components/_Input.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.InputViewModel { Label = "Adın", Name = "register-name-idle", Type = MyApp.Web.ViewModels.Components.InputFieldType.Text, ContainerWidth = 412 }' />
+        </div>
+
+        <div>
+            <p class="text-xs text-gray-400 mb-3">Register — Floating label (412px, dolu)</p>
+            <partial name="~/Partials/Components/_Input.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.InputViewModel { Label = "Adın", Name = "register-name-filled", Type = MyApp.Web.ViewModels.Components.InputFieldType.Text, ContainerWidth = 412, Value = "Mehmet" }' />
+        </div>
+    </section>
+
+    @* ─── BADGE / CHIP ─────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Badge / Chip</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── AVATAR ───────────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Avatar</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── ICON BUTTON ──────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Icon Button</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── MENU ITEM ────────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Menu Item (Sidebar)</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── PROGRESS BAR ─────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Progress Bar / Gradient Bar</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── TOGGLE SWITCH ────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Toggle Switch</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── CHECKBOX ─────────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Checkbox</h2>
+
+        <div class="space-y-3">
+            <div>
+                <p class="text-xs text-gray-400 mb-2">Active</p>
+                <partial name="~/Partials/Components/_Checkbox.cshtml"
+                         model='new MyApp.Web.ViewModels.Components.CheckboxViewModel { Label = "Beni Hatırla!", Name = "remember-active", IsChecked = true }' />
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-2">Disable</p>
+                <partial name="~/Partials/Components/_Checkbox.cshtml"
+                         model='new MyApp.Web.ViewModels.Components.CheckboxViewModel { Label = "Beni Hatırla!", Name = "remember-disable", IsDisabled = true }' />
+            </div>
+        </div>
+    </section>
+
+    @* ─── RADIO ────────────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Radio Button</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── DROPDOWN MENU ────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Dropdown Menu</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── ALERT / INFO BOX ─────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Alert / Info Box</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── MODAL ────────────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Modal</h2>
+
+        <div>
+            <p class="text-xs text-gray-400 mb-3">Coming Soon — YAKINDA modalı (önizleme)</p>
+            <partial name="~/Partials/Components/_Modal.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.ModalViewModel {
+                         Id          = "uikit-modal",
+                         BadgeText   = "YAKINDA",
+                         Description = "Sözleşmeler sayfası yakında hizmetinize açılacaktır.",
+                         IsPreview   = true
+                     }' />
+        </div>
+    </section>
+
+    @* ─── TOAST / SNACKBAR ─────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Toast / Snackbar</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── HEADER BAR ───────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Header Bar</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── FOOTER ───────────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Footer</h2>
+        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+    </section>
+
+    @* ─── SIDEBAR ──────────────────────────────────────────────── *@
+    <section class="space-y-4">
+        <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Sidebar</h2>
+
+        <div class="relative" style="height: 811px; width: 260px;">
+            <partial name="~/Partials/Components/_Sidebar.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.SidebarViewModel {
+                         Items = new System.Collections.Generic.List<MyApp.Web.ViewModels.Components.SidebarNavItemViewModel> {
+                             new() { Label = "Anasayfa",          Href = "#", Icon = MyApp.Web.ViewModels.Components.SidebarIcon.Home,         IsActive = true  },
+                             new() { Label = "Kredi Raporların",  Href = "#", Icon = MyApp.Web.ViewModels.Components.SidebarIcon.CreditReport, IsActive = false },
+                             new() { Label = "Sana Özel Teklifler", Href = "#", Icon = MyApp.Web.ViewModels.Components.SidebarIcon.Offers,    IsActive = false },
+                             new() { Label = "Kredi Danışmanı",   Href = "#", Icon = MyApp.Web.ViewModels.Components.SidebarIcon.Advisor,     IsActive = false },
+                             new() { Label = "Destek Merkezi",    Href = "#", Icon = MyApp.Web.ViewModels.Components.SidebarIcon.Support,     IsActive = false },
+                             new() { Label = "Canlı Destek",      Href = "#", Icon = MyApp.Web.ViewModels.Components.SidebarIcon.LiveSupport, IsActive = false },
+                             new() { Label = "Faturaların",       Href = "#", Icon = MyApp.Web.ViewModels.Components.SidebarIcon.Invoices,    IsActive = false },
+                             new() { Label = "Sözleşmelerin",     Href = "#", Icon = MyApp.Web.ViewModels.Components.SidebarIcon.Contracts,   IsActive = false },
+                             new() { Label = "Ayarlar",           Href = "#", Icon = MyApp.Web.ViewModels.Components.SidebarIcon.Settings,    IsActive = false }
+                         },
+                         VipCard = new() {
+                             Title       = "VIP Danışmanlık",
+                             Description = "Krediye her zaman hazır olun. Ayrıcalıklı hizmet.",
+                             ButtonText  = "Paketi İncele",
+                             ButtonHref  = "#"
+                         }
+                     }' />
+        </div>
+    </section>
+
+</div>

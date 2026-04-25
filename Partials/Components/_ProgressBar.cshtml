@@ -1,0 +1,11 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.ProgressBarViewModel
+@{ Layout = null; }
+
+@* Progress bar / gradient bar — 3-4 seviyeli gradyan. Stillendirme detayları eklenecek. *@
+<div data-levels="@Model.Levels" role="progressbar"
+     aria-valuemin="0"
+     aria-valuemax="@Model.Max"
+     aria-valuenow="@Model.Value">
+    <div data-fill style="width: @((Model.Value * 100 / Model.Max))%"></div>
+</div>

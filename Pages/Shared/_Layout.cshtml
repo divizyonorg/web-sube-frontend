@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MyApp.Web</title>
     <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Grid.js -->
     <link rel="stylesheet" href="~/lib/gridjs/mermaid.min.css" asp-append-version="true" />
@@ -25,25 +28,11 @@
     <link rel="stylesheet" href="~/lib/tom-select/tom-select.default.min.css" asp-append-version="true" />
 </head>
 <body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
-    <header class="border-b border-gray-200 bg-white shadow-sm">
-        <nav class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 py-3">
-            <a class="text-lg font-semibold text-gray-900" asp-page="/Index">MyApp.Web</a>
-            <ul class="flex flex-wrap gap-4 text-sm">
-                <li><a class="text-blue-600 hover:underline" asp-page="/Index">Ana Sayfa</a></li>
-                <li><a class="text-blue-600 hover:underline" asp-page="/Clients/Index">Müşteriler</a></li>
-                <li><a class="text-blue-600 hover:underline" asp-page="/Privacy">Gizlilik</a></li>
-                <li><a class="text-blue-600 hover:underline" asp-page="/LibTest">Kütüphane Test</a></li>
-            </ul>
-        </nav>
-    </header>
+    @* Header ve Footer global componentleri Partials/Components altında — içerikleri eklendiğinde buradan render edilecek *@
 
     <main class="mx-auto max-w-5xl px-4 py-8">
         @RenderBody()
     </main>
-
-    <footer class="border-t border-gray-200 bg-white py-6 text-center text-sm text-gray-500">
-        &copy; @DateTime.UtcNow.Year - MyApp.Web — <a class="text-blue-600 hover:underline" asp-page="/Privacy">Gizlilik</a>
-    </footer>
 
     <!-- Alpine.js — defer zorunlu -->
     <script defer src="~/lib/alpinejs/cdn.min.js" asp-append-version="true"></script>
@@ -76,6 +65,7 @@
     <!-- TOM Select -->
     <script src="~/lib/tom-select/tom-select.complete.min.js" asp-append-version="true"></script>
 
+    <script src="~/js/toast.js" asp-append-version="true"></script>
     <script src="~/js/app.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

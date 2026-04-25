@@ -1,0 +1,12 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.AlertViewModel
+@{ Layout = null; }
+
+@* Alert / Info box — varyant: Info, Warning, Error, Success. Stillendirme detayları eklenecek. *@
+<div role="alert" data-variant="@Model.Variant.ToString().ToLowerInvariant()">
+    @if (!string.IsNullOrEmpty(Model.Title))
+    {
+        <strong>@Model.Title</strong>
+    }
+    <p>@Model.Message</p>
+</div>

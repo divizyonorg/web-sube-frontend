@@ -4,3 +4,6 @@
 @source "../../Partials/**/*.cshtml";
 @source "../../ViewComponents/**/*.cshtml";
 @source "../../wwwroot/**/*.js";
+
+/* Alpine.js — x-cloak: component'ler initialize edilmeden görünür olmamalı */
+[x-cloak] { display: none !important; }
