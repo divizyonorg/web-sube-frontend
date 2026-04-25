@@ -11,6 +11,6 @@ public enum ToastVariant
 
 public class ToastViewModel
 {
-    public string       Message { get; set; } = string.Empty;
+    public string Message { get; set; } = string.Empty;
     public ToastVariant Variant { get; set; } = ToastVariant.Info;
 }

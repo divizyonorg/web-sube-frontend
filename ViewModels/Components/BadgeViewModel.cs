@@ -11,6 +11,6 @@ public enum BadgeVariant
 
 public class BadgeViewModel
 {
-    public string       Text    { get; set; } = string.Empty;
+    public string Text { get; set; } = string.Empty;
     public BadgeVariant Variant { get; set; } = BadgeVariant.Label;
 }

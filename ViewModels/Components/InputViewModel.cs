@@ -17,12 +17,12 @@ public enum SearchSize { Small, Large }
 
 public class InputViewModel
 {
-    public string         Label          { get; set; } = string.Empty;
-    public InputFieldType Type           { get; set; } = InputFieldType.Text;
-    public string?        Name           { get; set; }
-    public string?        Value          { get; set; }
-    public string?        Placeholder    { get; set; }
-    public SearchSize     SearchSize     { get; set; } = SearchSize.Small;
+    public string Label { get; set; } = string.Empty;
+    public InputFieldType Type { get; set; } = InputFieldType.Text;
+    public string? Name { get; set; }
+    public string? Value { get; set; }
+    public string? Placeholder { get; set; }
+    public SearchSize SearchSize { get; set; } = SearchSize.Small;
     // Floating-label container genişliği (px). null → 361 (default). İç input = ContainerWidth - 4
-    public int?           ContainerWidth { get; set; }
+    public int? ContainerWidth { get; set; }
 }

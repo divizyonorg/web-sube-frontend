@@ -11,7 +11,7 @@ public enum AlertVariant
 
 public class AlertViewModel
 {
-    public string       Message { get; set; } = string.Empty;
+    public string Message { get; set; } = string.Empty;
     public AlertVariant Variant { get; set; } = AlertVariant.Info;
-    public string?      Title   { get; set; }
+    public string? Title { get; set; }
 }

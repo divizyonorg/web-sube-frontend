@@ -12,8 +12,8 @@ public enum ButtonVariant
 
 public class ButtonViewModel
 {
-    public string        Label    { get; set; } = string.Empty;
-    public ButtonVariant Variant  { get; set; } = ButtonVariant.Primary;
-    public int?          Width    { get; set; }
-    public int?          Height   { get; set; }
+    public string Label { get; set; } = string.Empty;
+    public ButtonVariant Variant { get; set; } = ButtonVariant.Primary;
+    public int? Width { get; set; }
+    public int? Height { get; set; }
 }
