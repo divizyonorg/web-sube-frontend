@@ -1,0 +1,8 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.BadgeViewModel
+@{ Layout = null; }
+
+@* Badge/Chip componenti — varyant: Status, Label, Counter, QuickReply. Stillendirme detayları eklenecek. *@
+<span data-variant="@Model.Variant.ToString().ToLowerInvariant()">
+    @Model.Text
+</span>

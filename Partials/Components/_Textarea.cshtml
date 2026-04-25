@@ -1,0 +1,14 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.TextareaViewModel
+@{ Layout = null; }
+
+@* Textarea componenti — stillendirme detayları eklenecek. *@
+<div>
+    @if (!string.IsNullOrEmpty(Model.Label))
+    {
+        <label for="@Model.Name">@Model.Label</label>
+    }
+    <textarea id="@Model.Name"
+              name="@Model.Name"
+              placeholder="@Model.Placeholder">@Model.Value</textarea>
+</div>

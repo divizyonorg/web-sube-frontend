@@ -1,0 +1,50 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.CheckboxViewModel
+@{ Layout = null; }
+
+@* CheckboxRow: flex row, items-center, gap 10px
+   Kutu: 24×24, border-radius 5px, border yok; ikon ortada
+   Check: Untitled UI Icons (@untitledui/icons Check) *@
+
+<div x-data="{ checked: @(Model.IsChecked ? "true" : "false"), isDisabled: @(Model.IsDisabled ? "true" : "false") }"
+     style="position: relative; display: inline-flex; flex-direction: row; align-items: center; gap: 10px; @(Model.IsDisabled ? "opacity: 0.5; cursor: not-allowed;" : "cursor: pointer;")">
+
+    @* Native input — sıfır boyut, tamamen görünmez *@
+    <input type="checkbox"
+           name="@Model.Name"
+           value="@Model.Value"
+           x-model="checked"
+           @(Model.IsDisabled ? "disabled" : "")
+           style="position: absolute; opacity: 0; width: 0; height: 0; margin: 0; padding: 0;" />
+
+    @* 24×24; border-radius + overflow:hidden = arka plan köşeleri net yuvarlanır *@
+    @* border-color Alpine ile değişir; border-style/width burada sabit kalır — Tailwind preflight border:none'ı geçersiz kılar *@
+    <div @@click="if (!isDisabled) checked = !checked"
+         :style="{ backgroundColor: checked ? '#0056B3' : '#FFFFFF', borderColor: checked ? '#0056B3' : '#D0D5DD' }"
+         style="box-sizing: border-box; display: flex; justify-content: center; align-items: center; padding: 0; margin: 0; width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px; flex-shrink: 0; border-style: solid; border-width: 1.5px; border-radius: 5px; overflow: hidden;">
+        @* Untitled UI Icons — check icon *@
+        <svg x-show="checked"
+             xmlns="http://www.w3.org/2000/svg"
+             width="16"
+             height="16"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="#FFFFFF"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true"
+             style="display: block; flex-shrink: 0;">
+            <path d="M20 6L9 17L4 12" />
+        </svg>
+    </div>
+
+    @* Label: Poppins Light 10px / 15px, #222854 *@
+    @if (!string.IsNullOrEmpty(Model.Label))
+    {
+        <span @@click="if (!isDisabled) checked = !checked"
+              style="font-family: 'Poppins'; font-style: normal; font-weight: 300; font-size: 10px; line-height: 15px; color: #222854; user-select: none; flex: none; order: 1; flex-grow: 1;">
+            @Model.Label
+        </span>
+    }
+</div>

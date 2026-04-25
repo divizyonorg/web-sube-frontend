@@ -1,0 +1,12 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.ToastViewModel
+@{ Layout = null; }
+
+@* Server-side toast — wwwroot/js/toast.js helper'ını sayfa yüklendiğinde tetikler. Stillendirme detayları toast.js içinde tanımlanacak. *@
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.toast && typeof window.toast.@(Model.Variant.ToString().ToLowerInvariant()) === 'function') {
+            window.toast.@(Model.Variant.ToString().ToLowerInvariant())(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Message)));
+        }
+    });
+</script>

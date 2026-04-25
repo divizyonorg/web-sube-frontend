@@ -1,0 +1,20 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.DropdownMenuViewModel
+@{ Layout = null; }
+
+@* Dropdown menu — Alpine.js ile açılır/kapanır. User menu, context menu için. Stillendirme detayları eklenecek. *@
+<div x-data="{ open: false }" @@click.outside="open = false">
+    <button type="button" @@click="open = !open">@Model.Trigger</button>
+    <div x-show="open" x-cloak>
+        @foreach (var item in Model.Items)
+        {
+            <a href="@item.Href">
+                @if (!string.IsNullOrEmpty(item.IconClass))
+                {
+                    <i class="@item.IconClass"></i>
+                }
+                <span>@item.Label</span>
+            </a>
+        }
+    </div>
+</div>

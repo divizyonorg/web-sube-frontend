@@ -1,0 +1,14 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.ToggleSwitchViewModel
+@{ Layout = null; }
+
+@* Toggle switch — Alpine.js ile açık/kapalı durumu. Stillendirme detayları eklenecek. *@
+<label x-data="{ checked: @(Model.IsChecked ? "true" : "false") }">
+    <input type="checkbox"
+           name="@Model.Name"
+           x-model="checked" />
+    @if (!string.IsNullOrEmpty(Model.Label))
+    {
+        <span>@Model.Label</span>
+    }
+</label>

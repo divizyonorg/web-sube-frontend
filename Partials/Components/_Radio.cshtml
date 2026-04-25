@@ -1,0 +1,15 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.RadioViewModel
+@{ Layout = null; }
+
+@* Radio button componenti — stillendirme detayları eklenecek. *@
+<label>
+    <input type="radio"
+           name="@Model.Name"
+           value="@Model.Value"
+           checked="@Model.IsChecked" />
+    @if (!string.IsNullOrEmpty(Model.Label))
+    {
+        <span>@Model.Label</span>
+    }
+</label>

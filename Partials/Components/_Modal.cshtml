@@ -1,0 +1,33 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.ModalViewModel
+@{ Layout = null; }
+
+@{
+    var width  = Model.Width  ?? 420;
+    var height = Model.Height ?? 262;
+    var cardStyle = $"box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 32px 48px; width: {width}px; height: {height}px; background: rgba(255,255,255,0.92); border: 2px solid #DCE3FB; box-shadow: 0px 20px 60px rgba(0,86,179,0.18), 0px 4px 20px rgba(0,0,0,0.1); border-radius: 24px;";
+}
+
+@if (Model.IsPreview)
+{
+    @* UIKit önizleme — sadece kart, backdrop yok *@
+    <div style="@cardStyle">
+        <partial name="~/Partials/Components/_ModalCard.cshtml" model="Model" />
+    </div>
+}
+else
+{
+    @* Backdrop + modal — Alpine.js ile aç/kapa *@
+    <div id="@Model.Id"
+         x-data="{ open: false }"
+         x-show="open"
+         x-cloak
+         role="dialog"
+         aria-modal="true"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+         @@click.self="open = false">
+        <div style="@cardStyle">
+            <partial name="~/Partials/Components/_ModalCard.cshtml" model="Model" />
+        </div>
+    </div>
+}
