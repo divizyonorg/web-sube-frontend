@@ -17,7 +17,7 @@ public class IndexModel : PageModel
     public IndexModel(IAuthService authService, ILogger<IndexModel> logger)
     {
         _authService = authService;
-        _logger      = logger;
+        _logger = logger;
     }
 
     public IActionResult OnGet() => Page();

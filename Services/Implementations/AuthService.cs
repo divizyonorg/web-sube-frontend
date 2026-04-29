@@ -13,14 +13,14 @@ public class AuthService : IAuthService
 
     private static class Endpoints
     {
-        public const string SendOtp   = "send-otp";
+        public const string SendOtp = "send-otp";
         public const string VerifyOtp = "verify-otp";
     }
 
     public AuthService(HttpClient httpClient, ILogger<AuthService> logger)
     {
         _httpClient = httpClient;
-        _logger     = logger;
+        _logger = logger;
     }
 
     public async Task<(bool Success, string? Message)> SendOtpAsync(string phoneNumber, string tckn)
@@ -30,9 +30,9 @@ public class AuthService : IAuthService
 
         try
         {
-            var request  = new SendOtpRequest { Gsm = gsm, Tckn = tckn };
+            var request = new SendOtpRequest { Gsm = gsm, Tckn = tckn };
             var response = await _httpClient.PostAsJsonAsync(Endpoints.SendOtp, request);
-            var body     = await response.Content.ReadAsStringAsync();
+            var body = await response.Content.ReadAsStringAsync();
 
             _logger.LogInformation("SendOtp ← {StatusCode} {Body}", (int)response.StatusCode, body);
 
@@ -58,9 +58,9 @@ public class AuthService : IAuthService
 
         try
         {
-            var request  = new VerifyOtpRequest { Gsm = gsm, OtpCode = otpCode };
+            var request = new VerifyOtpRequest { Gsm = gsm, OtpCode = otpCode };
             var response = await _httpClient.PostAsJsonAsync(Endpoints.VerifyOtp, request);
-            var body     = await response.Content.ReadAsStringAsync();
+            var body = await response.Content.ReadAsStringAsync();
 
             _logger.LogInformation("VerifyOtp ← {StatusCode} {Body}", (int)response.StatusCode, body);
 

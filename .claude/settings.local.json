@@ -15,7 +15,8 @@
       "Bash(xargs ls *)",
       "Bash(curl *)",
       "Bash(git -C /Users/samet-gecgel/Projects/web2.0/web-sube/web-sube status)",
-      "Bash(git -C /Users/samet-gecgel/Projects/web2.0/web-sube/web-sube log --oneline -3)"
+      "Bash(git -C /Users/samet-gecgel/Projects/web2.0/web-sube/web-sube log --oneline -3)",
+      "Bash(dotnet format *)"
     ]
   }
 }
