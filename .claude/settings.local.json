@@ -11,7 +11,11 @@
       "Bash(node scripts/copy-libs.js)",
       "Bash(taskkill *)",
       "Bash(powershell *)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(xargs ls *)",
+      "Bash(curl *)",
+      "Bash(git -C /Users/samet-gecgel/Projects/web2.0/web-sube/web-sube status)",
+      "Bash(git -C /Users/samet-gecgel/Projects/web2.0/web-sube/web-sube log --oneline -3)"
     ]
   }
 }

@@ -1,0 +1,335 @@
+@page "/login"
+@model MyApp.Web.Pages.Login.IndexModel
+@{ Layout = null; }
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giriş — İnteraktif Şube</title>
+    <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: 'Poppins', sans-serif; }
+        button { font-family: 'Poppins', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div x-data="loginForm()" class="flex h-screen overflow-hidden">
+
+        @* Sol panel — yalnızca desktop *@
+        <div class="hidden lg:block relative w-[57%] shrink-0 overflow-hidden">
+            <img src="~/images/login-image.jpg"
+                 alt="İnteraktif Kredi"
+                 class="block w-full h-full object-cover object-top" />
+        </div>
+
+        @* Sağ panel — mobile: tam genişlik, desktop: flex-1 *@
+        <div class="flex-1 min-w-0 h-full flex items-center justify-center bg-white overflow-y-auto py-8 px-5 lg:py-10 lg:px-6">
+            <div class="w-full max-w-110 lg:max-w-105 flex flex-col items-center">
+
+                <img src="~/images/ik_logo.png"
+                     alt="İnteraktif Kredi"
+                     class="h-14 w-auto object-contain mb-5" />
+
+                <p class="font-light text-base text-[#0056B3] mb-1.5 text-center">
+                    Bireysel
+                </p>
+                <h1 class="font-semibold text-[26px] leading-[1.3] text-[#0056B3] text-center mb-7">
+                    İnteraktif Şube Girişi
+                </h1>
+
+                <div class="w-full border-[1.5px] border-[#DCE3FB] rounded-2xl px-5 py-6 bg-white lg:px-7">
+                    <form id="loginForm" method="post" class="flex flex-col gap-4">
+                        @Html.AntiForgeryToken()
+
+                        @* GSM *@
+                        <div :class="step === 2 ? 'pointer-events-none opacity-55' : ''"
+                             class="[&>div]:w-full! [&_input]:w-full! lg:[&>div]:w-91! lg:[&_input]:w-90!">
+                            <partial name="~/Partials/Components/_Input.cshtml"
+                                     model='new InputViewModel { Label = "GSM", Type = InputFieldType.Phone, Name = "PhoneNumber", ContainerWidth = 364 }' />
+                        </div>
+
+                        @* TCKN — sadece 2. adımda *@
+                        <div x-show="step === 2" x-cloak
+                             class="[&>div]:w-full! [&_input]:w-full! lg:[&>div]:w-91! lg:[&_input]:w-90!">
+                            <partial name="~/Partials/Components/_Input.cshtml"
+                                     model='new InputViewModel { Label = "TCKN", Type = InputFieldType.Tckn, Name = "Tckn", ContainerWidth = 364 }' />
+                        </div>
+
+                        @* Devam Et *@
+                        <div x-show="step === 1"
+                             @@click="proceed()"
+                             :class="canProceed() ? 'cursor-pointer' : 'cursor-not-allowed opacity-50 pointer-events-none'"
+                             class="[&_button]:w-full! lg:[&_button]:w-91!">
+                            <partial name="~/Partials/Components/_Button.cshtml"
+                                     model='new ButtonViewModel { Label = "Devam Et", Variant = ButtonVariant.Primary, Width = 364 }' />
+                        </div>
+
+                        @* Giriş Yap *@
+                        <div x-show="step === 2" x-cloak
+                             @@click="!sendingOtp && sendOtp()"
+                             :class="sendingOtp ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'"
+                             class="[&_button]:w-full! lg:[&_button]:w-91!">
+                            <partial name="~/Partials/Components/_Button.cshtml"
+                                     model='new ButtonViewModel { Label = "Giriş Yap", Variant = ButtonVariant.Primary, Width = 364 }' />
+                        </div>
+
+                        @* API hata mesajı *@
+                        <p x-show="otpError" x-cloak
+                           x-text="otpErrorMsg"
+                           class="text-[13px] text-[#DC2626] text-center m-0"></p>
+
+                        @* Beni Hatırla + Parolamı Unuttum *@
+                        <div class="flex items-center justify-between">
+                            <partial name="~/Partials/Components/_Checkbox.cshtml"
+                                     model='new CheckboxViewModel { Label = "Beni Hatırla!", Name = "RememberMe", IsChecked = false }' />
+                            <a x-show="step === 2" x-cloak href="/forgot-password"
+                               class="text-[13px] font-medium text-[#0056B3] underline">
+                                Parolamı unuttum
+                            </a>
+                        </div>
+
+                        <div class="h-px bg-[#E5E7EB]"></div>
+
+                        <div class="text-center">
+                            <a href="/register" class="text-[15px] font-bold text-[#2E6DF8] underline">
+                                Henüz üye değil misin?
+                            </a>
+                        </div>
+
+                        <button type="button"
+                                class="flex items-center justify-center gap-2.5 w-full lg:w-91 h-12 bg-[#F9FAFB] border-0 rounded-[40px] text-sm font-medium text-[#374151] cursor-pointer shrink-0">
+                            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                            Google ile Giriş Yap
+                        </button>
+
+                        <div x-show="step === 2" x-cloak class="text-center">
+                            <a href="/" class="text-sm font-medium text-[#0056B3] underline">
+                                ← Anasayfa
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        @* OTP Modal *@
+        @* Mobile: tam ekran açık mavi arka plan, soluk logo+başlık üstte, beyaz kart altında *@
+        @* Desktop: yarı saydam overlay, kart ortada *@
+        <div x-show="showOtpModal" x-cloak class="fixed inset-0 z-100 overflow-y-auto lg:overflow-hidden">
+            <div class="min-h-full flex flex-col items-center bg-[#E8EDF5] px-5 py-8
+                        lg:min-h-0 lg:h-full lg:flex-row lg:justify-center lg:items-center lg:bg-[#DDE3ECBF] lg:px-4 lg:py-4">
+
+                @* Soluk başlık — yalnızca mobile *@
+                <div class="w-full flex flex-col items-center mb-5 lg:hidden">
+                    <img src="~/images/ik_logo.png"
+                         alt="İnteraktif Kredi"
+                         class="h-14 w-auto object-contain mb-4 opacity-35" />
+                    <p class="font-light text-base text-[#7B9CC4] mb-2 text-center">Bireysel</p>
+                    <h2 class="font-semibold text-[30px] leading-[1.2] text-[#7B9CC4] text-center">
+                        İnteraktif Şube Girişi
+                    </h2>
+                </div>
+
+                @* Modal kart — her iki tarafta da yuvarlak köşe *@
+                <div class="bg-white w-full rounded-[20px] overflow-hidden
+                            shadow-[0_4px_24px_rgba(0,0,0,0.08)]
+                            lg:max-w-120 lg:shadow-[0_25px_60px_rgba(0,0,0,0.3)]">
+
+                    <img src="~/images/sms.png"
+                         class="w-full h-50 object-cover object-top block" />
+
+                    <div class="px-5 pt-6 pb-8 flex flex-col items-center gap-4 lg:px-9 lg:pt-7 lg:pb-8">
+
+                        <h2 class="font-bold text-xl text-[#0056B3] m-0 text-center">
+                            SMS onayı
+                        </h2>
+
+                        <p class="text-sm text-[#374151] text-center m-0 leading-[1.7]">
+                            Giriş yapmak için lütfen
+                            <strong x-text="maskedPhone()" class="text-[#0056B3]"></strong>
+                            nolu cep telefonuna gönderdiğimiz şifreyi yazın.
+                        </p>
+
+                        <input type="text" id="OtpCode" name="OtpCode"
+                               x-model="otpCode"
+                               placeholder="SMS Kodunu Girin"
+                               maxlength="6"
+                               class="w-full h-13 border-[1.5px] border-[#DCE3FB] rounded-xl px-4 text-[15px] outline-none text-[#374151]" />
+
+                        <p class="text-[13px] text-[#374151] m-0 text-center">
+                            <span x-text="timerDisplay()" class="font-semibold text-[#0056B3]"></span>
+                            saniye sonra yeni kod gönderebilirsin
+                        </p>
+
+                        <p x-show="otpVerifyError" x-cloak
+                           x-text="otpVerifyErrorMsg"
+                           class="text-[13px] text-[#DC2626] text-center m-0"></p>
+
+                        <div @@click="!verifyingOtp && verifyOtp()"
+                             :class="verifyingOtp ? 'opacity-60 cursor-not-allowed pointer-events-none' : 'cursor-pointer'"
+                             class="w-full [&_button]:w-full!">
+                            <partial name="~/Partials/Components/_Button.cshtml"
+                                     model='new ButtonViewModel { Label = "Devam Et", Variant = ButtonVariant.Primary, Width = 408 }' />
+                        </div>
+
+                        <p class="text-xs text-[#9CA3AF] m-0 text-center">
+                            Demo: Geçerli kod <strong class="text-[#374151]">123456</strong>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script defer src="~/lib/alpinejs/cdn.min.js"></script>
+    <script src="~/lib/imask/imask.min.js"></script>
+    <script>
+        function loginForm() {
+            return {
+                step: 1,
+                phone: '',
+                tckn: '',
+                showOtpModal: false,
+                otpCode: '',
+                timer: 180,
+                timerInterval: null,
+                sendingOtp: false,
+                otpError: false,
+                otpErrorMsg: '',
+                verifyingOtp: false,
+                otpVerifyError: false,
+                otpVerifyErrorMsg: '',
+
+                init() {
+                    var self = this;
+
+                    var phoneEl = document.getElementById('PhoneNumber');
+                    if (phoneEl) {
+                        var phoneMask = IMask(phoneEl, { mask: '+{90} 000 000 00 00' });
+                        phoneMask.on('accept', function () { self.phone = phoneMask.value; });
+                        phoneEl.addEventListener('input', function () { self.phone = phoneEl.value; });
+                    }
+
+                    var tcknEl = document.getElementById('Tckn');
+                    if (tcknEl) {
+                        var tcknMask = IMask(tcknEl, { mask: '00000000000' });
+                        tcknMask.on('accept', function () { self.tckn = tcknMask.value; });
+                        tcknEl.addEventListener('input', function () { self.tckn = tcknEl.value; });
+                    }
+                },
+
+                canProceed() {
+                    return this.phone.replace(/\D/g, '').length >= 12;
+                },
+
+                proceed() {
+                    if (this.canProceed()) this.step = 2;
+                },
+
+                async sendOtp() {
+                    this.sendingOtp  = true;
+                    this.otpError    = false;
+                    this.otpErrorMsg = '';
+
+                    var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                    var params = new URLSearchParams();
+                    params.append('__RequestVerificationToken', token);
+                    params.append('PhoneNumber', this.phone);
+                    params.append('Tckn', this.tckn);
+
+                    try {
+                        var resp = await fetch('/login?handler=SendOtp', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: params
+                        });
+                        var json = await resp.json();
+                        if (json.success) {
+                            this.openOtpModal();
+                        } else {
+                            this.otpError    = true;
+                            this.otpErrorMsg = json.message || 'SMS gönderilemedi. Lütfen tekrar deneyin.';
+                        }
+                    } catch (_) {
+                        this.otpError    = true;
+                        this.otpErrorMsg = 'Bağlantı hatası oluştu.';
+                    } finally {
+                        this.sendingOtp = false;
+                    }
+                },
+
+                maskedPhone() {
+                    var digits = this.phone.replace(/\D/g, '');
+                    if (digits.length < 12) return this.phone;
+                    return '+90 ' + digits.substring(2, 5) + ' *** ** ' + digits.substring(10, 12);
+                },
+
+                timerDisplay() {
+                    var m = Math.floor(this.timer / 60);
+                    var s = this.timer % 60;
+                    return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+                },
+
+                openOtpModal() {
+                    this.showOtpModal = true;
+                    this.timer = 180;
+                    var self = this;
+                    if (this.timerInterval) clearInterval(this.timerInterval);
+                    this.timerInterval = setInterval(function () {
+                        if (self.timer > 0) { self.timer--; }
+                        else { clearInterval(self.timerInterval); }
+                    }, 1000);
+                },
+
+                async verifyOtp() {
+                    this.verifyingOtp      = true;
+                    this.otpVerifyError    = false;
+                    this.otpVerifyErrorMsg = '';
+
+                    var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                    var params = new URLSearchParams();
+                    params.append('__RequestVerificationToken', token);
+                    params.append('PhoneNumber', this.phone);
+                    params.append('OtpCode', this.otpCode);
+
+                    try {
+                        var resp = await fetch('/login?handler=VerifyOtp', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: params
+                        });
+                        var json = await resp.json();
+                        if (json.success) {
+                            window.location.href = '/dashboard';
+                        } else {
+                            this.otpVerifyError    = true;
+                            this.otpVerifyErrorMsg = json.message || 'Kod hatalı. Lütfen tekrar deneyin.';
+                        }
+                    } catch (_) {
+                        this.otpVerifyError    = true;
+                        this.otpVerifyErrorMsg = 'Bağlantı hatası oluştu.';
+                    } finally {
+                        this.verifyingOtp = false;
+                    }
+                }
+            };
+        }
+    </script>
+
+</body>
+</html>
