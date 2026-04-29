@@ -1,0 +1,91 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.InputViewModel
+@{ Layout = null; }
+
+@using MyApp.Web.ViewModels.Components
+
+@{
+    var htmlType = Model.Type switch
+    {
+        InputFieldType.Email    => "email",
+        InputFieldType.Phone    => "tel",
+        InputFieldType.Password => "password",
+        _                       => "text"
+    };
+    // Single-quote JS string — JSON "" çift tırnak HTML attribute'u kırıyor
+    var safeValue = (Model.Value ?? string.Empty)
+        .Replace("\\", "\\\\")
+        .Replace("'",  "\\'")
+        .Replace("\n", "")
+        .Replace("\r", "");
+    var containerW = Model.ContainerWidth ?? 361;
+    var inputW     = containerW - 4; // 2px border × 2
+}
+
+@if (Model.Type == InputFieldType.Search && Model.SearchSize == SearchSize.Large)
+{
+    @* ── Büyük arama kutusu — masaüstü tam genişlik ─────────── *@
+    <div class="relative w-[1210px] h-16">
+        <span class="absolute left-4 top-[22px] pointer-events-none">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="9" cy="9" r="5.5" stroke="#99A1AF" stroke-width="1.667"/>
+                <path d="M13.5 13.5L16.5 16.5" stroke="#99A1AF" stroke-width="1.667" stroke-linecap="round"/>
+            </svg>
+        </span>
+        <input type="search"
+               id="@Model.Name"
+               name="@Model.Name"
+               value="@Model.Value"
+               placeholder="@(Model.Placeholder ?? "Aramak istediğiniz konuyu yazın...")"
+               class="w-full h-16 bg-white border-2 border-[#E5E7EB] rounded-[14px] pl-12 pr-4 py-4 font-[Poppins] font-normal text-[18px] leading-[27px] text-[rgba(10,10,10,0.5)] outline-none focus:border-[#0056B3] transition" />
+    </div>
+}
+else if (Model.Type == InputFieldType.Search)
+{
+    @* ── Küçük arama kutusu — pill şekli ────────────────────── *@
+    <div class="flex flex-row items-center px-3 py-2 gap-2 w-[235px] h-[35px] bg-white border border-[#DCE3FB] rounded-full">
+        <span class="flex-shrink-0 pointer-events-none">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="7" cy="7" r="4.5" stroke="#7A94B8" stroke-width="1.333"/>
+                <path d="M10.5 10.5L13.5 13.5" stroke="#7A94B8" stroke-width="1.333" stroke-linecap="round"/>
+            </svg>
+        </span>
+        <input type="search"
+               id="@Model.Name"
+               name="@Model.Name"
+               value="@Model.Value"
+               placeholder="@(Model.Placeholder ?? "Ara...")"
+               class="grow bg-transparent font-[Poppins] font-normal text-[13px] leading-[17px] text-[#7A94B8] outline-none placeholder:text-[#7A94B8]" />
+    </div>
+}
+else
+{
+    @* ── Floating label input — text / email / phone / password / tckn
+       Idle  : border #C0D3E8, label büyük + ortalanmış (#B0C4D8)
+       Active: border #0056B3, label küçük üstte (#739FCC), değer mavi (#0056B3)  ── *@
+    <div x-data="{ focused: false, value: '@safeValue' }"
+         :style="{ borderColor: (focused || value !== '') ? '#0056B3' : '#C0D3E8' }"
+         style="box-sizing: border-box; position: relative; width: @(containerW)px; height: 56px; background: #FFFFFF; border: 2px solid #C0D3E8; box-shadow: 0px 4px 6px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; transition: border-color .15s ease-in-out;">
+
+        @* Floating label *@
+        <label for="@Model.Name"
+               :style="(focused || value !== '')
+                   ? { top: '9px', fontSize: '10px', fontWeight: '500', lineHeight: '10px', color: '#739FCC' }
+                   : { top: '20px', fontSize: '16px', fontWeight: '400', lineHeight: '16px', color: '#B0C4D8' }"
+               style="position: absolute; left: 17px; top: 20px; font-family: 'Poppins'; font-size: 16px; font-weight: 400; line-height: 16px; color: #B0C4D8; pointer-events: none; transition: top .15s ease-in-out, font-size .15s ease-in-out; cursor: text; user-select: none;">
+            @Model.Label
+        </label>
+
+        @* Input alanı *@
+        <input id="@Model.Name"
+               name="@Model.Name"
+               type="@htmlType"
+               x-model="value"
+               @@focus="focused = true"
+               @@blur="focused = false"
+               :style="(focused || value !== '')
+                   ? { paddingTop: '20px', paddingBottom: '4px' }
+                   : { paddingTop: '12px', paddingBottom: '12px' }"
+               style="position: absolute; left: 2px; top: 2px; width: @(inputW)px; height: 52px; background: transparent; padding-left: 15px; padding-right: 15px; padding-top: 12px; padding-bottom: 12px; font-family: 'Poppins'; font-weight: 700; font-size: 16px; line-height: 24px; letter-spacing: -0.48px; color: #0056B3; outline: none;" />
+    </div>
+}

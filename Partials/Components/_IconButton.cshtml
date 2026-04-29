@@ -1,0 +1,8 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.IconButtonViewModel
+@{ Layout = null; }
+
+@* Icon button componenti — carousel okları, eylem ikonları. Stillendirme detayları eklenecek. *@
+<button type="button" aria-label="@Model.AriaLabel">
+    <i class="@Model.IconClass"></i>
+</button>

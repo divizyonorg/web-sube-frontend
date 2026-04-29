@@ -1,0 +1,50 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyApp.Web.ViewModels.Components.CheckboxViewModel
+@{ Layout = null; }
+
+<div x-data="{ checked: @(Model.IsChecked ? "true" : "false"), isDisabled: @(Model.IsDisabled ? "true" : "false") }"
+     style="position: relative; display: flex; flex-direction: row; align-items: flex-start; gap: 10px; @(Model.IsDisabled ? "opacity: 0.5; cursor: not-allowed;" : "cursor: pointer;")">
+
+    @* Native input — görünmez *@
+    <input type="checkbox"
+           name="@Model.Name"
+           value="@Model.Value"
+           x-model="checked"
+           @(Model.IsDisabled ? "disabled" : "")
+           style="position: absolute; opacity: 0; width: 0; height: 0; margin: 0; padding: 0;" />
+
+    @* Checkbox kutusu — her zaman #0056B3 border, 2px, radius 5px *@
+    <div @@click="if (!isDisabled) checked = !checked"
+         :style="{ backgroundColor: checked ? '#0056B3' : '#FFFFFF' }"
+         style="box-sizing: border-box; display: flex; justify-content: center; align-items: center; padding: 0; margin: 0; width: 24px; min-width: 24px; max-width: 24px; height: 24px; min-height: 24px; max-height: 24px; flex-shrink: 0; border-style: solid; border-width: 2px; border-color: #0056B3; border-radius: 5px; overflow: hidden;">
+        <svg x-show="checked"
+             xmlns="http://www.w3.org/2000/svg"
+             width="14" height="14"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="#FFFFFF"
+             stroke-width="2.5"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true"
+             style="display: block; flex-shrink: 0;">
+            <path d="M20 6L9 17L4 12" />
+        </svg>
+    </div>
+
+    @* Label — HtmlLabel öncelikli (raw HTML), yoksa plain text *@
+    @if (!string.IsNullOrEmpty(Model.HtmlLabel))
+    {
+        <span @@click="if (!isDisabled) checked = !checked"
+              style="font-family: 'Poppins'; font-style: normal; font-weight: 300; font-size: 12px; line-height: 18px; color: #739FCC; user-select: none; flex: 1; min-width: 0;">
+            @Html.Raw(Model.HtmlLabel)
+        </span>
+    }
+    else if (!string.IsNullOrEmpty(Model.Label))
+    {
+        <span @@click="if (!isDisabled) checked = !checked"
+              style="font-family: 'Poppins'; font-style: normal; font-weight: 300; font-size: 12px; line-height: 18px; color: #222854; user-select: none; flex: 1; min-width: 0;">
+            @Model.Label
+        </span>
+    }
+</div>
