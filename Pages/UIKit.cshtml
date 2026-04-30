@@ -97,7 +97,16 @@
     @* ─── AVATAR ───────────────────────────────────────────────── *@
     <section class="space-y-4">
         <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Avatar</h2>
-        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+
+        <div>
+            <p class="text-xs text-gray-400 mb-3">Kullanıcı avatar — bildirim rozeti + profil butonu</p>
+            @await Component.InvokeAsync("UserAvatar", new
+            {
+                userName          = "Mustafa GÜMÜŞ",
+                notificationCount = 2,
+                profileImageUrl   = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg/250px-Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg"
+            })
+        </div>
     </section>
 
     @* ─── ICON BUTTON ──────────────────────────────────────────── *@
@@ -115,13 +124,36 @@
     @* ─── PROGRESS BAR ─────────────────────────────────────────── *@
     <section class="space-y-4">
         <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Progress Bar / Gradient Bar</h2>
-        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+
+        <div style="width: 567px;">
+            <p class="text-xs text-gray-400 mb-3">Value: 38 / 100</p>
+            <partial name="~/Partials/Components/_ProgressBar.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.ProgressBarViewModel { Value = 38 }' />
+        </div>
+
+        <div style="width: 567px;">
+            <p class="text-xs text-gray-400 mb-3">Value: 65 / 100</p>
+            <partial name="~/Partials/Components/_ProgressBar.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.ProgressBarViewModel { Value = 65 }' />
+        </div>
     </section>
 
     @* ─── TOGGLE SWITCH ────────────────────────────────────────── *@
     <section class="space-y-4">
         <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Toggle Switch</h2>
-        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+
+        <div class="space-y-3">
+            <div>
+                <p class="text-xs text-gray-400 mb-2">Off</p>
+                <partial name="~/Partials/Components/_ToggleSwitch.cshtml"
+                         model='new MyApp.Web.ViewModels.Components.ToggleSwitchViewModel { Label = "Bildirimleri Aç", Name = "toggle-off", IsChecked = false }' />
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-2">On</p>
+                <partial name="~/Partials/Components/_ToggleSwitch.cshtml"
+                         model='new MyApp.Web.ViewModels.Components.ToggleSwitchViewModel { Label = "Bildirimleri Aç", Name = "toggle-on", IsChecked = true }' />
+            </div>
+        </div>
     </section>
 
     @* ─── CHECKBOX ─────────────────────────────────────────────── *@
@@ -145,7 +177,33 @@
     @* ─── RADIO ────────────────────────────────────────────────── *@
     <section class="space-y-4">
         <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Radio Button</h2>
-        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+
+        <div class="space-y-3">
+            <div>
+                <p class="text-xs text-gray-400 mb-2">Evet seçili</p>
+                <partial name="~/Partials/Components/_Radio.cshtml"
+                         model='new MyApp.Web.ViewModels.Components.RadioViewModel {
+                             Name          = "radio-evet",
+                             SelectedValue = "yes",
+                             Options       = new List<MyApp.Web.ViewModels.Components.RadioOption> {
+                                 new() { Label = "Evet", Value = "yes" },
+                                 new() { Label = "Hayır", Value = "no" }
+                             }
+                         }' />
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 mb-2">Hayır seçili</p>
+                <partial name="~/Partials/Components/_Radio.cshtml"
+                         model='new MyApp.Web.ViewModels.Components.RadioViewModel {
+                             Name          = "radio-hayir",
+                             SelectedValue = "no",
+                             Options       = new List<MyApp.Web.ViewModels.Components.RadioOption> {
+                                 new() { Label = "Evet", Value = "yes" },
+                                 new() { Label = "Hayır", Value = "no" }
+                             }
+                         }' />
+            </div>
+        </div>
     </section>
 
     @* ─── DROPDOWN MENU ────────────────────────────────────────── *@
@@ -185,7 +243,18 @@
     @* ─── HEADER BAR ───────────────────────────────────────────── *@
     <section class="space-y-4">
         <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Header Bar</h2>
-        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+
+        <div>
+            <p class="text-xs text-gray-400 mb-3">Desktop top header — gradient mavi, logo + avatar</p>
+            <div class="overflow-hidden rounded-xl" style="width:100%;">
+                @await Component.InvokeAsync("Header", new
+                {
+                    userName          = "Mustafa GÜMÜŞ",
+                    notificationCount = 2,
+                    profileImageUrl   = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg/250px-Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg"
+                })
+            </div>
+        </div>
     </section>
 
     @* ─── FOOTER ───────────────────────────────────────────────── *@
