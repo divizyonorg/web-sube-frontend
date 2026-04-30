@@ -23,10 +23,10 @@ public class SidebarViewComponent : ViewComponent
             ],
             VipCard = new()
             {
-                Title       = "VIP Danışmanlık",
+                Title = "VIP Danışmanlık",
                 Description = "Krediye her zaman hazır olun. Ayrıcalıklı hizmet.",
-                ButtonText  = "Paketi İncele",
-                ButtonHref  = "#"
+                ButtonText = "Paketi İncele",
+                ButtonHref = "#"
             }
         };
 

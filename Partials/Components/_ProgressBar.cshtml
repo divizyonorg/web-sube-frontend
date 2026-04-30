@@ -1,18 +1,54 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model MyApp.Web.ViewModels.Components.ProgressBarViewModel
-@{ Layout = null; }
+@{
+    Layout = null;
+    var sliderId = $"progress-bar-{Model.Name}";
+}
+
+@if (!ViewContext.HttpContext.Items.ContainsKey("__noUiSlider_loaded"))
+{
+    ViewContext.HttpContext.Items["__noUiSlider_loaded"] = true;
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/dist/nouislider.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/nouislider/dist/nouislider.min.js"></script>
+}
+
+<style>
+    #@sliderId.noUi-target {
+        background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%) !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 9999px !important;
+        height: 20px !important;
+        width: 551px;
+    }
+    #@sliderId .noUi-connects,
+    #@sliderId .noUi-connect {
+        background: transparent !important;
+    }
+    #@sliderId.noUi-horizontal .noUi-handle {
+        width: 10px !important;
+        height: 25px !important;
+        right: -5px !important;
+        top: -2.5px !important;
+        background: #FFFFFF !important;
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2) !important;
+        border-radius: 6px !important;
+        border: none !important;
+        cursor: grab;
+    }
+    #@sliderId.noUi-horizontal .noUi-handle:active {
+        cursor: grabbing;
+    }
+    #@sliderId .noUi-handle::before,
+    #@sliderId .noUi-handle::after {
+        display: none !important;
+    }
+</style>
 
 <div style="display:flex; flex-direction:column; align-items:flex-start; padding:12px 8px 0px; gap:8px; width:567px; height:64px;">
 
-    <div style="position:relative; width:551px; height:20px; border-radius:9999px; flex:none; order:0; align-self:stretch; flex-grow:0;"
-         role="progressbar"
-         aria-valuemin="0"
-         aria-valuemax="@Model.Max"
-         aria-valuenow="@Model.Value">
-
-        <div style="position:absolute; width:551px; height:20px; left:0; top:0; background:linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%); border-radius:9999px;"></div>
-
-        <div style="position:absolute; width:10px; height:25px; top:-2.5px; left:@(Model.Value * 100 / Model.Max)%; background:#FFFFFF; box-shadow:0px 1px 4px rgba(0,0,0,0.2); border-radius:6px;"></div>
+    <div style="position:relative; width:551px; height:20px; flex:none; order:0; align-self:stretch;">
+        <div id="@sliderId"></div>
     </div>
 
     <div style="display:flex; flex-direction:row; justify-content:space-between; align-items:flex-start; padding:0px 24px; width:551px; height:12px; flex:none; order:1; align-self:stretch; flex-grow:0;">
@@ -22,3 +58,15 @@
     </div>
 
 </div>
+
+<script>
+    (function () {
+        var el = document.getElementById('@sliderId');
+        noUiSlider.create(el, {
+            start: [@Model.Value],
+            range: { min: 0, max: @Model.Max },
+            step: 1,
+            tooltips: false
+        });
+    })();
+</script>

@@ -128,13 +128,13 @@
         <div style="width: 567px;">
             <p class="text-xs text-gray-400 mb-3">Value: 38 / 100</p>
             <partial name="~/Partials/Components/_ProgressBar.cshtml"
-                     model='new MyApp.Web.ViewModels.Components.ProgressBarViewModel { Value = 38 }' />
+                     model='new MyApp.Web.ViewModels.Components.ProgressBarViewModel { Value = 38, Name = "demo-1" }' />
         </div>
 
         <div style="width: 567px;">
             <p class="text-xs text-gray-400 mb-3">Value: 65 / 100</p>
             <partial name="~/Partials/Components/_ProgressBar.cshtml"
-                     model='new MyApp.Web.ViewModels.Components.ProgressBarViewModel { Value = 65 }' />
+                     model='new MyApp.Web.ViewModels.Components.ProgressBarViewModel { Value = 65, Name = "demo-2" }' />
         </div>
     </section>
 
@@ -209,7 +209,19 @@
     @* ─── DROPDOWN MENU ────────────────────────────────────────── *@
     <section class="space-y-4">
         <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Dropdown Menu</h2>
-        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+
+        <div>
+            <p class="text-xs text-gray-400 mb-3">Accordion — SSS / Ödeme İşlemleri</p>
+            <partial name="~/Partials/Components/_DropdownMenu.cshtml"
+                     model='new MyApp.Web.ViewModels.Components.DropdownMenuViewModel {
+                         Title = "Ödeme İşlemleri",
+                         Items = new List<MyApp.Web.ViewModels.Components.DropdownMenuItem> {
+                             new() { Question = "Kredi ödememi nasıl yapabilirim?",       Answer = "Kredinizi internet bankacılığı, mobil uygulama, ATM veya şube aracılığıyla ödeyebilirsiniz. Her ay belirlenen taksit tutarını vade tarihinde ödemeniz yeterlidir." },
+                             new() { Question = "Otomatik ödeme talimatı nasıl veririm?", Answer = "Hesap ayarları bölümünden otomatik ödeme talimatı oluşturabilirsiniz. Taksit tutarı, vade tarihinizde belirlediğiniz hesaptan otomatik olarak tahsil edilir." },
+                             new() { Question = "Erken ödeme yapabilir miyim?",           Answer = "Evet, kredinizi istediğiniz zaman erken kapatabilirsiniz. Erken ödeme için müşteri hizmetleri hattını arayabilir ya da en yakın şubemize başvurabilirsiniz." }
+                         }
+                     }' />
+        </div>
     </section>
 
     @* ─── ALERT / INFO BOX ─────────────────────────────────────── *@
