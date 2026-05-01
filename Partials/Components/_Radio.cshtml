@@ -2,14 +2,38 @@
 @model MyApp.Web.ViewModels.Components.RadioViewModel
 @{ Layout = null; }
 
-@* Radio button componenti — stillendirme detayları eklenecek. *@
-<label>
-    <input type="radio"
-           name="@Model.Name"
-           value="@Model.Value"
-           checked="@Model.IsChecked" />
-    @if (!string.IsNullOrEmpty(Model.Label))
-    {
-        <span>@Model.Label</span>
+<style>
+    .ui-radio-input:checked + .ui-radio-circle {
+        border-color: #0056B3;
     }
-</label>
+
+    .ui-radio-input:checked + .ui-radio-circle .ui-radio-dot {
+        opacity: 1;
+    }
+
+    .ui-radio-input:checked ~ .ui-radio-label {
+        font-weight: 600;
+        color: #003F75;
+    }
+</style>
+
+<div class="flex flex-row items-center gap-5">
+    @foreach (var option in Model.Options)
+    {
+        <label class="flex flex-row items-center gap-2 cursor-pointer select-none">
+            <input type="radio"
+                   name="@Model.Name"
+                   value="@option.Value"
+                   @(option.Value == Model.SelectedValue ? "checked" : "")
+                   class="ui-radio-input sr-only" />
+
+            <span class="ui-radio-circle flex items-center justify-center w-5 h-5 rounded-full border-2 border-[#C0D3E8] bg-white flex-shrink-0">
+                <span class="ui-radio-dot w-2.5 h-2.5 rounded-full bg-[#0056B3] opacity-0"></span>
+            </span>
+
+            <span class="ui-radio-label font-['Poppins'] font-normal text-sm leading-[21px] text-[#739FCC]">
+                @option.Label
+            </span>
+        </label>
+    }
+</div>
