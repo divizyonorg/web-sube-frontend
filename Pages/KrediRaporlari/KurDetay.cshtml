@@ -1,0 +1,40 @@
+@page
+@model MyApp.Web.Pages.KrediRaporlari.KurDetayModel
+@{
+    ViewData["Title"] = "KUR Detay";
+}
+
+<div class="p-6">
+    <div class="flex items-center bg-[#F2F8FF] rounded-[10px] p-[5px] h-12 w-fit">
+        <a href="?tab=kisisel"
+           class="flex items-center gap-2 rounded-[10px] text-sm font-medium
+                  @(Model.ViewModel.ActiveTab == "kisisel"
+                      ? "bg-white shadow-[0px_0px_5px_rgba(46,109,248,0.5)] px-[15px] py-[10px]"
+                      : "bg-transparent p-[10px]")">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+            Kişisel Raporum
+        </a>
+        <a href="?tab=piyasa"
+           class="flex items-center gap-2 rounded-[10px] text-sm font-medium
+                  @(Model.ViewModel.ActiveTab == "piyasa"
+                      ? "bg-white shadow-[0px_0px_5px_rgba(46,109,248,0.5)] px-[15px] py-[10px]"
+                      : "bg-transparent p-[10px]")">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+            </svg>
+            Piyasa Analizi
+        </a>
+    </div>
+
+    <p class="mt-3 text-sm text-gray-500">Sana özel yapay zeka analizi ve finansal yol haritası</p>
+
+    <div class="mt-6">
+        @* İçerik ilerleyen adımlarda eklenecek *@
+    </div>
+</div>
