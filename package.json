@@ -8,7 +8,9 @@
     "build": "npm run build:libs && npm run build:css"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/cli": "^4.2.0",
+    "@types/node": "^25.6.0",
     "tailwindcss": "^4.2.0"
   },
   "dependencies": {
@@ -20,7 +22,7 @@
     "imask": "^7.6.0",
     "just-validate": "^4.3.0",
     "swiper": "^11.2.0",
-    "tom-select": "^2.3.0",
-    "toastify-js": "^1.12.0"
+    "toastify-js": "^1.12.0",
+    "tom-select": "^2.3.0"
   }
 }
