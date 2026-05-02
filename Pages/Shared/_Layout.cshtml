@@ -68,5 +68,6 @@
     <script src="~/js/toast.js" asp-append-version="true"></script>
     <script src="~/js/app.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @await Html.PartialAsync("~/Partials/Components/_Footer.cshtml")
 </body>
 </html>

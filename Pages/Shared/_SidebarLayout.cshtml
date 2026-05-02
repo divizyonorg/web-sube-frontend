@@ -32,14 +32,17 @@
         .nav-link.active svg { stroke: #0056B3; }
     </style>
 </head>
-<body style="display:flex; height:100vh; overflow:hidden; background:#F5F7FB;">
+<body style="display:flex; flex-direction:column; height:100vh; background:#F5F7FB;">
 
     @{
         var path = (Context.Request.Path.Value ?? "").ToLowerInvariant();
     }
 
+    @* ── Sidebar + İçerik satırı ── *@
+    <div style="flex:1; display:flex; overflow:hidden; min-height:0;">
+
     @* ── Sidebar ── *@
-    <aside style="width:248px; flex-shrink:0; height:100vh; background:#fff; border-right:1px solid #E5E7EB; display:flex; flex-direction:column; overflow:hidden;">
+    <aside style="width:248px; flex-shrink:0; background:#fff; border-right:1px solid #E5E7EB; display:flex; flex-direction:column; overflow:hidden;">
 
         @* Logo *@
         <div style="padding:24px 20px 20px; border-bottom:1px solid #F3F4F6; flex-shrink:0;">
@@ -82,11 +85,13 @@
     </aside>
 
     @* ── Ana içerik ── *@
-    <div style="flex:1; height:100vh; overflow-y:auto; display:flex; flex-direction:column;">
-        <main style="flex:1; padding:32px;">
+    <div style="flex:1; overflow-y:auto;">
+        <main style="padding:32px;">
             @RenderBody()
         </main>
     </div>
+
+    </div>@* ── /Sidebar + İçerik satırı ── *@
 
     <script defer src="~/lib/alpinejs/cdn.min.js" asp-append-version="true"></script>
     <script src="~/lib/htmx/htmx.min.js" asp-append-version="true"></script>
@@ -100,6 +105,8 @@
     <script src="~/js/toast.js" asp-append-version="true"></script>
     <script src="~/js/app.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    @await Html.PartialAsync("~/Partials/Components/_Footer.cshtml")
 
 </body>
 </html>
