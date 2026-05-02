@@ -1,0 +1,53 @@
+@model MyApp.Web.ViewModels.HeaderViewModel
+
+@*
+    Desktop Top Header — tam genişlik × 85px
+    Gradient : #2E6DF8 → #0056B3
+    Shadow   : 0 4px 4px rgba(0,0,0,.25)
+    Border-b : 1px solid #2E6DF8
+    İçerik   : flex row, space-between, center, padding 0 24px
+*@
+
+<header style="position:relative;
+               width:100%;
+               height:85px;
+               background:linear-gradient(90deg,#2E6DF8 0%,#0056B3 100%);
+               box-shadow:0px 4px 4px rgba(0,0,0,0.25);
+               border-bottom:1px solid #2E6DF8;
+               box-sizing:border-box;
+               font-family:'Poppins',sans-serif;">
+
+    @* İçerik container — absolute, tam alan kaplıyor *@
+    <div style="position:absolute;
+                left:0; top:0;
+                width:100%; height:100%;
+                box-sizing:border-box;
+                display:flex;
+                flex-direction:row;
+                justify-content:space-between;
+                align-items:center;
+                padding:0 24px;">
+
+        @* Logo — 150.53×40 *@
+        <img src="~/images/Image (İnteraktif Kredi).png"
+             alt="İnteraktif Kredi"
+             style="width:150.53px;
+                    height:40px;
+                    object-fit:contain;
+                    flex:none;
+                    order:0;
+                    flex-grow:0;">
+
+        @* Avatar bileşeni — 284.39×56, order:1 *@
+        <div style="flex:none; order:1; flex-grow:0;">
+            @await Component.InvokeAsync("UserAvatar", new
+            {
+                userName          = Model.UserName,
+                notificationCount = Model.NotificationCount,
+                profileImageUrl   = Model.ProfileImageUrl
+            })
+        </div>
+
+    </div>
+
+</header>

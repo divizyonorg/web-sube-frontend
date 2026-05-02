@@ -2,13 +2,59 @@
 @model MyApp.Web.ViewModels.Components.ToggleSwitchViewModel
 @{ Layout = null; }
 
-@* Toggle switch — Alpine.js ile açık/kapalı durumu. Stillendirme detayları eklenecek. *@
-<label x-data="{ checked: @(Model.IsChecked ? "true" : "false") }">
+<style>
+    .ui-toggle-track {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        width: 44px;
+        height: 24px;
+        background-color: #C0D3E8;
+        border-radius: 9999px;
+        flex-shrink: 0;
+        transition: background-color 0.2s ease;
+    }
+
+    .ui-toggle-knob {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 18px;
+        height: 18px;
+        background-color: #ffffff;
+        border-radius: 9999px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+        transition: transform 0.2s ease;
+    }
+
+    .ui-toggle-input:checked + .ui-toggle-track {
+        background-color: #0056B3;
+    }
+
+    .ui-toggle-input:checked + .ui-toggle-track .ui-toggle-knob {
+        transform: translateX(20px);
+    }
+
+    .ui-toggle-input:checked ~ .ui-toggle-label {
+        font-weight: 600;
+        color: #003F75;
+    }
+</style>
+
+<label class="inline-flex flex-row items-center gap-3 cursor-pointer select-none">
     <input type="checkbox"
            name="@Model.Name"
-           x-model="checked" />
+           @(Model.IsChecked ? "checked" : "")
+           class="ui-toggle-input sr-only" />
+
+    <span class="ui-toggle-track">
+        <span class="ui-toggle-knob"></span>
+    </span>
+
     @if (!string.IsNullOrEmpty(Model.Label))
     {
-        <span>@Model.Label</span>
+        <span class="ui-toggle-label font-['Poppins'] font-normal text-sm leading-[21px] text-[#739FCC]">
+            @Model.Label
+        </span>
     }
 </label>
