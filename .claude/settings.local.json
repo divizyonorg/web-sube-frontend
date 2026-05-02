@@ -12,11 +12,20 @@
       "Bash(taskkill *)",
       "Bash(powershell *)",
       "Bash(node *)",
-      "Bash(xargs ls *)",
-      "Bash(curl *)",
-      "Bash(git -C /Users/samet-gecgel/Projects/web2.0/web-sube/web-sube status)",
-      "Bash(git -C /Users/samet-gecgel/Projects/web2.0/web-sube/web-sube log --oneline -3)",
-      "Bash(dotnet format *)"
+      "Bash(dotnet format *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git fetch *)",
+      "Bash(git checkout *)",
+      "Bash(git pull *)",
+      "Bash(git stash *)",
+      "Bash(git merge *)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(git reset *)",
+      "Bash(gh pr create --base Development --head feature/uikit-components --title 'feat: UIKit radio group, toggle switch ve view component'\\\\''lar' --body ' *)",
+      "Bash(grep -o \"border-\\\\[#F3F4F6\\\\]\\\\|rotate-180\\\\|border-\\\\\\\\\\\\[#F3F4F6\\\\\\\\\\\\]\" /c/Users/simsi/Downloads/web20/MyApp.Web/wwwroot/css/app.css)",
+      "Bash(grep -o \"F3F4F6\\\\|pb-\\\\\\\\\\\\[25px\\\\\\\\\\\\]\\\\|25px\" /c/Users/simsi/Downloads/web20/MyApp.Web/wwwroot/css/app.css)"
     ]
   }
 }
