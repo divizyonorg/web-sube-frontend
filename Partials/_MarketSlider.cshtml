@@ -1,0 +1,22 @@
+@model MyApp.Web.ViewModels.MarketAnalysis.MarketSliderViewModel
+
+@*
+    Tekrar eden gradient skala bileşeni.
+    Kredi Nabzı, Kredi Talebi Radarı ve Mantıklı Kredi Oranı widget'larında kullanılır.
+    Veriyi parent ViewComponent verir — bu Partial bağımsız çalışmaz.
+*@
+
+<div class="flex flex-col gap-2">
+    <div class="relative w-full h-5 rounded-full"
+         style="background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);">
+        <div class="absolute -top-1 w-2.5 h-7 bg-white border border-gray-200 rounded-full shadow-md"
+             style="left: calc(@Model.PositionPercent% - 5px);">
+        </div>
+    </div>
+
+    <div class="flex justify-between text-[9px] text-gray-600/75 px-1">
+        <span class="text-[#122B62]">@Model.LeftLabel</span>
+        <span class="text-[#2E6DF8]">@Model.MiddleLabel</span>
+        <span class="text-[#37C6B3]">@Model.RightLabel</span>
+    </div>
+</div>

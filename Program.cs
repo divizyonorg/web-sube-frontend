@@ -21,14 +21,15 @@ static Action<HttpClient> ConfigureClient(ServiceEndpoint endpoint) => client =>
 if (useMockData)
 {
     builder.Services.AddScoped<IClientService, MockClientService>();
+    builder.Services.AddScoped<IReportService, MockReportService>();
 }
 else
 {
     builder.Services.AddHttpClient<IClientService, ClientService>(ConfigureClient(serviceUrls.CustomerService));
+    builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService));
 }
 
 builder.Services.AddHttpClient<IAuthService, AuthService>(ConfigureClient(serviceUrls.AuthService));
-builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService));
 
 builder.Services.AddRazorPages();
 

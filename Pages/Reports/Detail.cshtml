@@ -1,0 +1,87 @@
+@page "/credit-reports/{id:int}"
+@model MyApp.Web.Pages.Reports.DetailModel
+@{
+    ViewData["Title"] = "Kredi Uygunluk Raporu";
+    Layout = "_SidebarLayout";
+}
+
+<div x-data="{ activeTab: '@Model.ActiveTab' }" class="flex flex-col gap-6">
+
+    @* ── PageBar: Geri + Web Şube başlığı ─────────────────────────── *@
+    <div class="flex items-center justify-between pb-3 border-b border-[#DCE3FB]">
+        <a href="/dashboard" class="flex items-center gap-1 text-[14px] text-[#1B4092] hover:underline">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.667" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span>Geri</span>
+        </a>
+        <div class="text-right">
+            <div class="text-[14px] text-[#003F75]">İnteraktif Kredi</div>
+            <div class="text-[18px] font-light text-[#003F75]">WEB Şube</div>
+        </div>
+    </div>
+
+    @* ── Sekme barı ────────────────────────────────────────────────── *@
+    <div class="flex flex-col items-center gap-4">
+        <div class="flex items-center gap-1 p-1 bg-[#F2F8FF] rounded-[10px]">
+
+            @* Kişisel Raporum *@
+            <button type="button"
+                    @@click="activeTab = 'kisisel-rapor'"
+                    :class="activeTab === 'kisisel-rapor' ? 'bg-white shadow-[0_0_5px_rgba(46,109,248,0.5)] text-[#003F75]' : 'text-black/50'"
+                    class="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-[12px] transition-all">
+                <svg class="w-[17px] h-[14px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span>Kişisel Raporum</span>
+            </button>
+
+            @* Piyasa Analizi *@
+            <button type="button"
+                    @@click="activeTab = 'piyasa-analizi'"
+                    :class="activeTab === 'piyasa-analizi' ? 'bg-white shadow-[0_0_5px_rgba(46,109,248,0.5)] text-[#003F75]' : 'text-black/50'"
+                    class="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-[12px] transition-all">
+                <svg class="w-[18px] h-[15px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 17l6-6 4 4 8-8M14 7h7v7"/>
+                </svg>
+                <span>Piyasa Analizi</span>
+            </button>
+        </div>
+
+        <div class="flex items-center gap-1 text-[12px] text-[#003F75]">
+            <span>Sana özel</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+            </svg>
+            <span>yapay zeka analizi ve finansal yol haritan</span>
+        </div>
+    </div>
+
+    @* ── KİŞİSEL RAPOR sekmesi (placeholder — ileride doldurulacak) ── *@
+    <div x-show="activeTab === 'kisisel-rapor'" x-cloak>
+        <div class="bg-white border border-[#DCE3FB] rounded-2xl p-8 text-center text-black/60">
+            Kişisel rapor sekmesi bu görevin kapsamında değil.
+            (ID: @Model.ReportId)
+        </div>
+    </div>
+
+    @* ── PİYASA ANALİZİ sekmesi ───────────────────────────────────── *@
+    <div x-show="activeTab === 'piyasa-analizi'" x-cloak class="flex flex-col gap-5">
+
+        @* Üst bilgi kartı *@
+        <div class="bg-[#F9FAFB] border border-[#DCE3FB] rounded-2xl py-5 text-center">
+            <p class="text-[13px] font-medium"
+               style="background: linear-gradient(90deg, #122B62 5%, #2E6DF8 51%, #122B62 96%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                Kişisel durumunu analiz ettik. Şimdi de piyasadaki koşulların senin için ne anlama geldiğine bakalım.
+            </p>
+        </div>
+
+        @* 4 Widget — her biri kendi veri kaynağından besleniyor *@
+        @await Component.InvokeAsync("InterestRateTrend", new { loanType = "ihtiyac" })
+        @await Component.InvokeAsync("CreditPulse",       new { loanType = "ihtiyac" })
+        @await Component.InvokeAsync("CreditDemandRadar", new { loanType = "ihtiyac" })
+        @await Component.InvokeAsync("ReasonableRate",    new { loanType = "ihtiyac" })
+
+    </div>
+
+</div>
