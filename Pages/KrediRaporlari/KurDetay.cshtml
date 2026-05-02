@@ -1,0 +1,45 @@
+@page
+@model MyApp.Web.Pages.KrediRaporlari.KurDetayModel
+@{
+    ViewData["Title"] = "KUR Detay";
+}
+
+<div class="p-6">
+    <div class="flex justify-center items-center w-full">
+        <div class="flex items-center bg-[#F2F8FF] rounded-[10px] p-[5px] h-12 w-fit">
+
+            <a href="?tab=kisisel"
+               class="flex items-center gap-2 rounded-[10px] text-[12px] font-normal font-[Poppins]
+                      @(Model.ViewModel.ActiveTab == "kisisel"
+                          ? "grow bg-white shadow-[0px_0px_5px_rgba(46,109,248,0.5)] px-[15px] py-[10px] text-[#003F75]"
+                          : "bg-transparent p-[10px] text-black/50")">
+                <svg width="18" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0">
+                    <path d="M8.49992 9.3786H4.90699C3.79273 9.3786 3.2356 9.3786 2.78225 9.50072C1.76153 9.77569 0.962778 10.4851 0.653146 11.3915C0.515625 11.794 0.515625 12.2889 0.515625 13.2783M11.6936 11.1512L13.2905 12.5693L16.4843 9.73312M10.496 3.7063C10.496 5.46845 8.88738 6.89697 6.90307 6.89697C4.91874 6.89697 3.31013 5.46845 3.31013 3.7063C3.31013 1.94414 4.91874 0.515625 6.90307 0.515625C8.88738 0.515625 10.496 1.94414 10.496 3.7063Z" stroke="currentColor" stroke-width="1.03133" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Kişisel Raporum
+            </a>
+
+            <div class="w-px h-5 bg-gray-300 flex-shrink-0"></div>
+
+            <a href="?tab=piyasa"
+               class="flex items-center gap-2 rounded-[10px] text-[12px] font-normal font-[Poppins]
+                      @(Model.ViewModel.ActiveTab == "piyasa"
+                          ? "grow bg-white shadow-[0px_0px_5px_rgba(46,109,248,0.5)] px-[15px] py-[10px] text-[#003F75]"
+                          : "bg-transparent p-[10px] text-black/50")">
+                <svg width="18" height="14" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0">
+                    <g clip-path="url(#kur-detay-chart-clip)">
+                        <path d="M17.291 14.4545H2.18116C1.66517 14.4545 1.40717 14.4545 1.21009 14.3703C1.03673 14.2962 0.895781 14.178 0.807451 14.0325C0.707031 13.8673 0.707031 13.6509 0.707031 13.2182V0.54541M17.291 3.63632L12.2842 7.83556C12.1018 7.98857 12.0106 8.06507 11.9054 8.09374C11.8129 8.11895 11.7132 8.11895 11.6207 8.09374C11.5155 8.06507 11.4242 7.98857 11.2418 7.83556L9.52022 6.39162C9.33779 6.23861 9.24657 6.16211 9.14139 6.13345C9.04886 6.10824 8.94921 6.10824 8.85668 6.13345C8.7515 6.16211 8.66028 6.23861 8.47785 6.39162L4.39237 9.81814M17.291 3.63632H13.6057M17.291 3.63632V6.72723" stroke="currentColor" stroke-width="1.09091" stroke-linecap="round" stroke-linejoin="round"/>
+                    </g>
+                    <defs>
+                        <clipPath id="kur-detay-chart-clip">
+                            <rect width="18" height="15" fill="white"/>
+                        </clipPath>
+                    </defs>
+                </svg>
+                Piyasa Analizi
+            </a>
+
+        </div>
+    </div>
+</div>
+
