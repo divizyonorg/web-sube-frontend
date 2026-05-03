@@ -27,12 +27,28 @@
     <!-- TOM Select -->
     <link rel="stylesheet" href="~/lib/tom-select/tom-select.default.min.css" asp-append-version="true" />
 
-</head>
-<body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
+    <style>[x-cloak] { display: none !important; }</style>
 
-    <main class="mx-auto max-w-5xl px-4 py-8">
-        @RenderBody()
-    </main>
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;">
+
+    @await Component.InvokeAsync("Header", new {
+        userName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
+        notificationCount = 0,
+        profileImageUrl   = ""
+    })
+
+    <div style="display:flex; height:calc(100vh - 85px); overflow:hidden;">
+
+        @await Component.InvokeAsync("Sidebar", new {
+            activePage = ViewData["ActivePage"]?.ToString() ?? ""
+        })
+
+        <main style="flex:1; padding:24px; overflow-y:auto; box-sizing:border-box;">
+            @RenderBody()
+        </main>
+
+    </div>
 
     <!-- Alpine.js — defer zorunlu -->
     <script defer src="~/lib/alpinejs/cdn.min.js" asp-append-version="true"></script>
