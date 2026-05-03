@@ -14,11 +14,11 @@ public class MockReportService : IReportService
     {
         var dto = new InterestRateTrendDto
         {
-            LoanType           = loanType,
-            MonthlyRate        = 5.04m,
-            ChangePercent      = -0.45m,
+            LoanType = loanType,
+            MonthlyRate = 5.04m,
+            ChangePercent = -0.45m,
             ChangePeriodMonths = 3,
-            IsYearLow          = true,
+            IsYearLow = true,
             History =
             [
                 new() { Date = DateTime.Today.AddMonths(-3), Rate = 5.49m },
@@ -36,8 +36,8 @@ public class MockReportService : IReportService
         var dto = new CreditPulseDto
         {
             LoanType = loanType,
-            Score    = 50,
-            Status   = "dengeli"
+            Score = 50,
+            Status = "dengeli"
         };
 
         return Task.FromResult(ReportService.MapToViewModel(dto));
@@ -48,8 +48,8 @@ public class MockReportService : IReportService
         var dto = new CreditDemandRadarDto
         {
             LoanType = loanType,
-            Score    = 82,
-            Status   = "yuksek"
+            Score = 82,
+            Status = "yuksek"
         };
 
         return Task.FromResult(ReportService.MapToViewModel(dto));
@@ -59,11 +59,11 @@ public class MockReportService : IReportService
     {
         var dto = new ReasonableRateDto
         {
-            LoanType    = loanType,
+            LoanType = loanType,
             AverageRate = 3.00m,
-            PeriodDays  = 7,
-            MinRate     = 1.00m,
-            MaxRate     = 9.00m
+            PeriodDays = 7,
+            MinRate = 1.00m,
+            MaxRate = 9.00m
         };
 
         return Task.FromResult(ReportService.MapToViewModel(dto));

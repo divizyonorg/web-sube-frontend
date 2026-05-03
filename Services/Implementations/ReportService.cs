@@ -14,9 +14,9 @@ public class ReportService : IReportService
     private static class Endpoints
     {
         public const string InterestRateTrend = "/api/market/interest-rate-trend?loanType={0}";
-        public const string CreditPulse       = "/api/market/credit-pulse?loanType={0}";
+        public const string CreditPulse = "/api/market/credit-pulse?loanType={0}";
         public const string CreditDemandRadar = "/api/market/credit-demand-radar?loanType={0}";
-        public const string ReasonableRate    = "/api/market/reasonable-rate?loanType={0}";
+        public const string ReasonableRate = "/api/market/reasonable-rate?loanType={0}";
     }
 
     private static readonly CultureInfo TrCulture = CultureInfo.GetCultureInfo("tr-TR");
@@ -69,28 +69,28 @@ public class ReportService : IReportService
 
     internal static InterestRateTrendViewModel MapToViewModel(InterestRateTrendDto dto) => new()
     {
-        LoanTypeLabel       = LoanTypeToLabel(dto.LoanType),
-        MonthlyRateLabel    = FormatPercent(dto.MonthlyRate),
-        ChangeLabel         = FormatChange(dto.ChangePercent),
-        ChangePeriodLabel   = $"Son {dto.ChangePeriodMonths} Ay",
-        IsPositiveChange    = dto.ChangePercent < 0,                            // Faiz düşüşü = iyi haber
+        LoanTypeLabel = LoanTypeToLabel(dto.LoanType),
+        MonthlyRateLabel = FormatPercent(dto.MonthlyRate),
+        ChangeLabel = FormatChange(dto.ChangePercent),
+        ChangePeriodLabel = $"Son {dto.ChangePeriodMonths} Ay",
+        IsPositiveChange = dto.ChangePercent < 0,                            // Faiz düşüşü = iyi haber
         ShowOpportunityBadge = dto.IsYearLow,
-        SparklinePoints     = dto.History.Select(p => p.Rate).ToList()
+        SparklinePoints = dto.History.Select(p => p.Rate).ToList()
     };
 
     internal static CreditPulseViewModel MapToViewModel(CreditPulseDto dto) => new()
     {
-        LoanTypeLabel         = LoanTypeToLabel(dto.LoanType),
-        StatusLabel           = PulseStatusToLabel(dto.Status),
-        StatusBadgeColor      = PulseStatusToBadgeColor(dto.Status),
+        LoanTypeLabel = LoanTypeToLabel(dto.LoanType),
+        StatusLabel = PulseStatusToLabel(dto.Status),
+        StatusBadgeColor = PulseStatusToBadgeColor(dto.Status),
         SliderPositionPercent = ClampPercent(dto.Score)
     };
 
     internal static CreditDemandRadarViewModel MapToViewModel(CreditDemandRadarDto dto) => new()
     {
-        LoanTypeLabel         = LoanTypeToLabel(dto.LoanType),
-        StatusLabel           = DemandStatusToLabel(dto.Status),
-        StatusBadgeColor      = DemandStatusToBadgeColor(dto.Status),
+        LoanTypeLabel = LoanTypeToLabel(dto.LoanType),
+        StatusLabel = DemandStatusToLabel(dto.Status),
+        StatusBadgeColor = DemandStatusToBadgeColor(dto.Status),
         SliderPositionPercent = ClampPercent(dto.Score)
     };
 
@@ -102,9 +102,9 @@ public class ReportService : IReportService
 
         return new ReasonableRateViewModel
         {
-            LoanTypeLabel         = LoanTypeToLabel(dto.LoanType),
-            AverageRateLabel      = FormatPercent(dto.AverageRate),
-            PeriodLabel           = $"Son {dto.PeriodDays} Gün Piyasa Ortalaması",
+            LoanTypeLabel = LoanTypeToLabel(dto.LoanType),
+            AverageRateLabel = FormatPercent(dto.AverageRate),
+            PeriodLabel = $"Son {dto.PeriodDays} Gün Piyasa Ortalaması",
             SliderPositionPercent = ClampPercent(position)
         };
     }
@@ -114,41 +114,41 @@ public class ReportService : IReportService
     private static string LoanTypeToLabel(string loanType) => loanType switch
     {
         "ihtiyac" => "İhtiyaç Kredisi",
-        "konut"   => "Konut Kredisi",
-        "tasit"   => "Taşıt Kredisi",
-        _         => "İhtiyaç Kredisi"
+        "konut" => "Konut Kredisi",
+        "tasit" => "Taşıt Kredisi",
+        _ => "İhtiyaç Kredisi"
     };
 
     private static string PulseStatusToLabel(string status) => status switch
     {
-        "siki"    => "Sıkı",
+        "siki" => "Sıkı",
         "dengeli" => "Dengeli",
-        "acik"    => "Açık",
-        _         => "Dengeli"
+        "acik" => "Açık",
+        _ => "Dengeli"
     };
 
     private static string PulseStatusToBadgeColor(string status) => status switch
     {
-        "siki"    => "bg-red-50 text-red-600",
+        "siki" => "bg-red-50 text-red-600",
         "dengeli" => "bg-blue-50 text-blue-600",
-        "acik"    => "bg-emerald-50 text-emerald-600",
-        _         => "bg-blue-50 text-blue-600"
+        "acik" => "bg-emerald-50 text-emerald-600",
+        _ => "bg-blue-50 text-blue-600"
     };
 
     private static string DemandStatusToLabel(string status) => status switch
     {
-        "dusuk"  => "Düşük",
-        "orta"   => "Orta",
+        "dusuk" => "Düşük",
+        "orta" => "Orta",
         "yuksek" => "Yüksek",
-        _        => "Orta"
+        _ => "Orta"
     };
 
     private static string DemandStatusToBadgeColor(string status) => status switch
     {
-        "dusuk"  => "bg-emerald-50 text-emerald-600",
-        "orta"   => "bg-blue-50 text-blue-600",
+        "dusuk" => "bg-emerald-50 text-emerald-600",
+        "orta" => "bg-blue-50 text-blue-600",
         "yuksek" => "bg-red-50 text-red-600",
-        _        => "bg-blue-50 text-blue-600"
+        _ => "bg-blue-50 text-blue-600"
     };
 
     private static string FormatPercent(decimal value)
