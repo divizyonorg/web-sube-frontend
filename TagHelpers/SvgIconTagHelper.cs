@@ -34,14 +34,14 @@ public sealed class SvgIconTagHelper : TagHelper
         output.TagMode = TagMode.StartTagAndEndTag;
 
         var existingClass = output.Attributes["class"]?.Value?.ToString() ?? string.Empty;
-        var cssClass      = string.IsNullOrWhiteSpace(existingClass) ? "w-4 h-4" : existingClass;
+        var cssClass = string.IsNullOrWhiteSpace(existingClass) ? "w-4 h-4" : existingClass;
 
         output.Attributes.RemoveAll("class");
-        output.Attributes.Add("class",            cssClass);
-        output.Attributes.Add("aria-hidden",      "true");
-        output.Attributes.Add("focusable",        "false");
-        output.Attributes.Add("xmlns",            "http://www.w3.org/2000/svg");
-        output.Attributes.Add("fill",             "none");
+        output.Attributes.Add("class", cssClass);
+        output.Attributes.Add("aria-hidden", "true");
+        output.Attributes.Add("focusable", "false");
+        output.Attributes.Add("xmlns", "http://www.w3.org/2000/svg");
+        output.Attributes.Add("fill", "none");
 
         output.Content.SetHtmlContent(
             $"""<use href="{SpritePath}#{symbolId}"></use>""");
