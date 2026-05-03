@@ -11,15 +11,15 @@ public class SidebarViewComponent : ViewComponent
         {
             Items =
             [
-                new() { Label = "Anasayfa",             Href = "#", Icon = SidebarIcon.Home,        IsActive = activePage == "Anasayfa" },
-                new() { Label = "Kredi Raporların",     Href = "#", Icon = SidebarIcon.CreditReport, IsActive = activePage == "Kredi Raporların" },
-                new() { Label = "Sana Özel Teklifler",  Href = "#", Icon = SidebarIcon.Offers,       IsActive = activePage == "Sana Özel Teklifler" },
-                new() { Label = "Kredi Danışmanı",      Href = "#", Icon = SidebarIcon.Advisor,      IsActive = activePage == "Kredi Danışmanı" },
-                new() { Label = "Destek Merkezi",       Href = "#", Icon = SidebarIcon.Support,      IsActive = activePage == "Destek Merkezi" },
-                new() { Label = "Canlı Destek",         Href = "#", Icon = SidebarIcon.LiveSupport,  IsActive = activePage == "Canlı Destek" },
-                new() { Label = "Faturaların",          Href = "#", Icon = SidebarIcon.Invoices,     IsActive = activePage == "Faturaların" },
-                new() { Label = "Sözleşmelerin",        Href = "#", Icon = SidebarIcon.Contracts,    IsActive = activePage == "Sözleşmelerin" },
-                new() { Label = "Ayarlar",              Href = "#", Icon = SidebarIcon.Settings,     IsActive = activePage == "Ayarlar" }
+                new() { Label = "Anasayfa",             Href = "#", Icon = SidebarIcon.Home,        IconFile = "layout-grid-01",  IsActive = activePage == "Anasayfa" },
+                new() { Label = "Kredi Raporların",     Href = "#", Icon = SidebarIcon.CreditReport, IconFile = "file-04",         IsActive = activePage == "Kredi Raporların" },
+                new() { Label = "Sana Özel Teklifler",  Href = "#", Icon = SidebarIcon.Offers,       IconFile = "gift-01",         IsActive = activePage == "Sana Özel Teklifler" },
+                new() { Label = "Kredi Danışmanı",      Href = "#", Icon = SidebarIcon.Advisor,      IconFile = "message-square-02", IsActive = activePage == "Kredi Danışmanı" },
+                new() { Label = "Destek Merkezi",       Href = "#", Icon = SidebarIcon.Support,      IconFile = "help-circle",     IsActive = activePage == "Destek Merkezi" },
+                new() { Label = "Canlı Destek",         Href = "#", Icon = SidebarIcon.LiveSupport,  IconFile = "message-circle-01", IsActive = activePage == "Canlı Destek" },
+                new() { Label = "Faturaların",          Href = "#", Icon = SidebarIcon.Invoices,     IconFile = "receipt",         IsActive = activePage == "Faturaların" },
+                new() { Label = "Sözleşmelerin",        Href = "#", Icon = SidebarIcon.Contracts,    IconFile = "file-check-02",   IsActive = activePage == "Sözleşmelerin" },
+                new() { Label = "Ayarlar",              Href = "#", Icon = SidebarIcon.Settings,     IconFile = "settings-01",     IsActive = activePage == "Ayarlar" }
             ],
             VipCard = new()
             {
