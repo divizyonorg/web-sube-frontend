@@ -25,7 +25,11 @@
       "Bash(git reset *)",
       "Bash(gh pr create --base Development --head feature/uikit-components --title 'feat: UIKit radio group, toggle switch ve view component'\\\\''lar' --body ' *)",
       "Bash(grep -o \"border-\\\\[#F3F4F6\\\\]\\\\|rotate-180\\\\|border-\\\\\\\\\\\\[#F3F4F6\\\\\\\\\\\\]\" /c/Users/simsi/Downloads/web20/MyApp.Web/wwwroot/css/app.css)",
-      "Bash(grep -o \"F3F4F6\\\\|pb-\\\\\\\\\\\\[25px\\\\\\\\\\\\]\\\\|25px\" /c/Users/simsi/Downloads/web20/MyApp.Web/wwwroot/css/app.css)"
+      "Bash(grep -o \"F3F4F6\\\\|pb-\\\\\\\\\\\\[25px\\\\\\\\\\\\]\\\\|25px\" /c/Users/simsi/Downloads/web20/MyApp.Web/wwwroot/css/app.css)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\" -Recurse -Include \"*Header*\", \"*UserAvatar*\")",
+      "Bash(Select-Object FullName)",
+      "Bash(grep -E \"\\\\.\\(cshtml|cs\\)$\")"
     ]
   }
 }

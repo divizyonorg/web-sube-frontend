@@ -11,13 +11,13 @@
                    left:0; top:8px;
                    width:40px; height:40px;
                    border-radius:10px;
-                   background:#003F75;
+                   background:transparent;
                    border:none;
                    padding:0;
                    cursor:pointer;">
 
-        @* Zil ikonu — Untitled UI / Iconify SVG API, 24×24, left:8 top:8 *@
-        <img src="https://api.iconify.design/uit/bell-01.svg?color=%23ffffff"
+        @* Zil ikonu — 24×24, left:8 top:8 *@
+        <img src="~/icons/white/bell-01.svg"
              width="24" height="24"
              alt=""
              style="position:absolute; left:8px; top:8px; display:block; pointer-events:none;">
@@ -60,7 +60,7 @@
                    cursor:pointer;">
 
         @* Profil resmi — 38×38, order:0 *@
-        <img src="@(string.IsNullOrEmpty(Model.ProfileImageUrl) ? "https://api.iconify.design/uit/user-01.svg?color=%23003F75" : Model.ProfileImageUrl)"
+        <img src="@(string.IsNullOrEmpty(Model.ProfileImageUrl) ? "/icons/navy/user-01.svg" : Model.ProfileImageUrl)"
              alt="Profil fotoğrafı"
              style="width:38px;
                     height:38px;
@@ -100,8 +100,8 @@
             </span>
         </span>
 
-        @* Chevron — Untitled UI / Iconify SVG API, 20×20, order:2 *@
-        <img src="https://api.iconify.design/uit/chevron-down.svg?color=%230056B3"
+        @* Chevron — 20×20, order:2 *@
+        <img src="~/icons/blue/chevron-down.svg"
              width="20" height="20"
              alt=""
              style="flex:none; order:2; flex-grow:0; display:block; pointer-events:none;">
