@@ -30,25 +30,33 @@
     <style>[x-cloak] { display: none !important; }</style>
 
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;">
+<body class="bg-gray-50 text-gray-900 antialiased" style="display:flex; flex-direction:column; min-height:100vh; overflow-x:hidden;">
 
-    @await Component.InvokeAsync("Header", new {
-        userName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
-        notificationCount = 0,
-        profileImageUrl   = ""
-    })
-
-    <div style="display:flex; height:calc(100vh - 85px); overflow:hidden;">
-
-        @await Component.InvokeAsync("Sidebar", new {
-            activePage = ViewData["ActivePage"]?.ToString() ?? ""
+    <div style="position:sticky; top:0; z-index:100; flex-shrink:0;">
+        @await Component.InvokeAsync("Header", new {
+            userName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
+            notificationCount = 0,
+            profileImageUrl   = ""
         })
+    </div>
 
-        <main style="flex:1; padding:24px; overflow-y:auto; box-sizing:border-box;">
-            @RenderBody()
+    <div style="display:flex; align-items:flex-start; flex:1;">
+
+        <div style="position:sticky; top:85px; height:calc(100vh - 85px); flex-shrink:0;">
+            @await Component.InvokeAsync("Sidebar", new {
+                activePage = ViewData["ActivePage"]?.ToString() ?? ""
+            })
+        </div>
+
+        <main style="flex:1; min-width:0; box-sizing:border-box;">
+            <div style="padding:24px; box-sizing:border-box;">
+                @RenderBody()
+            </div>
         </main>
 
     </div>
+
+    @await Html.PartialAsync("~/Partials/Components/_Footer.cshtml", new MyApp.Web.ViewModels.Components.FooterViewModel())
 
     <!-- Alpine.js — defer zorunlu -->
     <script defer src="~/lib/alpinejs/cdn.min.js" asp-append-version="true"></script>
@@ -84,6 +92,5 @@
     <script src="~/js/toast.js" asp-append-version="true"></script>
     <script src="~/js/app.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    @await Html.PartialAsync("~/Partials/Components/_Footer.cshtml")
 </body>
 </html>

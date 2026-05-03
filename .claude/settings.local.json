@@ -29,7 +29,10 @@
       "WebFetch(domain:www.npmjs.com)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\" -Recurse -Include \"*Header*\", \"*UserAvatar*\")",
       "Bash(Select-Object FullName)",
-      "Bash(grep -E \"\\\\.\\(cshtml|cs\\)$\")"
+      "Bash(grep -E \"\\\\.\\(cshtml|cs\\)$\")",
+      "Bash(Get-Content \"C:\\\\Users\\\\EXCALİBUR\\\\Documents\\\\GitHub\\\\web-sube\\\\wwwroot\\\\css\\\\app.css\")",
+      "Bash(Measure-Object -Line)",
+      "Bash(Select-Object -ExpandProperty Lines)"
     ]
   }
 }

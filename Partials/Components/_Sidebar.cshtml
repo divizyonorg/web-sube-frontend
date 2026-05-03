@@ -83,7 +83,7 @@
 
         @* ── Navigation ───────────────────────────────────────── *@
         <nav style="display:flex; flex-direction:column; align-items:flex-start;
-                    padding:4px 8px; gap:2px; width:100%; flex:1 1 0; overflow-y:auto; overscroll-behavior:contain;">
+                    padding:4px 8px; gap:2px; width:100%; flex:1 1 0; overflow:hidden;">
             @foreach (var item in Model.Items)
             {
                 var isActive    = item.IsActive;

@@ -1,13 +1,16 @@
-@{ Layout = null; }
+@model MyApp.Web.ViewModels.Components.FooterViewModel
 
 <footer class="site-footer">
-    <div class="site-footer__top">
-        <span class="site-footer__trust">1M+ kullanıcı bize güveniyor.</span>
-        <img src="~/images/bddk-logo.svg" alt="BDDK" class="site-footer__bddk" />
-        <span class="site-footer__brand">İnteraktif Kredi A.Ş. © 2026</span>
-    </div>
-    <div class="site-footer__legal">
-        © 2024 İnteraktif Kredi A.Ş Her hakkı saklıdır. İnteraktif Kredi'nin resmi ünvanı İnteraktifKredi Danışmanlık AŞ'dir. Bu site yalnızca Türkiye'deki kişilere yöneliktir. İstanbul Ticaret Odası ticaret sicil no: 85502 –<br>
-        MERSİS NO: 0478056624800001
+    <div class="site-footer__inner">
+        <div class="site-footer__top">
+            <span class="site-footer__trust">@Model.TrustText</span>
+            <div class="site-footer__logos">
+                <img src="~/images/bddk-logo.svg" alt="BDDK" class="site-footer__bddk" />
+            </div>
+            <span class="site-footer__brand">@Model.BrandText</span>
+        </div>
+        <div class="site-footer__legal">
+            <p>@Model.LegalText</p>
+        </div>
     </div>
 </footer>

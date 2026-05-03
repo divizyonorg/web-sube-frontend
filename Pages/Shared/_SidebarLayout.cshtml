@@ -106,7 +106,7 @@
     <script src="~/js/app.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
-    @await Html.PartialAsync("~/Partials/Components/_Footer.cshtml")
+    @await Html.PartialAsync("~/Partials/Components/_Footer.cshtml", new MyApp.Web.ViewModels.Components.FooterViewModel())
 
 </body>
 </html>
