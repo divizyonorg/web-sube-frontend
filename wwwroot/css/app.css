@@ -2659,6 +2659,181 @@
       width: calc(var(--spacing) * 91) !important
     }
   }
+  .focus\:border-\[\#0056B3\] {
+    &:focus {
+      border-color: #0056B3;
+    }
+  }
+  .lg\:block {
+    @media (width >= 64rem) {
+      display: block;
+    }
+  }
+  .lg\:hidden {
+    @media (width >= 64rem) {
+      display: none;
+    }
+  }
+  .lg\:h-full {
+    @media (width >= 64rem) {
+      height: 100%;
+    }
+  }
+  .lg\:min-h-0 {
+    @media (width >= 64rem) {
+      min-height: calc(var(--spacing) * 0);
+    }
+  }
+  .lg\:w-91 {
+    @media (width >= 64rem) {
+      width: calc(var(--spacing) * 91);
+    }
+  }
+  .lg\:max-w-105 {
+    @media (width >= 64rem) {
+      max-width: calc(var(--spacing) * 105);
+    }
+  }
+  .lg\:max-w-120 {
+    @media (width >= 64rem) {
+      max-width: calc(var(--spacing) * 120);
+    }
+  }
+  .lg\:max-w-\[420px\] {
+    @media (width >= 64rem) {
+      max-width: 420px;
+    }
+  }
+  .lg\:flex-row {
+    @media (width >= 64rem) {
+      flex-direction: row;
+    }
+  }
+  .lg\:items-center {
+    @media (width >= 64rem) {
+      align-items: center;
+    }
+  }
+  .lg\:justify-center {
+    @media (width >= 64rem) {
+      justify-content: center;
+    }
+  }
+  .lg\:overflow-hidden {
+    @media (width >= 64rem) {
+      overflow: hidden;
+    }
+  }
+  .lg\:bg-\[\#DDE3ECBF\] {
+    @media (width >= 64rem) {
+      background-color: #DDE3ECBF;
+    }
+  }
+  .lg\:bg-white {
+    @media (width >= 64rem) {
+      background-color: var(--color-white);
+    }
+  }
+  .lg\:px-4 {
+    @media (width >= 64rem) {
+      padding-inline: calc(var(--spacing) * 4);
+    }
+  }
+  .lg\:px-6 {
+    @media (width >= 64rem) {
+      padding-inline: calc(var(--spacing) * 6);
+    }
+  }
+  .lg\:px-7 {
+    @media (width >= 64rem) {
+      padding-inline: calc(var(--spacing) * 7);
+    }
+  }
+  .lg\:px-9 {
+    @media (width >= 64rem) {
+      padding-inline: calc(var(--spacing) * 9);
+    }
+  }
+  .lg\:py-4 {
+    @media (width >= 64rem) {
+      padding-block: calc(var(--spacing) * 4);
+    }
+  }
+  .lg\:py-10 {
+    @media (width >= 64rem) {
+      padding-block: calc(var(--spacing) * 10);
+    }
+  }
+  .lg\:pt-7 {
+    @media (width >= 64rem) {
+      padding-top: calc(var(--spacing) * 7);
+    }
+  }
+  .lg\:pb-8 {
+    @media (width >= 64rem) {
+      padding-bottom: calc(var(--spacing) * 8);
+    }
+  }
+  .lg\:shadow-\[0_25px_60px_rgba\(0\,0\,0\,0\.3\)\] {
+    @media (width >= 64rem) {
+      --tw-shadow: 0 25px 60px var(--tw-shadow-color, rgba(0,0,0,0.3));
+      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    }
+  }
+  .\[\&_button\]\:w-full\! {
+    & button {
+      width: 100% !important;
+    }
+  }
+  .lg\:\[\&_button\]\:w-91\! {
+    @media (width >= 64rem) {
+      & button {
+        width: calc(var(--spacing) * 91) !important;
+      }
+    }
+  }
+  .\[\&_input\]\:w-full\! {
+    & input {
+      width: 100% !important;
+    }
+  }
+  .lg\:\[\&_input\]\:w-90\! {
+    @media (width >= 64rem) {
+      & input {
+        width: calc(var(--spacing) * 90) !important;
+      }
+    }
+  }
+  .\[\&\>div\]\:w-full\! {
+    &>div {
+      width: 100% !important;
+    }
+  }
+  .lg\:\[\&\>div\]\:w-91\! {
+    @media (width >= 64rem) {
+      &>div {
+        width: calc(var(--spacing) * 91) !important;
+      }
+    }
+  }
+}
+[x-cloak] {
+  display: none !important;
+}
+@property --tw-translate-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
 }
 
 [x-cloak] {
