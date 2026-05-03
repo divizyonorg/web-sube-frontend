@@ -18,7 +18,6 @@ public class SidebarNavItemViewModel
     public string Label { get; set; } = string.Empty;
     public string Href { get; set; } = "#";
     public SidebarIcon Icon { get; set; }
-    public string IconFile { get; set; } = string.Empty;
     public bool IsActive { get; set; }
 }
 
