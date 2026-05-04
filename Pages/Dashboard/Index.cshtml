@@ -25,153 +25,194 @@
     </style>
 }
 
-<div class="flex flex-col lg:flex-row gap-6 w-full max-w-[1210px] font-[Poppins]">
-
-    @* Popüler Krediler *@
-    <section class="flex-1 min-w-0 bg-[#E6F7FF] rounded-[15px] py-3.5 flex flex-col">
-        <header class="flex justify-between items-center px-6 h-[27px]">
-            <h2 class="m-0 font-[250] text-lg leading-[27px] text-[#003F75]">Popüler Krediler</h2>
-            <div class="flex items-center gap-2">
-                <a href="#" class="font-normal text-xs leading-[18px] text-[#2E6DF8] no-underline">Tümünü gör</a>
-                <button type="button" id="loans-prev" aria-label="Önceki"
-                    class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
-                    <img src="/icons/navy/chevron-left.svg" width="16" height="16" alt="" aria-hidden="true">
-                </button>
-                <button type="button" id="loans-next" aria-label="Sonraki"
-                    class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
-                    <img src="/icons/navy/chevron-right.svg" width="16" height="16" alt="" aria-hidden="true">
-                </button>
-            </div>
-        </header>
-
-        <div class="p-3 flex-1">
-            <div class="swiper" id="loans-swiper">
-                <div class="swiper-wrapper">
-                    @for (int i = 0; i < 3; i++)
-                    {
-                        <div class="swiper-slide">
-                            <article class="bg-white rounded-[10px] p-3 flex flex-col gap-3">
-                                <div class="flex justify-between items-center">
-                                    <div class="flex items-center gap-2">
-                                       <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                                         <img src="/images/BbvaLogo.png" 
-                                              alt="Garanti BBVA"
-                                              class="w-full h-full object-contain" />
+@* ── PageBar ── *@
+<div class="flex items-center justify-between pb-3 border-b border-[#DCE3FB]">
+    <div class="flex flex-col">
+        <span class="text-[14px] text-[#003F75]">Tekrar Hoşgeldin👋🏻</span>
+        <span class="text-[18px] font-light text-[#003F75]">Mustafa</span>
+    </div>
+    <div class="text-right">
+        <div class="text-[14px] text-[#003F75]">İnteraktif Kredi</div>
+        <div class="text-[18px] font-light text-[#003F75]">WEB Şube</div>
+    </div>
 </div>
-                                        <div class="flex flex-col">
-                                            <span class="font-medium text-xs leading-[18px] text-[#003F75]">Garanti BBVA</span>
-                                            <span class="font-light text-xs leading-[18px] text-[rgba(0,0,0,0.2)]">Konut Kredisi</span>
+
+@* ── Dashboard içeriği ── *@
+<div class="flex flex-col gap-6 mt-6">
+
+    @* ── Birinci satır: 2 kart yan yana ── *@
+    <div class="grid grid-cols-2 gap-6">
+
+        @* Kredi Uygunluk Durumu kartı — 01-FO-01 *@
+        @await Component.InvokeAsync("CreditEligibilityCard")
+
+        @* Kredi Nabzı kartı — ileride başka task'ta eklenecek *@
+        <div class="bg-[#E6F7FF] rounded-[15px] flex items-center justify-center min-h-[341px]">
+            <span class="text-[#003F75]/40 text-sm">Bankalarda kredi muslukları açık mı?</span>
+        </div>
+
+    </div>
+
+    @* ── İkinci satır: Kredi Danışmanlığı kartı — 01-FO-01 *@
+    <div class="grid grid-cols-2 gap-6">
+
+        @await Component.InvokeAsync("KrediDanismanligiCard")
+
+        @* İkinci sütun — ileride başka task'ta eklenecek *@
+        <div></div>
+
+    </div>
+
+    @* ── Üçüncü satır: Popüler Krediler ve Avantajlı Kredi Kartları ── *@
+    <div class="flex flex-col lg:flex-row gap-6 w-full max-w-[1210px] font-[Poppins]">
+
+        @* Popüler Krediler *@
+        <section class="flex-1 min-w-0 bg-[#E6F7FF] rounded-[15px] py-3.5 flex flex-col">
+            <header class="flex justify-between items-center px-6 h-[27px]">
+                <h2 class="m-0 font-[250] text-lg leading-[27px] text-[#003F75]">Popüler Krediler</h2>
+                <div class="flex items-center gap-2">
+                    <a href="#" class="font-normal text-xs leading-[18px] text-[#2E6DF8] no-underline">Tümünü gör</a>
+                    <button type="button" id="loans-prev" aria-label="Önceki"
+                        class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
+                        <img src="/icons/navy/chevron-left.svg" width="16" height="16" alt="" aria-hidden="true">
+                    </button>
+                    <button type="button" id="loans-next" aria-label="Sonraki"
+                        class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
+                        <img src="/icons/navy/chevron-right.svg" width="16" height="16" alt="" aria-hidden="true">
+                    </button>
+                </div>
+            </header>
+
+            <div class="p-3 flex-1">
+                <div class="swiper" id="loans-swiper">
+                    <div class="swiper-wrapper">
+                        @for (int i = 0; i < 3; i++)
+                        {
+                            <div class="swiper-slide">
+                                <article class="bg-white rounded-[10px] p-3 flex flex-col gap-3">
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center gap-2">
+                                           <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                                             <img src="/images/BbvaLogo.png"
+                                                  alt="Garanti BBVA"
+                                                  class="w-full h-full object-contain" />
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-xs leading-[18px] text-[#003F75]">Garanti BBVA</span>
+                                                <span class="font-light text-xs leading-[18px] text-[rgba(0,0,0,0.2)]">Konut Kredisi</span>
+                                            </div>
+                                        </div>
+                                        <div class="box-border px-[9px] py-2 bg-[#F2F8FF] border border-[#2E6DF8] rounded-[5px] font-semibold text-xs leading-[18px] text-[#2E6DF8]">3,99%</div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
+                                            <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Tutar</span>
+                                            <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">5.000.000 TL</span>
+                                        </div>
+                                        <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
+                                            <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Vade</span>
+                                            <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">12 Ay</span>
+                                        </div>
+                                        <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
+                                            <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Aylık Taksit</span>
+                                            <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">590.000 TL</span>
+                                        </div>
+                                        <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
+                                            <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Toplam Ödeme</span>
+                                            <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">7.100.001,45 TL</span>
                                         </div>
                                     </div>
-                                    <div class="box-border px-[9px] py-2 bg-[#F2F8FF] border border-[#2E6DF8] rounded-[5px] font-semibold text-xs leading-[18px] text-[#2E6DF8]">3,99%</div>
-                                </div>
 
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
-                                        <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Tutar</span>
-                                        <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">5.000.000 TL</span>
+                                    <div class="flex justify-between items-center">
+                                        <button type="button"
+                                            class="px-8 py-2 bg-[#0056B3] shadow-[0px_4px_10px_rgba(0,86,179,0.25)] rounded-[30px] border-0 text-white font-bold text-sm leading-[21px] cursor-pointer hover:bg-[#00468f]">
+                                            Başvur
+                                        </button>
+                                        <button type="button" aria-label="Detaylar"
+                                            class="w-9 h-9 bg-[#F2F8FF] border-0 rounded-[10px] flex items-center justify-center cursor-pointer hover:bg-[#e6f0ff]">
+                                            <img src="/icons/gray/info-circle.svg" width="20" height="20" alt="" aria-hidden="true">
+                                        </button>
                                     </div>
-                                    <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
-                                        <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Vade</span>
-                                        <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">12 Ay</span>
-                                    </div>
-                                    <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
-                                        <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Aylık Taksit</span>
-                                        <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">590.000 TL</span>
-                                    </div>
-                                    <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
-                                        <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Toplam Ödeme</span>
-                                        <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">7.100.001,45 TL</span>
-                                    </div>
-                                </div>
-
-                                <div class="flex justify-between items-center">
-                                    <button type="button"
-                                        class="px-8 py-2 bg-[#0056B3] shadow-[0px_4px_10px_rgba(0,86,179,0.25)] rounded-[30px] border-0 text-white font-bold text-sm leading-[21px] cursor-pointer hover:bg-[#00468f]">
-                                        Başvur
-                                    </button>
-                                    <button type="button" aria-label="Detaylar"
-                                        class="w-9 h-9 bg-[#F2F8FF] border-0 rounded-[10px] flex items-center justify-center cursor-pointer hover:bg-[#e6f0ff]">
-                                        <img src="/icons/gray/info-circle.svg" width="20" height="20" alt="" aria-hidden="true">
-                                    </button>
-                                </div>
-                            </article>
-                        </div>
-                    }
+                                </article>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="dots flex justify-center items-center gap-2 py-3" id="loans-pagination"></div>
-    </section>
+            <div class="dots flex justify-center items-center gap-2 py-3" id="loans-pagination"></div>
+        </section>
 
-    @* Avantajlı Kredi Kartları *@
-    <section class="flex-1 min-w-0 bg-[#E6F7FF] rounded-[15px] py-3.5 flex flex-col">
-        <header class="flex justify-between items-center px-6 h-[27px]">
-            <h2 class="m-0 font-[250] text-lg leading-[27px] text-[#003F75]">Avantajlı Kredi Kartları</h2>
-            <div class="flex items-center gap-2">
-                <a href="#" class="font-normal text-xs leading-[18px] text-[#2E6DF8] no-underline">Tümünü gör</a>
-                <button type="button" id="cards-prev" aria-label="Önceki"
-                    class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
-                    <img src="/icons/navy/chevron-left.svg" width="16" height="16" alt="" aria-hidden="true">
-                </button>
-                <button type="button" id="cards-next" aria-label="Sonraki"
-                    class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
-                    <img src="/icons/navy/chevron-right.svg" width="16" height="16" alt="" aria-hidden="true">
-                </button>
-            </div>
-        </header>
+        @* Avantajlı Kredi Kartları *@
+        <section class="flex-1 min-w-0 bg-[#E6F7FF] rounded-[15px] py-3.5 flex flex-col">
+            <header class="flex justify-between items-center px-6 h-[27px]">
+                <h2 class="m-0 font-[250] text-lg leading-[27px] text-[#003F75]">Avantajlı Kredi Kartları</h2>
+                <div class="flex items-center gap-2">
+                    <a href="#" class="font-normal text-xs leading-[18px] text-[#2E6DF8] no-underline">Tümünü gör</a>
+                    <button type="button" id="cards-prev" aria-label="Önceki"
+                        class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
+                        <img src="/icons/navy/chevron-left.svg" width="16" height="16" alt="" aria-hidden="true">
+                    </button>
+                    <button type="button" id="cards-next" aria-label="Sonraki"
+                        class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
+                        <img src="/icons/navy/chevron-right.svg" width="16" height="16" alt="" aria-hidden="true">
+                    </button>
+                </div>
+            </header>
 
-        <div class="p-3 flex-1">
-            <div class="swiper" id="cards-swiper">
-                <div class="swiper-wrapper">
-                    @for (int i = 0; i < 3; i++)
-                    {
-                        <div class="swiper-slide">
-                            <article class="bg-white rounded-[15px] pt-3 pb-1 flex flex-col gap-3">
-                                <div class="flex items-center gap-3 px-4">
-                                    <div class="w-[100px] h-[63px] rounded-[8px] overflow-hidden shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.1),0px_2px_4px_-2px_rgba(0,0,0,0.1)] flex-shrink-0">
-                                        <img src="/images/AccessKart.png" 
-                                             alt="Axess Kart"
-                                             class="w-full h-full object-cover" />
-</div>
-                                    <div class="flex flex-col">
-                                        <span class="font-medium text-base leading-6 text-[#003F75]">Axess</span>
-                                        <span class="font-light text-xs leading-[18px] text-[rgba(0,0,0,0.4)]">Akbank</span>
-                                        <span class="font-light text-[10px] leading-[15px] text-[rgba(0,0,0,0.4)]">Bu karta sahibim</span>
+            <div class="p-3 flex-1">
+                <div class="swiper" id="cards-swiper">
+                    <div class="swiper-wrapper">
+                        @for (int i = 0; i < 3; i++)
+                        {
+                            <div class="swiper-slide">
+                                <article class="bg-white rounded-[15px] pt-3 pb-1 flex flex-col gap-3">
+                                    <div class="flex items-center gap-3 px-4">
+                                        <div class="w-[100px] h-[63px] rounded-[8px] overflow-hidden shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.1),0px_2px_4px_-2px_rgba(0,0,0,0.1)] flex-shrink-0">
+                                            <img src="/images/AccessKart.png"
+                                                 alt="Axess Kart"
+                                                 class="w-full h-full object-cover" />
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="font-medium text-base leading-6 text-[#003F75]">Axess</span>
+                                            <span class="font-light text-xs leading-[18px] text-[rgba(0,0,0,0.4)]">Akbank</span>
+                                            <span class="font-light text-[10px] leading-[15px] text-[rgba(0,0,0,0.4)]">Bu karta sahibim</span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <ul class="list-none m-0 px-5 flex flex-col gap-1">
-                                    <li class="flex items-start gap-2 font-[250] text-xs leading-[18px] text-[#003F75]">
-                                        <img src="/icons/primary/check.svg" width="12" height="12" style="flex-shrink:0;margin-top:3px" alt="" aria-hidden="true">
-                                        <span>Yeni müşterilere özel 85.000 TL'ye varan nakit!</span>
-                                    </li>
-                                    <li class="flex items-start gap-2 font-[250] text-xs leading-[18px] text-[#003F75]">
-                                        <img src="/icons/primary/check.svg" width="12" height="12" style="flex-shrink:0;margin-top:3px" alt="" aria-hidden="true">
-                                        <span>%0 Faizli 25.000 TL Taksitli Nakit Avans!</span>
-                                    </li>
-                                </ul>
+                                    <ul class="list-none m-0 px-5 flex flex-col gap-1">
+                                        <li class="flex items-start gap-2 font-[250] text-xs leading-[18px] text-[#003F75]">
+                                            <img src="/icons/primary/check.svg" width="12" height="12" style="flex-shrink:0;margin-top:3px" alt="" aria-hidden="true">
+                                            <span>Yeni müşterilere özel 85.000 TL'ye varan nakit!</span>
+                                        </li>
+                                        <li class="flex items-start gap-2 font-[250] text-xs leading-[18px] text-[#003F75]">
+                                            <img src="/icons/primary/check.svg" width="12" height="12" style="flex-shrink:0;margin-top:3px" alt="" aria-hidden="true">
+                                            <span>%0 Faizli 25.000 TL Taksitli Nakit Avans!</span>
+                                        </li>
+                                    </ul>
 
-                                <div class="px-3 py-1 flex justify-between items-center">
-                                    <button type="button"
-                                        class="px-8 py-2 bg-[#0056B3] shadow-[0px_4px_10px_rgba(0,86,179,0.25)] rounded-[30px] border-0 text-white font-bold text-sm leading-[21px] cursor-pointer hover:bg-[#00468f]">
-                                        Başvur
-                                    </button>
-                                    <button type="button" aria-label="Detaylar"
-                                        class="w-9 h-9 bg-[#F2F8FF] border-0 rounded-[10px] flex items-center justify-center cursor-pointer hover:bg-[#e6f0ff]">
-                                        <img src="/icons/gray/info-circle.svg" width="20" height="20" alt="" aria-hidden="true">
-                                    </button>
-                                </div>
-                            </article>
-                        </div>
-                    }
+                                    <div class="px-3 py-1 flex justify-between items-center">
+                                        <button type="button"
+                                            class="px-8 py-2 bg-[#0056B3] shadow-[0px_4px_10px_rgba(0,86,179,0.25)] rounded-[30px] border-0 text-white font-bold text-sm leading-[21px] cursor-pointer hover:bg-[#00468f]">
+                                            Başvur
+                                        </button>
+                                        <button type="button" aria-label="Detaylar"
+                                            class="w-9 h-9 bg-[#F2F8FF] border-0 rounded-[10px] flex items-center justify-center cursor-pointer hover:bg-[#e6f0ff]">
+                                            <img src="/icons/gray/info-circle.svg" width="20" height="20" alt="" aria-hidden="true">
+                                        </button>
+                                    </div>
+                                </article>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="dots flex justify-center items-center gap-2 py-3" id="cards-pagination"></div>
-    </section>
+            <div class="dots flex justify-center items-center gap-2 py-3" id="cards-pagination"></div>
+        </section>
+    </div>
+
 </div>
 
 @section Scripts {
