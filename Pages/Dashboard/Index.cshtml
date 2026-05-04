@@ -41,7 +41,7 @@
 <div class="flex flex-col gap-6 mt-6">
 
     @* ── Birinci satır: 2 kart yan yana ── *@
-    <div class="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         @* Kredi Uygunluk Durumu kartı — 01-FO-01 *@
         @await Component.InvokeAsync("CreditEligibilityCard")
@@ -50,7 +50,7 @@
     </div>
 
     @* ── İkinci satır: Kredi Danışmanlığı kartı — 01-FO-01 *@
-    <div class="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         @await Component.InvokeAsync("KrediDanismanligiCard")
 
