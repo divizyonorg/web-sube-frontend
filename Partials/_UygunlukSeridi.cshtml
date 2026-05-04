@@ -1,0 +1,101 @@
+@model MyApp.Web.ViewModels.UygunlukSeridiViewModel
+
+<div class="flex flex-col items-center w-full bg-[#F9FAFB] p-5 gap-4" style="box-shadow: 0px -2px 4px rgba(0,0,0,0.25); border-radius: 25px 25px 0px 0px;">
+
+    <p class="font-[Poppins] font-medium text-[18px] leading-[27px] text-[#003F75] text-center">
+        Kredi Uygunluk Durumun
+    </p>
+
+    <div class="w-full flex flex-col px-2" style="gap: 4px;">
+
+        <div class="relative w-full h-[35px] rounded-full shadow-[inset_0px_0px_4px_rgba(0,0,0,0.2)]"
+             style="background: linear-gradient(90deg, rgba(255,255,255,0.5) 0%, #37B8C7 20%, #2E6DF8 50%, #122B62 100%);">
+
+            <div class="absolute top-0 h-full w-px" style="left: 25%; background: rgba(217,217,217,0.5);"></div>
+            <div class="absolute top-0 h-full w-px" style="left: 59%; background: rgba(217,217,217,0.5);"></div>
+            <div class="absolute top-0 h-full w-px" style="left: 82%; background: rgba(217,217,217,0.5);"></div>
+
+            <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
+                 style="left: @(Model.MarkerPositionPercent)%;">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+                     style="filter: drop-shadow(0px 0px 3.56px rgba(46,110,247,0.5));">
+                    <path d="M7 4L10.44 10.07H3.56L7 4Z" fill="#1D459C" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="relative w-full" style="height: 36px;">
+            <span class="absolute font-[Poppins] font-normal text-[9px] leading-[14px] text-black/50"
+                  style="left: 35px; top: 0;">premium</span>
+
+            <span class="absolute font-[Poppins] font-semibold text-[22px] leading-[33px] text-[#1D459C] -translate-x-1/2"
+                  style="left: @(Model.MarkerPositionPercent)%; top: 0;">@Model.UygunlukEtiketi</span>
+
+            <span class="absolute font-[Poppins] font-normal text-[9px] leading-[14px] text-black/50"
+                  style="left: calc(59% - 10px); top: 0;">kritik</span>
+
+            <span class="absolute font-[Poppins] font-normal text-[9px] leading-[14px] text-black/50"
+                  style="left: calc(82% - 13px); top: 0;">düşük</span>
+        </div>
+    </div>
+
+    <div class="w-full flex flex-col bg-[#F9FAFB] rounded-[20px] p-4 gap-4" style="box-shadow: 0px 0px 4px rgba(0,0,0,0.20);">
+
+        <div class="flex flex-col" style="gap: 2px;">
+            <p class="font-[Poppins] font-medium text-[14px] leading-[21px] text-[#0A0A0A]">
+                @Model.AnalizBaslik
+            </p>
+            <p class="font-[Poppins] font-normal text-[10px] leading-[15px] text-[#0A0A0A]">
+                @Model.AnalizAltBaslik
+            </p>
+        </div>
+
+        <div class="flex flex-col gap-1 pl-5">
+            @foreach (var vurgu in Model.AnalizVurgular)
+            {
+                <p class="font-[Poppins] text-[12px] leading-[18px] text-[#003F75] @(vurgu.IsBold ? "font-medium" : "font-light")">
+                    @vurgu.Text
+                </p>
+            }
+        </div>
+
+        <div class="relative pl-6">
+            <div style="position: absolute; left: 12px; top: 20px; height: calc(100% - 20px); border-left: 1px dashed #2E6DF8;"></div>
+            <p class="font-[Poppins] font-medium text-[12px] leading-[18px] text-[#2E6DF8]">
+                @Model.BuSekildeBulguBaslik
+            </p>
+            <ul class="mt-[6px] flex flex-col gap-1">
+                @foreach (var madde in Model.BuSekildeBulgular)
+                {
+                    <li class="flex items-start gap-4">
+                        <span class="shrink-0 rounded-full bg-[#2E6DF8] mt-1.5" 
+                              style="width: 7.98px; height: 8px; min-width: 7.98px;"></span>
+                        <span class="font-[Poppins] font-light text-[12px] leading-5 text-[#003F75]">@madde</span>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="relative pl-6">
+            <div style="position: absolute; left: 12px; top: 20px; height: calc(100% - 20px); border-left: 1px dashed #2E6DF8;"></div>
+            <p class="font-[Poppins] font-medium text-[12px] leading-[18px] text-[#2E6DF8]">
+                @Model.NelerYapilabilirBaslik
+            </p>
+            <ul class="mt-[6px] flex flex-col gap-1">
+                @foreach (var madde in Model.NelerYapilabilir)
+                {
+                     <li class="flex items-start gap-4">
+                         <span class="shrink-0 rounded-full bg-[#2E6DF8] mt-1.5"
+                               style="width: 7.98px; height: 8px; min-width: 7.98px;"></span>
+                         <span class="font-[Poppins] font-light text-[12px] leading-5 text-[#003F75]">@madde</span>
+                    </li>
+                }
+            </ul>
+        </div>
+
+    </div>
+
+    <p class="font-[Poppins] font-light text-[9px] leading-[14px] text-center text-black/50 self-center">
+        Bu bir başvuru sonucu değil, sana özel yapay zeka destekli bir kredi uygunluk analizidir.
+    </p>
+</div>

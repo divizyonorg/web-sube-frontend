@@ -42,5 +42,12 @@
 
         </div>
     </div>
+
+    @if (Model.ViewModel.ActiveTab == "kisisel")
+    {
+        <div class="mt-6">
+            <partial name="~/Partials/_UygunlukSeridi.cshtml" model="Model.ViewModel.KisiselRapor.UygunlukSeridi" />
+        </div>
+    }
 </div>
 
