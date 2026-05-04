@@ -29,7 +29,7 @@ public class CreditEligibilityService : ICreditEligibilityService
 
     internal static CreditEligibilityCardViewModel MapToViewModel(CreditEligibilityDto dto) => new()
     {
-        StatusLabel           = dto.Status,
+        StatusLabel = dto.Status,
         SliderPositionPercent = ClampPercent(dto.Score)
     };
 
