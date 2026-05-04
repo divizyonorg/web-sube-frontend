@@ -25,7 +25,17 @@
     </style>
 }
 
-<div class="flex flex-col lg:flex-row gap-6 w-full max-w-[1210px] font-[Poppins]">
+@* ── Dashboard ana sütun ────────────────────────────────────────────── *@
+<div class="flex flex-col gap-6 w-full max-w-[1210px] font-[Poppins]">
+
+    @* ── SATIR 1: KrediUygunlukCard + KrediNabziCard ──────────────────── *@
+    @* TODO: Takım arkadaşı ekleyecek — merge sırasında buraya gelecek *@
+
+    @* ── SATIR 2: KrediDanismanligiCard + VIPPaketlerCard ──────────────── *@
+    @* TODO: Takım arkadaşı ekleyecek — merge sırasında buraya gelecek *@
+
+    @* ── SATIR 3: Popüler Krediler + Avantajlı Kredi Kartları ───────────── *@
+    <div class="flex gap-6">
 
     @* Popüler Krediler *@
     <section class="flex-1 min-w-0 bg-[#E6F7FF] rounded-[15px] py-3.5 flex flex-col">
@@ -172,7 +182,13 @@
 
         <div class="dots flex justify-center items-center gap-2 py-3" id="cards-pagination"></div>
     </section>
-</div>
+
+    </div>@* ── /SATIR 3 *@
+
+    @* ── SATIR 4: Kampanyalar ──────────────────────────────────────────── *@
+    @* TODO: Takım arkadaşı ekleyecek — merge sırasında buraya gelecek *@
+
+</div>@* ── /Dashboard ana sütun *@
 
 @section Scripts {
     <script>
