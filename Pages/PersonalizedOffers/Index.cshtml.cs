@@ -14,7 +14,7 @@ public class OfferItem
     public string InterestRate { get; set; } = string.Empty;
     public string Term { get; set; } = string.Empty;
     public string Validity { get; set; } = string.Empty;
-    public string IconSvg { get; set; } = string.Empty;
+    public string IconPath { get; set; } = string.Empty;
 }
 
 public class IndexModel : PageModel
@@ -42,10 +42,6 @@ public class IndexModel : PageModel
     // ── Offers list ───────────────────────────────────────────────────────
     public List<OfferItem> Offers { get; private set; } = new();
 
-    // ── SVG helpers ───────────────────────────────────────────────────────
-    private static readonly string GiftSvg =
-        """<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.8"><path d="M26.6667 10.6666H5.33333C4.59695 10.6666 4 11.2636 4 12V14.6666C4 15.403 4.59695 16 5.33333 16H26.6667C27.403 16 28 15.403 28 14.6666V12C28 11.2636 27.403 10.6666 26.6667 10.6666Z" stroke="white" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 10.6666V28" stroke="white" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M25.3332 16V25.3333C25.3332 26.0406 25.0522 26.7189 24.5521 27.219C24.052 27.719 23.3737 28 22.6665 28H9.33317C8.62593 28 7.94765 27.719 7.44755 27.219C6.94746 26.7189 6.6665 26.0406 6.6665 25.3333V16" stroke="white" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.99984 10.6666C9.11578 10.6666 8.26794 10.3155 7.64281 9.69033C7.01769 9.06521 6.6665 8.21736 6.6665 7.33331C6.6665 6.44925 7.01769 5.6014 7.64281 4.97628C8.26794 4.35116 9.11578 3.99997 9.99984 3.99997C11.2861 3.97756 12.5465 4.60165 13.6168 5.79085C14.6871 6.98006 15.5175 8.67918 15.9998 10.6666C16.4821 8.67918 17.3126 6.98006 18.3829 5.79085C19.4531 4.60165 20.7136 3.97756 21.9998 3.99997C22.8839 3.99997 23.7317 4.35116 24.3569 4.97628C24.982 5.6014 25.3332 6.44925 25.3332 7.33331C25.3332 8.21736 24.982 9.06521 24.3569 9.69033C23.7317 10.3155 22.8839 10.6666 21.9998 10.6666" stroke="white" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/></g></svg>""";
-
     public void OnGet()
     {
         // Gerçek uygulamada bu veriler servis / veritabanından gelir.
@@ -63,7 +59,7 @@ public class IndexModel : PageModel
                 InterestRate = "%0.99",
                 Term = "48 Ay",
                 Validity = "30 gün geçerli",
-                IconSvg = GiftSvg
+                IconPath = "/icons/white/gift-01.svg"
             },
             new()
             {
@@ -76,7 +72,7 @@ public class IndexModel : PageModel
                 InterestRate = "%1.15",
                 Term = "120 Ay",
                 Validity = "30 gün geçerli",
-                IconSvg = GiftSvg
+                IconPath = "/icons/white/gift-01.svg"
             },
             new()
             {
@@ -89,7 +85,7 @@ public class IndexModel : PageModel
                 InterestRate = "%1.09",
                 Term = "60 Ay",
                 Validity = "30 gün geçerli",
-                IconSvg = GiftSvg
+                IconPath = "/icons/white/gift-01.svg"
             }
         };
     }
