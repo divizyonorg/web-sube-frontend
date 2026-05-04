@@ -4,164 +4,88 @@
     ViewData["Title"] = "Sana Özel Teklifler";
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-    body { font-family: 'Source Sans 3', sans-serif; color: #101828; }
-    button { font-family: inherit; cursor: pointer; border: 0; }
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .offer-gradient-purple { background: linear-gradient(90deg, #AD46FF 0%, #8200DB 100%); }
+        .offer-gradient-blue   { background: linear-gradient(90deg, #2B7FFF 0%, #1447E6 100%); }
+        .offer-gradient-green  { background: linear-gradient(90deg, #00C950 0%, #008236 100%); }
+    </style>
+}
 
-    /* ---------- Container ---------- */
-    .container { display: flex; flex-direction: column; gap: 24px; }
-
-    /* ---------- Page bar ---------- */
-    .pagebar { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-bottom: 12px; border-bottom: 1px solid #DCE3FB; }
-    .back-btn { display: inline-flex; align-items: center; gap: 4px; background: transparent; color: #1B4092; font-family: 'Poppins', sans-serif; font-size: 14px; line-height: 20px; padding: 0; transition: opacity .2s ease; }
-    .back-btn:hover { opacity: .75; }
-    .back-btn svg { width: 20px; height: 20px; }
-    .pagebar .branch { text-align: right; font-family: 'Poppins', sans-serif; color: #003F75; }
-    .pagebar .branch .label { display: block; font-size: 14px; line-height: 20px; font-weight: 400; }
-    .pagebar .branch .name  { display: block; font-size: 18px; line-height: 25px; font-weight: 300; }
-
-    /* ---------- Section header ---------- */
-    .section-head h1 { margin: 0; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 30px; line-height: 36px; color: #101828; }
-    .section-head p  { margin: 4px 0 0; font-size: 16px; line-height: 24px; color: #4A5565; }
-
-    /* ---------- Info banner ---------- */
-    .info-banner { display: flex; gap: 12px; padding: 20px 24px; background: linear-gradient(90deg, #FFFBEB 0%, #FFF7ED 100%); border: 1px solid #FEE685; border-radius: 14px; }
-    .info-banner .icon { flex: 0 0 auto; color: #E17100; margin-top: 2px; }
-    .info-banner h3 { margin: 0 0 4px; font-family: 'Manrope', sans-serif; font-size: 18px; line-height: 28px; font-weight: 600; color: #7B3306; }
-    .info-banner p  { margin: 0; font-size: 16px; line-height: 24px; color: #BB4D00; }
-
-    /* ---------- Offer cards ---------- */
-    .offers { display: flex; flex-direction: column; gap: 24px; }
-    .offer { background: #FFFFFF; border: 2px solid #E5E7EB; border-radius: 16px; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease; }
-    .offer:hover { transform: translateY(-2px); box-shadow: 0 14px 32px -16px rgba(16,24,40,.18); }
-    .offer-top { padding: 24px; color: #FFFFFF; }
-    .offer--purple .offer-top { background: linear-gradient(90deg, #AD46FF 0%, #8200DB 100%); }
-    .offer--blue   .offer-top { background: linear-gradient(90deg, #2B7FFF 0%, #1447E6 100%); }
-    .offer--green  .offer-top { background: linear-gradient(90deg, #00C950 0%, #008236 100%); }
-    .offer-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
-    .badge { display: inline-block; padding: 4px 12px; background: rgba(255,255,255,.2); border-radius: 9999px; font-size: 12px; line-height: 16px; font-weight: 500; color: #FFFFFF; }
-    .offer-head h3 { margin: 14px 0 4px; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 24px; line-height: 32px; }
-    .offer-head p  { margin: 0; font-size: 16px; line-height: 24px; color: rgba(255,255,255,.9); }
-    .offer-head .icon-deco { flex: 0 0 auto; width: 32px; height: 32px; opacity: .8; }
-    .offer-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .stat .label { font-size: 14px; line-height: 20px; color: rgba(255,255,255,.7); margin-bottom: 4px; }
-    .stat .value { font-size: 20px; line-height: 28px; font-weight: 700; color: #FFFFFF; }
-    .offer-foot { padding: 24px; background: #F9FAFB; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-    .validity { display: inline-flex; align-items: center; gap: 8px; color: #4A5565; font-size: 14px; line-height: 20px; }
-    .validity svg { width: 16px; height: 16px; }
-    .apply-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; background: #0056B3; color: #FFFFFF; border-radius: 10px; font-size: 16px; line-height: 24px; font-weight: 500; transition: background .2s ease, transform .15s ease; }
-    .apply-btn:hover  { background: #004794; }
-    .apply-btn:active { transform: scale(.98); }
-    .apply-btn svg { width: 16px; height: 16px; }
-
-    /* ---------- Responsive ---------- */
-    @@media (max-width: 720px) {
-        .section-head h1 { font-size: 24px; line-height: 32px; }
-        .section-head p  { font-size: 15px; }
-        .info-banner     { padding: 16px; border-radius: 12px; }
-        .info-banner h3  { font-size: 16px; line-height: 24px; }
-        .info-banner p   { font-size: 14px; line-height: 22px; }
-        .offer-top       { padding: 20px; }
-        .offer-foot      { padding: 20px; }
-        .offer-head h3   { font-size: 20px; line-height: 28px; }
-        .offer-head p    { font-size: 14px; line-height: 22px; }
-        .offer-stats     { grid-template-columns: 1fr 1fr; gap: 12px; }
-        .stat .value     { font-size: 18px; }
-    }
-    @@media (max-width: 480px) {
-        .pagebar         { flex-wrap: wrap; gap: 12px; }
-        .pagebar .branch { text-align: left; }
-        .info-banner     { flex-direction: column; }
-        .offer-head      { flex-direction: column; gap: 12px; }
-        .offer-stats     { grid-template-columns: 1fr; }
-        .offer-foot      { flex-direction: column; align-items: stretch; }
-        .apply-btn       { justify-content: center; }
-    }
-</style>
-
-<div class="container">
+<div class="flex flex-col gap-6 text-[#101828]" style="font-family: 'Source Sans 3', sans-serif;">
 
     <!-- Page bar -->
-    <div class="pagebar">
-        <button class="back-btn" type="button" aria-label="Geri" onclick="history.back()">
-            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <path d="M12.5 5L7.5 10L12.5 15" stroke="currentColor" stroke-width="1.667" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+    <div class="flex justify-between items-center gap-6 pb-3 border-b border-[#DCE3FB]">
+        <button type="button" aria-label="Geri" onclick="history.back()"
+            class="inline-flex items-center gap-1 bg-transparent text-[#1B4092] font-[Poppins] text-sm leading-5 p-0 border-0 cursor-pointer transition-opacity duration-200 hover:opacity-75">
+            <img src="/icons/dark/chevron-left.svg" width="20" height="20" alt="" aria-hidden="true">
             <span>Geri</span>
         </button>
-        <div class="branch">
-            <span class="label">@Model.BranchLabel</span>
-            <span class="name">@Model.BranchName</span>
+        <div class="text-right font-[Poppins] text-[#003F75]">
+            <span class="block text-sm leading-5 font-normal">@Model.BranchLabel</span>
+            <span class="block text-lg leading-[25px] font-light">@Model.BranchName</span>
         </div>
     </div>
 
     <!-- Section header -->
-    <header class="section-head">
-        <h1>@Model.PageTitle</h1>
-        <p>@Model.PageSubtitle</p>
+    <header>
+        <h1 class="m-0 font-bold text-[30px] leading-9 text-[#101828]" style="font-family: 'Manrope', sans-serif;">@Model.PageTitle</h1>
+        <p class="mt-1 text-base leading-6 text-[#4A5565]">@Model.PageSubtitle</p>
     </header>
 
     <!-- Info banner -->
-    <section class="info-banner" aria-label="Bilgilendirme">
-        <span class="icon" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L2 22h20L12 2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M12 10v5M12 18.5v.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+    <section class="flex gap-3 p-5 px-6 border border-[#FEE685] rounded-[14px]"
+             style="background: linear-gradient(90deg, #FFFBEB 0%, #FFF7ED 100%);"
+             aria-label="Bilgilendirme">
+        <span class="flex-none mt-0.5" aria-hidden="true">
+            <img src="/icons/orange/alert-triangle.svg" width="24" height="24" alt="">
         </span>
         <div>
-            <h3>@Model.BannerTitle</h3>
-            <p>@Model.BannerText</p>
+            <h3 class="m-0 mb-1 text-lg leading-7 font-semibold text-[#7B3306]" style="font-family: 'Manrope', sans-serif;">@Model.BannerTitle</h3>
+            <p class="m-0 text-base leading-6 text-[#BB4D00]">@Model.BannerText</p>
         </div>
     </section>
 
     <!-- Offers -->
-    <section class="offers" aria-label="Kredi teklifleri">
+    <section class="flex flex-col gap-6" aria-label="Kredi teklifleri">
 
         @foreach (var offer in Model.Offers)
         {
-            <article class="offer offer--@offer.ColorClass">
-                <div class="offer-top">
-                    <div class="offer-head">
+            <article class="bg-white border-2 border-[#E5E7EB] rounded-2xl overflow-hidden transition-all duration-[250ms] hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-16px_rgba(16,24,40,0.18)]">
+                <div class="offer-gradient-@offer.ColorClass p-6 text-white">
+                    <div class="flex justify-between items-start gap-6 mb-6">
                         <div>
-                            <span class="badge">@offer.Badge</span>
-                            <h3>@offer.Title</h3>
-                            <p>@offer.Subtitle</p>
+                            <span class="inline-block px-3 py-1 rounded-full text-xs leading-4 font-medium bg-white/20">@offer.Badge</span>
+                            <h3 class="mt-3.5 mb-1 font-bold text-2xl leading-8" style="font-family: 'Manrope', sans-serif;">@offer.Title</h3>
+                            <p class="m-0 text-base leading-6 text-white/90">@offer.Subtitle</p>
                         </div>
-                        <span class="icon-deco" aria-hidden="true">
-                            @Html.Raw(offer.IconSvg)
-                        </span>
+                        <img src="@offer.IconPath" width="32" height="32" style="opacity:0.8" alt="" aria-hidden="true">
                     </div>
-                    <div class="offer-stats">
-                        <div class="stat">
-                            <div class="label">Kredi Tutarı</div>
-                            <div class="value">@offer.Amount</div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <div class="text-sm leading-5 mb-1 text-white/70">Kredi Tutarı</div>
+                            <div class="text-xl leading-7 font-bold">@offer.Amount</div>
                         </div>
-                        <div class="stat">
-                            <div class="label">Faiz Oranı</div>
-                            <div class="value">@offer.InterestRate</div>
+                        <div>
+                            <div class="text-sm leading-5 mb-1 text-white/70">Faiz Oranı</div>
+                            <div class="text-xl leading-7 font-bold">@offer.InterestRate</div>
                         </div>
-                        <div class="stat">
-                            <div class="label">Vade</div>
-                            <div class="value">@offer.Term</div>
+                        <div>
+                            <div class="text-sm leading-5 mb-1 text-white/70">Vade</div>
+                            <div class="text-xl leading-7 font-bold">@offer.Term</div>
                         </div>
                     </div>
                 </div>
-                <div class="offer-foot">
-                    <span class="validity">
-                        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                            <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.333"/>
-                            <path d="M8 4v4l2.5 1.5" stroke="currentColor" stroke-width="1.333" stroke-linecap="round"/>
-                        </svg>
+                <div class="p-6 bg-[#F9FAFB] flex justify-between items-center gap-4 flex-wrap">
+                    <span class="inline-flex items-center gap-2 text-[#4A5565] text-sm leading-5">
+                        <img src="/icons/slate/clock.svg" width="16" height="16" alt="" aria-hidden="true">
                         @offer.Validity
                     </span>
-                    <button class="apply-btn" type="button"
-                            asp-page="/Apply" asp-route-offerId="@offer.Id">
+                    <button type="button" asp-page="/Apply" asp-route-offerId="@offer.Id"
+                        class="inline-flex items-center gap-2 px-6 py-2.5 bg-[#0056B3] text-white rounded-[10px] text-base leading-6 font-medium border-0 cursor-pointer transition-[background-color,transform] duration-200 hover:bg-[#004794] active:scale-[.98]">
                         Başvur
-                        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                            <path d="M3.333 8h9.334M8.667 3.333L13.333 8 8.667 12.667" stroke="#fff" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                        <img src="/icons/white/arrow-right.svg" width="16" height="16" alt="" aria-hidden="true">
                     </button>
                 </div>
             </article>
