@@ -76,7 +76,10 @@ MyApp.Web/
 │
 └── wwwroot/
     ├── css/
-    │   └── app.css                        # Tailwind input dosyası
+    │   └── app.css                        # Tailwind 
+    ├── icons/
+    │   └── users.svg 
+    input dosyası
     ├── js/
     │   └── app.js
     └── lib/
