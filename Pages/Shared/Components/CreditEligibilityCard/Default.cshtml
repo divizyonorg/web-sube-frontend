@@ -1,0 +1,64 @@
+@model MyApp.Web.ViewModels.CreditEligibility.CreditEligibilityCardViewModel
+
+@* Dış kart (açık mavi arka plan) *@
+<div class="flex flex-col gap-3 bg-[#E6F7FF] rounded-[15px] pt-[14px]">
+
+    @* Başlık — Poppins 250 18px #003F75 *@
+    <div class="text-center">
+        <span class="font-['Poppins'] text-[18px] font-[250] text-[#003F75]">Krediye uygun musun?</span>
+    </div>
+
+    @* İç beyaz kart *@
+    <div class="flex flex-col gap-4 bg-white border border-[#DCE3FB] rounded-[15px] p-4">
+
+        @* Başlık + ayraç — Poppins 500 16px #003F75 *@
+        <div class="border-b border-black/15 pb-1">
+            <span class="font-['Poppins'] text-[16px] font-medium text-[#003F75]">Kredi Uygunluk Durumun</span>
+        </div>
+
+        @* Slider alanı: bar (15px) + boşluk + durum etiketi (33px) + ölçek etiketleri (14px) *@
+        <div class="relative w-full" style="height: 79px;">
+
+            @* Gradient bar *@
+            <div class="absolute left-0 right-0 h-[15px] rounded-full"
+                 style="top: 8px; background: linear-gradient(90deg, rgba(255,255,255,0.5) 0%, #37B8C7 20%, #2E6DF8 50%, #122B62 100%);">
+            </div>
+
+            @* Diamond thumb — bar merkezi ile dikey hizalı (bar merkezi top:15.5px, thumb merkezi top:3+12.5=15.5px) *@
+            <svg class="absolute overflow-visible"
+                 style="left: calc(@Model.SliderPositionPercent% - 5px); top: 3px; width: 10px; height: 25px;"
+                 viewBox="0 0 10 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="5,3 9,12.5 5,22 1,12.5" fill="white" stroke="#1D459C" stroke-width="0.5"/>
+            </svg>
+
+            @* Durum etiketi — Poppins 600 22px #1D459C; bar'ın altında, thumb pozisyonunda ortalı *@
+            <span class="absolute font-['Poppins'] text-[22px] font-semibold text-[#1D459C] leading-none whitespace-nowrap"
+                  style="left: @(Model.SliderPositionPercent)%; top: 36px; transform: translateX(-50%);">
+                @Model.StatusLabel
+            </span>
+
+            @* Ölçek etiketleri — Poppins 400 9px rgba(0,0,0,0.5); SVG'den: premium @0%, kritik @~70%, düşük @100% *@
+            <div class="absolute left-0 right-0" style="top: 57px; height: 14px;">
+                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50" style="left: 0;">premium</span>
+                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50" style="left: 70%; transform: translateX(-50%);">kritik</span>
+                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50" style="right: 0;">düşük</span>
+            </div>
+
+        </div>
+
+        @* Açıklama metni — Poppins 250 10px #003F75 *@
+        <p class="font-['Poppins'] text-[10px] font-[250] text-[#003F75] text-center leading-[15px]">
+            Kredi uygunluk durumun Türkiye'de kredi veren tüm bankaların sana yakın kredi profiline
+            son 30 gün içinde verdiği kredi kararlarına bakarak oluşturulur, gerçeğe en yakın sonuçtur.
+        </p>
+    </div>
+
+    @* K.U.R Butonu — Poppins 500 16px beyaz *@
+    <div class="flex justify-center px-[12px] pb-[12px]">
+        <a href="/KrediRaporlari/KurDetay"
+           class="font-['Poppins'] flex items-center justify-center w-[280px] h-[44px] bg-[#0056B3] text-white text-[16px] font-medium rounded-[40px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] hover:bg-[#004494] transition-all">
+            K.U.R Raporunu Gör
+        </a>
+    </div>
+
+</div>

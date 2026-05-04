@@ -29,13 +29,15 @@
 
     <style>[x-cloak] { display: none !important; }</style>
 
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;">
 
-    @await Component.InvokeAsync("Header", new {
-        userName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
-        notificationCount = 0,
-        profileImageUrl   = ""
+    @await Component.InvokeAsync("Header", new MyApp.Web.ViewModels.HeaderViewModel
+    {
+        UserName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
+        NotificationCount = 0,
+        ProfileImageUrl   = ""
     })
 
     <div style="display:flex; height:calc(100vh - 85px); overflow:hidden;">
