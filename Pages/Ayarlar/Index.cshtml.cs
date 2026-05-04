@@ -115,6 +115,14 @@ public class IndexModel : PageModel
         Height  = 44
     };
 
+    public ButtonViewModel ProfilKaydetButton { get; } = new()
+    {
+        Label   = "Kaydet",
+        Variant = ButtonVariant.Primary,
+        Width   = 140,
+        Height  = 44
+    };
+
     public IActionResult OnGet()
     {
         ViewData["Title"]      = "Ayarlar";

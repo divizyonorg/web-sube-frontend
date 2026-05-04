@@ -22,6 +22,17 @@
     .tab-active   { background: linear-gradient(90deg, #0056B3 0%, #2E6DF8 100%); color: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     .tab-inactive { background: transparent; color: #003F75; }
     .tab-inactive:hover { background: rgba(46,109,248,0.06); }
+
+    .settings-layout  { display:flex; gap:20px; align-items:flex-start; flex:1; }
+    .settings-sidebar { width:285px; flex-shrink:0; background:#FFFFFF; border:1px solid #DCE3FB;
+                        border-radius:16px; padding:8px; box-sizing:border-box;
+                        display:flex; flex-direction:column; gap:2px; }
+    .settings-content { flex:1; min-width:0; }
+
+    @@media (max-width: 768px) {
+        .settings-layout  { flex-direction:column; gap:16px; }
+        .settings-sidebar { width:100%; }
+    }
 </style>
 
 <div style="font-family:'Poppins',sans-serif; display:flex; flex-direction:column; min-height:100%;"
@@ -51,12 +62,10 @@
     </div>
 
     @* ── İki Sütun: Tab Menü + İçerik ───────────────────────── *@
-    <div style="display:flex; gap:20px; align-items:flex-start; flex:1;">
+    <div class="settings-layout">
 
-        @* ── Sol Tab Menüsü (285 × auto) ────────────────────── *@
-        <div style="width:285px; flex-shrink:0; background:#FFFFFF; border:1px solid #DCE3FB;
-                    border-radius:16px; padding:8px; box-sizing:border-box;
-                    display:flex; flex-direction:column; gap:2px;">
+        @* ── Sol Tab Menüsü ──────────────────────────────────── *@
+        <div class="settings-sidebar">
 
             <button type="button" @@click="activeTab='finansal-profil'"
                     :class="activeTab==='finansal-profil' ? 'tab-active' : 'tab-inactive'"
@@ -123,209 +132,26 @@
         </div>
 
         @* ── Sağ İçerik Alanı ───────────────────────────────── *@
-        <div style="flex:1; min-width:0;">
+        <div class="settings-content">
 
-            @* ════ FİNANSAL PROFİL ════ *@
             <div x-show="activeTab==='finansal-profil'">
-
-                @* Panel başlığı + Düzey göstergeleri *@
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
-                    <div>
-                        <h2 style="font-weight:600; font-size:17px; color:#1A1A2E; margin:0 0 4px;">Finansal Profil</h2>
-                        <p style="font-size:13px; color:#7A94B8; margin:0;">
-                            Mesleki, finansal ve demografik bilgilerinizi güncelleyin.
-                        </p>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:8px; flex-shrink:0; padding-top:4px;">
-                        <div style="display:flex; align-items:center; gap:6px; background:rgba(46,109,248,0.08); border:1px solid rgba(46,109,248,0.2); border-radius:20px; padding:4px 10px;">
-                            <div style="width:7px; height:7px; border-radius:50%; background:#2E6DF8; flex-shrink:0;"></div>
-                            <span style="font-size:12px; font-weight:500; color:#2E6DF8; font-family:'Poppins';">Düzey 1</span>
-                        </div>
-                        <div style="display:flex; align-items:center; gap:6px; background:rgba(55,184,199,0.08); border:1px solid rgba(55,184,199,0.2); border-radius:20px; padding:4px 10px;">
-                            <div style="width:7px; height:7px; border-radius:50%; background:#37B8C7; flex-shrink:0;"></div>
-                            <span style="font-size:12px; font-weight:500; color:#37B8C7; font-family:'Poppins';">Düzey 2</span>
-                        </div>
-                    </div>
-                </div>
-
-                @* İki Kart *@
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-
-                    @* Kart 1: Mesleki ve Finansal Durum *@
-                    <div style="background:#FFFFFF; border:1px solid #DCE3FB; border-radius:14px; padding:20px; box-sizing:border-box;">
-
-                        <div style="display:flex; align-items:center; gap:12px;
-                                    margin:-20px -20px 16px -20px; padding:14px 20px;
-                                    background:#F4F8FF; border-radius:14px 14px 0 0;
-                                    border-bottom:1px solid #DCE3FB;">
-                            <div style="width:40px; height:40px; flex-shrink:0; background:linear-gradient(135deg,#0056B3 0%,#2E6DF8 100%); border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <rect x="2" y="6" width="16" height="12" rx="2" stroke="white" stroke-width="1.5"/>
-                                    <path d="M7 6V5C7 3.89543 7.89543 3 9 3H11C12.1046 3 13 3.89543 13 5V6" stroke="white" stroke-width="1.5"/>
-                                    <path d="M2 10H18" stroke="white" stroke-width="1.5"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <div style="font-weight:600; font-size:14px; color:#1A1A2E;">Mesleki ve Finansal Durum</div>
-                                <div style="font-size:12px; color:#7A94B8;">Çalışma bilgileri</div>
-                            </div>
-                        </div>
-
-                        @* _Select — ÇALIŞMA DURUMU (Alpine x-model=calisma) *@
-                        <div style="margin-bottom:10px;">
-                            <partial name="~/Partials/Components/_Select.cshtml" model="Model.CalismaDurumu" />
-                        </div>
-
-                        <div style="display:flex; align-items:center; gap:6px; margin-bottom:10px;">
-                            <div style="width:6px; height:6px; border-radius:50%; background:#2E6DF8; flex-shrink:0;"></div>
-                            <span style="font-size:11px; color:#2E6DF8; font-style:italic;">
-                                Fields are hidden dynamically based on user selection
-                            </span>
-                        </div>
-
-                        @* Koşullu alt alanlar — Düzey 1 (mavi), connector sadece ilk item'da *@
-                        <div x-show="calisma !== ''"
-                             style="border-left:2px solid #2E6DF8; padding-left:0; display:flex; flex-direction:column; gap:12px;">
-                            <div style="position:relative; padding-left:14px;">
-                                <div style="position:absolute; left:0; top:7px; width:10px; height:2px; background:#2E6DF8;"></div>
-                                <partial name="~/Partials/Components/_Select.cshtml" model="Model.CalismaSektoru" />
-                            </div>
-                            <div style="padding-left:14px;">
-                                <partial name="~/Partials/Components/_Select.cshtml" model="Model.Meslek" />
-                            </div>
-                            <div style="padding-left:14px;">
-                                <partial name="~/Partials/Components/_Select.cshtml" model="Model.CalismaSuresi" />
-                            </div>
-                            <div style="padding-left:14px;">
-                                <partial name="~/Partials/Components/_Select.cshtml" model="Model.MaasBankasi" />
-                            </div>
-                        </div>
-
-                    </div>
-
-                    @* Kart 2: Demografik Durum *@
-                    <div style="background:#FFFFFF; border:1px solid #DCE3FB; border-radius:14px; padding:20px; box-sizing:border-box;">
-
-                        <div style="display:flex; align-items:center; gap:12px;
-                                    margin:-20px -20px 16px -20px; padding:14px 20px;
-                                    background:#F4F8FF; border-radius:14px 14px 0 0;
-                                    border-bottom:1px solid #DCE3FB;">
-                            <div style="width:40px; height:40px; flex-shrink:0; background:linear-gradient(135deg,#0056B3 0%,#37B8C7 100%); border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <circle cx="8" cy="6" r="3" stroke="white" stroke-width="1.5"/>
-                                    <path d="M2 16C2 13.7909 4.68629 12 8 12" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-                                    <circle cx="14" cy="8" r="2.5" stroke="white" stroke-width="1.5"/>
-                                    <path d="M10 16C10 14.3431 11.7909 13 14 13C16.2091 13 18 14.3431 18 16" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <div style="font-weight:600; font-size:14px; color:#1A1A2E;">Demografik Durum</div>
-                                <div style="font-size:12px; color:#7A94B8;">Medeni hal ve aile bilgileri</div>
-                            </div>
-                        </div>
-
-                        @* _Select — MEDENİ HAL (Alpine x-model=medeni) *@
-                        <div style="margin-bottom:10px;">
-                            <partial name="~/Partials/Components/_Select.cshtml" model="Model.MedeniHal" />
-                        </div>
-
-                        <div style="display:flex; align-items:center; gap:6px; margin-bottom:10px;">
-                            <div style="width:6px; height:6px; border-radius:50%; background:#2E6DF8; flex-shrink:0;"></div>
-                            <span style="font-size:11px; color:#2E6DF8; font-style:italic;">
-                                Fields are hidden dynamically based on user selection
-                            </span>
-                        </div>
-
-                        @* Koşullu alt alanlar — sadece Evli (Düzey 1: mavi, tree connector) *@
-                        <div x-show="medeni === 'evli'"
-                             style="border-left:2px solid #2E6DF8; padding-left:0; display:flex; flex-direction:column; gap:24px;">
-
-                            @* EŞ ÇALIŞIYOR MU? — connector + Radio *@
-                            <div style="position:relative; padding-left:14px; padding-bottom:4px;">
-                                <div style="position:absolute; left:0; top:7px; width:10px; height:2px; background:#2E6DF8;"></div>
-                                <label style="display:block; font-size:11px; font-weight:500; color:#7A94B8;
-                                              letter-spacing:0.08em; text-transform:uppercase; margin-bottom:10px; font-family:'Poppins';">
-                                    EŞ ÇALIŞIYOR MU?
-                                </label>
-                                <div @@change="esCalisiyor = $event.target.value">
-                                    <partial name="~/Partials/Components/_Radio.cshtml" model="Model.EsCalisiyor" />
-                                </div>
-                            </div>
-
-                            @* EŞİN AYLIK GELİRİ — Düzey 2: teal, iç içe, connector sadece bu item'da *@
-                            <div x-show="esCalisiyor === 'evet'"
-                                 style="margin-left:50px;">
-                                <div style="border-left:2px solid #37B8C7; padding-left:0;">
-                                    <div style="position:relative; padding-left:14px;">
-                                        <div style="position:absolute; left:0; top:7px; width:10px; height:2px; background:#37B8C7;"></div>
-                                        <label style="display:block; font-size:11px; font-weight:500; color:#7A94B8;
-                                                      letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px; font-family:'Poppins';">
-                                            EŞİN AYLIK GELİRİ
-                                        </label>
-                                        <div style="position:relative;">
-                                            <input type="number" placeholder="0"
-                                                   style="width:100%; padding:10px 36px 10px 12px; border:1px solid #DCE3FB; border-radius:8px;
-                                                          font-family:'Poppins',sans-serif; font-size:13px; color:#1A1A2E; background:#FFFFFF;
-                                                          outline:none; box-sizing:border-box; transition:border-color 0.15s;"
-                                                   onfocus="this.style.borderColor='#0056B3'" onblur="this.style.borderColor='#DCE3FB'" />
-                                            <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%);
-                                                         font-size:13px; color:#7A94B8; pointer-events:none; font-family:'Poppins';">
-                                                ₺
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-                @* /İki Kart *@
-
-                @* Progressive Disclosure bilgi kutusu *@
-                <div style="margin-top:20px; background:#EBF2FF; border:1px solid #C3D9FF; border-radius:12px;
-                            padding:14px 16px; display:flex; gap:10px; align-items:flex-start;">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0; margin-top:1px;">
-                        <circle cx="8" cy="8" r="7" stroke="#2E6DF8" stroke-width="1.5"/>
-                        <path d="M8 7V11" stroke="#2E6DF8" stroke-width="1.5" stroke-linecap="round"/>
-                        <circle cx="8" cy="5" r="0.75" fill="#2E6DF8"/>
-                    </svg>
-                    <p style="font-size:12px; color:#003F75; margin:0; line-height:1.7; font-family:'Poppins';">
-                        <strong>Progressive Disclosure:</strong>
-                        Mavi çizgiyle bağlı alanlar seçimlerinize göre dinamik olarak gösterilir ya da gizlenir.
-                        Bağlı alanlar ana seçim değiştiğinde otomatik olarak güncellenir.
-                    </p>
-                </div>
-
-                @* Kaydet — _Button (Primary) *@
-                <div style="display:flex; justify-content:flex-end; margin-top:20px;">
-                    <partial name="~/Partials/Components/_Button.cshtml" model="Model.KaydetButton" />
-                </div>
-
+                <partial name="~/Pages/Ayarlar/_FinansalProfil.cshtml" model="Model" />
             </div>
-            @* /FİNANSAL PROFİL *@
 
-            @* ════ PROFİL BİLGİLERİ ════ *@
             <div x-show="activeTab==='profil-bilgileri'">
-                <h2 style="font-weight:600; font-size:18px; color:#1A1A2E; margin:0 0 6px;">Profil Bilgileri</h2>
-                <p style="font-size:13px; color:#7A94B8; margin:0;">Kişisel bilgilerinizi güncelleyin.</p>
+                <partial name="~/Pages/Ayarlar/_ProfilBilgileri.cshtml" model="Model" />
             </div>
 
-            @* ════ GÜVENLİK ════ *@
             <div x-show="activeTab==='guvenlik'">
                 <h2 style="font-weight:600; font-size:18px; color:#1A1A2E; margin:0 0 6px;">Güvenlik</h2>
                 <p style="font-size:13px; color:#7A94B8; margin:0;">Şifre ve güvenlik ayarlarınızı yönetin.</p>
             </div>
 
-            @* ════ BİLDİRİMLER ════ *@
             <div x-show="activeTab==='bildirimler'">
                 <h2 style="font-weight:600; font-size:18px; color:#1A1A2E; margin:0 0 6px;">Bildirimler</h2>
                 <p style="font-size:13px; color:#7A94B8; margin:0;">Bildirim tercihlerinizi ayarlayın.</p>
             </div>
 
-            @* ════ ÖDEME YÖNTEMLERİ ════ *@
             <div x-show="activeTab==='odeme-yontemleri'">
                 <h2 style="font-weight:600; font-size:18px; color:#1A1A2E; margin:0 0 6px;">Ödeme Yöntemleri</h2>
                 <p style="font-size:13px; color:#7A94B8; margin:0;">Ödeme yöntemlerinizi yönetin.</p>

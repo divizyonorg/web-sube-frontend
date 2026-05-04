@@ -1,0 +1,77 @@
+@model MyApp.Web.Pages.Ayarlar.IndexModel
+@{ Layout = null; }
+
+<div class="bg-white border border-gray-200 rounded-2xl p-6">
+
+    <p class="text-[18px] text-[#1A1A2E]" style="font-family:'Poppins'; font-weight:700; margin-bottom:20px;">Profil Bilgileri</p>
+
+    <div style="display:flex; flex-direction:column; gap:16px;">
+
+        @* Ad Soyad *@
+        <div>
+            <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:8px; font-family:'Poppins';">Ad Soyad</label>
+            <div x-data="{ focused: false }"
+                 :class="focused ? 'border-[#0056B3]' : 'border-gray-200'"
+                 class="border rounded-[10px] bg-white transition-colors"
+                 style="height:50px; display:flex; align-items:center; gap:12px; padding-left:15px; padding-right:16px;">
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;">
+                    <circle cx="8" cy="5" r="3" stroke="#9CA3AF" stroke-width="1.5"/>
+                    <path d="M2 14C2 11.7909 4.68629 10 8 10C11.3137 10 14 11.7909 14 14" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <input type="text"
+                       @@focus="focused = true" @@blur="focused = false"
+                       style="flex:1; background:transparent; outline:none; border:none; font-family:'Poppins'; font-size:14px; color:#1F2937;" />
+            </div>
+        </div>
+
+        @* E-posta *@
+        <div>
+            <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:8px; font-family:'Poppins';">E-posta</label>
+            <div x-data="{ focused: false }"
+                 :class="focused ? 'border-[#0056B3]' : 'border-gray-200'"
+                 class="border rounded-[10px] bg-white transition-colors"
+                 style="height:50px; display:flex; align-items:center; gap:12px; padding-left:15px; padding-right:16px;">
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;">
+                    <rect x="1" y="3.5" width="14" height="9" rx="1.5" stroke="#9CA3AF" stroke-width="1.5"/>
+                    <path d="M1 7L8 10.5L15 7" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <input type="email"
+                       @@focus="focused = true" @@blur="focused = false"
+                       style="flex:1; background:transparent; outline:none; border:none; font-family:'Poppins'; font-size:14px; color:#1F2937;" />
+            </div>
+        </div>
+
+        @* Telefon *@
+        <div>
+            <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:8px; font-family:'Poppins';">Telefon</label>
+            <div x-data="{ focused: false }"
+                 :class="focused ? 'border-[#0056B3]' : 'border-gray-200'"
+                 class="border rounded-[10px] bg-white transition-colors"
+                 style="height:50px; display:flex; align-items:center; gap:12px; padding-left:15px; padding-right:16px;">
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;">
+                    <path d="M14.67 11.28v2a1.33 1.33 0 01-1.45 1.33 13.19 13.19 0 01-5.75-2.05A13 13 0 012.91 8.67a13.19 13.19 0 01-2.05-5.78A1.33 1.33 0 012.07 1.33h2a1.33 1.33 0 011.33 1.15 8.56 8.56 0 00.47 1.87 1.33 1.33 0 01-.3 1.41L5.27 6.61a10.67 10.67 0 004.12 4.12l.85-.85a1.33 1.33 0 011.41-.3 8.56 8.56 0 001.87.47A1.33 1.33 0 0114.67 11.28z"
+                          stroke="#9CA3AF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <input type="tel"
+                       @@focus="focused = true" @@blur="focused = false"
+                       style="flex:1; background:transparent; outline:none; border:none; font-family:'Poppins'; font-size:14px; color:#1F2937;" />
+            </div>
+        </div>
+
+    </div>
+
+    @* Kaydet butonu *@
+    <div style="margin-top:20px;">
+        <button type="button"
+                style="display:flex; align-items:center; gap:8px; height:44px; background:#0056B3; color:white; border:none; border-radius:10px; padding:0 20px; font-family:'Poppins'; font-size:15px; font-weight:500; cursor:pointer;"
+                onmouseover="this.style.background='#003F75'" onmouseout="this.style.background='#0056B3'">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M13 2H3a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1V5l-3-3z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M11 14v-5H5v5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5 2v3.5H10" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Kaydet
+        </button>
+    </div>
+
+</div>
