@@ -1,0 +1,130 @@
+@model MyApp.Web.Pages.Ayarlar.IndexModel
+@{ Layout = null; }
+
+<style>
+    .bildirim-card {
+        background: #F5F6FA;
+        border-radius: 10px;
+        min-height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        gap: 16px;
+    }
+
+    .toggle-btn {
+        width: 48px;
+        height: 24px;
+        border-radius: 20px;
+        border: none;
+        cursor: pointer;
+        position: relative;
+        transition: background 0.2s;
+        flex-shrink: 0;
+        outline: none;
+    }
+
+    .toggle-thumb {
+        position: absolute;
+        top: 3px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #FFFFFF;
+        transition: left 0.2s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        pointer-events: none;
+    }
+
+    @@media (max-width: 640px) {
+        .bildirim-card { padding: 16px; }
+    }
+</style>
+
+<div style="background:#FFFFFF; border:1px solid #DCE3FB; border-radius:14px;
+            padding:28px 33px 33px; font-family:'Poppins',sans-serif; box-sizing:border-box;">
+
+    <p style="font-weight:600; font-size:18px; color:#1A1A2E; margin:0 0 24px;">Bildirim Tercihleri</p>
+
+    <div style="display:flex; flex-direction:column; gap:12px;">
+
+        @* E-posta Bildirimleri — varsayılan: açık *@
+        <div class="bildirim-card">
+            <div>
+                <p style="font-weight:600; font-size:14px; color:#1A1A2E; margin:0 0 4px;">E-posta Bildirimleri</p>
+                <p style="font-size:13px; color:#7A94B8; margin:0;">Önemli güncellemeler e-posta ile gönderilir</p>
+            </div>
+            <button type="button" class="toggle-btn"
+                    @@click="emailOn = !emailOn"
+                    :style="emailOn ? 'background:#0056B3' : 'background:#CBD5E1'"
+                    style="background:#0056B3;">
+                <span class="toggle-thumb"
+                      :style="emailOn ? 'left:27px' : 'left:3px'"
+                      style="left:27px;"></span>
+            </button>
+        </div>
+
+        @* SMS Bildirimleri — varsayılan: açık *@
+        <div class="bildirim-card">
+            <div>
+                <p style="font-weight:600; font-size:14px; color:#1A1A2E; margin:0 0 4px;">SMS Bildirimleri</p>
+                <p style="font-size:13px; color:#7A94B8; margin:0;">Ödeme hatırlatmaları SMS ile gönderilir</p>
+            </div>
+            <button type="button" class="toggle-btn"
+                    @@click="smsOn = !smsOn"
+                    :style="smsOn ? 'background:#0056B3' : 'background:#CBD5E1'"
+                    style="background:#0056B3;">
+                <span class="toggle-thumb"
+                      :style="smsOn ? 'left:27px' : 'left:3px'"
+                      style="left:27px;"></span>
+            </button>
+        </div>
+
+        @* Mobil Bildirimler — varsayılan: kapalı *@
+        <div class="bildirim-card">
+            <div>
+                <p style="font-weight:600; font-size:14px; color:#1A1A2E; margin:0 0 4px;">Mobil Bildirimler</p>
+                <p style="font-size:13px; color:#7A94B8; margin:0;">Mobil uygulamadan anlık bildirimler</p>
+            </div>
+            <button type="button" class="toggle-btn"
+                    @@click="mobileOn = !mobileOn"
+                    :style="mobileOn ? 'background:#0056B3' : 'background:#CBD5E1'"
+                    style="background:#CBD5E1;">
+                <span class="toggle-thumb"
+                      :style="mobileOn ? 'left:27px' : 'left:3px'"
+                      style="left:3px;"></span>
+            </button>
+        </div>
+
+        @* Pazarlama İletişimi — varsayılan: açık *@
+        <div class="bildirim-card">
+            <div>
+                <p style="font-weight:600; font-size:14px; color:#1A1A2E; margin:0 0 4px;">Pazarlama İletişimi</p>
+                <p style="font-size:13px; color:#7A94B8; margin:0;">Kampanya ve tekliflerden haberdar olun</p>
+            </div>
+            <button type="button" class="toggle-btn"
+                    @@click="pazarlamaOn = !pazarlamaOn"
+                    :style="pazarlamaOn ? 'background:#0056B3' : 'background:#CBD5E1'"
+                    style="background:#0056B3;">
+                <span class="toggle-thumb"
+                      :style="pazarlamaOn ? 'left:27px' : 'left:3px'"
+                      style="left:27px;"></span>
+            </button>
+        </div>
+
+    </div>
+
+    @* Kaydet *@
+    <div style="margin-top:28px;">
+        <button type="button"
+                style="display:flex; align-items:center; gap:8px; height:44px; background:#0056B3; color:white;
+                       border:none; border-radius:10px; padding:0 20px; font-family:'Poppins'; font-size:15px;
+                       font-weight:500; cursor:pointer; transition:background 0.15s;"
+                onmouseover="this.style.background='#003F75'" onmouseout="this.style.background='#0056B3'">
+            <img src="~/icons/white/save-02.svg" width="16" height="16" alt="">
+            Kaydet
+        </button>
+    </div>
+
+</div>

@@ -4,6 +4,11 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/imask/dist/imask.min.js"></script>
 
+<style>
+    .guvenlik-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @@media (max-width: 640px) { .guvenlik-grid { grid-template-columns: 1fr; } }
+</style>
+
 @* ── Dış beyaz card ──────────────────────────────────────────── *@
 <div style="background:#FFFFFF; border:1px solid #DCE3FB; border-radius:14px;
             padding:33px 33px 1px 33px; display:flex; flex-direction:column;
@@ -36,7 +41,7 @@
     </div>
 
     @* ── İki Bilgi Kartı ─────────────────────────────────────────── *@
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+    <div class="guvenlik-grid">
 
         @* Güvenli Doğrulama *@
         <div style="background:#B9F8CF; border:1px solid #6EE7A0; border-radius:14px;

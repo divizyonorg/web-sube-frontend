@@ -36,7 +36,7 @@
 </style>
 
 <div style="font-family:'Poppins',sans-serif; display:flex; flex-direction:column; min-height:100%;"
-     x-data="{ activeTab: 'finansal-profil', calisma: '', medeni: '', esCalisiyor: 'evet' }">
+     x-data="{ activeTab: 'finansal-profil', calisma: '', medeni: '', esCalisiyor: 'evet', emailOn: true, smsOn: true, mobileOn: false, pazarlamaOn: true }">
 
     @* ── Breadcrumb ─────────────────────────────────────────── *@
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
@@ -125,8 +125,7 @@
             </div>
 
             <div x-show="activeTab==='bildirimler'">
-                <h2 style="font-weight:600; font-size:18px; color:#1A1A2E; margin:0 0 6px;">Bildirimler</h2>
-                <p style="font-size:13px; color:#7A94B8; margin:0;">Bildirim tercihlerinizi ayarlayın.</p>
+                <partial name="~/Pages/Ayarlar/_Bildirimler.cshtml" model="Model" />
             </div>
 
             <div x-show="activeTab==='odeme-yontemleri'">

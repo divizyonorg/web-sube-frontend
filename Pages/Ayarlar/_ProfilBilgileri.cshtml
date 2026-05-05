@@ -1,7 +1,13 @@
 @model MyApp.Web.Pages.Ayarlar.IndexModel
 @{ Layout = null; }
 
-<div class="bg-white border border-gray-200 rounded-2xl p-6">
+<style>
+    @@media (max-width: 480px) {
+        .profil-card { padding: 16px !important; }
+    }
+</style>
+
+<div class="profil-card bg-white border border-gray-200 rounded-2xl p-6">
 
     <p class="text-[18px] text-[#1A1A2E]" style="font-family:'Poppins'; font-weight:700; margin-bottom:20px;">Profil Bilgileri</p>
 

@@ -1,6 +1,11 @@
 @model MyApp.Web.Pages.Ayarlar.IndexModel
 @{ Layout = null; }
 
+<style>
+    .finansal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @@media (max-width: 900px) { .finansal-grid { grid-template-columns: 1fr; } }
+</style>
+
 @* Panel başlığı + Düzey göstergeleri *@
 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
     <div>
@@ -22,7 +27,7 @@
 </div>
 
 @* İki Kart *@
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+<div class="finansal-grid">
 
     @* Kart 1: Mesleki ve Finansal Durum *@
     <div style="background:#FFFFFF; border:1px solid #DCE3FB; border-radius:14px; padding:20px; box-sizing:border-box;">
