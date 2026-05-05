@@ -1,6 +1,16 @@
 @model MyApp.Web.ViewModels.UserAvatarViewModel
 
-<div style="position:relative;
+<style>
+    @@media (max-width: 767px) {
+        .ua-container    { width: 112.3px !important; }
+        .ua-profile-btn  { width: 64.31px !important; padding: 8px 12px !important; }
+        .ua-name-wrap    { display: none !important; }
+        .ua-chevron      { display: none !important; }
+    }
+</style>
+
+<div class="ua-container"
+     style="position:relative;
             width:284.39px;
             height:56px;
             font-family:'Poppins',sans-serif;">
@@ -16,13 +26,13 @@
                    padding:0;
                    cursor:pointer;">
 
-        @* Zil ikonu — 24×24, left:8 top:8 *@
+        @* Zil ikonu *@
         <img src="~/icons/white/bell-01.svg"
              width="24" height="24"
              alt=""
              style="position:absolute; left:8px; top:8px; display:block; pointer-events:none;">
 
-        @* Bildirim rozeti — 16×16, left:18 top:6 *@
+        @* Bildirim rozeti *@
         @if (Model.NotificationCount > 0)
         {
             <span style="position:absolute;
@@ -32,7 +42,6 @@
                          background:#FF3B30;
                          border-radius:9999px;
                          font-family:'Poppins',sans-serif;
-                         font-style:normal;
                          font-weight:700;
                          font-size:9px;
                          line-height:14px;
@@ -43,8 +52,9 @@
         }
     </button>
 
-    @* ── Profil butonu — 236.39×56, left:48 top:0 ── *@
+    @* ── Profil butonu — desktop: 236px, mobil: 64px ── *@
     <button type="button"
+            class="ua-profile-btn"
             style="position:absolute;
                    left:48px; top:0;
                    box-sizing:border-box;
@@ -59,7 +69,7 @@
                    border-radius:9999px;
                    cursor:pointer;">
 
-        @* Profil resmi — 38×38, order:0 *@
+        @* Profil resmi *@
         <img src="@(string.IsNullOrEmpty(Model.ProfileImageUrl) ? "/icons/navy/user-01.svg" : Model.ProfileImageUrl)"
              alt="Profil fotoğrafı"
              style="width:38px;
@@ -67,43 +77,27 @@
                     border-radius:9999px;
                     object-fit:cover;
                     flex:none;
-                    order:0;
                     flex-grow:0;">
 
-        @* İsim — order:1, flex-grow:1 *@
-        <span style="display:flex;
-                     flex-direction:row;
-                     align-items:flex-start;
-                     padding:0;
-                     width:128.39px;
-                     height:24px;
-                     flex:none;
-                     order:1;
-                     flex-grow:1;
-                     overflow:hidden;">
-            <span style="width:129px;
-                         height:24px;
+        @* İsim (masaüstü) *@
+        <span class="ua-name-wrap"
+              style="display:flex; flex-direction:row; align-items:flex-start;
+                     padding:0; width:128.39px; height:24px;
+                     flex:none; order:1; flex-grow:1; overflow:hidden;">
+            <span style="width:129px; height:24px;
                          font-family:'Poppins',sans-serif;
-                         font-style:normal;
-                         font-weight:500;
-                         font-size:16px;
-                         line-height:24px;
-                         text-align:center;
-                         color:#003F75;
-                         flex:none;
-                         order:0;
-                         flex-grow:0;
-                         white-space:nowrap;
-                         overflow:hidden;
-                         text-overflow:ellipsis;">
+                         font-weight:500; font-size:16px; line-height:24px;
+                         text-align:center; color:#003F75;
+                         white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                 @Model.UserName
             </span>
         </span>
 
-        @* Chevron — 20×20, order:2 *@
+        @* Chevron (masaüstü) *@
         <img src="~/icons/blue/chevron-down.svg"
              width="20" height="20"
              alt=""
+             class="ua-chevron"
              style="flex:none; order:2; flex-grow:0; display:block; pointer-events:none;">
 
     </button>
