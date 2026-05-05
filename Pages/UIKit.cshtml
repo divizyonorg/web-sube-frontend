@@ -259,11 +259,11 @@
         <div>
             <p class="text-xs text-gray-400 mb-3">Desktop top header — gradient mavi, logo + avatar</p>
             <div class="overflow-hidden rounded-xl" style="width:100%;">
-                @await Component.InvokeAsync("Header", new
+                @await Component.InvokeAsync("Header", new MyApp.Web.ViewModels.HeaderViewModel
                 {
-                    userName          = "Mustafa GÜMÜŞ",
-                    notificationCount = 2,
-                    profileImageUrl   = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg/250px-Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg"
+                    UserName          = "Mustafa GÜMÜŞ",
+                    NotificationCount = 2,
+                    ProfileImageUrl   = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg/250px-Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg"
                 })
             </div>
         </div>
