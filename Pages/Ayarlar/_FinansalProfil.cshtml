@@ -32,11 +32,7 @@
                     background:#F4F8FF; border-radius:14px 14px 0 0;
                     border-bottom:1px solid #DCE3FB;">
             <div style="width:40px; height:40px; flex-shrink:0; background:linear-gradient(135deg,#0056B3 0%,#2E6DF8 100%); border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <rect x="2" y="6" width="16" height="12" rx="2" stroke="white" stroke-width="1.5"/>
-                    <path d="M7 6V5C7 3.89543 7.89543 3 9 3H11C12.1046 3 13 3.89543 13 5V6" stroke="white" stroke-width="1.5"/>
-                    <path d="M2 10H18" stroke="white" stroke-width="1.5"/>
-                </svg>
+                <img src="~/icons/white/briefcase-02.svg" width="20" height="20" alt="">
             </div>
             <div>
                 <div style="font-weight:600; font-size:14px; color:#1A1A2E;">Mesleki ve Finansal Durum</div>
@@ -82,12 +78,7 @@
                     background:#F4F8FF; border-radius:14px 14px 0 0;
                     border-bottom:1px solid #DCE3FB;">
             <div style="width:40px; height:40px; flex-shrink:0; background:linear-gradient(135deg,#0056B3 0%,#37B8C7 100%); border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <circle cx="8" cy="6" r="3" stroke="white" stroke-width="1.5"/>
-                    <path d="M2 16C2 13.7909 4.68629 12 8 12" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-                    <circle cx="14" cy="8" r="2.5" stroke="white" stroke-width="1.5"/>
-                    <path d="M10 16C10 14.3431 11.7909 13 14 13C16.2091 13 18 14.3431 18 16" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
+                <img src="~/icons/white/users-01.svg" width="20" height="20" alt="">
             </div>
             <div>
                 <div style="font-weight:600; font-size:14px; color:#1A1A2E;">Demografik Durum</div>
@@ -164,5 +155,12 @@
 
 @* Kaydet *@
 <div style="display:flex; justify-content:flex-end; margin-top:20px;">
-    <partial name="~/Partials/Components/_Button.cshtml" model="Model.KaydetButton" />
+    <button type="button"
+            style="display:flex; align-items:center; gap:8px; height:44px; background:#0056B3; color:white;
+                   border:none; border-radius:10px; padding:0 20px; font-family:'Poppins'; font-size:15px;
+                   font-weight:500; cursor:pointer; transition:background 0.15s;"
+            onmouseover="this.style.background='#003F75'" onmouseout="this.style.background='#0056B3'">
+        <img src="~/icons/white/save-02.svg" width="16" height="16" alt="">
+        Kaydet
+    </button>
 </div>

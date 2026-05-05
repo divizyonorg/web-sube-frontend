@@ -1,0 +1,161 @@
+@model MyApp.Web.Pages.Ayarlar.IndexModel
+@{ Layout = null; }
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/imask/dist/imask.min.js"></script>
+
+@* ── Dış beyaz card ──────────────────────────────────────────── *@
+<div style="background:#FFFFFF; border:1px solid #DCE3FB; border-radius:14px;
+            padding:33px 33px 1px 33px; display:flex; flex-direction:column;
+            gap:24px; font-family:'Poppins',sans-serif; box-sizing:border-box;">
+
+    <p style="font-weight:700; font-size:18px; color:#1A1A2E; margin:0;">Güvenlik Ayarları</p>
+
+    @* ── SMS OTP Kartı ───────────────────────────────────────────── *@
+    <div style="background:#E6F7FF; border:1px solid #BAE7FF; border-radius:14px;
+                padding:20px; display:flex; align-items:center; gap:16px;
+                min-height:110px; box-sizing:border-box;">
+
+        <div style="width:56px; height:56px; flex-shrink:0; border-radius:50%;
+                    background:linear-gradient(135deg,#2E6DF8 0%,#0056B3 100%);
+                    display:flex; align-items:center; justify-content:center;">
+            <img src="~/icons/white/phone-01.svg" width="26" height="26" alt="">
+        </div>
+
+        <div style="flex:1; min-width:0;">
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
+                <span style="font-weight:700; font-size:15px; color:#003F75;">SMS OTP ile Giriş Aktif</span>
+                <span style="background:#0056B3; color:#FFFFFF; font-size:11px; font-weight:600;
+                             padding:3px 12px; border-radius:20px;">Aktif</span>
+            </div>
+            <p style="font-size:13px; color:#374151; margin:0; line-height:1.6;">
+                Hesabınıza her girişte kayıtlı cep telefonunuza
+                (<strong>@Model.Settings.OtpPhone</strong>) tek kullanımlık doğrulama kodu gönderilmektedir.
+            </p>
+        </div>
+    </div>
+
+    @* ── İki Bilgi Kartı ─────────────────────────────────────────── *@
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+        @* Güvenli Doğrulama *@
+        <div style="background:#B9F8CF; border:1px solid #6EE7A0; border-radius:14px;
+                    padding:16px 18px; min-height:90px; box-sizing:border-box;
+                    display:flex; flex-direction:column; justify-content:center;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                <img src="~/icons/green/check-circle.svg" width="22" height="22" alt="" style="flex-shrink:0;">
+                <span style="font-weight:600; font-size:14px; color:#15803D;">Güvenli Doğrulama</span>
+            </div>
+            <p style="font-size:12px; color:#16A34A; margin:0; line-height:1.5; padding-left:32px;">
+                Her giriş benzersiz bir OTP kodu ile doğrulanır.
+            </p>
+        </div>
+
+        @* Şifresiz Erişim *@
+        <div style="background:#BEDBFF; border:1px solid #93C5FD; border-radius:14px;
+                    padding:16px 18px; min-height:90px; box-sizing:border-box;
+                    display:flex; flex-direction:column; justify-content:center;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                <img src="~/icons/blue/lock-02.svg" width="22" height="22" alt="" style="flex-shrink:0;">
+                <span style="font-weight:600; font-size:14px; color:#1D4ED8;">Şifresiz Erişim</span>
+            </div>
+            <p style="font-size:12px; color:#2563EB; margin:0; line-height:1.5; padding-left:32px;">
+                Sisteminizde şifre tutulmaz, oltalama saldırılarına karşı maksimum koruma.
+            </p>
+        </div>
+
+    </div>
+
+    @* ── OTP Numarasını Güncelle ─────────────────────────────────── *@
+    <div style="background:#FFFFFF; border:1px solid #E5E7EB; border-radius:14px;
+                padding:24px; min-height:159px; box-sizing:border-box;">
+
+        <p style="font-weight:600; font-size:15px; color:#1A1A2E; margin:0 0 16px;">OTP Numarasını Güncelle</p>
+
+        <div style="display:flex; gap:12px; align-items:center;">
+
+            <div x-data="{ focused: false }"
+                 :class="focused ? 'border-[#0056B3]' : 'border-gray-200'"
+                 class="border rounded-[10px] bg-white transition-colors"
+                 style="flex:1; height:50px; display:flex; align-items:center; gap:12px; padding-left:15px; padding-right:16px;">
+                <img src="~/icons/gray/phone.svg" width="20" height="20" alt="" style="flex-shrink:0;">
+                <input id="otpPhoneInput"
+                       type="text"
+                       value="@Model.Settings.OtpPhone"
+                       @@focus="focused = true" @@blur="focused = false"
+                       style="flex:1; background:transparent; outline:none; border:none;
+                              font-family:'Poppins'; font-size:14px; color:#1F2937;" />
+            </div>
+
+            <button type="button"
+                    onclick="guncelleTelefonuOnayla()"
+                    style="display:flex; align-items:center; gap:8px; height:50px; white-space:nowrap;
+                           background:linear-gradient(90deg,#0056B3 0%,#2E6DF8 100%); color:white;
+                           border:none; border-radius:10px; padding:0 22px;
+                           font-family:'Poppins'; font-size:14px; font-weight:500; cursor:pointer;
+                           transition:opacity 0.15s;"
+                    onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+                <img src="~/icons/white/save-02.svg" width="16" height="16" alt="">
+                Güncelle
+            </button>
+
+        </div>
+
+        <p style="font-size:12px; color:#9CA3AF; margin:10px 0 0; line-height:1.5;">
+            Numara değişikliği için mevcut telefondan doğrulama kodu gönderilecektir.
+        </p>
+
+    </div>
+
+</div>@* /dış card *@
+
+<script>
+    IMask(document.getElementById('otpPhoneInput'), {
+        mask: '0(000) 000 00 00'
+    });
+
+    function guncelleTelefonuOnayla() {
+        const yeniNo = document.getElementById('otpPhoneInput').value;
+        if (!yeniNo || yeniNo.replace(/\D/g, '').length < 10) {
+            Swal.fire({ icon: 'warning', title: 'Geçersiz numara', text: 'Lütfen geçerli bir telefon numarası giriniz.', confirmButtonColor: '#0056B3' });
+            return;
+        }
+
+        Swal.fire({
+            title: 'SMS Doğrulama',
+            html: `
+                <p style="font-family:'Poppins'; font-size:13px; color:#374151; margin-bottom:14px;">
+                    Mevcut telefonunuza doğrulama kodu gönderildi.<br>Kodu aşağıya giriniz.
+                </p>
+                <input id="swalOtpInput" maxlength="6" placeholder="- - - - - -"
+                       style="width:100%; text-align:center; font-family:'Poppins'; font-size:22px;
+                              letter-spacing:10px; border:1.5px solid #E5E7EB; border-radius:10px;
+                              padding:10px 0; outline:none;"
+                       oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"
+                       onfocus="this.style.borderColor='#0056B3'" onblur="this.style.borderColor='#E5E7EB'"/>`,
+            confirmButtonText: 'Doğrula',
+            confirmButtonColor: '#0056B3',
+            cancelButtonText: 'İptal',
+            showCancelButton: true,
+            focusConfirm: false,
+            preConfirm: () => {
+                const kod = document.getElementById('swalOtpInput').value;
+                if (!kod || kod.length < 6) {
+                    Swal.showValidationMessage('6 haneli kodu eksiksiz giriniz.');
+                    return false;
+                }
+                return kod;
+            }
+        }).then(result => {
+            if (!result.isConfirmed) return;
+            Swal.fire({
+                icon: 'success',
+                title: 'Numara güncellendi',
+                text: 'OTP telefon numaranız başarıyla güncellendi.',
+                confirmButtonColor: '#0056B3',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        });
+    }
+</script>

@@ -70,62 +70,40 @@
             <button type="button" @@click="activeTab='finansal-profil'"
                     :class="activeTab==='finansal-profil' ? 'tab-active' : 'tab-inactive'"
                     class="tab-item">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;">
-                    <rect x="1" y="5" width="14" height="9" rx="2"
-                          :stroke="activeTab==='finansal-profil' ? '#FFFFFF' : '#003F75'" stroke-width="1.5"/>
-                    <path d="M5 5V4C5 3.44772 5.44772 3 6 3H10C10.5523 3 11 3.44772 11 4V5"
-                          :stroke="activeTab==='finansal-profil' ? '#FFFFFF' : '#003F75'" stroke-width="1.5"/>
-                    <path d="M1 9H15"
-                          :stroke="activeTab==='finansal-profil' ? '#FFFFFF' : '#003F75'" stroke-width="1.5"/>
-                </svg>
+                <img :src="activeTab==='finansal-profil' ? '/icons/white/briefcase-02.svg' : '/icons/navy/briefcase-02.svg'"
+                     width="16" height="16" style="flex-shrink:0;" alt="">
                 <span>Finansal Profil</span>
             </button>
 
             <button type="button" @@click="activeTab='profil-bilgileri'"
                     :class="activeTab==='profil-bilgileri' ? 'tab-active' : 'tab-inactive'"
                     class="tab-item">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;">
-                    <circle cx="8" cy="5" r="3"
-                            :stroke="activeTab==='profil-bilgileri' ? '#FFFFFF' : '#003F75'" stroke-width="1.5"/>
-                    <path d="M2 14C2 11.7909 4.68629 10 8 10C11.3137 10 14 11.7909 14 14"
-                          :stroke="activeTab==='profil-bilgileri' ? '#FFFFFF' : '#003F75'" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
+                <img :src="activeTab==='profil-bilgileri' ? '/icons/white/user-01.svg' : '/icons/navy/user-01.svg'"
+                     width="16" height="16" style="flex-shrink:0;" alt="">
                 <span>Profil Bilgileri</span>
             </button>
 
             <button type="button" @@click="activeTab='guvenlik'"
                     :class="activeTab==='guvenlik' ? 'tab-active' : 'tab-inactive'"
                     class="tab-item">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;">
-                    <path d="M8 1L2 4V8C2 11.3137 4.68629 14 8 14C11.3137 14 14 11.3137 14 8V4L8 1Z"
-                          :stroke="activeTab==='guvenlik' ? '#FFFFFF' : '#003F75'" stroke-width="1.5" stroke-linejoin="round"/>
-                </svg>
+                <img :src="activeTab==='guvenlik' ? '/icons/white/shield-02.svg' : '/icons/navy/shield-02.svg'"
+                     width="16" height="16" style="flex-shrink:0;" alt="">
                 <span>Güvenlik</span>
             </button>
 
             <button type="button" @@click="activeTab='bildirimler'"
                     :class="activeTab==='bildirimler' ? 'tab-active' : 'tab-inactive'"
                     class="tab-item">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;">
-                    <path d="M8 2C5.79086 2 4 3.79086 4 6V10L2 12H14L12 10V6C12 3.79086 10.2091 2 8 2Z"
-                          :stroke="activeTab==='bildirimler' ? '#FFFFFF' : '#003F75'" stroke-width="1.5" stroke-linejoin="round"/>
-                    <path d="M6.5 12C6.5 12.8284 7.17157 13.5 8 13.5C8.82843 13.5 9.5 12.8284 9.5 12"
-                          :stroke="activeTab==='bildirimler' ? '#FFFFFF' : '#003F75'" stroke-width="1.5"/>
-                </svg>
+                <img :src="activeTab==='bildirimler' ? '/icons/white/bell-01.svg' : '/icons/navy/bell-01.svg'"
+                     width="16" height="16" style="flex-shrink:0;" alt="">
                 <span>Bildirimler</span>
             </button>
 
             <button type="button" @@click="activeTab='odeme-yontemleri'"
                     :class="activeTab==='odeme-yontemleri' ? 'tab-active' : 'tab-inactive'"
                     class="tab-item">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;">
-                    <rect x="1" y="3" width="14" height="10" rx="2"
-                          :stroke="activeTab==='odeme-yontemleri' ? '#FFFFFF' : '#003F75'" stroke-width="1.5"/>
-                    <path d="M1 7H15"
-                          :stroke="activeTab==='odeme-yontemleri' ? '#FFFFFF' : '#003F75'" stroke-width="1.5"/>
-                    <rect x="3" y="9.5" width="3" height="1.5" rx="0.5"
-                          :fill="activeTab==='odeme-yontemleri' ? '#FFFFFF' : '#003F75'"/>
-                </svg>
+                <img :src="activeTab==='odeme-yontemleri' ? '/icons/white/credit-card-01.svg' : '/icons/navy/credit-card-01.svg'"
+                     width="16" height="16" style="flex-shrink:0;" alt="">
                 <span>Ödeme Yöntemleri</span>
             </button>
 
@@ -143,8 +121,7 @@
             </div>
 
             <div x-show="activeTab==='guvenlik'">
-                <h2 style="font-weight:600; font-size:18px; color:#1A1A2E; margin:0 0 6px;">Güvenlik</h2>
-                <p style="font-size:13px; color:#7A94B8; margin:0;">Şifre ve güvenlik ayarlarınızı yönetin.</p>
+                <partial name="~/Pages/Ayarlar/_Guvenlik.cshtml" model="Model" />
             </div>
 
             <div x-show="activeTab==='bildirimler'">
