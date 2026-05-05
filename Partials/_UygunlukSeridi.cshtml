@@ -99,3 +99,43 @@
         Bu bir başvuru sonucu değil, sana özel yapay zeka destekli bir kredi uygunluk analizidir.
     </p>
 </div>
+
+<div class="flex flex-col items-center w-full"
+     style="background: linear-gradient(98.13deg, #2E6DF8 39.12%, #0056B3 101.17%); padding: 32px 16px; gap: 20px;">
+    <img src="~/icons/check-circle.svg" width="24" height="24" alt="">
+    <p class="font-[Poppins] w-full" style="font-weight: 300; font-size: 14px; color: #FFFFFF; text-align: center;">@Model.CtaDescription</p>
+    <p class="font-[Poppins]" style="font-weight: 500; font-size: 14px; color: #FFFFFF;">@Model.CtaTitle</p>
+    <a href="@Model.CtaButtonHref"
+       class="font-[Poppins] flex items-center justify-center"
+       style="width: 280px; height: 44px; background: #FFFFFF; border-radius: 40px; color: #0056B3; font-weight: 500; font-size: 16px;">
+        @Model.CtaButtonText
+    </a>
+</div>
+
+<div class="flex flex-col w-full bg-white" style="padding: 16px; gap: 12px;">
+
+    <div class="flex flex-col">
+        <p class="font-[Poppins]" style="font-weight: 400; font-size: 14px; color: #003F75;">Mevcut Durumuna Göz At</p>
+        <p class="font-[Poppins]" style="font-weight: 500; font-size: 16px; color: #003F75;">En Önemli Finansal Göstergeler</p>
+    </div>
+
+    <div class="flex flex-col" style="gap: 15px;">
+        @foreach (var gosterge in Model.FinansalGostergeler)
+        {
+            <div style="background: #F2F8FF; border-radius: 10px; box-shadow: 0px 0px 4px rgba(0,0,0,0.25); padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+                <div class="flex items-center" style="gap: 8px;">
+                    <img src="@Url.Content(gosterge.IkonYolu)" width="20" height="20" alt="">
+                    <span class="font-[Poppins]" style="font-weight: 400; font-size: 14px; color: #003F75;">@gosterge.Baslik</span>
+                </div>
+                <div style="position: relative; width: 100%; height: 35px; border-radius: 20px; background: linear-gradient(270deg, rgba(255,255,255,0.9) 5.3%, #122B62 13%, #2E6DF8 49.5%, #32B5C8 80%, #36F99B 90%); box-shadow: inset 0px 0px 4px rgba(0,0,0,0.2); display: flex; align-items: center;">
+                    <span class="font-[Poppins]" style="margin-left: 12px; font-weight: 700; font-size: 12px; color: #FFFFFF; white-space: nowrap;">@gosterge.LeftLabel</span>
+                </div>
+                @foreach (var satir in gosterge.Aciklama)
+                {
+                    <p class="font-[Poppins]" style="font-style: italic; font-weight: 300; font-size: 12px; color: #003F75; line-height: 18px;">@satir</p>
+                }
+            </div>
+        }
+    </div>
+
+</div>

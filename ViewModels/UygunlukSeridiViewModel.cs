@@ -30,4 +30,37 @@ public class UygunlukSeridiViewModel
         "Aylık ödenen banka ödemeleri azaltılarak günlük harcamalar nakite dönebilir.",
         "Kredi uzmanından danışmanlık alınarak süreç düzenlenebilir."
     ];
+
+    public string CtaDescription { get; set; } = "Kredi Uygunluk Raporu'n finansal sürecinin iyileştirilmesi ve yeniden planlanmasını gerektiğini gösteriyor. Sana özel bir planla süreci daha sağlıklı hale getirmek mümkün.";
+    public string CtaTitle       { get; set; } = "Kredi Uzmanı ile Planını Oluştur";
+    public string CtaButtonText  { get; set; } = "Kredi Uzmanı ile Devam Et";
+    public string CtaButtonHref  { get; set; } = "/KrediDanismani";
+
+    public List<FinansalGostergelerKartViewModel> FinansalGostergeler { get; set; } =
+    [
+        new()
+        {
+            Baslik         = "Aylık Nakit Akışı Dengesi",
+            IkonYolu       = "~/icons/coins-stacked-03.svg",
+            DolulukYuzdesi = 95,
+            LeftLabel      = "%95 Dolu",
+            Aciklama       = ["Gelirinin %90'ı borçlara gidiyor.", "Bu, bankalar için 'yeni kredi alanı yok' demektir."]
+        },
+        new()
+        {
+            Baslik         = "Yasal Kart Limit Kotası",
+            IkonYolu       = "~/icons/credit-card-01.svg",
+            DolulukYuzdesi = 85,
+            LeftLabel      = "%85 Dolu",
+            Aciklama       = ["Yasal kart limit kotası dolmak üzere.", "Yeni kart veya limit artışı şu an mümkün değil."]
+        },
+        new()
+        {
+            Baslik         = "Kredi Limit Kullanım Oranı",
+            IkonYolu       = "~/icons/scales-01.svg",
+            DolulukYuzdesi = 95,
+            LeftLabel      = "%95 Dolu",
+            Aciklama       = ["Kredi limitlerinin %85'ini kullanıyorsun.", "Bu durum kredi profilini olumsuz etkiliyor."]
+        }
+    ];
 }
