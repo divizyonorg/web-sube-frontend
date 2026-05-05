@@ -41,22 +41,19 @@
 <div class="flex flex-col gap-6 mt-6">
 
     @* ── Birinci satır: 2 kart yan yana ── *@
-    <div class="grid grid-cols-2 gap-6">
-
-        @* Kredi Uygunluk Durumu kartı — 01-FO-01 *@
-        @await Component.InvokeAsync("CreditEligibilityCard")
-
-
+    <div class="flex flex-col lg:flex-row gap-6 w-full max-w-[1210px]">
+        <div class="flex-1 min-w-0">
+            @await Component.InvokeAsync("CreditEligibilityCard")
+        </div>
+        <div class="flex-1 min-w-0"></div>
     </div>
 
     @* ── İkinci satır: Kredi Danışmanlığı kartı — 01-FO-01 *@
-    <div class="grid grid-cols-2 gap-6">
-
-        @await Component.InvokeAsync("KrediDanismanligiCard")
-
-        @* İkinci sütun — ileride başka task'ta eklenecek *@
-        <div></div>
-
+    <div class="flex flex-col lg:flex-row gap-6 w-full max-w-[1210px]">
+        <div class="flex-1 min-w-0">
+            @await Component.InvokeAsync("KrediDanismanligiCard")
+        </div>
+        <div class="flex-1 min-w-0"></div>
     </div>
 
     @* ── Üçüncü satır: Popüler Krediler ve Avantajlı Kredi Kartları ── *@
