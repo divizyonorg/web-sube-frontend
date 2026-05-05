@@ -19,8 +19,7 @@ static Action<HttpClient> ConfigureClient(ServiceEndpoint endpoint) => client =>
 if (useMockData)
 {
     builder.Services.AddScoped<IClientService, MockClientService>();
-    // IReportService kaydı — 01-FO-06 PR'ı merge olunca aktif edilecek:
-    // builder.Services.AddScoped<IReportService, MockReportService>();
+    builder.Services.AddScoped<IReportService, MockReportService>();
     builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
 }
 else

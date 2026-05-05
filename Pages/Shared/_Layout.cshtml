@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Grid.js -->
     <link rel="stylesheet" href="~/lib/gridjs/mermaid.min.css" asp-append-version="true" />
@@ -27,25 +27,69 @@
     <!-- TOM Select -->
     <link rel="stylesheet" href="~/lib/tom-select/tom-select.default.min.css" asp-append-version="true" />
 
-    <style>[x-cloak] { display: none !important; }</style>
+    <style>
+        [x-cloak] { display: none !important; }
+
+        /* ── Mobile sidebar overlay ── */
+        .mobile-backdrop {
+            position: fixed; inset: 0; z-index: 40;
+            background: rgba(0,0,0,0.5);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .mobile-backdrop.open { opacity: 1; pointer-events: auto; }
+
+        .mobile-drawer {
+            position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-drawer.open { transform: translateX(0); }
+
+        @@media (min-width: 768px) {
+            .mobile-backdrop, .mobile-drawer { display: none !important; }
+            .main-content { padding: 24px !important; }
+        }
+
+        @@media (max-width: 767px) {
+            .desktop-sidebar { display: none !important; }
+            .main-content { padding: 16px !important; }
+        }
+    </style>
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;">
 
-    @await Component.InvokeAsync("Header", new {
-        userName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
-        notificationCount = 0,
-        profileImageUrl   = ""
+    @await Component.InvokeAsync("Header", new MyApp.Web.ViewModels.HeaderViewModel
+    {
+        UserName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
+        NotificationCount = 0,
+        ProfileImageUrl   = ""
     })
+
+    @* Mobile backdrop *@
+    <div x-data
+         class="mobile-backdrop"
+         :class="{ 'open': $store.layout.mobileMenuOpen }"
+         @@click="$store.layout.mobileMenuOpen = false">
+    </div>
+
+    @* Mobile sidebar drawer *@
+    <div x-data
+         class="mobile-drawer"
+         :class="{ 'open': $store.layout.mobileMenuOpen }">
+        @await Component.InvokeAsync("Sidebar", new { activePage = ViewData["ActivePage"]?.ToString() ?? "" })
+    </div>
 
     <div style="display:flex; height:calc(100vh - 85px); overflow:hidden;">
 
-        @await Component.InvokeAsync("Sidebar", new {
-            activePage = ViewData["ActivePage"]?.ToString() ?? ""
-        })
+        @* Desktop sidebar *@
+        <div class="desktop-sidebar" style="flex-shrink:0;">
+            @await Component.InvokeAsync("Sidebar", new { activePage = ViewData["ActivePage"]?.ToString() ?? "" })
+        </div>
 
-        <main style="flex:1; padding:24px; overflow-y:auto; box-sizing:border-box;">
+        <main class="main-content" style="flex:1; overflow-y:auto; box-sizing:border-box;">
             @RenderBody()
         </main>
 
