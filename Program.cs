@@ -9,7 +9,6 @@ builder.Services.Configure<ServiceUrls>(builder.Configuration.GetSection("Servic
 var serviceUrls = builder.Configuration.GetSection("ServiceUrls").Get<ServiceUrls>() ?? new ServiceUrls();
 var useMockData = builder.Configuration.GetValue("ApiSettings:UseMockData", true);
 
-// Ortak HttpClient yapılandırması — ServiceEndpoint'ten BaseAddress ve Timeout'u uygular.
 static Action<HttpClient> ConfigureClient(ServiceEndpoint endpoint) => client =>
 {
     var baseUrl = string.IsNullOrWhiteSpace(endpoint.BaseUrl) ? "https://localhost" : endpoint.BaseUrl;
@@ -17,22 +16,24 @@ static Action<HttpClient> ConfigureClient(ServiceEndpoint endpoint) => client =>
     client.Timeout = TimeSpan.FromSeconds(endpoint.TimeoutSeconds);
 };
 
-// ClientService — CustomerService endpoint'ine bağlanır; mock modunda HttpClient devre dışı.
 if (useMockData)
 {
     builder.Services.AddScoped<IClientService, MockClientService>();
+    // IReportService kaydı — 01-FO-06 PR'ı merge olunca aktif edilecek:
+    // builder.Services.AddScoped<IReportService, MockReportService>();
+    builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
 }
 else
 {
     builder.Services.AddHttpClient<IClientService, ClientService>(ConfigureClient(serviceUrls.CustomerService));
+    builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService));
+    builder.Services.AddHttpClient<ICreditEligibilityService, CreditEligibilityService>(ConfigureClient(serviceUrls.CustomerService));
 }
 
 builder.Services.AddHttpClient<IAuthService, AuthService>(ConfigureClient(serviceUrls.AuthService));
-builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService));
 
 builder.Services.AddRazorPages();
-
-builder.Services.AddHealthChecks();   // builder'dan sonra
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 

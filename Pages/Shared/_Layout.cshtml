@@ -57,19 +57,15 @@
         }
     </style>
 
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;">
 
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.store('layout', { mobileMenuOpen: false });
-        });
-    </script>
-
-    @await Component.InvokeAsync("Header", new {
-        userName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
-        notificationCount = 0,
-        profileImageUrl   = ""
+    @await Component.InvokeAsync("Header", new MyApp.Web.ViewModels.HeaderViewModel
+    {
+        UserName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
+        NotificationCount = 0,
+        ProfileImageUrl   = ""
     })
 
     @* Mobile backdrop *@
