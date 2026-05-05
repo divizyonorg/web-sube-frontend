@@ -1,6 +1,228 @@
 @page
 @model MyApp.Web.Pages.KrediDanismani.IndexModel
 @{
-    ViewData["Title"] = "Kredi Danışmanı";
+    ViewData["Title"]      = "Kredi Danışmanı";
     ViewData["ActivePage"] = "Kredi Danışmanı";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
 }
+
+<style>
+    @@media (max-width: 767px) {
+        .danisman-layout      { flex-direction: column !important; }
+        .danisman-right-panel { width: 100% !important; }
+        .danisman-card-how    { height: auto !important; padding: 20px 20px 20px !important; }
+        .danisman-card-info   { height: auto !important; padding: 20px 20px 20px !important; }
+        .danisman-form-wrap   { padding: 20px 20px 20px !important; }
+    }
+</style>
+
+<div class="flex flex-col gap-6">
+
+    @* ─── PageBar ─── *@
+    <div class="flex justify-between items-center pb-3 border-b border-[#DCE3FB]">
+
+        <button class="flex items-center gap-1 font-[Poppins] font-normal text-[#1B4092]"
+                style="font-size:14px; line-height:20px;">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M12.5 15L7.5 10L12.5 5" stroke="#1B4092" stroke-width="1.67"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Geri
+        </button>
+
+        <div class="flex flex-col items-end">
+            <span class="font-[Poppins] font-normal text-[#003F75]"
+                  style="font-size:14px; line-height:20px; text-align:right;">İnteraktif Kredi</span>
+            <span class="font-[Poppins] font-light text-[#003F75]"
+                  style="font-size:18px; line-height:25px; text-align:right;">WEB Şube</span>
+        </div>
+
+    </div>
+
+    @* ─── İçerik ─── *@
+    <div class="flex flex-col" style="gap:32px;">
+
+        @* Başlık *@
+        <div class="flex flex-col" style="gap:4px;">
+            <h1 class="font-[Manrope] font-bold text-[#101828]"
+                style="font-size:30px; line-height:36px;">Kredi Danışmanı</h1>
+            <p class="font-['Source_Sans_3'] font-normal text-[#4A5565]"
+               style="font-size:16px; line-height:24px;">Kredi başvurunuz için uzman desteği alın</p>
+        </div>
+
+        @* ─── 2 Sütun Layout ─── *@
+        <div class="danisman-layout flex flex-row" style="gap:32px;">
+
+            @* ── Sol Panel — Başvuru Formu ── *@
+            <div class="danisman-form-wrap flex-1 bg-white border border-[#E5E7EB] flex flex-col"
+                 style="padding:33px 33px 1px; gap:24px; border-radius:16px;">
+
+                @* Form Başlık *@
+                <div class="flex flex-row items-center" style="gap:12px;">
+                    <div class="bg-[#0056B3] flex items-center justify-center flex-shrink-0"
+                         style="width:48px; height:48px; padding:12px 12px 0px; border-radius:10px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z"
+                                  stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <span class="font-[Manrope] font-bold text-[#101828]"
+                          style="font-size:20px; line-height:28px;">Başvuru Formu</span>
+                </div>
+
+                @* Form Alanları *@
+                <form method="post" class="flex flex-col" style="gap:24px;">
+                    @Html.AntiForgeryToken()
+
+                    @* Kredi Türü *@
+                    <div class="flex flex-col" style="gap:8px;">
+                        <label class="font-['Source_Sans_3'] font-medium text-[#364153]"
+                               style="font-size:16px; line-height:24px;">
+                            Kredi Türü *
+                        </label>
+                        <div style="position:relative;">
+                            <select asp-for="Form.KrediTuru"
+                                    class="w-full bg-white text-[#364153] font-['Source_Sans_3'] border border-[#D1D5DC] cursor-pointer focus:outline-none focus:border-[#0056B3]"
+                                    style="height:50px; border-radius:10px; padding:0 40px 0 16px; font-size:16px; appearance:none; -webkit-appearance:none; box-sizing:border-box;">
+                                <option value="">Seçiniz...</option>
+                                <option value="ihtiyac">İhtiyaç Kredisi</option>
+                                <option value="konut">Konut Kredisi</option>
+                                <option value="arac">Araç Kredisi</option>
+                                <option value="ticari">Ticari Kredi</option>
+                            </select>
+                            <span style="position:absolute; top:50%; right:16px; transform:translateY(-50%); pointer-events:none; display:flex; align-items:center;">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M4 6L8 10L12 6" stroke="#6A7282" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    @* Kredi Tutarı *@
+                    <div class="flex flex-col" style="gap:8px;">
+                        <label class="font-['Source_Sans_3'] font-medium text-[#364153]"
+                               style="font-size:16px; line-height:24px;">
+                            Kredi Tutarı (TL) *
+                        </label>
+                        <input asp-for="Form.KrediTutari"
+                               type="number"
+                               placeholder="Minimum 10.000 TL"
+                               class="w-full border border-[#D1D5DC] font-['Source_Sans_3'] text-[#364153] focus:outline-none focus:border-[#0056B3]"
+                               style="height:50px; border-radius:10px; padding:12px 16px; font-size:16px; color:rgba(10,10,10,0.5); box-sizing:border-box;" />
+                    </div>
+
+                    @* Vade *@
+                    <div class="flex flex-col" style="gap:8px;">
+                        <label class="font-['Source_Sans_3'] font-medium text-[#364153]"
+                               style="font-size:16px; line-height:24px;">
+                            Vade (Ay) *
+                        </label>
+                        <div style="position:relative;">
+                            <select asp-for="Form.Vade"
+                                    class="w-full bg-white text-[#364153] font-['Source_Sans_3'] border border-[#D1D5DC] cursor-pointer focus:outline-none focus:border-[#0056B3]"
+                                    style="height:50px; border-radius:10px; padding:0 40px 0 16px; font-size:16px; appearance:none; -webkit-appearance:none; box-sizing:border-box;">
+                                <option value="">Seçiniz...</option>
+                                <option value="12">12 Ay</option>
+                                <option value="24">24 Ay</option>
+                                <option value="36">36 Ay</option>
+                                <option value="48">48 Ay</option>
+                                <option value="60">60 Ay</option>
+                                <option value="72">72 Ay</option>
+                                <option value="84">84 Ay</option>
+                                <option value="120">120 Ay</option>
+                            </select>
+                            <span style="position:absolute; top:50%; right:16px; transform:translateY(-50%); pointer-events:none; display:flex; align-items:center;">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M4 6L8 10L12 6" stroke="#6A7282" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    @* Ek Bilgi *@
+                    <div class="flex flex-col" style="gap:8px;">
+                        <label class="font-['Source_Sans_3'] font-medium text-[#364153]"
+                               style="font-size:16px; line-height:24px;">
+                            Ek Bilgi (Opsiyonel)
+                        </label>
+                        <textarea asp-for="Form.EkBilgi"
+                                  placeholder="Kredi başvurunuzla ilgili ek bilgiler..."
+                                  class="w-full border border-[#D1D5DC] font-['Source_Sans_3'] text-[#364153] focus:outline-none focus:border-[#0056B3]"
+                                  style="height:122px; border-radius:10px; padding:12px 16px; font-size:16px; resize:none; box-sizing:border-box;"></textarea>
+                    </div>
+
+                    @* Gönder Butonu *@
+                    <button type="submit"
+                            class="w-full bg-[#0056B3] hover:bg-[#004799] text-white font-['Source_Sans_3'] font-medium flex items-center justify-center transition-colors"
+                            style="height:56px; border-radius:10px; font-size:18px; gap:8px; box-shadow:0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -4px rgba(0,0,0,0.1);">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M2.5 10L17.5 2.5L10 17.5L8.33 11.67L2.5 10Z"
+                                  stroke="white" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Başvuruyu Gönder
+                    </button>
+
+                </form>
+
+            </div>
+
+            @* ── Sağ Panel ── *@
+            <div class="danisman-right-panel flex flex-col flex-shrink-0" style="width:382px; gap:24px;">
+
+                @* Nasıl Çalışır? *@
+                <div class="danisman-card-how bg-[#EFF6FF] border border-[#BEDBFF] rounded-[14px] flex flex-col"
+                     style="height:205px; padding:25px 25px 1px; gap:12px;">
+                    <h3 class="font-[Manrope] font-semibold text-[#1C398E]"
+                        style="font-size:18px; line-height:27px;">Nasıl Çalışır?</h3>
+                    <div class="flex flex-col" style="gap:12px;">
+                        <div class="flex flex-row items-start" style="gap:8px;">
+                            <span class="font-['Source_Sans_3'] font-bold text-[#1447E6]"
+                                  style="font-size:14px; line-height:20px; width:12px;">1.</span>
+                            <span class="font-['Source_Sans_3'] font-normal text-[#1447E6]"
+                                  style="font-size:14px; line-height:20px;">Formu doldurun</span>
+                        </div>
+                        <div class="flex flex-row items-start" style="gap:8px;">
+                            <span class="font-['Source_Sans_3'] font-bold text-[#1447E6]"
+                                  style="font-size:14px; line-height:20px; width:12px;">2.</span>
+                            <span class="font-['Source_Sans_3'] font-normal text-[#1447E6]"
+                                  style="font-size:14px; line-height:20px;">Danışmanımız sizi arayacak</span>
+                        </div>
+                        <div class="flex flex-row items-start" style="gap:8px;">
+                            <span class="font-['Source_Sans_3'] font-bold text-[#1447E6]"
+                                  style="font-size:14px; line-height:20px; width:12px;">3.</span>
+                            <span class="font-['Source_Sans_3'] font-normal text-[#1447E6]"
+                                  style="font-size:14px; line-height:20px;">Size özel teklif hazırlayacak</span>
+                        </div>
+                        <div class="flex flex-row items-start" style="gap:8px;">
+                            <span class="font-['Source_Sans_3'] font-bold text-[#1447E6]"
+                                  style="font-size:14px; line-height:20px; width:12px;">4.</span>
+                            <span class="font-['Source_Sans_3'] font-normal text-[#1447E6]"
+                                  style="font-size:14px; line-height:20px;">Başvurunuzu tamamlayın</span>
+                        </div>
+                    </div>
+                </div>
+
+                @* İletişim Bilgileri *@
+                <div class="danisman-card-info bg-[#F9FAFB] border border-[#E5E7EB] rounded-[14px] flex flex-col"
+                     style="height:165px; padding:25px 25px 1px; gap:12px;">
+                    <h3 class="font-[Manrope] font-semibold text-[#101828]"
+                        style="font-size:18px; line-height:27px;">İletişim Bilgileri</h3>
+                    <div class="flex flex-col" style="gap:8px;">
+                        <p class="font-['Source_Sans_3'] font-normal text-[#364153]"
+                           style="font-size:14px; line-height:20px;">📞 0850 123 45 67</p>
+                        <p class="font-['Source_Sans_3'] font-normal text-[#364153]"
+                           style="font-size:14px; line-height:20px;">📧 destek@hallederiz.com</p>
+                        <p class="font-['Source_Sans_3'] font-normal text-[#364153]"
+                           style="font-size:14px; line-height:20px;">🕐 Hafta içi 09:00 - 18:00</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

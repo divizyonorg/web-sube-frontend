@@ -12,7 +12,7 @@ public class SidebarViewComponent : ViewComponent
             Items =
             [
                 new() { Label = "Anasayfa",             Href = "/anasayfa",                  Icon = SidebarIcon.Home,        IconFile = "layout-grid-01",    IsActive = activePage == "Anasayfa" },
-                new() { Label = "Kredi Raporların",     Href = "/KrediRaporlari/KurDetay",    Icon = SidebarIcon.CreditReport, IconFile = "file-04",           IsActive = activePage == "Kredi Raporların" },
+                new() { Label = "Kredi Raporların",     Href = "/KrediRaporlari",             Icon = SidebarIcon.CreditReport, IconFile = "file-04",           IsActive = activePage == "Kredi Raporların" },
                 new() { Label = "Sana Özel Teklifler",  Href = "/PersonalizedOffers",         Icon = SidebarIcon.Offers,       IconFile = "gift-01",           IsActive = activePage == "Sana Özel Teklifler" },
                 new() { Label = "Kredi Danışmanı",      Href = "/KrediDanismani",  Icon = SidebarIcon.Advisor,      IconFile = "message-square-02", IsActive = activePage == "Kredi Danışmanı" },
                 new() { Label = "Destek Merkezi",       Href = "/DestekMerkezi",   Icon = SidebarIcon.Support,      IconFile = "help-circle",       IsActive = activePage == "Destek Merkezi" },
