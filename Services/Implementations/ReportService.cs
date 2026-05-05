@@ -13,13 +13,13 @@ public class ReportService : IReportService
 
     public Task<KrediRaporlariViewModel> GetKrediRaporlariAsync()
     {
-        var reports   = GetMockReports();
+        var reports = GetMockReports();
         var viewModel = new KrediRaporlariViewModel
         {
-            TotalCount      = reports.Count,
-            ReadyCount      = reports.Count(r => r.IsReady),
+            TotalCount = reports.Count,
+            ReadyCount = reports.Count(r => r.IsReady),
             ProcessingCount = reports.Count(r => r.IsProcessing),
-            Reports         = reports
+            Reports = reports
         };
         return Task.FromResult(viewModel);
     }
@@ -56,10 +56,10 @@ public class ReportService : IReportService
 
     private static string BuildContentStream(ReportItemViewModel report)
     {
-        var title    = PdfSafe(report.Title);
+        var title = PdfSafe(report.Title);
         var reportNo = PdfSafe(report.ReportNo);
-        var date     = PdfSafe(report.Date);
-        var type     = PdfSafe(report.ReportType);
+        var date = PdfSafe(report.Date);
+        var type = PdfSafe(report.ReportType);
 
         return
             // Mavi header bandı

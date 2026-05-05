@@ -18,10 +18,10 @@ public class MockReportService : IReportService
 
         var viewModel = new KrediRaporlariViewModel
         {
-            TotalCount      = reports.Count,
-            ReadyCount      = reports.Count(r => r.IsReady),
+            TotalCount = reports.Count,
+            ReadyCount = reports.Count(r => r.IsReady),
             ProcessingCount = reports.Count(r => r.IsProcessing),
-            Reports         = reports
+            Reports = reports
         };
 
         return Task.FromResult(viewModel);
