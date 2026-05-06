@@ -26,7 +26,7 @@
 
         <div class="relative w-full" style="height: 36px;">
             <span class="absolute font-[Poppins] font-normal text-[9px] leading-[14px] text-black/50"
-                  style="left: 35px; top: 0;">premium</span>
+                  style="left: 0; top: 0;">premium</span>
 
             <span class="absolute font-[Poppins] font-semibold text-[22px] leading-[33px] text-[#1D459C] -translate-x-1/2"
                   style="left: @(Model.MarkerPositionPercent)%; top: 0;">@Model.UygunlukEtiketi</span>
@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <div class="w-full flex flex-col bg-[#F9FAFB] rounded-[20px] p-4 gap-4" style="box-shadow: 0px 0px 4px rgba(0,0,0,0.20);">
+    <div class="w-full flex flex-col bg-[#F9FAFB] rounded-[20px] p-4 gap-4 shadow-[0px_0px_4px_rgba(0,0,0,0.20)]">
 
         <div class="flex flex-col" style="gap: 2px;">
             <p class="font-[Poppins] font-medium text-[14px] leading-[21px] text-[#0A0A0A]">
@@ -50,7 +50,7 @@
             </p>
         </div>
 
-        <div class="flex flex-col gap-1 pl-5">
+        <div class="flex flex-col gap-1" style="padding-left: 20px;">
             @foreach (var vurgu in Model.AnalizVurgular)
             {
                 <p class="font-[Poppins] text-[12px] leading-[18px] text-[#003F75] @(vurgu.IsBold ? "font-medium" : "font-light")">
@@ -59,35 +59,33 @@
             }
         </div>
 
-        <div class="relative pl-6">
-            <div style="position: absolute; left: 12px; top: 20px; height: calc(100% - 20px); border-left: 1px dashed #2E6DF8;"></div>
+        <div class="relative" style="padding-left: 24px;">
+            <div style="position: absolute; left: 12px; top: 20px; height: 74px; border-left: 1px dashed #2E6DF8;"></div>
             <p class="font-[Poppins] font-medium text-[12px] leading-[18px] text-[#2E6DF8]">
                 @Model.BuSekildeBulguBaslik
             </p>
             <ul class="mt-[6px] flex flex-col gap-1">
                 @foreach (var madde in Model.BuSekildeBulgular)
                 {
-                    <li class="flex items-start gap-4">
-                        <span class="shrink-0 rounded-full bg-[#2E6DF8] mt-1.5" 
-                              style="width: 7.98px; height: 8px; min-width: 7.98px;"></span>
+                    <li class="flex items-start" style="gap: 6px;">
+                        <img src="~/icons/dot-bullet.svg" class="shrink-0 mt-1" style="width: 8px; height: 8px;" alt="">
                         <span class="font-[Poppins] font-light text-[12px] leading-5 text-[#003F75]">@madde</span>
                     </li>
                 }
             </ul>
         </div>
 
-        <div class="relative pl-6">
-            <div style="position: absolute; left: 12px; top: 20px; height: calc(100% - 20px); border-left: 1px dashed #2E6DF8;"></div>
+        <div class="relative" style="padding-left: 24px;">
+            <div style="position: absolute; left: 12px; top: 20px; height: 74px; border-left: 1px dashed #2E6DF8;"></div>
             <p class="font-[Poppins] font-medium text-[12px] leading-[18px] text-[#2E6DF8]">
                 @Model.NelerYapilabilirBaslik
             </p>
             <ul class="mt-[6px] flex flex-col gap-1">
                 @foreach (var madde in Model.NelerYapilabilir)
                 {
-                     <li class="flex items-start gap-4">
-                         <span class="shrink-0 rounded-full bg-[#2E6DF8] mt-1.5"
-                               style="width: 7.98px; height: 8px; min-width: 7.98px;"></span>
-                         <span class="font-[Poppins] font-light text-[12px] leading-5 text-[#003F75]">@madde</span>
+                    <li class="flex items-start" style="gap: 6px;">
+                        <img src="~/icons/dot-bullet.svg" class="shrink-0 mt-1" style="width: 8px; height: 8px;" alt="">
+                        <span class="font-[Poppins] font-light text-[12px] leading-5 text-[#003F75]">@madde</span>
                     </li>
                 }
             </ul>
@@ -122,7 +120,7 @@
     <div class="flex flex-col" style="gap: 15px;">
         @foreach (var gosterge in Model.FinansalGostergeler)
         {
-            <div style="background: #F2F8FF; border-radius: 10px; box-shadow: 0px 0px 4px rgba(0,0,0,0.25); padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+            <div class="bg-[#F2F8FF] rounded-[10px] shadow-[0px_0px_4px_rgba(0,0,0,0.20)] p-4 flex flex-col gap-2">
                 <div class="flex items-center" style="gap: 8px;">
                     <img src="@Url.Content(gosterge.IkonYolu)" width="20" height="20" alt="">
                     <span class="font-[Poppins]" style="font-weight: 400; font-size: 14px; color: #003F75;">@gosterge.Baslik</span>
@@ -134,6 +132,84 @@
                 {
                     <p class="font-[Poppins]" style="font-style: italic; font-weight: 300; font-size: 12px; color: #003F75; line-height: 18px;">@satir</p>
                 }
+            </div>
+        }
+    </div>
+
+</div>
+
+<div class="flex flex-col w-full bg-white" style="padding: 16px 16px 16px; gap: 12px;">
+
+    <div class="flex flex-col">
+        <p class="font-[Poppins]" style="font-weight: 400; font-size: 14px; color: #003F75;">@Model.OlumluNoktalarUstBaslik</p>
+        <p class="font-[Poppins]" style="font-weight: 500; font-size: 16px; color: #003F75;">@Model.OlumluNoktalarBaslik</p>
+    </div>
+
+    <div class="flex flex-col bg-[#F9FAFB] shadow-[0px_0px_4px_rgba(0,0,0,0.20)] rounded-[15px] py-5 px-4 gap-5">
+        @foreach (var madde in Model.OlumluNoktalar)
+        {
+            <div class="flex items-center" style="gap: 12px;">
+                <img src="~/icons/stars-02.svg" style="width: 22px; height: 20px; flex-shrink: 0;" alt="">
+                <span class="font-[Poppins]" style="font-weight: 300; font-size: 14px; color: #003F75; line-height: 19px;">@madde</span>
+            </div>
+        }
+    </div>
+
+</div>
+
+<div class="flex flex-col w-full" style="background: #F9FAFB; padding: 16px 16px 0px; gap: 12px;">
+
+    <div class="flex flex-col">
+        <p class="font-[Poppins]" style="font-weight: 400; font-size: 14px; color: #003F75;">@Model.KrediTuruUstBaslik</p>
+        <p class="font-[Poppins]" style="font-weight: 500; font-size: 16px; color: #003F75;">@Model.KrediTuruBaslik</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        @foreach (var kart in Model.KrediTuruKartlari)
+        {
+            <div style="background: white; box-shadow: 0px 4px 4px rgba(0,0,0,0.25); border-radius: 10px; padding: 15px 10px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                <p class="font-[Poppins] text-center" style="font-weight: 600; font-size: 16px; color: #003F75;">@kart.Baslik</p>
+                <div class="flex items-center" style="gap: 8px;">
+                    <div style="width: 68px; height: 15px; border-radius: 20px; box-shadow: inset 0px 0px 4px rgba(0,0,0,0.2); background: @(kart.IsYuksekOlasilik ? "linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #37B8C7 80%, #FFFFFF 100%)" : "linear-gradient(90deg, #122B62 0%, #2E6DF8 18%, #FFFFFF 37%, #FFFFFF 100%)");">
+                    </div>
+                    <span class="font-[Poppins]" style="font-weight: 300; font-size: 14px; color: #003F75;">@kart.OlasilikEtiketi</span>
+                </div>
+                <button type="button" class="font-[Poppins]" style="border: 1px solid rgba(217,217,217,0.5); border-radius: 10px; padding: 4px 12px; font-weight: 300; font-size: 9px; color: #2E6DF8; text-decoration: underline; background: transparent; cursor: pointer;">
+                    detayları gör
+                </button>
+            </div>
+        }
+    </div>
+
+</div>
+
+<div class="flex flex-col w-full" style="background: #F9FAFB; padding: 16px 16px 0px; gap: 16px;">
+
+    <p class="font-[Poppins]" style="font-weight: 500; font-size: 16px; color: #003F75;">@Model.UyarilarBaslik</p>
+
+    <div class="flex flex-col" style="gap: 16px;">
+        @foreach (var uyari in Model.UyariKartlari)
+        {
+            <div style="position: relative; border-radius: 15px; min-height: 108px; background: @(uyari.IsKritik ? "#0056B3" : "#2E6DF8");">
+                <div style="background: #F9FAFB; box-shadow: 0px 0px 4px rgba(0,0,0,0.20); border-radius: 15px; margin-left: 9px; margin-right: 28px; min-height: 108px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="padding: 12px 14px 0px;">
+                        <div class="flex items-center" style="gap: 8px;">
+                            <img src="~/icons/alert-triangle.svg" style="width: 20px; height: 18px; flex-shrink: 0;" alt="">
+                            <span class="font-[Poppins]" style="font-weight: 400; font-size: 12px; color: #000000; text-transform: capitalize;">@uyari.Baslik</span>
+                        </div>
+                        <div style="width: 100%; height: 1px; background: rgba(0,0,0,0.15); margin-top: 8px;"></div>
+                        <p class="font-[Poppins]" style="font-style: italic; font-weight: 300; font-size: 10px; color: #000000; margin-top: 6px;">@uyari.Aciklama</p>
+                    </div>
+                    <div class="flex items-center" style="justify-content: flex-end; padding: 0px 8px 8px; gap: 4px;">
+                        <img src="~/icons/blue/chevron-left.svg" style="width: 6px; height: 10px;" alt="">
+                        <button type="button" class="font-[Poppins]" style="background: #F9FAFB; border: 1px solid rgba(0,0,0,0.25); box-shadow: 0px 0px 1px rgba(0,0,0,0.1); border-radius: 16px; padding: 3px 10px; font-weight: 300; font-size: 9px; text-decoration: underline; color: #000000; cursor: pointer;">
+                            detayları gör
+                        </button>
+                    </div>
+                </div>
+                <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 28px; display: flex; align-items: center; justify-content: center;">
+                    <span class="font-[Poppins]" style="font-weight: 500; font-size: 10px; color: #FFFFFF; transform: rotate(-90deg); white-space: nowrap;">@(uyari.IsKritik ? "KRİTİK" : "ÖNEMLİ")</span>
+                </div>
             </div>
         }
     </div>

@@ -36,6 +36,48 @@ public class UygunlukSeridiViewModel
     public string CtaButtonText  { get; set; } = "Kredi Uzmanı ile Devam Et";
     public string CtaButtonHref  { get; set; } = "/KrediDanismani";
 
+    public string       OlumluNoktalarUstBaslik { get; set; } = "Onay İhtimalini Artıran Noktalar";
+    public string       OlumluNoktalarBaslik    { get; set; } = "Bankaların Olumlu Göreceği Güçlü Yanların";
+    public List<string> OlumluNoktalar          { get; set; } =
+    [
+        "Ev sahibi olman",
+        "3 yıllık istikrarlı çalışma geçmişin",
+        "Varlık ve yaşam düzenin bankalar için olumlu sinyaller içeriyor"
+    ];
+
+    public string       UyarilarBaslik { get; set; } = "En Çok Dikkat Etmen Gerekenler";
+    public List<UyariKartiViewModel> UyariKartlari { get; set; } =
+    [
+        new()
+        {
+            Baslik   = "Dikkat! Finansal Risk Zinciri Oluşmuş Durumda",
+            Aciklama = "Gelirinizin %90'ı borçlara gidiyor.",
+            IsKritik = true
+        },
+        new()
+        {
+            Baslik   = "Gizli Gider Alarmı: Kredili Mevduat Hesabı",
+            Aciklama = "Eksi bakiyede durduğun her gün, KMH faiz oranıyla borcun büyüyor.",
+            IsKritik = false
+        },
+        new()
+        {
+            Baslik   = "Kredi Kartı Asgari Ödeme Tuzağı",
+            Aciklama = "Asgari tutarı ödemek borcu bitirmez, faiz yükünü tekrara sokar.",
+            IsKritik = false
+        }
+    ];
+
+    public string KrediTuruUstBaslik { get; set; } = "Kredi Türüne Göre";
+    public string KrediTuruBaslik    { get; set; } = "Hangi Kredi Türü Daha Yüksek Olasıkta?";
+    public List<KrediTuruKartViewModel> KrediTuruKartlari { get; set; } =
+    [
+        new() { Baslik = "Borç Kapama",    OlasilikEtiketi = "yüksek", IsYuksekOlasilik = true  },
+        new() { Baslik = "Konut Kredisi",  OlasilikEtiketi = "yüksek", IsYuksekOlasilik = true  },
+        new() { Baslik = "Nakit Kredi",    OlasilikEtiketi = "düşük",  IsYuksekOlasilik = false },
+        new() { Baslik = "Taşıt Kredisi",  OlasilikEtiketi = "düşük",  IsYuksekOlasilik = false }
+    ];
+
     public List<FinansalGostergelerKartViewModel> FinansalGostergeler { get; set; } =
     [
         new()
