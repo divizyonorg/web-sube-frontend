@@ -1,67 +1,57 @@
 @model MyApp.Web.Pages.Ayarlar.IndexModel
 @{ Layout = null; }
 
-<style>
-    @@media (max-width: 480px) {
-        .profil-card { padding: 16px !important; }
-    }
-</style>
+<div class="bg-white border border-[#DCE3FB] rounded-[14px] p-6 font-[Poppins]">
 
-<div class="profil-card bg-white border border-gray-200 rounded-2xl p-6">
+    <p class="font-[Manrope] font-bold text-[20px] text-[#101828] mb-5">Profil Bilgileri</p>
 
-    <p class="text-[18px] text-[#1A1A2E]" style="font-family:'Poppins'; font-weight:700; margin-bottom:20px;">Profil Bilgileri</p>
-
-    <div style="display:flex; flex-direction:column; gap:16px;">
+    <div class="flex flex-col gap-4">
 
         @* Ad Soyad *@
         <div>
-            <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:8px; font-family:'Poppins';">Ad Soyad</label>
+            <label class="block font-[Source_Sans_3] font-medium text-[16px] text-[#364153] mb-2">Ad Soyad</label>
             <div x-data="{ focused: false }"
-                 :class="focused ? 'border-[#0056B3]' : 'border-gray-200'"
-                 class="border rounded-[10px] bg-white transition-colors"
-                 style="height:50px; display:flex; align-items:center; gap:12px; padding-left:15px; padding-right:16px;">
-                <img src="~/icons/gray/user-01.svg" width="20" height="20" alt="" style="flex-shrink:0;">
+                 :class="focused ? 'border-[#0056B3]' : 'border-[#D1D5DC]'"
+                 class="border rounded-[10px] bg-white transition-colors h-[50px] flex items-center gap-3 px-[15px] pr-4">
+                <img src="~/icons/gray/user-01.svg" width="20" height="20" alt="" class="shrink-0">
                 <input type="text"
                        @@focus="focused = true" @@blur="focused = false"
-                       style="flex:1; background:transparent; outline:none; border:none; font-family:'Poppins'; font-size:14px; color:#1F2937;" />
+                       class="flex-1 bg-transparent outline-none border-0 font-[Source_Sans_3] text-[16px] text-[#0A0A0A]" />
             </div>
         </div>
 
         @* E-posta *@
         <div>
-            <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:8px; font-family:'Poppins';">E-posta</label>
+            <label class="block font-[Source_Sans_3] font-medium text-[16px] text-[#364153] mb-2">E-posta</label>
             <div x-data="{ focused: false }"
-                 :class="focused ? 'border-[#0056B3]' : 'border-gray-200'"
-                 class="border rounded-[10px] bg-white transition-colors"
-                 style="height:50px; display:flex; align-items:center; gap:12px; padding-left:15px; padding-right:16px;">
-                <img src="~/icons/gray/mail-01.svg" width="20" height="20" alt="" style="flex-shrink:0;">
+                 :class="focused ? 'border-[#0056B3]' : 'border-[#D1D5DC]'"
+                 class="border rounded-[10px] bg-white transition-colors h-[50px] flex items-center gap-3 px-[15px] pr-4">
+                <img src="~/icons/gray/mail-01.svg" width="20" height="20" alt="" class="shrink-0">
                 <input type="email"
                        @@focus="focused = true" @@blur="focused = false"
-                       style="flex:1; background:transparent; outline:none; border:none; font-family:'Poppins'; font-size:14px; color:#1F2937;" />
+                       class="flex-1 bg-transparent outline-none border-0 font-[Source_Sans_3] text-[16px] text-[#0A0A0A]" />
             </div>
         </div>
 
         @* Telefon *@
         <div>
-            <label style="display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:8px; font-family:'Poppins';">Telefon</label>
+            <label class="block font-[Source_Sans_3] font-medium text-[16px] text-[#364153] mb-2">Telefon</label>
             <div x-data="{ focused: false }"
-                 :class="focused ? 'border-[#0056B3]' : 'border-gray-200'"
-                 class="border rounded-[10px] bg-white transition-colors"
-                 style="height:50px; display:flex; align-items:center; gap:12px; padding-left:15px; padding-right:16px;">
-                <img src="~/icons/gray/phone.svg" width="20" height="20" alt="" style="flex-shrink:0;">
+                 :class="focused ? 'border-[#0056B3]' : 'border-[#D1D5DC]'"
+                 class="border rounded-[10px] bg-white transition-colors h-[50px] flex items-center gap-3 px-[15px] pr-4">
+                <img src="~/icons/gray/phone.svg" width="20" height="20" alt="" class="shrink-0">
                 <input type="tel"
                        @@focus="focused = true" @@blur="focused = false"
-                       style="flex:1; background:transparent; outline:none; border:none; font-family:'Poppins'; font-size:14px; color:#1F2937;" />
+                       class="flex-1 bg-transparent outline-none border-0 font-[Source_Sans_3] text-[16px] text-[#0A0A0A]" />
             </div>
         </div>
 
     </div>
 
-    @* Kaydet butonu *@
-    <div style="margin-top:20px;">
+    @* Kaydet *@
+    <div class="mt-5">
         <button type="button"
-                style="display:flex; align-items:center; gap:8px; height:44px; background:#0056B3; color:white; border:none; border-radius:10px; padding:0 20px; font-family:'Poppins'; font-size:15px; font-weight:500; cursor:pointer;"
-                onmouseover="this.style.background='#003F75'" onmouseout="this.style.background='#0056B3'">
+                class="flex items-center gap-2 h-12 bg-[#0056B3] text-white border-0 rounded-[10px] px-5 text-[15px] font-medium cursor-pointer transition-colors hover:bg-[#003F75]">
             <img src="~/icons/white/save-02.svg" width="16" height="16" alt="">
             Kaydet
         </button>

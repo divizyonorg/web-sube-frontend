@@ -1,74 +1,66 @@
 @model MyApp.Web.Pages.Ayarlar.IndexModel
 @{ Layout = null; }
 
-<style>
-    .finansal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    @@media (max-width: 900px) { .finansal-grid { grid-template-columns: 1fr; } }
-</style>
-
 @* Panel başlığı + Düzey göstergeleri *@
-<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
+<div class="flex justify-between items-start mb-5 max-[480px]:flex-col max-[480px]:gap-2.5">
     <div>
-        <h2 style="font-weight:600; font-size:17px; color:#1A1A2E; margin:0 0 4px;">Finansal Profil</h2>
-        <p style="font-size:13px; color:#7A94B8; margin:0;">
+        <h2 class="font-[Manrope] font-bold text-[20px] text-[#101828] mb-1">Finansal Profil</h2>
+        <p class="font-[Source_Sans_3] text-[16px] text-[#4A5565]">
             Mesleki, finansal ve demografik bilgilerinizi güncelleyin.
         </p>
     </div>
-    <div style="display:flex; align-items:center; gap:8px; flex-shrink:0; padding-top:4px;">
-        <div style="display:flex; align-items:center; gap:6px; background:rgba(46,109,248,0.08); border:1px solid rgba(46,109,248,0.2); border-radius:20px; padding:4px 10px;">
-            <div style="width:7px; height:7px; border-radius:50%; background:#2E6DF8; flex-shrink:0;"></div>
-            <span style="font-size:12px; font-weight:500; color:#2E6DF8; font-family:'Poppins';">Düzey 1</span>
+    <div class="flex items-center gap-2 shrink-0 pt-1 max-[480px]:pt-0">
+        <div class="flex items-center gap-1.5 bg-[rgba(46,109,248,0.08)] border border-[rgba(46,109,248,0.2)] rounded-full px-2.5 py-1">
+            <div class="w-[7px] h-[7px] rounded-full bg-[#2E6DF8] shrink-0"></div>
+            <span class="font-[Source_Sans_3] text-[12px] font-medium text-[#2E6DF8]">Düzey 1</span>
         </div>
-        <div style="display:flex; align-items:center; gap:6px; background:rgba(55,184,199,0.08); border:1px solid rgba(55,184,199,0.2); border-radius:20px; padding:4px 10px;">
-            <div style="width:7px; height:7px; border-radius:50%; background:#37B8C7; flex-shrink:0;"></div>
-            <span style="font-size:12px; font-weight:500; color:#37B8C7; font-family:'Poppins';">Düzey 2</span>
+        <div class="flex items-center gap-1.5 bg-[rgba(55,184,199,0.08)] border border-[rgba(55,184,199,0.2)] rounded-full px-2.5 py-1">
+            <div class="w-[7px] h-[7px] rounded-full bg-[#37B8C7] shrink-0"></div>
+            <span class="font-[Source_Sans_3] text-[12px] font-medium text-[#37B8C7]">Düzey 2</span>
         </div>
     </div>
 </div>
 
 @* İki Kart *@
-<div class="finansal-grid">
+<div class="grid grid-cols-2 gap-4 max-[900px]:grid-cols-1">
 
     @* Kart 1: Mesleki ve Finansal Durum *@
-    <div style="background:#FFFFFF; border:1px solid #DCE3FB; border-radius:14px; padding:20px; box-sizing:border-box;">
+    <div class="bg-white border border-[#E2EAF5] rounded-[14px] p-5 shadow-[0_2px_12px_rgba(0,86,179,0.07)]">
 
-        <div style="display:flex; align-items:center; gap:12px;
-                    margin:-20px -20px 16px -20px; padding:14px 20px;
-                    background:#F4F8FF; border-radius:14px 14px 0 0;
-                    border-bottom:1px solid #DCE3FB;">
-            <div style="width:40px; height:40px; flex-shrink:0; background:linear-gradient(135deg,#0056B3 0%,#2E6DF8 100%); border-radius:10px; display:flex; align-items:center; justify-content:center;">
+        <div class="flex items-center gap-3 -mx-5 -mt-5 mb-4 px-5 py-[14px] bg-gradient-to-br from-[#F0F6FF] to-[#FAFCFF] rounded-t-[14px] border-b border-[#E2EAF5]">
+            <div class="w-9 h-9 shrink-0 bg-gradient-to-br from-[#0056B3] to-[#2E6DF8] rounded-[8px] flex items-center justify-center">
                 <img src="~/icons/white/briefcase-02.svg" width="20" height="20" alt="">
             </div>
             <div>
-                <div style="font-weight:600; font-size:14px; color:#1A1A2E;">Mesleki ve Finansal Durum</div>
-                <div style="font-size:12px; color:#7A94B8;">Çalışma bilgileri</div>
+                <div class="font-[Manrope] font-semibold text-[14px] text-[#1A1A2E]">Mesleki ve Finansal Durum</div>
+                <div class="font-[Source_Sans_3] text-[12px] text-[#7A94B8]">Çalışma bilgileri</div>
             </div>
         </div>
 
-        <div style="margin-bottom:10px;">
+        <div class="mb-2.5">
             <partial name="~/Partials/Components/_Select.cshtml" model="Model.CalismaDurumu" />
         </div>
 
-        <div style="display:flex; align-items:center; gap:6px; margin-bottom:10px;">
-            <div style="width:6px; height:6px; border-radius:50%; background:#2E6DF8; flex-shrink:0;"></div>
-            <span style="font-size:11px; color:#2E6DF8; font-style:italic;">
+        <div class="flex items-center gap-1.5 mb-2.5">
+            <div class="w-1.5 h-1.5 rounded-full bg-[#2E6DF8] shrink-0"></div>
+            <span class="text-[11px] text-[#2E6DF8] italic">
                 Fields are hidden dynamically based on user selection
             </span>
         </div>
 
         <div x-show="calisma !== ''"
-             style="border-left:2px solid #2E6DF8; padding-left:0; display:flex; flex-direction:column; gap:12px;">
-            <div style="position:relative; padding-left:14px;">
-                <div style="position:absolute; left:0; top:7px; width:10px; height:2px; background:#2E6DF8;"></div>
+             class="border-l-2 border-[#2E6DF8] flex flex-col gap-3">
+            <div class="relative pl-[14px]">
+                <div class="absolute left-0 top-[7px] w-2.5 h-0.5 bg-[#2E6DF8]"></div>
                 <partial name="~/Partials/Components/_Select.cshtml" model="Model.CalismaSektoru" />
             </div>
-            <div style="padding-left:14px;">
+            <div class="pl-[14px]">
                 <partial name="~/Partials/Components/_Select.cshtml" model="Model.Meslek" />
             </div>
-            <div style="padding-left:14px;">
+            <div class="pl-[14px]">
                 <partial name="~/Partials/Components/_Select.cshtml" model="Model.CalismaSuresi" />
             </div>
-            <div style="padding-left:14px;">
+            <div class="pl-[14px]">
                 <partial name="~/Partials/Components/_Select.cshtml" model="Model.MaasBankasi" />
             </div>
         </div>
@@ -76,39 +68,35 @@
     </div>
 
     @* Kart 2: Demografik Durum *@
-    <div style="background:#FFFFFF; border:1px solid #DCE3FB; border-radius:14px; padding:20px; box-sizing:border-box;">
+    <div class="bg-white border border-[#E2EAF5] rounded-[14px] p-5 shadow-[0_2px_12px_rgba(0,86,179,0.07)]">
 
-        <div style="display:flex; align-items:center; gap:12px;
-                    margin:-20px -20px 16px -20px; padding:14px 20px;
-                    background:#F4F8FF; border-radius:14px 14px 0 0;
-                    border-bottom:1px solid #DCE3FB;">
-            <div style="width:40px; height:40px; flex-shrink:0; background:linear-gradient(135deg,#0056B3 0%,#37B8C7 100%); border-radius:10px; display:flex; align-items:center; justify-content:center;">
+        <div class="flex items-center gap-3 -mx-5 -mt-5 mb-4 px-5 py-[14px] bg-gradient-to-br from-[#F0F6FF] to-[#FAFCFF] rounded-t-[14px] border-b border-[#E2EAF5]">
+            <div class="w-9 h-9 shrink-0 bg-gradient-to-br from-[#0056B3] to-[#37B8C7] rounded-[8px] flex items-center justify-center">
                 <img src="~/icons/white/users-01.svg" width="20" height="20" alt="">
             </div>
             <div>
-                <div style="font-weight:600; font-size:14px; color:#1A1A2E;">Demografik Durum</div>
-                <div style="font-size:12px; color:#7A94B8;">Medeni hal ve aile bilgileri</div>
+                <div class="font-[Manrope] font-semibold text-[14px] text-[#1A1A2E]">Demografik Durum</div>
+                <div class="font-[Source_Sans_3] text-[12px] text-[#7A94B8]">Medeni hal ve aile bilgileri</div>
             </div>
         </div>
 
-        <div style="margin-bottom:10px;">
+        <div class="mb-2.5">
             <partial name="~/Partials/Components/_Select.cshtml" model="Model.MedeniHal" />
         </div>
 
-        <div style="display:flex; align-items:center; gap:6px; margin-bottom:10px;">
-            <div style="width:6px; height:6px; border-radius:50%; background:#2E6DF8; flex-shrink:0;"></div>
-            <span style="font-size:11px; color:#2E6DF8; font-style:italic;">
+        <div class="flex items-center gap-1.5 mb-2.5">
+            <div class="w-1.5 h-1.5 rounded-full bg-[#2E6DF8] shrink-0"></div>
+            <span class="text-[11px] text-[#2E6DF8] italic">
                 Fields are hidden dynamically based on user selection
             </span>
         </div>
 
         <div x-show="medeni === 'evli'"
-             style="border-left:2px solid #2E6DF8; padding-left:0; display:flex; flex-direction:column; gap:24px;">
+             class="border-l-2 border-[#2E6DF8] flex flex-col gap-6">
 
-            <div style="position:relative; padding-left:14px; padding-bottom:4px;">
-                <div style="position:absolute; left:0; top:7px; width:10px; height:2px; background:#2E6DF8;"></div>
-                <label style="display:block; font-size:11px; font-weight:500; color:#7A94B8;
-                              letter-spacing:0.08em; text-transform:uppercase; margin-bottom:10px; font-family:'Poppins';">
+            <div class="relative pl-[14px] pb-1">
+                <div class="absolute left-0 top-[7px] w-2.5 h-0.5 bg-[#2E6DF8]"></div>
+                <label class="block text-[11px] font-medium text-[#7A94B8] uppercase tracking-[0.08em] mb-2.5 font-[Poppins]">
                     EŞ ÇALIŞIYOR MU?
                 </label>
                 <div @@change="esCalisiyor = $event.target.value">
@@ -116,22 +104,17 @@
                 </div>
             </div>
 
-            <div x-show="esCalisiyor === 'evet'" style="margin-left:50px;">
-                <div style="border-left:2px solid #37B8C7; padding-left:0;">
-                    <div style="position:relative; padding-left:14px;">
-                        <div style="position:absolute; left:0; top:7px; width:10px; height:2px; background:#37B8C7;"></div>
-                        <label style="display:block; font-size:11px; font-weight:500; color:#7A94B8;
-                                      letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px; font-family:'Poppins';">
+            <div x-show="esCalisiyor === 'evet'" class="ml-[50px]">
+                <div class="border-l-2 border-[#37B8C7]">
+                    <div class="relative pl-[14px]">
+                        <div class="absolute left-0 top-[7px] w-2.5 h-0.5 bg-[#37B8C7]"></div>
+                        <label class="block text-[11px] font-medium text-[#7A94B8] uppercase tracking-[0.08em] mb-1.5 font-[Poppins]">
                             EŞİN AYLIK GELİRİ
                         </label>
-                        <div style="position:relative;">
+                        <div class="relative">
                             <input type="number" placeholder="0"
-                                   style="width:100%; padding:10px 36px 10px 12px; border:1px solid #DCE3FB; border-radius:8px;
-                                          font-family:'Poppins',sans-serif; font-size:13px; color:#1A1A2E; background:#FFFFFF;
-                                          outline:none; box-sizing:border-box; transition:border-color 0.15s;"
-                                   onfocus="this.style.borderColor='#0056B3'" onblur="this.style.borderColor='#DCE3FB'" />
-                            <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%);
-                                         font-size:13px; color:#7A94B8; pointer-events:none; font-family:'Poppins';">₺</span>
+                                   class="w-full py-2.5 pl-3 pr-9 border border-[#D1D5DC] rounded-[8px] text-[13px] text-[#1A1A2E] bg-white outline-none transition-colors focus:border-[#0056B3]" />
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[#7A94B8] pointer-events-none">₺</span>
                         </div>
                     </div>
                 </div>
@@ -144,14 +127,13 @@
 </div>
 
 @* Progressive Disclosure bilgi kutusu *@
-<div style="margin-top:20px; background:#EBF2FF; border:1px solid #C3D9FF; border-radius:12px;
-            padding:14px 16px; display:flex; gap:10px; align-items:flex-start;">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0; margin-top:1px;">
+<div class="mt-5 bg-[#EBF2FF] border border-[#C3D9FF] rounded-[12px] p-[14px] flex gap-2.5 items-start">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="shrink-0 mt-[1px]">
         <circle cx="8" cy="8" r="7" stroke="#2E6DF8" stroke-width="1.5"/>
         <path d="M8 7V11" stroke="#2E6DF8" stroke-width="1.5" stroke-linecap="round"/>
         <circle cx="8" cy="5" r="0.75" fill="#2E6DF8"/>
     </svg>
-    <p style="font-size:12px; color:#003F75; margin:0; line-height:1.7; font-family:'Poppins';">
+    <p class="font-[Source_Sans_3] text-[12px] text-[#003F75] leading-[1.7]">
         <strong>Progressive Disclosure:</strong>
         Mavi çizgiyle bağlı alanlar seçimlerinize göre dinamik olarak gösterilir ya da gizlenir.
         Bağlı alanlar ana seçim değiştiğinde otomatik olarak güncellenir.
@@ -159,12 +141,9 @@
 </div>
 
 @* Kaydet *@
-<div style="display:flex; justify-content:flex-end; margin-top:20px;">
+<div class="flex justify-end mt-5">
     <button type="button"
-            style="display:flex; align-items:center; gap:8px; height:44px; background:#0056B3; color:white;
-                   border:none; border-radius:10px; padding:0 20px; font-family:'Poppins'; font-size:15px;
-                   font-weight:500; cursor:pointer; transition:background 0.15s;"
-            onmouseover="this.style.background='#003F75'" onmouseout="this.style.background='#0056B3'">
+            class="flex items-center gap-2 h-12 bg-[#0056B3] text-white border-0 rounded-[10px] px-5 text-[15px] font-medium cursor-pointer transition-colors hover:bg-[#003F75]">
         <img src="~/icons/white/save-02.svg" width="16" height="16" alt="">
         Kaydet
     </button>

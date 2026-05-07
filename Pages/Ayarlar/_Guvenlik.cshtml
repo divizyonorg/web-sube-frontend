@@ -2,38 +2,25 @@
 @{ Layout = null; }
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/imask/dist/imask.min.js"></script>
-
-<style>
-    .guvenlik-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    @@media (max-width: 640px) { .guvenlik-grid { grid-template-columns: 1fr; } }
-</style>
 
 @* ── Dış beyaz card ──────────────────────────────────────────── *@
-<div style="background:#FFFFFF; border:1px solid #DCE3FB; border-radius:14px;
-            padding:33px 33px 1px 33px; display:flex; flex-direction:column;
-            gap:24px; font-family:'Poppins',sans-serif; box-sizing:border-box;">
+<div class="bg-white border border-[#DCE3FB] rounded-[14px] pt-[33px] px-[33px] pb-[1px] flex flex-col gap-6 font-[Poppins]">
 
-    <p style="font-weight:700; font-size:18px; color:#1A1A2E; margin:0;">Güvenlik Ayarları</p>
+    <p class="font-[Manrope] font-bold text-[20px] text-[#101828]">Güvenlik Ayarları</p>
 
     @* ── SMS OTP Kartı ───────────────────────────────────────────── *@
-    <div style="background:#E6F7FF; border:1px solid #BAE7FF; border-radius:14px;
-                padding:20px; display:flex; align-items:center; gap:16px;
-                min-height:110px; box-sizing:border-box;">
+    <div class="bg-[#EFF6FF] border border-[#BFDBFE] rounded-[14px] p-5 flex items-center gap-4 min-h-[110px]">
 
-        <div style="width:56px; height:56px; flex-shrink:0; border-radius:50%;
-                    background:linear-gradient(135deg,#2E6DF8 0%,#0056B3 100%);
-                    display:flex; align-items:center; justify-content:center;">
+        <div class="w-14 h-14 shrink-0 rounded-full bg-gradient-to-br from-[#2E6DF8] to-[#0056B3] flex items-center justify-center">
             <img src="~/icons/white/phone-01.svg" width="26" height="26" alt="">
         </div>
 
-        <div style="flex:1; min-width:0;">
-            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
-                <span style="font-weight:700; font-size:15px; color:#003F75;">SMS OTP ile Giriş Aktif</span>
-                <span style="background:#0056B3; color:#FFFFFF; font-size:11px; font-weight:600;
-                             padding:3px 12px; border-radius:20px;">Aktif</span>
+        <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2.5 flex-wrap mb-1.5">
+                <span class="font-[Manrope] font-bold text-[15px] text-[#003F75]">SMS OTP ile Giriş Aktif</span>
+                <span class="bg-[#0056B3] text-white text-[11px] font-semibold px-3 py-[3px] rounded-full">Aktif</span>
             </div>
-            <p style="font-size:13px; color:#374151; margin:0; line-height:1.6;">
+            <p class="font-[Source_Sans_3] text-[13px] text-[#374151] leading-[1.6]">
                 Hesabınıza her girişte kayıtlı cep telefonunuza
                 (<strong>@Model.Settings.OtpPhone</strong>) tek kullanımlık doğrulama kodu gönderilmektedir.
             </p>
@@ -41,30 +28,26 @@
     </div>
 
     @* ── İki Bilgi Kartı ─────────────────────────────────────────── *@
-    <div class="guvenlik-grid">
+    <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
 
         @* Güvenli Doğrulama *@
-        <div style="background:#B9F8CF; border:1px solid #6EE7A0; border-radius:14px;
-                    padding:16px 18px; min-height:90px; box-sizing:border-box;
-                    display:flex; flex-direction:column; justify-content:center;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-                <img src="~/icons/green/check-circle.svg" width="22" height="22" alt="" style="flex-shrink:0;">
-                <span style="font-weight:600; font-size:14px; color:#15803D;">Güvenli Doğrulama</span>
+        <div class="bg-[#F0FDF4] border border-[#BBF7D0] rounded-[14px] p-[18px] min-h-[90px] flex flex-col justify-center">
+            <div class="flex items-center gap-2.5 mb-1.5">
+                <img src="~/icons/green/check-circle.svg" width="22" height="22" alt="" class="shrink-0">
+                <span class="font-[Manrope] font-semibold text-[14px] text-[#0D542B]">Güvenli Doğrulama</span>
             </div>
-            <p style="font-size:12px; color:#16A34A; margin:0; line-height:1.5; padding-left:32px;">
+            <p class="font-[Source_Sans_3] text-[12px] text-[#008236] leading-[1.5] pl-8">
                 Her giriş benzersiz bir OTP kodu ile doğrulanır.
             </p>
         </div>
 
         @* Şifresiz Erişim *@
-        <div style="background:#BEDBFF; border:1px solid #93C5FD; border-radius:14px;
-                    padding:16px 18px; min-height:90px; box-sizing:border-box;
-                    display:flex; flex-direction:column; justify-content:center;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-                <img src="~/icons/blue/lock-02.svg" width="22" height="22" alt="" style="flex-shrink:0;">
-                <span style="font-weight:600; font-size:14px; color:#1D4ED8;">Şifresiz Erişim</span>
+        <div class="bg-[#EFF6FF] border border-[#BFDBFE] rounded-[14px] p-[18px] min-h-[90px] flex flex-col justify-center">
+            <div class="flex items-center gap-2.5 mb-1.5">
+                <img src="~/icons/blue/lock-02.svg" width="22" height="22" alt="" class="shrink-0">
+                <span class="font-[Manrope] font-semibold text-[14px] text-[#155DFC]">Şifresiz Erişim</span>
             </div>
-            <p style="font-size:12px; color:#2563EB; margin:0; line-height:1.5; padding-left:32px;">
+            <p class="font-[Source_Sans_3] text-[12px] text-[#2563EB] leading-[1.5] pl-8">
                 Sisteminizde şifre tutulmaz, oltalama saldırılarına karşı maksimum koruma.
             </p>
         </div>
@@ -72,47 +55,39 @@
     </div>
 
     @* ── OTP Numarasını Güncelle ─────────────────────────────────── *@
-    <div style="background:#FFFFFF; border:1px solid #E5E7EB; border-radius:14px;
-                padding:24px; min-height:159px; box-sizing:border-box;">
+    <div class="bg-white border border-[#E5E7EB] rounded-[14px] p-6 min-h-[159px]">
 
-        <p style="font-weight:600; font-size:15px; color:#1A1A2E; margin:0 0 16px;">OTP Numarasını Güncelle</p>
+        <p class="font-[Manrope] font-semibold text-[15px] text-[#1A1A2E] mb-4">OTP Numarasını Güncelle</p>
 
-        <div style="display:flex; gap:12px; align-items:center;">
+        <div class="flex gap-3 items-center max-sm:flex-col max-sm:items-stretch">
 
             <div x-data="{ focused: false }"
-                 :class="focused ? 'border-[#0056B3]' : 'border-gray-200'"
-                 class="border rounded-[10px] bg-white transition-colors"
-                 style="flex:1; height:50px; display:flex; align-items:center; gap:12px; padding-left:15px; padding-right:16px;">
-                <img src="~/icons/gray/phone.svg" width="20" height="20" alt="" style="flex-shrink:0;">
+                 :class="focused ? 'border-[#0056B3]' : 'border-[#D1D5DC]'"
+                 class="border rounded-[10px] bg-white transition-colors flex-1 h-[50px] flex items-center gap-3 pl-[15px] pr-4">
+                <img src="~/icons/gray/phone.svg" width="20" height="20" alt="" class="shrink-0">
                 <input id="otpPhoneInput"
                        type="text"
                        value="@Model.Settings.OtpPhone"
                        @@focus="focused = true" @@blur="focused = false"
-                       style="flex:1; background:transparent; outline:none; border:none;
-                              font-family:'Poppins'; font-size:14px; color:#1F2937;" />
+                       class="flex-1 bg-transparent outline-none border-0 text-[14px] text-[#1F2937]" />
             </div>
 
             <button type="button"
                     onclick="guncelleTelefonuOnayla()"
-                    style="display:flex; align-items:center; gap:8px; height:50px; white-space:nowrap;
-                           background:linear-gradient(90deg,#0056B3 0%,#2E6DF8 100%); color:white;
-                           border:none; border-radius:10px; padding:0 22px;
-                           font-family:'Poppins'; font-size:14px; font-weight:500; cursor:pointer;
-                           transition:opacity 0.15s;"
-                    onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+                    class="flex items-center gap-2 h-[50px] whitespace-nowrap bg-gradient-to-r from-[#0056B3] to-[#2E6DF8] text-white border-0 rounded-[10px] px-[22px] text-[14px] font-medium cursor-pointer transition-opacity hover:opacity-90 max-sm:w-full max-sm:justify-center">
                 <img src="~/icons/white/save-02.svg" width="16" height="16" alt="">
                 Güncelle
             </button>
 
         </div>
 
-        <p style="font-size:12px; color:#9CA3AF; margin:10px 0 0; line-height:1.5;">
+        <p class="font-[Source_Sans_3] text-[12px] text-[#9CA3AF] mt-2.5 leading-[1.5]">
             Numara değişikliği için mevcut telefondan doğrulama kodu gönderilecektir.
         </p>
 
     </div>
 
-</div>@* /dış card *@
+</div>
 
 <script>
     IMask(document.getElementById('otpPhoneInput'), {
