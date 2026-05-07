@@ -13,7 +13,7 @@ public class AuthService : IAuthService
 
     private static class Endpoints
     {
-        public const string SendOtp   = "send-otp";
+        public const string SendOtp = "send-otp";
         public const string VerifyOtp = "verify-otp";
     }
 
