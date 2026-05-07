@@ -32,7 +32,19 @@ public class IndexModel : PageModel
     public async Task<IActionResult> OnPostVerifyOtpAsync()
     {
         _logger.LogInformation("VerifyOtp handler: Phone='{Phone}' OtpCode='{OtpCode}'", PhoneNumber, OtpCode);
-        var (success, message) = await _authService.VerifyOtpAsync(PhoneNumber!, OtpCode!);
+        var (success, token, message) = await _authService.VerifyOtpAsync(PhoneNumber!, OtpCode!);
+
+        if (success && token is not null)
+        {
+            Response.Cookies.Append("auth_token", token, new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Secure = Request.IsHttps,
+                Expires = DateTimeOffset.UtcNow.AddHours(24)
+            });
+        }
+
         return new JsonResult(new { success, message });
     }
 

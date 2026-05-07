@@ -1,3 +1,4 @@
+using MyApp.Web.HttpClients;
 using MyApp.Web.Models;
 using MyApp.Web.Services.Implementations;
 using MyApp.Web.Services.Interfaces;
@@ -19,18 +20,24 @@ static Action<HttpClient> ConfigureClient(ServiceEndpoint endpoint) => client =>
 if (useMockData)
 {
     builder.Services.AddScoped<IClientService, MockClientService>();
-    // IReportService kaydı — 01-FO-06 PR'ı merge olunca aktif edilecek:
-    // builder.Services.AddScoped<IReportService, MockReportService>();
+    builder.Services.AddScoped<IReportService, MockReportService>();
     builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
+    builder.Services.AddScoped<IPersonalizedOffersService, MockPersonalizedOffersService>();
 }
 else
 {
     builder.Services.AddHttpClient<IClientService, ClientService>(ConfigureClient(serviceUrls.CustomerService));
     builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService));
     builder.Services.AddHttpClient<ICreditEligibilityService, CreditEligibilityService>(ConfigureClient(serviceUrls.CustomerService));
+    builder.Services.AddScoped<IPersonalizedOffersService, MockPersonalizedOffersService>();
 }
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<BearerTokenHandler>();
+
 builder.Services.AddHttpClient<IAuthService, AuthService>(ConfigureClient(serviceUrls.AuthService));
+builder.Services.AddHttpClient<IEvdsService, EvdsService>(ConfigureClient(serviceUrls.EvdsService))
+    .AddHttpMessageHandler<BearerTokenHandler>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddHealthChecks();

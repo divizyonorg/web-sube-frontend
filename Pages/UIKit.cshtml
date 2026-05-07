@@ -261,9 +261,12 @@
             <div class="overflow-hidden rounded-xl" style="width:100%;">
                 @await Component.InvokeAsync("Header", new
                 {
-                    userName          = "Mustafa GÜMÜŞ",
-                    notificationCount = 2,
-                    profileImageUrl   = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg/250px-Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg"
+                    model = new MyApp.Web.ViewModels.HeaderViewModel
+                    {
+                        UserName          = "Mustafa GÜMÜŞ",
+                        NotificationCount = 2,
+                        ProfileImageUrl   = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg/250px-Lionel_Messi_White_House_2026_%283x4_cropped%29.jpg"
+                    }
                 })
             </div>
         </div>
@@ -272,7 +275,10 @@
     @* ─── FOOTER ───────────────────────────────────────────────── *@
     <section class="space-y-4">
         <h2 class="font-[Poppins] font-semibold text-lg text-gray-800 border-b border-gray-200 pb-2">Footer</h2>
-        <p class="text-xs text-gray-400">Stillendirme eklenecek.</p>
+        <p class="text-xs text-gray-400 mb-3">Global footer — layout'ta otomatik gösterilir, aşağıda önizleme:</p>
+        <div class="overflow-hidden rounded-xl">
+            @await Component.InvokeAsync("Footer")
+        </div>
     </section>
 
     @* ─── SIDEBAR ──────────────────────────────────────────────── *@
