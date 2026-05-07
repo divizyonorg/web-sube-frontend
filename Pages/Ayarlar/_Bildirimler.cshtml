@@ -1,17 +1,17 @@
 @model MyApp.Web.Pages.Ayarlar.IndexModel
 @{ Layout = null; }
 
-<div class="bg-white border border-[#DCE3FB] rounded-[14px] pt-7 px-[33px] pb-[33px] font-[Poppins]">
+<div class="bg-white border border-[#E5E7EB] rounded-[14px] pt-[33px] px-[33px] pb-[33px] font-[Poppins]">
 
     <p class="font-[Manrope] font-bold text-[20px] text-[#101828] mb-6">Bildirim Tercihleri</p>
 
-    <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-4">
 
         @* E-posta Bildirimleri *@
-        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-6 gap-4 max-sm:px-4">
+        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-4 gap-4">
             <div>
-                <p class="font-[Manrope] font-semibold text-[14px] text-[#1A1A2E] mb-1">E-posta Bildirimleri</p>
-                <p class="font-[Source_Sans_3] text-[13px] text-[#7A94B8]">Önemli güncellemeler e-posta ile gönderilir</p>
+                <p class="font-[Source_Sans_3] font-medium text-[16px] text-[#101828] mb-1">E-posta Bildirimleri</p>
+                <p class="font-[Source_Sans_3] text-[14px] text-[#4A5565]">Önemli güncellemeler e-posta ile gönderilir</p>
             </div>
             <button type="button"
                     @@click="emailOn = !emailOn"
@@ -23,10 +23,10 @@
         </div>
 
         @* SMS Bildirimleri *@
-        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-6 gap-4 max-sm:px-4">
+        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-4 gap-4">
             <div>
-                <p class="font-[Manrope] font-semibold text-[14px] text-[#1A1A2E] mb-1">SMS Bildirimleri</p>
-                <p class="font-[Source_Sans_3] text-[13px] text-[#7A94B8]">Ödeme hatırlatmaları SMS ile gönderilir</p>
+                <p class="font-[Source_Sans_3] font-medium text-[16px] text-[#101828] mb-1">SMS Bildirimleri</p>
+                <p class="font-[Source_Sans_3] text-[14px] text-[#4A5565]">Ödeme hatırlatmaları SMS ile gönderilir</p>
             </div>
             <button type="button"
                     @@click="smsOn = !smsOn"
@@ -38,10 +38,10 @@
         </div>
 
         @* Mobil Bildirimler *@
-        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-6 gap-4 max-sm:px-4">
+        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-4 gap-4">
             <div>
-                <p class="font-[Manrope] font-semibold text-[14px] text-[#1A1A2E] mb-1">Mobil Bildirimler</p>
-                <p class="font-[Source_Sans_3] text-[13px] text-[#7A94B8]">Mobil uygulamadan anlık bildirimler</p>
+                <p class="font-[Source_Sans_3] font-medium text-[16px] text-[#101828] mb-1">Mobil Bildirimler</p>
+                <p class="font-[Source_Sans_3] text-[14px] text-[#4A5565]">Mobil uygulamadan anlık bildirimler</p>
             </div>
             <button type="button"
                     @@click="mobileOn = !mobileOn"
@@ -53,10 +53,10 @@
         </div>
 
         @* Pazarlama İletişimi *@
-        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-6 gap-4 max-sm:px-4">
+        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-4 gap-4">
             <div>
-                <p class="font-[Manrope] font-semibold text-[14px] text-[#1A1A2E] mb-1">Pazarlama İletişimi</p>
-                <p class="font-[Source_Sans_3] text-[13px] text-[#7A94B8]">Kampanya ve tekliflerden haberdar olun</p>
+                <p class="font-[Source_Sans_3] font-medium text-[16px] text-[#101828] mb-1">Pazarlama İletişimi</p>
+                <p class="font-[Source_Sans_3] text-[14px] text-[#4A5565]">Kampanya ve tekliflerden haberdar olun</p>
             </div>
             <button type="button"
                     @@click="pazarlamaOn = !pazarlamaOn"
@@ -72,7 +72,7 @@
     @* Kaydet *@
     <div class="mt-7">
         <button type="button"
-                class="flex items-center gap-2 h-12 bg-[#0056B3] text-white border-0 rounded-[10px] px-5 text-[15px] font-medium cursor-pointer transition-colors hover:bg-[#003F75]">
+                class="flex items-center gap-2 h-12 bg-[#0056B3] text-white border-0 rounded-[10px] px-5 font-[Source_Sans_3] text-[16px] font-medium cursor-pointer transition-colors hover:bg-[#003F75]">
             <img src="~/icons/white/save-02.svg" width="16" height="16" alt="">
             Kaydet
         </button>
