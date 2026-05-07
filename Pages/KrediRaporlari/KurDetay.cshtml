@@ -44,6 +44,13 @@
     </div>
 
     @* ─── Tab içeriği ─── *@
+    @if (Model.ViewModel.ActiveTab == "kisisel")
+    {
+        <div class="mt-6 w-full">
+            <partial name="~/Partials/_UygunlukSeridi.cshtml" model="Model.ViewModel.KisiselRapor.UygunlukSeridi" />
+        </div>
+    }
+
     @if (Model.ViewModel.ActiveTab == "piyasa")
     {
         <div class="w-full max-w-[1210px] flex flex-col gap-5 px-2 sm:px-4 pt-2 pb-6">
