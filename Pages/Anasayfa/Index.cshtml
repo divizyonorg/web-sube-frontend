@@ -5,25 +5,6 @@
     ViewData["ActivePage"] = "Anasayfa";
 }
 
-@section Styles {
-    <style>
-        .dots .swiper-pagination-bullet {
-            width: 10px;
-            height: 10px;
-            background: #2E6DF8;
-            opacity: 0.4;
-            border-radius: 5px;
-            transition: all 0.2s ease;
-            margin: 0 4px !important;
-        }
-
-        .dots .swiper-pagination-bullet-active {
-            width: 30px;
-            opacity: 1;
-            border-radius: 5px;
-        }
-    </style>
-}
 
 @* ── PageBar ── *@
 <div class="flex items-center justify-between pb-3 border-b border-[#DCE3FB]">
@@ -41,22 +22,19 @@
 <div class="flex flex-col gap-6 mt-6">
 
     @* ── Birinci satır: 2 kart yan yana ── *@
-    <div class="grid grid-cols-2 gap-6">
-
-        @* Kredi Uygunluk Durumu kartı — 01-FO-01 *@
-        @await Component.InvokeAsync("CreditEligibilityCard")
-
-
+    <div class="flex flex-col lg:flex-row gap-6 w-full max-w-[1210px]">
+        <div class="flex-1 min-w-0">
+            @await Component.InvokeAsync("CreditEligibilityCard")
+        </div>
+        <div class="flex-1 min-w-0"></div>
     </div>
 
     @* ── İkinci satır: Kredi Danışmanlığı kartı — 01-FO-01 *@
-    <div class="grid grid-cols-2 gap-6">
-
-        @await Component.InvokeAsync("KrediDanismanligiCard")
-
-        @* İkinci sütun — ileride başka task'ta eklenecek *@
-        <div></div>
-
+    <div class="flex flex-col lg:flex-row gap-6 w-full max-w-[1210px]">
+        <div class="flex-1 min-w-0">
+            @await Component.InvokeAsync("KrediDanismanligiCard")
+        </div>
+        <div class="flex-1 min-w-0"></div>
     </div>
 
     @* ── Üçüncü satır: Popüler Krediler ve Avantajlı Kredi Kartları ── *@
@@ -179,11 +157,11 @@
 
                                     <ul class="list-none m-0 px-5 flex flex-col gap-1">
                                         <li class="flex items-start gap-2 font-[250] text-xs leading-[18px] text-[#003F75]">
-                                            <img src="/icons/primary/check.svg" width="12" height="12" style="flex-shrink:0;margin-top:3px" alt="" aria-hidden="true">
+                                            <img src="/icons/primary/check.svg" width="12" height="12" class="shrink-0 mt-[3px]" alt="" aria-hidden="true">
                                             <span>Yeni müşterilere özel 85.000 TL'ye varan nakit!</span>
                                         </li>
                                         <li class="flex items-start gap-2 font-[250] text-xs leading-[18px] text-[#003F75]">
-                                            <img src="/icons/primary/check.svg" width="12" height="12" style="flex-shrink:0;margin-top:3px" alt="" aria-hidden="true">
+                                            <img src="/icons/primary/check.svg" width="12" height="12" class="shrink-0 mt-[3px]" alt="" aria-hidden="true">
                                             <span>%0 Faizli 25.000 TL Taksitli Nakit Avans!</span>
                                         </li>
                                     </ul>

@@ -25,11 +25,10 @@
             </div>
 
             @* Diamond thumb — bar merkezi ile dikey hizalı (bar merkezi top:15.5px, thumb merkezi top:3+12.5=15.5px) *@
-            <svg class="absolute overflow-visible"
+            <img src="~/icons/primary/slider-thumb.svg"
+                 class="absolute overflow-visible"
                  style="left: calc(@Model.SliderPositionPercent% - 5px); top: 3px; width: 10px; height: 25px;"
-                 viewBox="0 0 10 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <polygon points="5,3 9,12.5 5,22 1,12.5" fill="white" stroke="#1D459C" stroke-width="0.5"/>
-            </svg>
+                 alt="" aria-hidden="true">
 
             @* Durum etiketi — Poppins 600 22px #1D459C; bar'ın altında, thumb pozisyonunda ortalı *@
             <span class="absolute font-['Poppins'] text-[22px] font-semibold text-[#1D459C] leading-none whitespace-nowrap"
@@ -38,10 +37,10 @@
             </span>
 
             @* Ölçek etiketleri — Poppins 400 9px rgba(0,0,0,0.5); SVG'den: premium @0%, kritik @~70%, düşük @100% *@
-            <div class="absolute left-0 right-0" style="top: 57px; height: 14px;">
-                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50" style="left: 0;">premium</span>
-                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50" style="left: 70%; transform: translateX(-50%);">kritik</span>
-                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50" style="right: 0;">düşük</span>
+            <div class="absolute left-0 right-0 top-[57px] h-[14px]">
+                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50 left-0">premium</span>
+                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50 left-[70%] -translate-x-1/2">kritik</span>
+                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50 right-0">düşük</span>
             </div>
 
         </div>
@@ -56,8 +55,8 @@
     @* K.U.R Butonu — Poppins 500 16px beyaz *@
     <div class="flex justify-center px-[12px] pb-[12px]">
         <a href="/KrediRaporlari/KurDetay"
-           class="font-['Poppins'] flex items-center justify-center w-[280px] h-[44px] bg-[#0056B3] text-white text-[16px] font-medium rounded-[40px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] hover:bg-[#004494] transition-all">
-            K.U.R Raporunu Gör
+           class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] hover:bg-[#004494] transition-all">
+            <span class="font-['Poppins'] font-medium text-[16px] leading-6 text-center text-white">K.U.R Raporunu Gör</span>
         </a>
     </div>
 

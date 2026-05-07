@@ -318,7 +318,7 @@
                         });
                         var json = await resp.json();
                         if (json.success) {
-                            window.location.href = '/dashboard';
+                            window.location.href = '/anasayfa';
                         } else {
                             this.otpVerifyError    = true;
                             this.otpVerifyErrorMsg = json.message || 'Kod hatalı. Lütfen tekrar deneyin.';
