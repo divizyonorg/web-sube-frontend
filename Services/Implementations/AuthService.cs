@@ -51,7 +51,7 @@ public class AuthService : IAuthService
         }
     }
 
-    public async Task<(bool Success, string? Message)> VerifyOtpAsync(string phoneNumber, string otpCode)
+    public async Task<(bool Success, string? Token, string? Message)> VerifyOtpAsync(string phoneNumber, string otpCode)
     {
         var gsm = FormatGsm(phoneNumber);
         _logger.LogInformation("VerifyOtp → gsm='{Gsm}'", gsm);
@@ -65,14 +65,14 @@ public class AuthService : IAuthService
             _logger.LogInformation("VerifyOtp ← {StatusCode} {Body}", (int)response.StatusCode, body);
 
             if (!response.IsSuccessStatusCode)
-                return (false, TryParseMessage(body));
+                return (false, null, TryParseMessage(body));
 
-            return (true, null);
+            return (true, TryParseToken(body), null);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "VerifyOtp exception [{ExType}]: {Message}", ex.GetType().Name, ex.Message);
-            return (false, $"{ex.GetType().Name}: {ex.Message}");
+            return (false, null, $"{ex.GetType().Name}: {ex.Message}");
         }
     }
 
@@ -90,6 +90,20 @@ public class AuthService : IAuthService
             using var doc = JsonDocument.Parse(body);
             if (doc.RootElement.TryGetProperty("message", out var msg))
                 return msg.GetString();
+        }
+        catch { }
+        return null;
+    }
+
+    private static string? TryParseToken(string body)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(body);
+            if (doc.RootElement.TryGetProperty("token", out var t))
+                return t.GetString();
+            if (doc.RootElement.TryGetProperty("access_token", out var at))
+                return at.GetString();
         }
         catch { }
         return null;
