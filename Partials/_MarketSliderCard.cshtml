@@ -1,0 +1,36 @@
+@model MyApp.Web.ViewModels.MarketSliderCardViewModel
+@{ Layout = null; }
+@{
+    var clampedPercent = Math.Clamp(Model.SliderPercent, 0, 100);
+}
+
+<div class="relative w-full bg-white" style="height: 155px;">
+
+    @* Durum pill — yatay orta, top: 16px *@
+    <div class="absolute left-1/2 -translate-x-1/2 flex items-center rounded-full"
+         style="top: 16px; padding: 8px 20px; background-color: @Model.StatusBgColor;">
+        <span class="font-['Poppins'] text-[15px] font-semibold leading-[22px]"
+              style="color: @Model.StatusTextColor;">@Model.StatusLabel</span>
+    </div>
+
+    @* Slider — top: 70.5px, left: 16px, right: 16px *@
+    <div class="absolute" style="left: 16px; right: 16px; top: 70.5px;">
+        <div class="relative w-full rounded-full" style="height: 20px; background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);">
+            <div class="absolute rounded-full bg-white border border-[#E5E7EB]"
+                 style="width: 10px; height: 28px; top: -4px; left: calc(@clampedPercent% - 5px);
+                        box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -2px rgba(0,0,0,0.1);"></div>
+        </div>
+        <div class="flex justify-between mt-2 px-1">
+            <span class="font-['Poppins'] text-[9px] font-normal leading-[14px]" style="color: #122B62; opacity: 0.75;">@Model.LeftLabel</span>
+            <span class="font-['Poppins'] text-[9px] font-normal leading-[14px]" style="color: #2E6DF8; opacity: 0.75;">@Model.MiddleLabel</span>
+            <span class="font-['Poppins'] text-[9px] font-normal leading-[14px]" style="color: #37C6B3; opacity: 0.75;">@Model.RightLabel</span>
+        </div>
+    </div>
+
+    @* AI etiketi — top: 124px, left: 16px *@
+    <div class="absolute flex items-center gap-1.5" style="left: 16px; top: 124px;">
+        <img src="/icons/primary/sparkle-ai.svg" width="12" height="12" alt="">
+        <span class="font-['Poppins'] italic text-[10px] font-normal leading-[15px] text-[#2E6DF8]">@Model.AiText</span>
+    </div>
+
+</div>
