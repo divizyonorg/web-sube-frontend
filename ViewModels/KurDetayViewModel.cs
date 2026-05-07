@@ -4,6 +4,7 @@ public class KurDetayViewModel
 {
     public string ActiveTab { get; set; } = "kisisel";
 
+    public KisiselRaporViewModel KisiselRapor { get; set; } = new();
     public MarketAnalysisViewModel MarketAnalysis { get; set; } = new();
 }
 
