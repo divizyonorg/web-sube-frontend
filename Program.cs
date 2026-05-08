@@ -21,16 +21,19 @@ if (useMockData)
     builder.Services.AddScoped<IClientService, MockClientService>();
     builder.Services.AddScoped<IReportService, MockReportService>();
     builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
+    builder.Services.AddScoped<ICustomerDataService, MockCustomerDataService>();
 }
 else
 {
     builder.Services.AddHttpClient<IClientService, ClientService>(ConfigureClient(serviceUrls.CustomerService));
     builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService));
     builder.Services.AddHttpClient<ICreditEligibilityService, CreditEligibilityService>(ConfigureClient(serviceUrls.CustomerService));
+    builder.Services.AddHttpClient<ICustomerDataService, CustomerDataService>(ConfigureClient(serviceUrls.CustomerService));
 }
 
 builder.Services.AddHttpClient<IAuthService, AuthService>(ConfigureClient(serviceUrls.AuthService));
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
 builder.Services.AddHealthChecks();
 

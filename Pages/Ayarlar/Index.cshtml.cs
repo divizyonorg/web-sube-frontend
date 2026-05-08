@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using MyApp.Web.Services.Interfaces;
 using MyApp.Web.ViewModels;
 using MyApp.Web.ViewModels.Components;
 
@@ -7,6 +8,9 @@ namespace MyApp.Web.Pages.Ayarlar;
 
 public class IndexModel : PageModel
 {
+    private readonly ICustomerDataService _customerDataService;
+    private readonly IAuthService _authService;
+
     public AyarlarViewModel Settings { get; set; } = new();
 
     public SelectViewModel CalismaDurumu { get; } = new()
@@ -27,34 +31,23 @@ public class IndexModel : PageModel
 
     public SelectViewModel CalismaSektoru { get; } = new()
     {
-        Label   = "ÇALIŞMA SEKTÖRÜ",
-        Name    = "calismaSektoru",
-        Options =
-        [
-            new() { Value = "ozel",         Label = "Özel Sektör" },
-            new() { Value = "kamu",         Label = "Kamu" },
-            new() { Value = "uluslararasi", Label = "Uluslararası Kuruluş" },
-        ]
+        Label       = "ÇALIŞMA SEKTÖRÜ",
+        Name        = "calismaSektoru",
+        AlpineModel = "sektor",
     };
 
     public SelectViewModel Meslek { get; } = new()
     {
-        Label   = "MESLEK",
-        Name    = "meslek",
-        Options =
-        [
-            new() { Value = "muhendis",   Label = "Mühendis" },
-            new() { Value = "ogretmen",   Label = "Öğretmen" },
-            new() { Value = "doktor",     Label = "Doktor" },
-            new() { Value = "avukat",     Label = "Avukat" },
-            new() { Value = "muhasebeci", Label = "Muhasebeci" },
-        ]
+        Label       = "MESLEK",
+        Name        = "meslek",
+        AlpineModel = "meslekId",
     };
 
     public SelectViewModel CalismaSuresi { get; } = new()
     {
-        Label   = "ÇALIŞMA SÜRESİ",
-        Name    = "calismaSuresi",
+        Label       = "ÇALIŞMA SÜRESİ",
+        Name        = "calismaSuresi",
+        AlpineModel = "suresi",
         Options =
         [
             new() { Value = "1y-alti",   Label = "1 yıldan az" },
@@ -67,19 +60,8 @@ public class IndexModel : PageModel
 
     public SelectViewModel MaasBankasi { get; } = new()
     {
-        Label   = "MAAŞ BANKASI",
-        Name    = "maasBankasi",
-        Options =
-        [
-            new() { Value = "ziraat",     Label = "Ziraat Bankası" },
-            new() { Value = "halkbank",   Label = "Halkbank" },
-            new() { Value = "vakifbank",  Label = "VakıfBank" },
-            new() { Value = "isbank",     Label = "İş Bankası" },
-            new() { Value = "garanti",    Label = "Garanti BBVA" },
-            new() { Value = "akbank",     Label = "Akbank" },
-            new() { Value = "ykbank",     Label = "Yapı Kredi" },
-            new() { Value = "finansbank", Label = "QNB Finansbank" },
-        ]
+        Label = "MAAŞ BANKASI",
+        Name  = "maasBankasi",
     };
 
     public SelectViewModel MedeniHal { get; } = new()
@@ -89,10 +71,8 @@ public class IndexModel : PageModel
         AlpineModel = "medeni",
         Options     =
         [
-            new() { Value = "bekar",    Label = "Bekar" },
-            new() { Value = "evli",     Label = "Evli" },
-            new() { Value = "bosanmis", Label = "Boşanmış" },
-            new() { Value = "dul",      Label = "Dul" },
+            new() { Value = "false", Label = "Bekar" },
+            new() { Value = "true",  Label = "Evli" },
         ]
     };
 
@@ -123,11 +103,85 @@ public class IndexModel : PageModel
         Height  = 44
     };
 
-    public IActionResult OnGet()
+    [BindProperty] public string ProfilGsm      { get; set; } = string.Empty;
+    [BindProperty] public string ProfilEmail    { get; set; } = string.Empty;
+    [BindProperty] public string GuvenlikGsm     { get; set; } = string.Empty;
+    [BindProperty] public string GuvenlikOtpCode { get; set; } = string.Empty;
+    [BindProperty] public bool    FinansalMaritalStatus  { get; set; }
+    [BindProperty] public bool    FinansalIsWorking      { get; set; }
+    [BindProperty] public decimal FinansalWSalaryAmount  { get; set; }
+    [BindProperty] public int     FinansalWorkSector     { get; set; }
+    [BindProperty] public int     FinansalOccupationId   { get; set; }
+    [BindProperty] public string  FinansalTotalWorkingTime { get; set; } = string.Empty;
+    [BindProperty] public int    KvkkChannelId   { get; set; }
+    [BindProperty] public bool   KvkkEmail       { get; set; }
+    [BindProperty] public bool   KvkkSms         { get; set; }
+    [BindProperty] public bool   KvkkCall        { get; set; }
+    [BindProperty] public bool   KvkkAdress      { get; set; }
+
+    public IndexModel(ICustomerDataService customerDataService, IAuthService authService)
+    {
+        _customerDataService = customerDataService;
+        _authService = authService;
+    }
+
+    public async Task<IActionResult> OnGetAsync()
     {
         ViewData["Title"]      = "Ayarlar";
         ViewData["ActivePage"] = "Ayarlar";
 
+        var workSectorsTask = _customerDataService.GetWorkSectorsAsync();
+        var occupationsTask = _customerDataService.GetOccupationsAsync();
+        var banksTask       = _customerDataService.GetBanksAsync();
+        var profileTask     = _customerDataService.GetProfileAsync();
+        var kvkkTask        = _customerDataService.GetKvkkAsync();
+
+        await Task.WhenAll(workSectorsTask, occupationsTask, banksTask, profileTask, kvkkTask);
+
+        CalismaSektoru.Options.AddRange(workSectorsTask.Result);
+        Meslek.Options.AddRange(occupationsTask.Result);
+        MaasBankasi.Options.AddRange(banksTask.Result);
+        Settings.Profil      = profileTask.Result;
+        Settings.Bildirimler = kvkkTask.Result;
+
         return Page();
+    }
+
+    public async Task<IActionResult> OnPostUpdateContactAsync()
+    {
+        var success = await _customerDataService.UpdateContactAsync(ProfilGsm, ProfilEmail);
+        return new JsonResult(new { success });
+    }
+
+    public async Task<IActionResult> OnPostUpdateGsmAsync()
+    {
+        var success = await _customerDataService.UpdateGsmAsync(GuvenlikGsm);
+        return new JsonResult(new { success });
+    }
+
+    public async Task<IActionResult> OnPostUpdateMaritalStatusAsync()
+    {
+        var success = await _customerDataService.UpdateMaritalStatusAsync(
+            FinansalMaritalStatus, FinansalIsWorking, FinansalWSalaryAmount);
+        return new JsonResult(new { success });
+    }
+
+    public async Task<IActionResult> OnPostUpdateWorkAsync()
+    {
+        var success = await _customerDataService.UpdateWorkAsync(
+            FinansalWorkSector, FinansalOccupationId, FinansalTotalWorkingTime);
+        return new JsonResult(new { success });
+    }
+
+    public async Task<IActionResult> OnPostUpdateKvkkAsync()
+    {
+        var success = await _customerDataService.UpdateKvkkAsync(KvkkChannelId, KvkkEmail, KvkkSms, KvkkCall, KvkkAdress);
+        return new JsonResult(new { success });
+    }
+
+    public async Task<IActionResult> OnPostVerifyGsmOtpAsync()
+    {
+        var (success, message) = await _authService.VerifyOtpAsync(GuvenlikGsm, GuvenlikOtpCode);
+        return new JsonResult(new { success, message });
     }
 }
