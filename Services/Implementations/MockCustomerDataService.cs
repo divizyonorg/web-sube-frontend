@@ -41,10 +41,10 @@ public class MockCustomerDataService : ICustomerDataService
         => Task.FromResult(new ProfilBilgileriViewModel
         {
             FullName = "MUSTAFA ÇAKIR",
-            Phone    = "5370405197",
-            Email    = string.Empty,
+            Phone = "5370405197",
+            Email = string.Empty,
             Birthday = "2003-05-23",
-            Tckn     = "23*******48"
+            Tckn = "23*******48"
         });
 
     public Task<bool> UpdateContactAsync(string gsm, string email, CancellationToken cancellationToken = default)
@@ -57,10 +57,10 @@ public class MockCustomerDataService : ICustomerDataService
         => Task.FromResult(new BildirimlerViewModel
         {
             ChannelId = 3,
-            Email     = true,
-            Sms       = true,
-            Call      = true,
-            Adress    = true
+            Email = true,
+            Sms = true,
+            Call = true,
+            Adress = true
         });
 
     public Task<bool> UpdateKvkkAsync(int channelId, bool email, bool sms, bool call, bool adress, CancellationToken cancellationToken = default)

@@ -15,10 +15,10 @@ public class IndexModel : PageModel
 
     public SelectViewModel CalismaDurumu { get; } = new()
     {
-        Label       = "ÇALIŞMA DURUMU",
-        Name        = "calismaDurumu",
+        Label = "ÇALIŞMA DURUMU",
+        Name = "calismaDurumu",
         AlpineModel = "calisma",
-        Options     =
+        Options =
         [
             new() { Value = "ucretli",   Label = "Ücretli" },
             new() { Value = "serbest",   Label = "Serbest Meslek / Esnaf" },
@@ -31,22 +31,22 @@ public class IndexModel : PageModel
 
     public SelectViewModel CalismaSektoru { get; } = new()
     {
-        Label       = "ÇALIŞMA SEKTÖRÜ",
-        Name        = "calismaSektoru",
+        Label = "ÇALIŞMA SEKTÖRÜ",
+        Name = "calismaSektoru",
         AlpineModel = "sektor",
     };
 
     public SelectViewModel Meslek { get; } = new()
     {
-        Label       = "MESLEK",
-        Name        = "meslek",
+        Label = "MESLEK",
+        Name = "meslek",
         AlpineModel = "meslekId",
     };
 
     public SelectViewModel CalismaSuresi { get; } = new()
     {
-        Label       = "ÇALIŞMA SÜRESİ",
-        Name        = "calismaSuresi",
+        Label = "ÇALIŞMA SÜRESİ",
+        Name = "calismaSuresi",
         AlpineModel = "suresi",
         Options =
         [
@@ -61,15 +61,15 @@ public class IndexModel : PageModel
     public SelectViewModel MaasBankasi { get; } = new()
     {
         Label = "MAAŞ BANKASI",
-        Name  = "maasBankasi",
+        Name = "maasBankasi",
     };
 
     public SelectViewModel MedeniHal { get; } = new()
     {
-        Label       = "MEDENİ HAL",
-        Name        = "medeniHal",
+        Label = "MEDENİ HAL",
+        Name = "medeniHal",
         AlpineModel = "medeni",
-        Options     =
+        Options =
         [
             new() { Value = "false", Label = "Bekar" },
             new() { Value = "true",  Label = "Evli" },
@@ -78,9 +78,9 @@ public class IndexModel : PageModel
 
     public RadioViewModel EsCalisiyor { get; } = new()
     {
-        Name          = "esCalisiyor",
+        Name = "esCalisiyor",
         SelectedValue = "evet",
-        Options       =
+        Options =
         [
             new() { Value = "evet",  Label = "Evet" },
             new() { Value = "hayir", Label = "Hayır" },
@@ -89,35 +89,35 @@ public class IndexModel : PageModel
 
     public ButtonViewModel KaydetButton { get; } = new()
     {
-        Label   = "Kaydet",
+        Label = "Kaydet",
         Variant = ButtonVariant.Primary,
-        Width   = 140,
-        Height  = 44
+        Width = 140,
+        Height = 44
     };
 
     public ButtonViewModel ProfilKaydetButton { get; } = new()
     {
-        Label   = "Kaydet",
+        Label = "Kaydet",
         Variant = ButtonVariant.Primary,
-        Width   = 140,
-        Height  = 44
+        Width = 140,
+        Height = 44
     };
 
-    [BindProperty] public string ProfilGsm      { get; set; } = string.Empty;
-    [BindProperty] public string ProfilEmail    { get; set; } = string.Empty;
-    [BindProperty] public string GuvenlikGsm     { get; set; } = string.Empty;
+    [BindProperty] public string ProfilGsm { get; set; } = string.Empty;
+    [BindProperty] public string ProfilEmail { get; set; } = string.Empty;
+    [BindProperty] public string GuvenlikGsm { get; set; } = string.Empty;
     [BindProperty] public string GuvenlikOtpCode { get; set; } = string.Empty;
-    [BindProperty] public bool    FinansalMaritalStatus  { get; set; }
-    [BindProperty] public bool    FinansalIsWorking      { get; set; }
-    [BindProperty] public decimal FinansalWSalaryAmount  { get; set; }
-    [BindProperty] public int     FinansalWorkSector     { get; set; }
-    [BindProperty] public int     FinansalOccupationId   { get; set; }
-    [BindProperty] public string  FinansalTotalWorkingTime { get; set; } = string.Empty;
-    [BindProperty] public int    KvkkChannelId   { get; set; }
-    [BindProperty] public bool   KvkkEmail       { get; set; }
-    [BindProperty] public bool   KvkkSms         { get; set; }
-    [BindProperty] public bool   KvkkCall        { get; set; }
-    [BindProperty] public bool   KvkkAdress      { get; set; }
+    [BindProperty] public bool FinansalMaritalStatus { get; set; }
+    [BindProperty] public bool FinansalIsWorking { get; set; }
+    [BindProperty] public decimal FinansalWSalaryAmount { get; set; }
+    [BindProperty] public int FinansalWorkSector { get; set; }
+    [BindProperty] public int FinansalOccupationId { get; set; }
+    [BindProperty] public string FinansalTotalWorkingTime { get; set; } = string.Empty;
+    [BindProperty] public int KvkkChannelId { get; set; }
+    [BindProperty] public bool KvkkEmail { get; set; }
+    [BindProperty] public bool KvkkSms { get; set; }
+    [BindProperty] public bool KvkkCall { get; set; }
+    [BindProperty] public bool KvkkAdress { get; set; }
 
     public IndexModel(ICustomerDataService customerDataService, IAuthService authService)
     {
@@ -127,21 +127,21 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
-        ViewData["Title"]      = "Ayarlar";
+        ViewData["Title"] = "Ayarlar";
         ViewData["ActivePage"] = "Ayarlar";
 
         var workSectorsTask = _customerDataService.GetWorkSectorsAsync();
         var occupationsTask = _customerDataService.GetOccupationsAsync();
-        var banksTask       = _customerDataService.GetBanksAsync();
-        var profileTask     = _customerDataService.GetProfileAsync();
-        var kvkkTask        = _customerDataService.GetKvkkAsync();
+        var banksTask = _customerDataService.GetBanksAsync();
+        var profileTask = _customerDataService.GetProfileAsync();
+        var kvkkTask = _customerDataService.GetKvkkAsync();
 
         await Task.WhenAll(workSectorsTask, occupationsTask, banksTask, profileTask, kvkkTask);
 
         CalismaSektoru.Options.AddRange(workSectorsTask.Result);
         Meslek.Options.AddRange(occupationsTask.Result);
         MaasBankasi.Options.AddRange(banksTask.Result);
-        Settings.Profil      = profileTask.Result;
+        Settings.Profil = profileTask.Result;
         Settings.Bildirimler = kvkkTask.Result;
 
         return Page();

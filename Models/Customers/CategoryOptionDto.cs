@@ -8,8 +8,8 @@ public class CategoryOptionDto
 
 public class CategoryListResponseDto
 {
-    public bool   Success    { get; set; }
-    public string Category   { get; set; } = string.Empty;
-    public int    TotalCount { get; set; }
+    public bool Success { get; set; }
+    public string Category { get; set; } = string.Empty;
+    public int TotalCount { get; set; }
     public List<CategoryOptionDto> Data { get; set; } = [];
 }

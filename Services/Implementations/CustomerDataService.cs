@@ -15,12 +15,12 @@ public class CustomerDataService : ICustomerDataService
 
     private static class Endpoints
     {
-        public const string Category    = "/api/customers/{0}";
-        public const string Contact     = "/api/customers/contact";
-        public const string FindeksGsm  = "/api/customers/findeks/update-gsm";
-        public const string Kvkk          = "/api/customers/kvkk";
+        public const string Category = "/api/customers/{0}";
+        public const string Contact = "/api/customers/contact";
+        public const string FindeksGsm = "/api/customers/findeks/update-gsm";
+        public const string Kvkk = "/api/customers/kvkk";
         public const string MaritalStatus = "/api/customers/marital-status";
-        public const string Work          = "/api/customers/work";
+        public const string Work = "/api/customers/work";
 
         public static string DynamicData(string moduleType, int page = 1)
             => $"/api/customers/dynamic-data?module_type={moduleType}&page={page}";
@@ -28,7 +28,7 @@ public class CustomerDataService : ICustomerDataService
 
     public CustomerDataService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
     {
-        _httpClient          = httpClient;
+        _httpClient = httpClient;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -66,7 +66,7 @@ public class CustomerDataService : ICustomerDataService
         AttachToken();
 
         var fullnameTask = ApiClient.GetJsonAsync<DynamicDataResponseDto>(_httpClient, Endpoints.DynamicData("FULLNAME"), cancellationToken);
-        var contactTask  = ApiClient.GetJsonAsync<DynamicDataResponseDto>(_httpClient, Endpoints.DynamicData("CONTACT"), cancellationToken);
+        var contactTask = ApiClient.GetJsonAsync<DynamicDataResponseDto>(_httpClient, Endpoints.DynamicData("CONTACT"), cancellationToken);
 
         await Task.WhenAll(fullnameTask, contactTask);
 
@@ -80,7 +80,7 @@ public class CustomerDataService : ICustomerDataService
             {
                 vm.FullName = $"{details.FirstName} {details.LastName}".Trim();
                 vm.Birthday = details.Birthday ?? string.Empty;
-                vm.Tckn     = details.Tckn     ?? string.Empty;
+                vm.Tckn = details.Tckn ?? string.Empty;
             }
         }
 
@@ -90,7 +90,7 @@ public class CustomerDataService : ICustomerDataService
             var details = item.Details.Value.Deserialize<ContactDetailsDto>();
             if (details is null || !details.IsPrimary) continue;
 
-            if (details.Type.Equals("GSM",   StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(vm.Phone)) vm.Phone = details.Value;
+            if (details.Type.Equals("GSM", StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(vm.Phone)) vm.Phone = details.Value;
             if (details.Type.Equals("Email", StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(vm.Email)) vm.Email = details.Value;
         }
 
@@ -108,7 +108,7 @@ public class CustomerDataService : ICustomerDataService
     {
         AttachToken();
         var response = await ApiClient.GetJsonAsync<DynamicDataResponseDto>(_httpClient, Endpoints.DynamicData("KVKK"), cancellationToken);
-        var item     = response?.Data.FirstOrDefault();
+        var item = response?.Data.FirstOrDefault();
         if (item is null || !item.Details.HasValue) return new BildirimlerViewModel();
 
         var details = item.Details.Value.Deserialize<KvkkDetailsDto>();
@@ -117,10 +117,10 @@ public class CustomerDataService : ICustomerDataService
         return new BildirimlerViewModel
         {
             ChannelId = details.ChannelId,
-            Email     = details.Permissions?.Email  ?? false,
-            Sms       = details.Permissions?.Sms    ?? false,
-            Call      = details.Permissions?.Call   ?? false,
-            Adress    = details.Permissions?.Adress ?? false
+            Email = details.Permissions?.Email ?? false,
+            Sms = details.Permissions?.Sms ?? false,
+            Call = details.Permissions?.Call ?? false,
+            Adress = details.Permissions?.Adress ?? false
         };
     }
 
@@ -130,10 +130,10 @@ public class CustomerDataService : ICustomerDataService
         var request = new UpdateKvkkRequest
         {
             ChannelId = channelId,
-            Email     = email,
-            Sms       = sms,
-            Call      = call,
-            Adress    = adress
+            Email = email,
+            Sms = sms,
+            Call = call,
+            Adress = adress
         };
         return await ApiClient.PostJsonAsync(_httpClient, Endpoints.Kvkk, request, cancellationToken);
     }
@@ -144,7 +144,7 @@ public class CustomerDataService : ICustomerDataService
         var request = new UpdateMaritalStatusRequest
         {
             MaritalStatus = maritalStatus,
-            IsWorking     = maritalStatus && isWorking,
+            IsWorking = maritalStatus && isWorking,
             WSalaryAmount = maritalStatus && isWorking ? wSalaryAmount : 0
         };
         return await ApiClient.PostJsonAsync(_httpClient, Endpoints.MaritalStatus, request, cancellationToken);
@@ -155,8 +155,8 @@ public class CustomerDataService : ICustomerDataService
         AttachToken();
         var request = new UpdateWorkRequest
         {
-            WorkSector       = workSector,
-            OccupationId     = occupationId,
+            WorkSector = workSector,
+            OccupationId = occupationId,
             TotalWorkingTime = totalWorkingTime
         };
         return await ApiClient.PostJsonAsync(_httpClient, Endpoints.Work, request, cancellationToken);
