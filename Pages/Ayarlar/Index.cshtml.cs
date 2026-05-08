@@ -181,7 +181,7 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostVerifyGsmOtpAsync()
     {
-        var (success, message) = await _authService.VerifyOtpAsync(GuvenlikGsm, GuvenlikOtpCode);
+        var (success, _, message) = await _authService.VerifyOtpAsync(GuvenlikGsm, GuvenlikOtpCode);
         return new JsonResult(new { success, message });
     }
 }

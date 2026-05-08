@@ -1,3 +1,4 @@
+using MyApp.Web.HttpClients;
 using MyApp.Web.Models;
 using MyApp.Web.Services.Implementations;
 using MyApp.Web.Services.Interfaces;
@@ -22,6 +23,7 @@ if (useMockData)
     builder.Services.AddScoped<IReportService, MockReportService>();
     builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
     builder.Services.AddScoped<ICustomerDataService, MockCustomerDataService>();
+    builder.Services.AddScoped<IPersonalizedOffersService, MockPersonalizedOffersService>();
 }
 else
 {
@@ -29,9 +31,15 @@ else
     builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService));
     builder.Services.AddHttpClient<ICreditEligibilityService, CreditEligibilityService>(ConfigureClient(serviceUrls.CustomerService));
     builder.Services.AddHttpClient<ICustomerDataService, CustomerDataService>(ConfigureClient(serviceUrls.CustomerService));
+    builder.Services.AddScoped<IPersonalizedOffersService, MockPersonalizedOffersService>();
 }
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<BearerTokenHandler>();
+
 builder.Services.AddHttpClient<IAuthService, AuthService>(ConfigureClient(serviceUrls.AuthService));
+builder.Services.AddHttpClient<IEvdsService, EvdsService>(ConfigureClient(serviceUrls.EvdsService))
+    .AddHttpMessageHandler<BearerTokenHandler>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();

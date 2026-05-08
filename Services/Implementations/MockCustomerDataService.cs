@@ -69,4 +69,6 @@ public class MockCustomerDataService : ICustomerDataService
     public Task<bool> UpdateMaritalStatusAsync(bool maritalStatus, bool isWorking, decimal wSalaryAmount, CancellationToken cancellationToken = default)
         => Task.FromResult(true);
 
+    public Task<bool> UpdateWorkAsync(int workSector, int occupationId, string totalWorkingTime, CancellationToken cancellationToken = default)
+        => Task.FromResult(true);
 }

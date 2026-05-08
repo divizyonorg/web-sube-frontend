@@ -48,12 +48,14 @@
 
         @@media (min-width: 768px) {
             .mobile-backdrop, .mobile-drawer { display: none !important; }
-            .main-content { padding: 24px !important; }
+            .main-content { padding: 0 !important; }
+            .page-content { padding: 24px; }
         }
 
         @@media (max-width: 767px) {
             .desktop-sidebar { display: none !important; }
-            .main-content { padding: 16px !important; }
+            .main-content { padding: 0 !important; }
+            .page-content { padding: 16px; }
         }
     </style>
 
@@ -61,11 +63,14 @@
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;">
 
-    @await Component.InvokeAsync("Header", new MyApp.Web.ViewModels.HeaderViewModel
+    @await Component.InvokeAsync("Header", new
     {
-        UserName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
-        NotificationCount = 0,
-        ProfileImageUrl   = ""
+        model = new MyApp.Web.ViewModels.HeaderViewModel
+        {
+            UserName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
+            NotificationCount = 0,
+            ProfileImageUrl   = ""
+        }
     })
 
     @* Mobile backdrop *@
@@ -90,7 +95,10 @@
         </div>
 
         <main class="main-content" style="flex:1; overflow-y:auto; box-sizing:border-box;">
-            @RenderBody()
+            <div class="page-content">
+                @RenderBody()
+            </div>
+            @await Component.InvokeAsync("Footer")
         </main>
 
     </div>
