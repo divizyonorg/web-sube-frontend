@@ -1,0 +1,287 @@
+@model MyApp.Web.Pages.Ayarlar.IndexModel
+@{ Layout = null; }
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
+
+<div x-data="guvenlikForm()">
+
+    @Html.AntiForgeryToken()
+
+    @* ── Dış beyaz card ─────────────────────────────────────── *@
+    <div class="bg-white border border-[#E5E7EB] rounded-[14px] pt-[33px] px-[33px] pb-[1px] flex flex-col gap-6 font-[Poppins]">
+
+        <p class="font-[Manrope] font-bold text-[20px] text-[#101828]">Güvenlik Ayarları</p>
+
+        @* ── SMS OTP Aktif Kartı ─────────────────────────────── *@
+        <div class="bg-gradient-to-br from-[#E6F7FF] to-[#F0F8FF] border border-[#DCE3FB] rounded-[14px] p-5 flex items-center gap-4 min-h-[110px]">
+            <div class="w-14 h-14 shrink-0 rounded-full bg-gradient-to-br from-[#2E6DF8] to-[#0056B3] flex items-center justify-center">
+                <img src="~/icons/white/phone-01.svg" width="26" height="26" alt="">
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2.5 flex-wrap mb-1.5">
+                    <span class="font-[Poppins] font-semibold text-[16px] text-[#003F75]">SMS OTP ile Giriş Aktif</span>
+                    <span class="bg-[#0056B3] text-white text-[12px] font-semibold px-3 py-[3px] rounded-full">Aktif</span>
+                </div>
+                <p class="font-[Poppins] text-[14px] text-[#4A5565] leading-[1.6]">
+                    Hesabınıza her girişte kayıtlı cep telefonunuza
+                    (<strong x-text="currentPhone"></strong>) tek kullanımlık doğrulama kodu gönderilmektedir.
+                </p>
+            </div>
+        </div>
+
+        @* ── İki Bilgi Kartı ─────────────────────────────────── *@
+        <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+
+            <div class="bg-[#F0FDF4] border border-[#B9F8CF] rounded-[14px] p-[18px] min-h-[90px] flex flex-col justify-center">
+                <div class="flex items-center gap-2.5 mb-1.5">
+                    <img src="~/icons/green/check-circle.svg" width="22" height="22" alt="" class="shrink-0">
+                    <span class="font-[Source_Sans_3] font-semibold text-[14px] text-[#0D542B]">Güvenli Doğrulama</span>
+                </div>
+                <p class="font-[Source_Sans_3] text-[12px] text-[#008236] leading-[1.5] pl-8">
+                    Her giriş benzersiz bir OTP kodu ile doğrulanır.
+                </p>
+            </div>
+
+            <div class="bg-[#EFF6FF] border border-[#BEDBFF] rounded-[14px] p-[18px] min-h-[90px] flex flex-col justify-center">
+                <div class="flex items-center gap-2.5 mb-1.5">
+                    <img src="~/icons/blue/lock-02.svg" width="22" height="22" alt="" class="shrink-0">
+                    <span class="font-[Source_Sans_3] font-semibold text-[14px] text-[#1C398E]">Şifresiz Erişim</span>
+                </div>
+                <p class="font-[Source_Sans_3] text-[12px] text-[#1447E6] leading-[1.5] pl-8">
+                    Sisteminizde şifre tutulmaz, oltalama saldırılarına karşı maksimum koruma.
+                </p>
+            </div>
+
+        </div>
+
+        @* ── OTP Numarasını Güncelle ──────────────────────────── *@
+        <div class="bg-white border border-[#E5E7EB] rounded-[14px] p-6 min-h-[159px]">
+
+            <p class="font-[Poppins] font-semibold text-[18px] text-[#101828] mb-4">OTP Numarasını Güncelle</p>
+
+            <div class="flex gap-3 items-center max-sm:flex-col max-sm:items-stretch">
+
+                <div x-data="{ focused: false }"
+                     :class="focused ? 'border-[#0056B3]' : 'border-[#D1D5DC]'"
+                     class="border rounded-[10px] bg-white transition-colors flex-1 h-[50px] flex items-center gap-3 pl-[15px] pr-4">
+                    <img src="~/icons/gray/phone.svg" width="20" height="20" alt="" class="shrink-0">
+                    <input id="otpPhoneInput"
+                           type="text"
+                           @@focus="focused = true" @@blur="focused = false"
+                           class="flex-1 bg-transparent outline-none border-0 font-[Poppins] text-[14px] text-[#1F2937]" />
+                </div>
+
+                <button type="button"
+                        @@click="!sendingUpdate && requestOtp()"
+                        :class="sendingUpdate ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:opacity-90'"
+                        class="flex items-center gap-2 h-[50px] whitespace-nowrap bg-gradient-to-r from-[#0056B3] to-[#2E6DF8] text-white border-0 rounded-[10px] px-[22px] font-[Poppins] text-[14px] font-medium transition-opacity max-sm:w-full max-sm:justify-center">
+                    <img src="~/icons/white/save-02.svg" width="16" height="16" alt="">
+                    Güncelle
+                </button>
+
+            </div>
+
+            <p x-show="updateError" x-cloak x-text="updateError"
+               class="font-[Source_Sans_3] text-[13px] text-[#DC2626] mt-2"></p>
+
+            <p class="font-[Source_Sans_3] text-[12px] text-[#6A7282] mt-2.5 leading-[1.5]">
+                Numara değişikliği için yeni telefonunuza doğrulama kodu gönderilecektir.
+            </p>
+
+        </div>
+
+    </div>
+
+    @* ── OTP Modal ────────────────────────────────────────────── *@
+    <div x-show="showOtpModal" x-cloak
+         class="fixed inset-0 z-[9999] overflow-y-auto lg:overflow-hidden">
+        <div class="min-h-full flex flex-col items-center bg-[#E8EDF5] px-5 py-8
+                    lg:min-h-0 lg:h-full lg:flex-row lg:justify-center lg:items-center lg:bg-[#DDE3ECBF] lg:px-4 lg:py-4">
+
+            @* Soluk başlık — yalnızca mobile *@
+            <div class="w-full flex flex-col items-center mb-5 lg:hidden">
+                <img src="~/images/ik_logo.png" alt="İnteraktif Kredi"
+                     class="h-14 w-auto object-contain mb-4 opacity-35" />
+                <p class="font-light text-base text-[#7B9CC4] mb-2 text-center">Bireysel</p>
+                <h2 class="font-semibold text-[30px] leading-[1.2] text-[#7B9CC4] text-center">
+                    İnteraktif Şube
+                </h2>
+            </div>
+
+            @* Modal kart *@
+            <div class="bg-white w-full rounded-[20px] overflow-hidden
+                        shadow-[0_4px_24px_rgba(0,0,0,0.08)]
+                        lg:max-w-120 lg:shadow-[0_25px_60px_rgba(0,0,0,0.3)]">
+
+                <img src="~/images/sms.png" class="w-full h-50 object-cover object-top block" />
+
+                <div class="px-5 pt-6 pb-8 flex flex-col items-center gap-4 lg:px-9 lg:pt-7 lg:pb-8">
+
+                    <h2 class="font-bold text-xl text-[#0056B3] m-0 text-center">SMS onayı</h2>
+
+                    <p class="text-sm text-[#374151] text-center m-0 leading-[1.7]">
+                        OTP numaranızı güncellemek için lütfen
+                        <strong x-text="maskedPhone()" class="text-[#0056B3]"></strong>
+                        nolu cep telefonuna gönderdiğimiz şifreyi yazın.
+                    </p>
+
+                    <input type="text"
+                           x-model="otpCode"
+                           placeholder="SMS Kodunu Girin"
+                           maxlength="6"
+                           class="w-full h-13 border-[1.5px] border-[#DCE3FB] rounded-xl px-4 text-[15px] outline-none text-[#374151]" />
+
+                    <p class="text-[13px] text-[#374151] m-0 text-center">
+                        <span x-text="timerDisplay()" class="font-semibold text-[#0056B3]"></span>
+                        saniye sonra yeni kod gönderebilirsin
+                    </p>
+
+                    <p x-show="otpVerifyError" x-cloak
+                       x-text="otpVerifyErrorMsg"
+                       class="text-[13px] text-[#DC2626] text-center m-0"></p>
+
+                    <div @@click="!verifyingOtp && verifyOtp()"
+                         :class="verifyingOtp ? 'opacity-60 cursor-not-allowed pointer-events-none' : 'cursor-pointer'"
+                         class="w-full [&_button]:w-full!">
+                        <partial name="~/Partials/Components/_Button.cshtml"
+                                 model='new ButtonViewModel { Label = "Devam Et", Variant = ButtonVariant.Primary, Width = 408 }' />
+                    </div>
+
+                    <p class="text-xs text-[#9CA3AF] m-0 text-center">
+                        Demo: Geçerli kod <strong class="text-[#374151]">123456</strong>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function guvenlikForm() {
+        return {
+            gsm: '@Model.Settings.Profil.Phone',
+            currentPhone: '@Model.Settings.Profil.Phone',
+            showOtpModal: false,
+            otpCode: '',
+            timer: 180,
+            timerInterval: null,
+            sendingUpdate: false,
+            updateError: '',
+            verifyingOtp: false,
+            otpVerifyError: false,
+            otpVerifyErrorMsg: '',
+
+            init() {
+                var self = this;
+                var el = document.getElementById('otpPhoneInput');
+                if (el) {
+                    var mask = IMask(el, { mask: '0(000) 000 00 00' });
+                    el.value = self.gsm;
+                    mask.updateValue();
+                    mask.on('accept', function () { self.gsm = mask.unmaskedValue; });
+                }
+            },
+
+            maskedPhone() {
+                var d = this.gsm.replace(/\D/g, '');
+                if (d.length < 10) return this.gsm;
+                var base = d.startsWith('0') ? d : '0' + d;
+                return base.substring(0, 4) + ' *** ** ' + base.slice(-2);
+            },
+
+            timerDisplay() {
+                var m = Math.floor(this.timer / 60);
+                var s = this.timer % 60;
+                return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+            },
+
+            async requestOtp() {
+                this.sendingUpdate = true;
+                this.updateError   = '';
+
+                var token  = document.querySelector('[name="__RequestVerificationToken"]').value;
+                var params = new URLSearchParams();
+                params.append('__RequestVerificationToken', token);
+                params.append('GuvenlikGsm', this.gsm);
+
+                try {
+                    var resp = await fetch('?handler=UpdateGsm', {
+                        method:  'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body:    params
+                    });
+                    var json = await resp.json();
+                    if (json.success) {
+                        this.openOtpModal();
+                    } else {
+                        this.updateError = json.message || 'İstek gönderilemedi, lütfen tekrar deneyin.';
+                    }
+                } catch {
+                    this.updateError = 'Bağlantı hatası oluştu.';
+                } finally {
+                    this.sendingUpdate = false;
+                }
+            },
+
+            openOtpModal() {
+                this.otpCode          = '';
+                this.otpVerifyError   = false;
+                this.otpVerifyErrorMsg = '';
+                this.showOtpModal     = true;
+                this.timer            = 180;
+                if (this.timerInterval) clearInterval(this.timerInterval);
+                var self = this;
+                this.timerInterval = setInterval(function () {
+                    if (self.timer > 0) { self.timer--; }
+                    else { clearInterval(self.timerInterval); }
+                }, 1000);
+            },
+
+            async verifyOtp() {
+                if (this.otpCode.length < 6) return;
+
+                this.verifyingOtp      = true;
+                this.otpVerifyError    = false;
+                this.otpVerifyErrorMsg = '';
+
+                var token  = document.querySelector('[name="__RequestVerificationToken"]').value;
+                var params = new URLSearchParams();
+                params.append('__RequestVerificationToken', token);
+                params.append('GuvenlikGsm', this.gsm);
+                params.append('GuvenlikOtpCode', this.otpCode);
+
+                try {
+                    var resp = await fetch('?handler=VerifyGsmOtp', {
+                        method:  'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body:    params
+                    });
+                    var json = await resp.json();
+                    if (json.success) {
+                        this.showOtpModal = false;
+                        clearInterval(this.timerInterval);
+                        this.currentPhone = this.gsm;
+                        Toastify({
+                            text:     'OTP numaranız başarıyla güncellendi.',
+                            duration: 3000,
+                            gravity:  'top',
+                            position: 'right',
+                            style:    { background: '#22c55e' }
+                        }).showToast();
+                    } else {
+                        this.otpVerifyError    = true;
+                        this.otpVerifyErrorMsg = json.message || 'Kod hatalı. Lütfen tekrar deneyin.';
+                    }
+                } catch {
+                    this.otpVerifyError    = true;
+                    this.otpVerifyErrorMsg = 'Bağlantı hatası oluştu.';
+                } finally {
+                    this.verifyingOtp = false;
+                }
+            }
+        };
+    }
+</script>
