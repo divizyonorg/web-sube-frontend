@@ -21,6 +21,6 @@ public class IndexModel : PageModel
     public IActionResult OnPost()
     {
         if (!ModelState.IsValid) return Page();
-        return RedirectToPage("/Dashboard/Index");
+        return RedirectToPage("/Anasayfa/Index");
     }
 }
