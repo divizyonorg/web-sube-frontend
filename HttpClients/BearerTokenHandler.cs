@@ -10,7 +10,13 @@ public class BearerTokenHandler : DelegatingHandler
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var token = _accessor.HttpContext?.Request.Cookies["auth_token"];
+        var context    = _accessor.HttpContext;
+        var authHeader = context?.Request.Headers.Authorization.ToString();
+
+        string? token = null;
+        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            token = authHeader["Bearer ".Length..].Trim();
+
         if (!string.IsNullOrEmpty(token))
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
