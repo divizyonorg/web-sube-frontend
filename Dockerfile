@@ -6,15 +6,29 @@
 # ── STAGE 1: BUILD ────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
+# Node.js kur (Tailwind CSS derleme için)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends nodejs npm \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /src
+
+# npm bağımlılıklarını kur (package.json değişmediği sürece cache korunur)
+COPY package*.json ./
+RUN npm ci
 
 # Önce proje dosyalarını kopyala → NuGet cache korunur
 COPY *.sln ./
 COPY *.csproj ./
 RUN dotnet restore
 
-# Kaynak kodu kopyala ve publish et
+# Kaynak kodu kopyala
 COPY . .
+
+# Tailwind CSS + JS kütüphaneleri derle
+RUN npm run build
+
+# .NET publish
 RUN dotnet publish \
     --configuration Release \
     --output /app/publish \
