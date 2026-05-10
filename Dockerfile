@@ -14,8 +14,10 @@ RUN apt-get update \
 WORKDIR /src
 
 # npm bağımlılıklarını kur (package.json değişmediği sürece cache korunur)
+# npm install kullanılıyor: lockfile Windows'ta oluşturulduğundan npm ci
+# platform-specific binary'leri yanlış çözüyor (@tailwindcss/oxide)
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 # Önce proje dosyalarını kopyala → NuGet cache korunur
 COPY *.sln ./
