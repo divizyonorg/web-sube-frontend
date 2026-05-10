@@ -45,10 +45,10 @@ public class MockReportService : IReportService
     public Task<FindeksOtpViewModel> FindeksRaporTalepAsync(CancellationToken ct = default)
         => Task.FromResult(new FindeksOtpViewModel
         {
-            Basari    = true,
-            Aksiyon   = "SMS_BEKLIYOR",
-            Mesaj     = "Lütfen SMS şifresini giriniz.",
-            TalepId   = "MOCK-280625398",
+            Basari = true,
+            Aksiyon = "SMS_BEKLIYOR",
+            Mesaj = "Lütfen SMS şifresini giriniz.",
+            TalepId = "MOCK-280625398",
             RaporDbId = "KRD-MOCK-00001",
         });
 

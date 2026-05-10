@@ -12,13 +12,13 @@ public class IndexModel : PageModel
     // Sadece Data handler'ında dolar, partial view'a model olarak geçer
     public FinansalProfilViewModel? Profile { get; set; }
 
-    [BindProperty] public int     WorkSectorId     { get; set; }
-    [BindProperty] public int     OccupationId     { get; set; }
-    [BindProperty] public string  TotalWorkingTime { get; set; } = string.Empty;
-    [BindProperty] public decimal SalaryAmount     { get; set; }
-    [BindProperty] public bool    IsMarried        { get; set; }
-    [BindProperty] public int     HouseStatusId    { get; set; }
-    [BindProperty] public bool    HasCar           { get; set; }
+    [BindProperty] public int WorkSectorId { get; set; }
+    [BindProperty] public int OccupationId { get; set; }
+    [BindProperty] public string TotalWorkingTime { get; set; } = string.Empty;
+    [BindProperty] public decimal SalaryAmount { get; set; }
+    [BindProperty] public bool IsMarried { get; set; }
+    [BindProperty] public int HouseStatusId { get; set; }
+    [BindProperty] public bool HasCar { get; set; }
 
     public IndexModel(IFinansalProfilService service) => _service = service;
 

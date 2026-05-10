@@ -14,17 +14,17 @@ public class ReportService : IReportService
 
     private static class Endpoints
     {
-        public const string Create           = "/api/v1/reports/create";
-        public const string StartPayment     = "/api/v1/reports/start-payment";
-        public const string ApplyCoupon      = "/api/v1/reports/apply-coupon";
-        public const string FindeksRaporTalep     = "/api/v1/findeks/rapor-talep-master";
+        public const string Create = "/api/v1/reports/create";
+        public const string StartPayment = "/api/v1/reports/start-payment";
+        public const string ApplyCoupon = "/api/v1/reports/apply-coupon";
+        public const string FindeksRaporTalep = "/api/v1/findeks/rapor-talep-master";
         public const string FindeksRaporTalepOnay = "/api/v1/findeks/rapor-talep-onay";
     }
 
     public ReportService(HttpClient httpClient, ILogger<ReportService> logger)
     {
         _httpClient = httpClient;
-        _logger     = logger;
+        _logger = logger;
     }
 
     public async Task<(bool Success, string Message, string Rid)> CreateAsync(CancellationToken ct = default)
@@ -32,7 +32,7 @@ public class ReportService : IReportService
         try
         {
             var response = await _httpClient.PostAsJsonAsync(Endpoints.Create, new { type = "KREDI" }, ct);
-            var body     = await response.Content.ReadAsStringAsync(ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
             _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.Create, (int)response.StatusCode);
             if (!response.IsSuccessStatusCode)
             {
@@ -58,15 +58,15 @@ public class ReportService : IReportService
         {
             var req = new StartPaymentRequest
             {
-                Rid            = rid,
-                CardNumber     = cardNumber,
-                ExpMonth       = expMonth,
-                ExpYear        = expYear,
-                Cvv            = cvv,
+                Rid = rid,
+                CardNumber = cardNumber,
+                ExpMonth = expMonth,
+                ExpYear = expYear,
+                Cvv = cvv,
                 CardHolderName = cardHolderName
             };
             var response = await _httpClient.PostAsJsonAsync(Endpoints.StartPayment, req, ct);
-            var body     = await response.Content.ReadAsStringAsync(ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
             _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.StartPayment, (int)response.StatusCode);
             if (!response.IsSuccessStatusCode)
             {
@@ -87,9 +87,9 @@ public class ReportService : IReportService
     {
         try
         {
-            var req      = new ApplyCouponRequest { Rid = rid, CouponCode = couponCode };
+            var req = new ApplyCouponRequest { Rid = rid, CouponCode = couponCode };
             var response = await _httpClient.PostAsJsonAsync(Endpoints.ApplyCoupon, req, ct);
-            var body     = await response.Content.ReadAsStringAsync(ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
             _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.ApplyCoupon, (int)response.StatusCode);
             if (!response.IsSuccessStatusCode)
             {
@@ -121,10 +121,10 @@ public class ReportService : IReportService
             var dto = JsonSerializer.Deserialize<FindeksRaporTalepResponseDto>(body);
             return new FindeksOtpViewModel
             {
-                Basari    = dto?.Basari ?? false,
-                Aksiyon   = dto?.Aksiyon ?? string.Empty,
-                Mesaj     = dto?.Mesaj ?? string.Empty,
-                TalepId   = dto?.TalepId ?? string.Empty,
+                Basari = dto?.Basari ?? false,
+                Aksiyon = dto?.Aksiyon ?? string.Empty,
+                Mesaj = dto?.Mesaj ?? string.Empty,
+                TalepId = dto?.TalepId ?? string.Empty,
                 RaporDbId = dto?.RaporDbId ?? string.Empty,
             };
         }
@@ -164,7 +164,7 @@ public class ReportService : IReportService
         {
             using var doc = JsonDocument.Parse(body);
             if (doc.RootElement.TryGetProperty("message", out var m)) return m.GetString();
-            if (doc.RootElement.TryGetProperty("detail",  out var d)) return d.GetString();
+            if (doc.RootElement.TryGetProperty("detail", out var d)) return d.GetString();
         }
         catch { }
         return null;

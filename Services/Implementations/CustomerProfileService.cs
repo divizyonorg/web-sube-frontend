@@ -13,20 +13,20 @@ public class CustomerProfileService : ICustomerProfileService
     private static class Endpoints
     {
         public const string DynamicData = "/api/customers/dynamic-data";
-        public const string FullName    = $"{DynamicData}?module_type=FULLNAME&page=1";
-        public const string Contact     = $"{DynamicData}?module_type=CONTACT&page=1";
+        public const string FullName = $"{DynamicData}?module_type=FULLNAME&page=1";
+        public const string Contact = $"{DynamicData}?module_type=CONTACT&page=1";
     }
 
     public CustomerProfileService(HttpClient httpClient, ILogger<CustomerProfileService> logger)
     {
         _httpClient = httpClient;
-        _logger     = logger;
+        _logger = logger;
     }
 
     public async Task<CustomerProfileViewModel?> GetProfileAsync(CancellationToken cancellationToken = default)
     {
         var fullNameTask = FetchAsync<FullNameDetailsDto>(Endpoints.FullName, cancellationToken);
-        var contactTask  = FetchAsync<ContactDetailsDto>(Endpoints.Contact, cancellationToken);
+        var contactTask = FetchAsync<ContactDetailsDto>(Endpoints.Contact, cancellationToken);
 
         await Task.WhenAll(fullNameTask, contactTask);
 
@@ -49,7 +49,7 @@ public class CustomerProfileService : ICustomerProfileService
         try
         {
             var response = await _httpClient.GetAsync(endpoint, ct);
-            var body     = await response.Content.ReadAsStringAsync(ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
 
             _logger.LogInformation("GET {Endpoint} → {Status}", endpoint, (int)response.StatusCode);
 
@@ -70,10 +70,10 @@ public class CustomerProfileService : ICustomerProfileService
 
     private static CustomerProfileViewModel MapToViewModel(FullNameDetailsDto fullName, ContactDetailsDto? contact) => new()
     {
-        FullName    = $"{fullName.FirstName} {fullName.LastName}",
+        FullName = $"{fullName.FirstName} {fullName.LastName}",
         PhoneNumber = FormatPhone(contact?.Value),
-        Birthday    = FormatBirthday(fullName.Birthday),
-        Tckn        = fullName.Tckn
+        Birthday = FormatBirthday(fullName.Birthday),
+        Tckn = fullName.Tckn
     };
 
     private static string FormatPhone(string? value)

@@ -13,13 +13,13 @@ public class FinansalProfilService : IFinansalProfilService
 
     private static class Endpoints
     {
-        public const string WorkSectors  = "/api/customers/work_sectors";
-        public const string Occupations  = "/api/customers/occupations";
-        public const string DynamicData  = "/api/customers/dynamic-data";
-        public const string SaveWork     = "/api/customers/work";
-        public const string SaveSalary   = "/api/customers/salary";
-        public const string SaveMarital  = "/api/customers/marital-status";
-        public const string SaveHavings  = "/api/customers/havings";
+        public const string WorkSectors = "/api/customers/work_sectors";
+        public const string Occupations = "/api/customers/occupations";
+        public const string DynamicData = "/api/customers/dynamic-data";
+        public const string SaveWork = "/api/customers/work";
+        public const string SaveSalary = "/api/customers/salary";
+        public const string SaveMarital = "/api/customers/marital-status";
+        public const string SaveHavings = "/api/customers/havings";
 
         public static string Dynamic(string moduleType) =>
             $"{DynamicData}?module_type={moduleType}&page=1";
@@ -28,40 +28,40 @@ public class FinansalProfilService : IFinansalProfilService
     public FinansalProfilService(HttpClient httpClient, ILogger<FinansalProfilService> logger)
     {
         _httpClient = httpClient;
-        _logger     = logger;
+        _logger = logger;
     }
 
     public async Task<FinansalProfilViewModel> GetAsync(CancellationToken ct = default)
     {
-        var workSectorsTask  = GetLookupAsync(Endpoints.WorkSectors, ct);
-        var occupationsTask  = GetLookupAsync(Endpoints.Occupations, ct);
-        var workDataTask     = GetDynamicAsync<WorkDetailsDto>("WORK", ct);
-        var salaryDataTask   = GetDynamicAsync<SalaryDetailsDto>("SALARY", ct);
-        var maritalDataTask  = GetDynamicAsync<MaritalStatusDetailsDto>("MARITAL_STATUS", ct);
-        var havingsDataTask  = GetDynamicAsync<HavingsDetailsDto>("HAVINGS", ct);
+        var workSectorsTask = GetLookupAsync(Endpoints.WorkSectors, ct);
+        var occupationsTask = GetLookupAsync(Endpoints.Occupations, ct);
+        var workDataTask = GetDynamicAsync<WorkDetailsDto>("WORK", ct);
+        var salaryDataTask = GetDynamicAsync<SalaryDetailsDto>("SALARY", ct);
+        var maritalDataTask = GetDynamicAsync<MaritalStatusDetailsDto>("MARITAL_STATUS", ct);
+        var havingsDataTask = GetDynamicAsync<HavingsDetailsDto>("HAVINGS", ct);
 
         await Task.WhenAll(workSectorsTask, occupationsTask,
                            workDataTask, salaryDataTask, maritalDataTask, havingsDataTask);
 
-        var work    = workDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
-        var salary  = salaryDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
+        var work = workDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
+        var salary = salaryDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
         var marital = maritalDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
         var havings = havingsDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
 
         return new FinansalProfilViewModel
         {
-            WorkSectors      = MapLookup(workSectorsTask.Result),
-            Occupations      = MapLookup(occupationsTask.Result),
-            WorkSectorId     = work?.WorkSector ?? 0,
-            OccupationId     = work?.OccupationId ?? 0,
+            WorkSectors = MapLookup(workSectorsTask.Result),
+            Occupations = MapLookup(occupationsTask.Result),
+            WorkSectorId = work?.WorkSector ?? 0,
+            OccupationId = work?.OccupationId ?? 0,
             TotalWorkingTime = work?.TotalWorkingTime ?? string.Empty,
-            SalaryAmount     = decimal.TryParse(salary?.CustSalaryAmount,
+            SalaryAmount = decimal.TryParse(salary?.CustSalaryAmount,
                                    System.Globalization.NumberStyles.Any,
                                    System.Globalization.CultureInfo.InvariantCulture,
                                    out var amt) ? amt : 0,
-            IsMarried        = marital?.MaritalStatus ?? false,
-            HouseStatusId    = MapHouseStatus(havings?.HouseStatusName),
-            HasCar           = havings?.CarStatus ?? false,
+            IsMarried = marital?.MaritalStatus ?? false,
+            HouseStatusId = MapHouseStatus(havings?.HouseStatusName),
+            HasCar = havings?.CarStatus ?? false,
         };
     }
 
@@ -70,8 +70,8 @@ public class FinansalProfilService : IFinansalProfilService
     {
         var req = new SaveWorkRequest
         {
-            WorkSector       = workSectorId,
-            OccupationId     = occupationId,
+            WorkSector = workSectorId,
+            OccupationId = occupationId,
             TotalWorkingTime = totalWorkingTime
         };
         return await PostAsync(Endpoints.SaveWork, req, ct);
@@ -102,7 +102,7 @@ public class FinansalProfilService : IFinansalProfilService
         try
         {
             var response = await _httpClient.GetAsync(endpoint, ct);
-            var body     = await response.Content.ReadAsStringAsync(ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
             _logger.LogInformation("GET {Endpoint} → {Status}", endpoint, (int)response.StatusCode);
             if (!response.IsSuccessStatusCode)
             {
@@ -124,7 +124,7 @@ public class FinansalProfilService : IFinansalProfilService
         try
         {
             var response = await _httpClient.GetAsync(endpoint, ct);
-            var body     = await response.Content.ReadAsStringAsync(ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
             _logger.LogInformation("GET {Endpoint} → {Status}", endpoint, (int)response.StatusCode);
             if (!response.IsSuccessStatusCode)
             {
@@ -145,7 +145,7 @@ public class FinansalProfilService : IFinansalProfilService
         try
         {
             var response = await _httpClient.PostAsJsonAsync(endpoint, request, ct);
-            var body     = await response.Content.ReadAsStringAsync(ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
             _logger.LogInformation("POST {Endpoint} → {Status}", endpoint, (int)response.StatusCode);
             if (!response.IsSuccessStatusCode)
             {
@@ -178,7 +178,7 @@ public class FinansalProfilService : IFinansalProfilService
         {
             using var doc = JsonDocument.Parse(body);
             if (doc.RootElement.TryGetProperty("message", out var m)) return m.GetString();
-            if (doc.RootElement.TryGetProperty("detail",  out var d)) return d.GetString();
+            if (doc.RootElement.TryGetProperty("detail", out var d)) return d.GetString();
         }
         catch { }
         return null;

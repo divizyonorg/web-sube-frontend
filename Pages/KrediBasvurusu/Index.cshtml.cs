@@ -8,24 +8,24 @@ namespace MyApp.Web.Pages.KrediBasvurusu;
 public class IndexModel : PageModel
 {
     private readonly ICustomerProfileService _customerProfileService;
-    private readonly IFinansalProfilService  _finansalProfilService;
-    private readonly IReportService          _reportService;
+    private readonly IFinansalProfilService _finansalProfilService;
+    private readonly IReportService _reportService;
 
-    [BindProperty] public string Rid            { get; set; } = string.Empty;
-    [BindProperty] public string CardNumber     { get; set; } = string.Empty;
-    [BindProperty] public string ExpDate        { get; set; } = string.Empty;
-    [BindProperty] public string Cvv            { get; set; } = string.Empty;
+    [BindProperty] public string Rid { get; set; } = string.Empty;
+    [BindProperty] public string CardNumber { get; set; } = string.Empty;
+    [BindProperty] public string ExpDate { get; set; } = string.Empty;
+    [BindProperty] public string Cvv { get; set; } = string.Empty;
     [BindProperty] public string CardHolderName { get; set; } = string.Empty;
-    [BindProperty] public string CouponCode     { get; set; } = string.Empty;
-    [BindProperty] public string Pin            { get; set; } = string.Empty;
+    [BindProperty] public string CouponCode { get; set; } = string.Empty;
+    [BindProperty] public string Pin { get; set; } = string.Empty;
 
     public IndexModel(ICustomerProfileService customerProfileService,
-                      IFinansalProfilService  finansalProfilService,
-                      IReportService          reportService)
+                      IFinansalProfilService finansalProfilService,
+                      IReportService reportService)
     {
         _customerProfileService = customerProfileService;
-        _finansalProfilService  = finansalProfilService;
-        _reportService          = reportService;
+        _finansalProfilService = finansalProfilService;
+        _reportService = reportService;
     }
 
     public IActionResult OnGet() => Page();
@@ -60,9 +60,9 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostPayAsync(CancellationToken ct)
     {
-        var parts    = ExpDate.Split('/');
+        var parts = ExpDate.Split('/');
         var expMonth = parts.Length > 0 ? parts[0].Trim() : string.Empty;
-        var expYear  = parts.Length > 1 ? parts[1].Trim() : string.Empty;
+        var expYear = parts.Length > 1 ? parts[1].Trim() : string.Empty;
 
         var (success, message) = await _reportService.StartPaymentAsync(
             Rid, CardNumber, expMonth, expYear, Cvv, CardHolderName, ct);
