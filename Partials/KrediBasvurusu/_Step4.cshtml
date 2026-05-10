@@ -1,0 +1,215 @@
+@model MyApp.Web.ViewModels.FinansalProfilViewModel
+@* ══════════════════════════════════════
+   ADIM 3b — Gelir Bilgileri (2/3)
+══════════════════════════════════════ *@
+<div x-data="{
+        calismaId: '@(Model.WorkSectorId > 0 ? Model.WorkSectorId.ToString() : "")',
+        isEvli: @(Model.IsMarried.ToString().ToLower()),
+        evDurumu: '@Model.HouseStatusId',
+        arabavar: @(Model.HasCar.ToString().ToLower())
+     }"
+     class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
+
+    @* Kart başlığı *@
+    <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
+        <button hx-get="/KrediBasvurusu?handler=Step3"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="border-none bg-transparent cursor-pointer p-0">
+            <div class="w-5 h-5 flex items-center justify-center">
+                <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
+            </div>
+        </button>
+        <img src="~/images/ik_logo.png" alt="İnteraktif Kredi" class="h-[25px] object-contain">
+        <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
+            <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
+        </a>
+    </div>
+
+    @* İlerleme çubuğu *@
+    <div class="flex flex-col px-6 pt-5 gap-2 shrink-0">
+        <span class="font-[Poppins] font-normal text-xs leading-[18px] text-[#333]">
+            Adım 2/3: Gelir Bilgileri
+        </span>
+        <div class="flex flex-row gap-1 w-full">
+            <div class="flex-1 h-1.5 bg-[#006EFF] rounded-full"></div>
+            <div class="flex-1 h-1.5 bg-[#006EFF] rounded-full"></div>
+            <div class="flex-1 h-1.5 bg-[#D9D9D9] rounded-full"></div>
+        </div>
+    </div>
+
+    @* Başlık *@
+    <div class="px-6 pt-5">
+        <h2 class="font-[Poppins] font-medium text-[18px] leading-[27px] text-center text-black m-0">
+            Gelir bilgilerini paylaş
+        </h2>
+    </div>
+
+    @* Bilgi kutusu *@
+    <div class="relative mx-6 mt-5 bg-[#F0F6FF] border border-[#C7D9FB] rounded-[10px] px-3 pt-[13px] pb-[13px] pl-[37px]">
+        <img src="~/icons/blue/info-circle.svg" width="16" height="16" alt=""
+             class="absolute left-3 top-[15px]">
+        <p class="font-[Poppins] font-normal text-[11px] leading-4 text-[#0056B3] m-0">
+            Finansal profilinizden bilgileri otomatik doldurma için
+        </p>
+        <div>
+            <a href="/Ayarlar/FinansalProfil"
+               class="font-[Poppins] font-semibold text-[16px] leading-6 text-[#0056B3] underline">Ayarlar › Finansal Profil</a>
+            <span class="font-[Poppins] font-normal text-[11px] text-[#0056B3]"> sayfasını ziyaret edin.</span>
+        </div>
+    </div>
+
+    @* Form alanları *@
+    <div class="px-6 pb-6">
+
+        @* Çalışma Durumu *@
+        <div class="mt-5 flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Çalışma Durumu
+            </span>
+            <div class="flex flex-wrap gap-2">
+                @foreach (var s in Model.WorkSectors)
+                {
+                    <button type="button"
+                            @@click="calismaId = '@s.Value'"
+                            :class="calismaId === '@s.Value'
+                                ? 'bg-linear-to-r from-[#0056B3] to-[#2E6DF8] border-transparent text-white font-semibold'
+                                : 'bg-[#F0F4FC] border-[#D1DDF5] text-[#003F75] font-normal'"
+                            class="box-border px-3 py-2 h-[36.56px] rounded-full border cursor-pointer font-[Poppins] text-[13px] leading-5">
+                        @s.Label
+                    </button>
+                }
+            </div>
+        </div>
+
+        @* Meslek *@
+        <div class="mt-5 flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Meslek
+            </span>
+            <div class="relative box-border w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                <select class="w-full h-full border-none outline-none py-[11px] pl-3.5 pr-10 appearance-none font-[Poppins] text-[14px] text-[#003F75] bg-transparent cursor-pointer">
+                    <option value="">Seçiniz…</option>
+                    @foreach (var o in Model.Occupations)
+                    {
+                        <option value="@o.Value" selected="@(o.Value == Model.OccupationId.ToString() ? "selected" : null)">@o.Label</option>
+                    }
+                </select>
+                <img src="~/icons/blue/chevron-down.svg" width="16" height="16" alt=""
+                     class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+            </div>
+        </div>
+
+        @* Aylık Net Gelir *@
+        <div class="mt-5 flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Aylık Net Gelir
+            </span>
+            <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                <input type="text"
+                       value="@(Model.SalaryAmount > 0 ? Model.SalaryAmount.ToString("F0") : "")"
+                       placeholder="Örn: 25.000"
+                       class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
+                <span class="font-[Poppins] font-medium text-[13px] text-[#739FCC] pr-3 shrink-0">TL</span>
+            </div>
+        </div>
+
+        @* Çalışma Süresi *@
+        <div class="mt-5 flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Çalışma Süresi
+            </span>
+            <div class="relative box-border w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                <select class="w-full h-full border-none outline-none py-[11px] pl-3.5 pr-10 appearance-none font-[Poppins] text-[14px] text-[#003F75] bg-transparent cursor-pointer">
+                    <option value="">Seçiniz…</option>
+                    @foreach (var t in MyApp.Web.ViewModels.FinansalProfilViewModel.WorkingTimeOptions)
+                    {
+                        <option value="@t.Value" selected="@(t.Value == Model.TotalWorkingTime ? "selected" : null)">@t.Label</option>
+                    }
+                </select>
+                <img src="~/icons/blue/chevron-down.svg" width="16" height="16" alt=""
+                     class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+            </div>
+        </div>
+
+        @* Medeni Durum *@
+        <div class="mt-5 flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Medeni Durum
+            </span>
+            <div class="flex gap-3">
+                <button type="button"
+                        @@click="isEvli = false"
+                        :class="!isEvli
+                            ? 'bg-[#122B62] border-[#122B62] text-white font-semibold'
+                            : 'bg-white border-[#E0E0E0] text-[#A1A1A1] font-normal'"
+                        class="box-border flex-1 h-[47px] border rounded-[10px] cursor-pointer font-[Poppins] text-[14px] leading-[21px]">
+                    Bekar
+                </button>
+                <button type="button"
+                        @@click="isEvli = true"
+                        :class="isEvli
+                            ? 'bg-[#122B62] border-[#122B62] text-white font-semibold'
+                            : 'bg-white border-[#E0E0E0] text-[#A1A1A1] font-normal'"
+                        class="box-border flex-1 h-[47px] border rounded-[10px] cursor-pointer font-[Poppins] text-[14px] leading-[21px]">
+                    Evli
+                </button>
+            </div>
+        </div>
+
+        @* Yaşadığın Ev Kime Ait? *@
+        <div class="mt-5 flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Yaşadığın Ev Kime Ait?
+            </span>
+            <div class="flex gap-2">
+                @foreach (var h in MyApp.Web.ViewModels.FinansalProfilViewModel.HouseStatusOptions)
+                {
+                    <button type="button"
+                            @@click="evDurumu = '@h.Value'"
+                            :class="evDurumu === '@h.Value'
+                                ? 'bg-[#122B62] border-[#122B62] text-white font-semibold'
+                                : 'bg-white border-[#E0E0E0] text-[#A1A1A1] font-normal'"
+                            class="box-border flex-1 h-[45.5px] border rounded-[10px] cursor-pointer font-[Poppins] text-[13px] leading-5">
+                        @h.Label
+                    </button>
+                }
+            </div>
+        </div>
+
+        @* Araban Var mı? *@
+        <div class="mt-5 flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Araban Var mı?
+            </span>
+            <div class="flex gap-3">
+                <button type="button"
+                        @@click="arabavar = true"
+                        :class="arabavar
+                            ? 'bg-[#122B62] border-[#122B62] text-white font-semibold'
+                            : 'bg-white border-[#E0E0E0] text-[#A1A1A1] font-normal'"
+                        class="box-border flex-1 h-[47px] border rounded-[10px] cursor-pointer font-[Poppins] text-[14px] leading-[21px]">
+                    Evet
+                </button>
+                <button type="button"
+                        @@click="arabavar = false"
+                        :class="!arabavar
+                            ? 'bg-[#122B62] border-[#122B62] text-white font-semibold'
+                            : 'bg-white border-[#E0E0E0] text-[#A1A1A1] font-normal'"
+                        class="box-border flex-1 h-[47px] border rounded-[10px] cursor-pointer font-[Poppins] text-[14px] leading-[21px]">
+                    Hayır
+                </button>
+            </div>
+        </div>
+
+        @* Devam Et *@
+        <button hx-get="/KrediBasvurusu?handler=Step5"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="mt-5 flex justify-between items-center px-8 py-4 w-full h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
+            <span class="font-[Poppins] font-semibold text-[16px] text-white">Devam Et</span>
+            <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="">
+        </button>
+
+    </div>
+</div>

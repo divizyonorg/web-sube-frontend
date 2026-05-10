@@ -3,6 +3,7 @@ namespace MyApp.Web.ViewModels.Components;
 public enum SidebarIcon
 {
     Home,
+    CreditApplication,
     CreditReport,
     Offers,
     Advisor,
