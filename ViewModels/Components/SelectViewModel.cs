@@ -13,4 +13,5 @@ public class SelectViewModel
     public List<SelectOption> Options { get; set; } = [];
     public string? SelectedValue { get; set; }
     public string? Placeholder { get; set; }
+    public string? AlpineModel { get; set; }
 }

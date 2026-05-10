@@ -105,4 +105,19 @@ public class UygunlukSeridiViewModel
             Aciklama       = ["Kredi limitlerinin %85'ini kullanıyorsun.", "Bu durum kredi profilini olumsuz etkiliyor."]
         }
     ];
+
+    public string BireyselCtaUyariMetni { get; set; } = "Bireysel başvuru yapman sicilini bozabilir.";
+    public string BireyselCtaAciklama { get; set; } = "Bu koşullarda bireysel başvurular genellikle otomatik sistemler tarafından reddedilir. Bu da kredi sicilini gereksiz yere zorlar.";
+    public string BireyselCtaBaslikSatir1 { get; set; } = "Hemen Kredi Uzmanınla";
+    public string BireyselCtaBaslikSatir2 { get; set; } = "Kredi Yolculuğuna Başla!";
+    public List<string> BireyselCtaChecklistMaddeleri { get; set; } =
+    [
+        "Doğru kredi türü",
+        "Doğru kredi limiti",
+        "Doğru banka, kanal ve şubesi"
+    ];
+    public string BireyselCtaAltAciklama { get; set; } = "Kredi uzmanları ile senin kredi profiline bakarak seni yönlendirir. Sistemin otomatik reddetmesinin önüne geçer. Böylece istediğin krediye ulaşmanı kolaylaştırabilir.";
+    public string BireyselCtaButonMetni { get; set; } = "Kredi Uzmanı ile Devam Et";
+    public string BireyselCtaButonHref { get; set; } = "/KrediDanismani";
+    public string BireyselCtaButonAltiNot { get; set; } = "Ön görüşme güncel raporu olan müşteriler için ücretsizdir.";
 }

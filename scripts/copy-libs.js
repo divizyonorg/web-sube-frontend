@@ -197,6 +197,21 @@ console.log('\n[Untitled UI Icons — Avatar]');
 copyIconColorized(['user-01'],      { navy: '#003F75' });
 copyIconColorized(['chevron-down'], { blue: '#0056B3' });
 
+console.log('\n[Untitled UI Icons — Ayarlar Sidebar]');
+copyIconColorized(
+    ['briefcase-02', 'user-01', 'shield-02', 'bell-01', 'credit-card-01'],
+    { navy: '#003F75', white: '#FFFFFF' }
+);
+
+console.log('\n[Untitled UI Icons — Ayarlar İçerik]');
+copyIconColorized(
+    ['users-01', 'save-02', 'phone-01', 'mail-01', 'phone', 'lock-02', 'check-circle'],
+    { white: '#FFFFFF' }
+);
+copyIconColorized(['user-01', 'mail-01', 'phone'], { gray: '#9CA3AF' });
+copyIconColorized(['check-circle'],                 { green: '#16A34A' });
+copyIconColorized(['lock-02'],                      { blue: '#0056B3' });
+
 console.log('\n[Untitled UI Icons — Theme Toggle]');
 copyIconColorized(['sun'],   { sun:  '#F59E0B' });
 copyIconColorized(['moon-01'], { moon: '#7A94B8' });
