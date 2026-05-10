@@ -1,0 +1,142 @@
+@* ══════════════════════════════════════
+   ADIM 3 — Kredi Detayları (1/3)
+══════════════════════════════════════ *@
+<div x-data="{
+         vade: 24,
+         krediAmaci: '',
+         krediTutar: '',
+         get tutar() {
+             return parseFloat(this.krediTutar.replace(/\./g, '').replace(',', '.')) || 0;
+         },
+         get aylikTaksit() {
+             if (!this.tutar || !this.vade) return 0;
+             const r = 0.045, n = this.vade, p = this.tutar;
+             return Math.round(p * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1));
+         },
+         get taksitFormatli() {
+             return this.aylikTaksit.toLocaleString('tr-TR');
+         }
+     }"
+     class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
+
+    @* Kart başlığı *@
+    <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
+        <button hx-get="/KrediBasvurusu?handler=Step2"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="border-none bg-transparent cursor-pointer p-0">
+            <div class="w-5 h-5 flex items-center justify-center">
+                <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
+            </div>
+        </button>
+        <img src="~/images/ik_logo.png" alt="İnteraktif Kredi" class="h-[25px] object-contain">
+        <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
+            <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
+        </a>
+    </div>
+
+    @* İlerleme çubuğu *@
+    <div class="flex flex-col px-6 pt-5 gap-2 shrink-0">
+        <span class="font-[Poppins] font-normal text-xs leading-[18px] text-[#333]">
+            Adım 1/3: Kredi Detayları
+        </span>
+        <div class="flex flex-row gap-1 w-full">
+            <div class="flex-1 h-1.5 bg-[#006EFF] rounded-full"></div>
+            <div class="flex-1 h-1.5 bg-[#D9D9D9] rounded-full"></div>
+            <div class="flex-1 h-1.5 bg-[#D9D9D9] rounded-full"></div>
+        </div>
+    </div>
+
+    @* Başlık *@
+    <div class="px-6 pt-5">
+        <h2 class="font-[Poppins] font-medium text-[18px] leading-[27px] text-center text-black m-0">
+            Kredi detaylarını belirle
+        </h2>
+    </div>
+
+    @* Form alanları *@
+    <div class="flex flex-col px-6 pb-6">
+
+        @* Kredi Tutarı *@
+        <div class="mt-5 flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Kredi Tutarı
+            </span>
+            <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                <input type="text" placeholder="Örn: 50.000"
+                       x-model="krediTutar"
+                       class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
+                <span class="font-[Poppins] font-medium text-[13px] text-[#739FCC] pr-3 shrink-0">TL</span>
+            </div>
+        </div>
+
+        @* Vade *@
+        <div class="mt-5 flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Vade (Ay)
+            </span>
+            <div class="flex flex-wrap gap-2">
+                <template x-for="ay in [6, 12, 24, 36, 48, 60]" :key="ay">
+                    <button @@click="vade = ay"
+                            :class="vade === ay
+                                ? 'bg-linear-to-r from-[#0056B3] to-[#2E6DF8] border-transparent text-white font-semibold'
+                                : 'bg-[#F0F4FC] border-[#D1DDF5] text-[#003F75] font-normal'"
+                            class="box-border px-4 py-2 h-[37.5px] rounded-full border cursor-pointer font-[Poppins] text-[13px] leading-5">
+                        <span x-text="ay + ' ay'"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        @* Kredi Amacı *@
+        <div class="mt-5 flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Kredi Amacı
+            </span>
+            <div class="relative box-border w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                <select x-model="krediAmaci"
+                        class="w-full h-full border-none outline-none py-[11px] pl-3.5 pr-10 appearance-none font-[Poppins] text-[14px] text-[#003F75] bg-transparent cursor-pointer">
+                    <option value="" disabled selected></option>
+                    <option value="konut">Konut</option>
+                    <option value="tasit">Taşıt</option>
+                    <option value="egitim">Eğitim</option>
+                    <option value="tatil">Tatil</option>
+                    <option value="elektronik">Elektronik</option>
+                    <option value="diger">Diğer</option>
+                </select>
+                <img src="~/icons/blue/chevron-down.svg" width="16" height="16" alt=""
+                     class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+            </div>
+        </div>
+
+        @* Tahmini Aylık Taksit — tutar girilince görünür *@
+        <div x-show="tutar > 0"
+             x-transition
+             class="mt-5 flex items-center gap-3 bg-[linear-gradient(135deg,#E8F0FE_0%,#F0F7FF_100%)] border border-[#C7D9FB] rounded-[12px] p-4">
+            <div class="w-9 h-9 bg-[linear-gradient(135deg,#0056B3_0%,#2E6DF8_100%)] rounded-lg flex items-center justify-center shrink-0">
+                <img src="~/icons/white/receipt.svg" width="16" height="16" alt="">
+            </div>
+            <div class="flex flex-col">
+                <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                    Tahmini Aylık Taksit
+                </span>
+                <span class="font-[Poppins] font-bold text-[20px] leading-[30px] text-[#003F75]">
+                    ₺<span x-text="taksitFormatli"></span> / ay
+                </span>
+                <span class="font-[Poppins] font-normal text-[10px] leading-[15px] text-[#739FCC]">
+                    *%4,5 aylık faiz oranı varsayımıyla hesaplanmıştır
+                </span>
+            </div>
+        </div>
+
+        @* Devam Et *@
+        <button hx-get="/KrediBasvurusu?handler=Step4"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="mt-5 flex justify-between items-center px-8 py-4 w-full h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
+            <span class="font-[Poppins] font-semibold text-[16px] text-white">Devam Et</span>
+            <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="">
+        </button>
+
+    </div>
+</div>

@@ -1,0 +1,172 @@
+@model MyApp.Web.ViewModels.FinansalProfilViewModel
+
+<div class="flex flex-col gap-5 max-w-2xl">
+
+    @* ══ 1. İş Bilgileri ══ *@
+    <div class="bg-white border border-[#E2EAF5] rounded-[16px] shadow-[0_2px_12px_rgba(0,86,179,0.07)] overflow-hidden">
+        <div class="flex items-center gap-3 px-5 py-4 border-b border-[#EEF2FA]">
+            <div class="w-8 h-8 rounded-[8px] bg-[linear-gradient(135deg,#0056B3_0%,#2E6DF8_100%)] flex items-center justify-center shrink-0">
+                <img src="~/icons/white/briefcase.svg" width="16" height="16" alt="">
+            </div>
+            <span class="font-[Poppins] font-semibold text-[15px] text-[#003F75]">İş Bilgileri</span>
+        </div>
+        <form hx-post="/Ayarlar/FinansalProfil?handler=SaveWork"
+              hx-target="this" hx-swap="none"
+              class="px-5 py-5 flex flex-col gap-4">
+            @Html.AntiForgeryToken()
+
+            <div class="flex flex-col gap-1.5">
+                <label class="font-[Poppins] font-medium text-[11px] uppercase tracking-wide text-[#739FCC]">Çalışma Durumu</label>
+                <select name="WorkSectorId" data-tomselect
+                        class="w-full h-11 border border-[#DCE3FB] rounded-xl px-3 text-[14px] font-[Poppins] text-[#003F75] outline-none">
+                    <option value="">Seçiniz…</option>
+                    @foreach (var s in Model.WorkSectors)
+                    {
+                        <option value="@s.Value" selected="@(s.Value == Model.WorkSectorId.ToString() ? "selected" : null)">@s.Label</option>
+                    }
+                </select>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+                <label class="font-[Poppins] font-medium text-[11px] uppercase tracking-wide text-[#739FCC]">Meslek</label>
+                <select name="OccupationId" data-tomselect
+                        class="w-full h-11 border border-[#DCE3FB] rounded-xl px-3 text-[14px] font-[Poppins] text-[#003F75] outline-none">
+                    <option value="">Seçiniz…</option>
+                    @foreach (var o in Model.Occupations)
+                    {
+                        <option value="@o.Value" selected="@(o.Value == Model.OccupationId.ToString() ? "selected" : null)">@o.Label</option>
+                    }
+                </select>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+                <label class="font-[Poppins] font-medium text-[11px] uppercase tracking-wide text-[#739FCC]">Çalışma Süresi</label>
+                <select name="TotalWorkingTime" data-tomselect
+                        class="w-full h-11 border border-[#DCE3FB] rounded-xl px-3 text-[14px] font-[Poppins] text-[#003F75] outline-none">
+                    <option value="">Seçiniz…</option>
+                    @foreach (var t in MyApp.Web.ViewModels.FinansalProfilViewModel.WorkingTimeOptions)
+                    {
+                        <option value="@t.Value" selected="@(t.Value == Model.TotalWorkingTime ? "selected" : null)">@t.Label</option>
+                    }
+                </select>
+            </div>
+
+            <button type="submit"
+                    class="self-end flex items-center gap-2 px-6 h-10 bg-[linear-gradient(90deg,#0056B3_0%,#2E6DF8_100%)] text-white font-[Poppins] font-semibold text-[13px] rounded-full border-none cursor-pointer">
+                Kaydet
+            </button>
+        </form>
+    </div>
+
+    @* ══ 2. Aylık Net Gelir ══ *@
+    <div class="bg-white border border-[#E2EAF5] rounded-[16px] shadow-[0_2px_12px_rgba(0,86,179,0.07)] overflow-hidden">
+        <div class="flex items-center gap-3 px-5 py-4 border-b border-[#EEF2FA]">
+            <div class="w-8 h-8 rounded-[8px] bg-[linear-gradient(135deg,#0056B3_0%,#2E6DF8_100%)] flex items-center justify-center shrink-0">
+                <img src="~/icons/white/coins.svg" width="16" height="16" alt="">
+            </div>
+            <span class="font-[Poppins] font-semibold text-[15px] text-[#003F75]">Aylık Net Gelir</span>
+        </div>
+        <form hx-post="/Ayarlar/FinansalProfil?handler=SaveSalary"
+              hx-target="this" hx-swap="none"
+              class="px-5 py-5 flex flex-col gap-4">
+            @Html.AntiForgeryToken()
+
+            <div class="flex flex-col gap-1.5">
+                <label class="font-[Poppins] font-medium text-[11px] uppercase tracking-wide text-[#739FCC]">Aylık Net Gelir (₺)</label>
+                <div class="relative">
+                    <input name="SalaryAmount" type="text"
+                           value="@(Model.SalaryAmount > 0 ? Model.SalaryAmount.ToString("F0") : "")"
+                           placeholder="0"
+                           class="w-full h-11 border border-[#DCE3FB] rounded-xl px-3 pr-10 text-[14px] font-[Poppins] text-[#003F75] outline-none" />
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 font-[Poppins] text-[14px] text-[#739FCC]">₺</span>
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="self-end flex items-center gap-2 px-6 h-10 bg-[linear-gradient(90deg,#0056B3_0%,#2E6DF8_100%)] text-white font-[Poppins] font-semibold text-[13px] rounded-full border-none cursor-pointer">
+                Kaydet
+            </button>
+        </form>
+    </div>
+
+    @* ══ 3. Medeni Durum ══ *@
+    <div class="bg-white border border-[#E2EAF5] rounded-[16px] shadow-[0_2px_12px_rgba(0,86,179,0.07)] overflow-hidden">
+        <div class="flex items-center gap-3 px-5 py-4 border-b border-[#EEF2FA]">
+            <div class="w-8 h-8 rounded-[8px] bg-[linear-gradient(135deg,#0056B3_0%,#2E6DF8_100%)] flex items-center justify-center shrink-0">
+                <img src="~/icons/white/users.svg" width="16" height="16" alt="">
+            </div>
+            <span class="font-[Poppins] font-semibold text-[15px] text-[#003F75]">Medeni Durum</span>
+        </div>
+        <form hx-post="/Ayarlar/FinansalProfil?handler=SaveMaritalStatus"
+              hx-target="this" hx-swap="none"
+              class="px-5 py-5 flex flex-col gap-4">
+            @Html.AntiForgeryToken()
+
+            <div class="flex gap-3">
+                <label class="flex-1 flex items-center gap-3 border border-[#DCE3FB] rounded-xl px-4 py-3 cursor-pointer has-[:checked]:border-[#2E6DF8] has-[:checked]:bg-[#F0F5FF]">
+                    <input type="radio" name="IsMarried" value="false"
+                           @(!Model.IsMarried ? "checked" : "")
+                           class="accent-[#2E6DF8]">
+                    <span class="font-[Poppins] text-[14px] text-[#003F75]">Bekar</span>
+                </label>
+                <label class="flex-1 flex items-center gap-3 border border-[#DCE3FB] rounded-xl px-4 py-3 cursor-pointer has-[:checked]:border-[#2E6DF8] has-[:checked]:bg-[#F0F5FF]">
+                    <input type="radio" name="IsMarried" value="true"
+                           @(Model.IsMarried ? "checked" : "")
+                           class="accent-[#2E6DF8]">
+                    <span class="font-[Poppins] text-[14px] text-[#003F75]">Evli</span>
+                </label>
+            </div>
+
+            <button type="submit"
+                    class="self-end flex items-center gap-2 px-6 h-10 bg-[linear-gradient(90deg,#0056B3_0%,#2E6DF8_100%)] text-white font-[Poppins] font-semibold text-[13px] rounded-full border-none cursor-pointer">
+                Kaydet
+            </button>
+        </form>
+    </div>
+
+    @* ══ 4. Mülkiyet Durumu ══ *@
+    <div class="bg-white border border-[#E2EAF5] rounded-[16px] shadow-[0_2px_12px_rgba(0,86,179,0.07)] overflow-hidden">
+        <div class="flex items-center gap-3 px-5 py-4 border-b border-[#EEF2FA]">
+            <div class="w-8 h-8 rounded-[8px] bg-[linear-gradient(135deg,#0056B3_0%,#2E6DF8_100%)] flex items-center justify-center shrink-0">
+                <img src="~/icons/white/home.svg" width="16" height="16" alt="">
+            </div>
+            <span class="font-[Poppins] font-semibold text-[15px] text-[#003F75]">Mülkiyet Durumu</span>
+        </div>
+        <form hx-post="/Ayarlar/FinansalProfil?handler=SaveHavings"
+              hx-target="this" hx-swap="none"
+              class="px-5 py-5 flex flex-col gap-4">
+            @Html.AntiForgeryToken()
+
+            <div class="flex flex-col gap-1.5">
+                <label class="font-[Poppins] font-medium text-[11px] uppercase tracking-wide text-[#739FCC]">Yaşadığın Ev Kime Ait</label>
+                <select name="HouseStatusId" data-tomselect
+                        class="w-full h-11 border border-[#DCE3FB] rounded-xl px-3 text-[14px] font-[Poppins] text-[#003F75] outline-none">
+                    @foreach (var h in MyApp.Web.ViewModels.FinansalProfilViewModel.HouseStatusOptions)
+                    {
+                        <option value="@h.Value" selected="@(h.Value == Model.HouseStatusId.ToString() ? "selected" : null)">@h.Label</option>
+                    }
+                </select>
+            </div>
+
+            <div class="flex items-center justify-between py-1">
+                <span class="font-[Poppins] text-[14px] text-[#003F75]">Araban Var Mı?</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" name="HasCar" value="true"
+                           @(Model.HasCar ? "checked" : "")
+                           class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer
+                                peer-checked:after:translate-x-full peer-checked:after:border-white
+                                after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+                                after:bg-white after:border-gray-300 after:border after:rounded-full
+                                after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2E6DF8]"></div>
+                </label>
+            </div>
+
+            <button type="submit"
+                    class="self-end flex items-center gap-2 px-6 h-10 bg-[linear-gradient(90deg,#0056B3_0%,#2E6DF8_100%)] text-white font-[Poppins] font-semibold text-[13px] rounded-full border-none cursor-pointer">
+                Kaydet
+            </button>
+        </form>
+    </div>
+
+</div>

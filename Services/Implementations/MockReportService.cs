@@ -29,4 +29,29 @@ public class MockReportService : IReportService
 
     public Task<byte[]> GetReportPdfAsync(string reportNo)
         => Task.FromResult(Array.Empty<byte>());
+
+    public Task<(bool Success, string Message, string Rid)> CreateAsync(CancellationToken ct = default)
+        => Task.FromResult((true, "Kaldığınız yerden devam ediliyor.", "KRD-MOCK-00001"));
+
+    public Task<(bool Success, string Message)> StartPaymentAsync(
+        string rid, string cardNumber, string expMonth, string expYear,
+        string cvv, string cardHolderName, CancellationToken ct = default)
+        => Task.FromResult((true, "Ödeme başarıyla tamamlandı."));
+
+    public Task<(bool Success, string Message)> ApplyCouponAsync(
+        string rid, string couponCode, CancellationToken ct = default)
+        => Task.FromResult((true, "Kupon kodu uygulandı. %50 indirim kazandınız!"));
+
+    public Task<FindeksOtpViewModel> FindeksRaporTalepAsync(CancellationToken ct = default)
+        => Task.FromResult(new FindeksOtpViewModel
+        {
+            Basari = true,
+            Aksiyon = "SMS_BEKLIYOR",
+            Mesaj = "Lütfen SMS şifresini giriniz.",
+            TalepId = "MOCK-280625398",
+            RaporDbId = "KRD-MOCK-00001",
+        });
+
+    public Task<(bool Success, string Message)> FindeksRaporTalepOnayAsync(string pin, CancellationToken ct = default)
+        => Task.FromResult((true, "Tebrikler, SMS şifreniz doğrulandı. Raporunuz hazırlanıyor..."));
 }

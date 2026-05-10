@@ -1,0 +1,75 @@
+@page "/Ayarlar/FinansalProfil"
+@model MyApp.Web.Pages.Ayarlar.FinansalProfil.IndexModel
+@{
+    ViewData["Title"]      = "Finansal Profil";
+    ViewData["ActivePage"] = "Ayarlar";
+}
+
+@section Scripts {
+<script>
+    document.addEventListener('htmx:afterRequest', function (e) {
+        if (!e.detail.successful) return;
+        try {
+            var r = JSON.parse(e.detail.xhr.responseText);
+            Toastify({
+                text: r.message,
+                duration: 3000,
+                gravity: 'top',
+                position: 'right',
+                style: { background: r.success ? '#22c55e' : '#ef4444' }
+            }).showToast();
+        } catch (_) {}
+    });
+
+    document.addEventListener('htmx:sendError', function () {
+        Toastify({ text: 'Bağlantı hatası oluştu.', duration: 3000,
+                   gravity: 'top', position: 'right',
+                   style: { background: '#ef4444' } }).showToast();
+    });
+
+    // TOM Select — HTMX swap sonrası başlat
+    document.addEventListener('htmx:afterSwap', function (e) {
+        e.detail.target.querySelectorAll('select[data-tomselect]').forEach(function (el) {
+            if (!el.tomselect) new TomSelect(el, { allowEmptyOption: true, create: false });
+        });
+    });
+</script>
+}
+
+@* ── PageBar ── *@
+<div class="box-sizing-border flex justify-between items-center pb-3 mb-6 border-b border-[#DCE3FB]">
+    <a href="/Ayarlar" class="flex items-center gap-1 no-underline">
+        <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
+        <span class="font-[Poppins] font-normal text-[14px] text-[#1B4092]">Geri</span>
+    </a>
+    <div class="flex flex-col items-end">
+        <span class="font-[Poppins] font-normal text-[14px] text-[#003F75]">Ayarlar</span>
+        <span class="font-[Poppins] font-light text-[18px] text-[#003F75]">Finansal Profil</span>
+    </div>
+</div>
+
+@* ── İçerik: HTMX ile yüklenir ── *@
+<div id="finansal-content"
+     hx-get="/Ayarlar/FinansalProfil?handler=Data"
+     hx-trigger="load"
+     hx-target="#finansal-content"
+     hx-swap="outerHTML">
+
+    @* Yüklenirken iskelet *@
+    <div class="flex flex-col gap-5 max-w-2xl">
+        @for (int i = 0; i < 4; i++)
+        {
+            <div class="bg-white border border-[#E2EAF5] rounded-[16px] overflow-hidden animate-pulse">
+                <div class="flex items-center gap-3 px-5 py-4 border-b border-[#EEF2FA]">
+                    <div class="w-8 h-8 rounded-[8px] bg-[#E2EAF5]"></div>
+                    <div class="h-4 w-32 bg-[#E2EAF5] rounded"></div>
+                </div>
+                <div class="px-5 py-5 flex flex-col gap-4">
+                    <div class="h-11 bg-[#F0F5FF] rounded-xl"></div>
+                    <div class="h-11 bg-[#F0F5FF] rounded-xl"></div>
+                    <div class="h-10 w-24 bg-[#E2EAF5] rounded-full self-end"></div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
