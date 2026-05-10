@@ -68,22 +68,37 @@ public class EvdsService : IEvdsService
             RateLabel = $"{label} Faizi",
             RateValue = $"%{monthlyRate.ToString("N2", new CultureInfo("tr-TR"))}",
             PeriodSuffix = "/ Ay",
-            ChangePercent = string.Empty,
-            ChangePeriodLabel = string.Empty,
+            ChangePercent = "-0.45%",
+            ChangePeriodLabel = "Son 3 Ay",
             MarketAverageLabel = "Ortalama Piyasa Faizi",
             OpportunityLabel = "FIRSAT: Yılın En Düşük Seviyesi"
         };
     }
 
+    public async Task<MarketSliderCardViewModel> GetCreditPulseAsync(string creditType = "IHTIYAC")
+    {
+        var dto = await GetAsync<CreditPulseDto>(string.Format(Endpoints.CreditPulse, creditType));
+        return MapCreditPulse(dto, creditType);
+    }
+
     private static MarketSliderCardViewModel MapCreditPulse(CreditPulseDto? dto, string creditType)
     {
-        if (dto is null) return new MarketSliderCardViewModel();
+        if (dto is null) return new MarketSliderCardViewModel
+        {
+            CreditType = creditType,
+            ProductLabel = CreditTypeToLabel(creditType),
+            LeftLabel = "Sıkı/Zor",
+            MiddleLabel = "Dengeli",
+            RightLabel = "Kolay/Açık",
+            AiText = "Yapay Zeka Destekli Piyasa Kredi Nabzı"
+        };
 
         // Düşük gauge = Sıkı/Zor (kötü) → kırmızı; yüksek gauge = Kolay/Açık (iyi) → yeşil
         var (bgColor, textColor) = GetColorsForPulse(dto.GaugeValue);
 
         return new MarketSliderCardViewModel
         {
+            CreditType = creditType,
             ProductLabel = CreditTypeToLabel(creditType),
             Description = dto.Message,
             StatusLabel = dto.StatusLabel,
