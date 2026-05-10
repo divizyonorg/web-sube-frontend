@@ -1,0 +1,220 @@
+@page "/VipDanismalikPaketleri"
+@model MyApp.Web.Pages.VipDanismalikPaketleri.VipModel
+@{
+    ViewData["Title"]      = "VIP Danışmanlık Paketleri";
+    ViewData["ActivePage"] = "VipDanismalikPaketleri";
+}
+
+<div class="max-w-[1210px] mx-auto font-[Poppins]">
+
+        @* ─── PageBar ─── *@
+        <div class="flex flex-row justify-between items-center pb-3 mb-8 border-b border-[#DCE3FB]">
+            <a href="javascript:history.back()" class="flex flex-row items-center gap-1 text-[14px] font-normal text-[#1B4092] leading-5 cursor-pointer hover:opacity-75 transition-opacity">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.5 15L7.5 10L12.5 5" stroke="#1B4092" stroke-width="1.667" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Geri</span>
+            </a>
+            <div class="flex flex-col items-end">
+                <span class="text-[14px] font-normal text-[#003F75] leading-5">İnteraktif Kredi</span>
+                <span class="text-[18px] font-light text-[#003F75] leading-[25px]">WEB Şube</span>
+            </div>
+        </div>
+
+        @* ─── Header ─── *@
+        <div class="flex flex-col items-center mb-12">
+            <div class="flex items-center gap-2 px-4 py-2 bg-[#E6F7FF] border border-[#DCE3FB] rounded-full mb-6">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M2 4h12M2 8h12M2 12h8" stroke="#0056B3" stroke-width="1.33" stroke-linecap="round"/>
+                    <circle cx="13" cy="13" r="2" stroke="#0056B3" stroke-width="1.33"/>
+                </svg>
+                <span class="text-[13px] font-medium text-[#0056B3]">VIP Danışmanlık Paketleri</span>
+            </div>
+            <h1 class="text-[24px] md:text-[30px] lg:text-[36px] font-bold text-[#101828] text-center leading-tight mb-4">
+                Krediye Her Zaman Hazır Ol
+            </h1>
+            <p class="text-[14px] md:text-[16px] font-light text-[#6B7280] text-center max-w-full md:max-w-[672px] leading-[1.5]">
+                Finansmana erişim hayat boyu ihtiyaç. Size özel kredi danışmanlığı paketleriyle her zaman en iyi finansal pozisyonda olun.
+            </p>
+        </div>
+
+        @* ─── Fiyat Kartları ─── *@
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[22px] mb-8 items-start">
+
+            @* Kart 1: Standart Rapor *@
+            <div class="relative flex flex-col rounded-2xl border-2 border-[#DCE3FB] shadow-[0_4px_16px_rgba(0,0,0,0.07)] overflow-hidden bg-white">
+                <div class="bg-gradient-to-br from-[#F8FBFF] to-[#E6F7FF] px-6 pt-8 pb-6">
+                    <div class="w-14 h-14 mx-auto mb-4 flex items-center justify-center bg-[#E6F7FF] border border-[#DCE3FB] rounded-2xl">
+                        <img src="/icons/Shapes/star-01.svg" width="28" height="28" alt="">
+                    </div>
+                    <div class="flex justify-center mb-3">
+                        <span class="px-3 py-1 bg-[#E6F7FF] rounded-full text-[11px] font-semibold text-[#0056B3]">Başlangıç</span>
+                    </div>
+                    <h3 class="text-[20px] font-bold text-[#003F75] text-center mb-1">Standart Rapor</h3>
+                    <p class="text-[13px] font-light text-[#6B7280] text-center mb-5">Tek seferlik kredi uygunluk analizi</p>
+                    <div class="text-center">
+                        <div class="flex items-end justify-center gap-1">
+                            <span class="text-[36px] md:text-[42px] font-bold text-[#003F75] leading-none">499</span>
+                            <span class="text-[14px] text-[#6B7280] pb-1">TL</span>
+                        </div>
+                        <p class="text-[12px] font-light text-[#9CA3AF] mt-1">tek seferlik ödeme</p>
+                    </div>
+                </div>
+                <div class="bg-white px-6 pt-6 pb-6">
+                    <p class="text-[13px] font-semibold text-[#003F75] uppercase tracking-[0.325px] mb-4">İçerir</p>
+                    <ul class="space-y-3 mb-6">
+                        @foreach (var item in new[] {
+                            "Tek seferlik kredi uygunluk raporu",
+                            "Genel danışmanlık desteği",
+                            "7 gün geçerlilik süresi",
+                            "E-posta ile rapor teslimi"
+                        })
+                        {
+                            <li class="flex items-center gap-3">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="shrink-0">
+                                    <circle cx="10" cy="10" r="8.34" stroke="#3AD7B3" stroke-width="1.67"/>
+                                    <path d="M6.5 10l2.5 2.5 4.5-5" stroke="#3AD7B3" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span class="text-[14px] text-[#374151]">@item</span>
+                            </li>
+                        }
+                    </ul>
+                    <button class="w-full py-3.5 border-2 border-[#0056B3] rounded-[14px] text-[15px] font-semibold text-[#0056B3] hover:bg-[#0056B3] hover:text-white transition-colors duration-200">
+                        Satın Al
+                    </button>
+                </div>
+            </div>
+
+            @* Kart 2: 6 Aylık VIP *@
+            <div class="relative flex flex-col rounded-2xl border-2 border-[#DCE3FB] shadow-[0_4px_16px_rgba(0,0,0,0.07)] overflow-hidden bg-white">
+                <div class="px-6 pt-8 pb-6 bg-gradient-to-br from-[#1B5FC0] via-[#2E6DF8] to-[#0056B3]">
+                    <div class="w-14 h-14 mx-auto mb-4 flex items-center justify-center bg-white/20 border border-white/30 rounded-2xl">
+                        <img src="/icons/blue/Crown-Icon.svg" width="28" height="28" alt="">
+                    </div>
+                    <div class="flex justify-center mb-3">
+                        <span class="px-3 py-1 bg-white/25 rounded-full text-[11px] font-semibold text-white">VIP</span>
+                    </div>
+                    <h3 class="text-[20px] font-bold text-white text-center mb-1">6 Aylık VIP</h3>
+                    <p class="text-[13px] font-light text-white/80 text-center mb-5">Yarım yıl boyunca kesintisiz danışmanlık</p>
+                    <div class="text-center">
+                        <div class="flex items-end justify-center gap-1">
+                            <span class="text-[36px] md:text-[42px] font-bold text-white leading-none">2.499</span>
+                            <span class="text-[14px] text-white/70 pb-1">TL</span>
+                        </div>
+                        <p class="text-[12px] font-light text-white/60 mt-1">6 aylık paket</p>
+                    </div>
+                </div>
+                <div class="bg-white px-6 pt-6 pb-6">
+                    <p class="text-[13px] font-semibold text-[#003F75] uppercase tracking-[0.325px] mb-4">VIP Avantajlar</p>
+                    <ul class="space-y-3 mb-6">
+                        @foreach (var item in new[] {
+                            "Düşük komisyon tutarı",
+                            "Öncelikli danışmanlık hizmeti",
+                            "Öncelikli hizmetler",
+                            "Aylık kredi uygunluk raporu"
+                        })
+                        {
+                            <li class="flex items-center gap-3">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="shrink-0">
+                                    <circle cx="10" cy="10" r="8.34" stroke="#0056B3" stroke-width="1.67"/>
+                                    <path d="M6.5 10l2.5 2.5 4.5-5" stroke="#0056B3" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span class="text-[14px] text-[#374151]">@item</span>
+                            </li>
+                        }
+                    </ul>
+                    <button class="w-full py-3.5 rounded-[14px] text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(0,86,179,0.35)] hover:opacity-90 transition-opacity duration-200 bg-gradient-to-r from-[#2E6DF8] to-[#0056B3]">
+                        VIP Üye Ol
+                    </button>
+                </div>
+            </div>
+
+            @* Kart 3: 12 Aylık VIP PRO *@
+            <div class="relative md:col-span-2 lg:col-span-1">
+                <div class="absolute -top-[10px] left-1/2 -translate-x-1/2 z-10">
+                    <span class="inline-flex items-center justify-center h-6 px-4 bg-[#0056B3] rounded-full text-[12px] font-bold text-white whitespace-nowrap">En Popüler</span>
+                </div>
+                <div class="flex flex-col rounded-2xl border-2 border-[#0056B3] shadow-[0_12px_40px_rgba(0,86,179,0.2)] overflow-hidden">
+                <div class="px-6 pt-10 pb-6" style="background: linear-gradient(135deg, #1B4092 0%, #2E6DF8 60%, #0056B3 100%);">
+                    <div class="w-14 h-14 mx-auto mb-4 flex items-center justify-center bg-white/20 border border-white/30 rounded-2xl">
+                        <img src="/icons/Weather/lightning-01.svg" width="28" height="28" alt="">
+                    </div>
+                    <div class="flex justify-center mb-3">
+                        <span class="px-3 py-1 bg-white/25 rounded-full text-[11px] font-semibold text-white">VIP PRO</span>
+                    </div>
+                    <h3 class="text-[20px] font-bold text-white text-center mb-1">12 Aylık VIP</h3>
+                    <p class="text-[13px] font-light text-white/80 text-center mb-5">Tam yıl, eksiksiz finansal danışmanlık</p>
+                    <div class="text-center">
+                        <div class="flex items-end justify-center gap-1">
+                            <span class="text-[36px] md:text-[42px] font-bold text-white leading-none">4.499</span>
+                            <span class="text-[14px] text-white/70 pb-1">TL</span>
+                        </div>
+                        <p class="text-[12px] font-light text-white/60 mt-1">12 aylık paket</p>
+                    </div>
+                </div>
+                <div class="bg-white px-6 pt-6 pb-6">
+                    <p class="text-[13px] font-semibold text-[#003F75] uppercase tracking-[0.325px] mb-4">VIP Avantajlar</p>
+                    <ul class="flex flex-col gap-3 mb-6">
+                        @foreach (var item in new[] {
+                            "Düşük komisyon tutarı",
+                            "Öncelikli danışmanlık hizmeti",
+                            "Öncelikli hizmetler",
+                            "Aylık kredi uygunluk raporu",
+                            "Özel banka kanallarına erişim",
+                            "Kredi profili iyileştirme"
+                        })
+                        {
+                            <li class="flex items-center gap-3">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="shrink-0">
+                                    <circle cx="10" cy="10" r="8.34" stroke="#0056B3" stroke-width="1.67"/>
+                                    <path d="M6.5 10l2.5 2.5 4.5-5" stroke="#0056B3" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span class="text-[14px] text-[#374151]">@item</span>
+                            </li>
+                        }
+                    </ul>
+                    <button class="w-full py-3.5 rounded-[14px] text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(0,86,179,0.35)] hover:opacity-90 transition-opacity duration-200 bg-gradient-to-r from-[#2E6DF8] to-[#0056B3]">
+                        En Avantajlı Paketi Seç
+                    </button>
+                </div>
+                </div>
+            </div>
+
+        </div>
+
+        @* ─── Tasarruf Banneri ─── *@
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 py-6 rounded-2xl border border-[#DCE3FB] mb-8 bg-gradient-to-br from-[#E6F7FF] to-[#F0F8FF]">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 flex items-center justify-center bg-[#0056B3] rounded-full shrink-0">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 6h16M4 10h16M4 14h10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="18" cy="18" r="3" stroke="white" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-[15px] md:text-[16px] font-semibold text-[#003F75]">12 Aylık pakette %25 tasarruf edin</p>
+                    <p class="text-[13px] md:text-[14px] font-light text-[#6B7280]">Aylık ortalama 375 TL — tek rapor yerine 12 rapor!</p>
+                </div>
+            </div>
+            <button class="w-full md:w-auto shrink-0 px-8 py-3 rounded-[14px] text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(0,86,179,0.3)] hover:opacity-90 transition-opacity duration-200 whitespace-nowrap bg-gradient-to-r from-[#2E6DF8] to-[#0056B3]">
+                12 Aylık VIP'e Geç
+            </button>
+        </div>
+
+        @* ─── İstatistik Kartları ─── *@
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+            @foreach (var stat in new[] {
+                (Value: "1M+",     Label: "Memnun Müşteri"),
+                (Value: "%98",     Label: "Başvuru Başarı Oranı"),
+                (Value: "24/7",    Label: "Uzman Desteği"),
+                (Value: "256-bit", Label: "SSL Güvenlik")
+            })
+            {
+                <div class="flex flex-col items-center py-4 px-5 bg-white border border-[#DCE3FB] rounded-[14px]">
+                    <span class="text-[20px] md:text-[24px] font-bold text-[#0056B3] leading-[1.5]">@stat.Value</span>
+                    <span class="text-[12px] md:text-[13px] font-light text-[#6B7280] text-center">@stat.Label</span>
+                </div>
+            }
+        </div>
+
+</div>

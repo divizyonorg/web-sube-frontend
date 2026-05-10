@@ -1,9 +1,9 @@
 using MyApp.Web.Services.Interfaces;
-using MyApp.Web.ViewModels.PersonalizedOffers;
+using MyApp.Web.ViewModels.SanaOzelTeklifler;
 
 namespace MyApp.Web.Services.Implementations;
 
-public class MockPersonalizedOffersService : IPersonalizedOffersService
+public class MockSanaOzelTekliflerService : ISanaOzelTekliflerService
 {
     private static readonly OfferItemViewModel[] Offers =
     [

@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyApp.Web.Services.Interfaces;
-using MyApp.Web.ViewModels.PersonalizedOffers;
+using MyApp.Web.ViewModels.SanaOzelTeklifler;
 
-namespace MyApp.Web.Pages.PersonalizedOffers;
+namespace MyApp.Web.Pages.SanaOzelTeklifler;
 
 public class IndexModel : PageModel
 {
-    private readonly IPersonalizedOffersService _offersService;
+    private readonly ISanaOzelTekliflerService _offersService;
 
     public string BranchLabel { get; private set; } = "İnteraktif Kredi";
     public string BranchName { get; private set; } = "WEB Şube";
@@ -14,7 +14,7 @@ public class IndexModel : PageModel
     public string PageSubtitle { get; private set; } = "Profilinize özel hazırlanmış kredi teklifleri";
     public string BannerTitle { get; private set; } = "Özel Teklif Avantajı";
     public string BannerText { get; private set; } =
-        "Bu teklifler kredi puanınız ve geçmiş işlemleriniz değerlendirilerek size özel olarak hazırlanmıştır.";
+        "Bu teklifler kredi puanınız ve geçmiş işlemlerinize göre özel olarak hazırlanmıştır. Tekliflerin geçerlilik süresi 30 gündür.";
     public string FooterLead { get; private set; } = "1M+ kullanıcı bize güveniyor.";
     public string FooterCopy { get; private set; } = "İnteraktif Kredi A.Ş. © 2026";
     public string FooterLegal { get; private set; } =
@@ -23,7 +23,7 @@ public class IndexModel : PageModel
 
     public List<OfferItemViewModel> Offers { get; private set; } = [];
 
-    public IndexModel(IPersonalizedOffersService offersService)
+    public IndexModel(ISanaOzelTekliflerService offersService)
         => _offersService = offersService;
 
     public async Task OnGetAsync()
