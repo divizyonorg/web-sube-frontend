@@ -3,41 +3,39 @@
 # Proje: MyApp.Web (Razor Pages / .NET 8)
 # ─────────────────────────────────────────────────────────
 
-# ── STAGE 1: BUILD ────────────────────────────────────────
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-
-# Node.js kur (Tailwind CSS derleme için)
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends nodejs npm \
-    && rm -rf /var/lib/apt/lists/*
+# ── STAGE 1: NODE — CSS & JS derleme ─────────────────────
+FROM node:20-slim AS node-build
 
 WORKDIR /src
 
-# Sadece package.json kopyala — package-lock.json Windows'ta üretildiğinden
-# Linux binary'lerini (@tailwindcss/oxide-linux-x64-gnu) kaydetmiyor.
-# Lockfile olmadan npm install, Linux için doğru binary'leri çözer.
 COPY package.json ./
 RUN npm install
 
-# Önce proje dosyalarını kopyala → NuGet cache korunur
+COPY . .
+RUN npm run build
+
+# ── STAGE 2: .NET BUILD ───────────────────────────────────
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+WORKDIR /src
+
 COPY *.sln ./
 COPY *.csproj ./
 RUN dotnet restore
 
-# Kaynak kodu kopyala
 COPY . .
 
-# Tailwind CSS + JS kütüphaneleri derle
-RUN npm run build
+# Node stage'inden derlenmiş CSS ve JS kütüphanelerini al
+COPY --from=node-build /src/wwwroot/css/app.css ./wwwroot/css/app.css
+COPY --from=node-build /src/wwwroot/lib ./wwwroot/lib
 
-# .NET publish
 RUN dotnet publish \
     --configuration Release \
     --output /app/publish \
     --no-restore \
     /p:UseAppHost=false
 
-# ── STAGE 2: RUNTIME ──────────────────────────────────────
+# ── STAGE 3: RUNTIME ──────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 
 # Healthcheck için curl kur
