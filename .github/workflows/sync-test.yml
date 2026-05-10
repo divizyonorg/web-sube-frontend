@@ -1,6 +1,6 @@
-name: Dev → Test Otomatik Sync
+name: Dev → Test → Preprod Otomatik Sync
 
-# Development'a her push geldiğinde Test branch'i ezilir
+# Development'a her push geldiğinde Test ve Preprod branch'leri ezilir
 on:
   push:
     branches:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   sync:
-    name: Test'i Development ile güncelle
+    name: Test ve Preprod'u Development ile güncelle
     runs-on: ubuntu-latest
     steps:
       - name: Kodu çek
@@ -19,3 +19,6 @@ jobs:
 
       - name: Test branch'ini Development ile ezip güncelle
         run: git push origin Development:Test --force
+
+      - name: Preprod branch'ini Development ile ezip güncelle
+        run: git push origin Development:Preprod --force
