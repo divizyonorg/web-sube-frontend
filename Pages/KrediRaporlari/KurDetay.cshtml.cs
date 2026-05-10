@@ -19,8 +19,11 @@ public class KurDetayModel : PageModel
         if (tab == "piyasa")
             ViewModel.ActiveTab = "piyasa";
 
+        var kredi = Request.Query["kredi"].ToString();
+        ViewModel.ActiveCreditType = kredi is "TASIT" or "KONUT" or "TICARI" ? kredi : "IHTIYAC";
+
         if (ViewModel.ActiveTab == "piyasa")
-            ViewModel.MarketAnalysis = await _evdsService.GetMarketAnalysisAsync();
+            ViewModel.MarketAnalysis = await _evdsService.GetMarketAnalysisAsync(ViewModel.ActiveCreditType);
 
         return Page();
     }

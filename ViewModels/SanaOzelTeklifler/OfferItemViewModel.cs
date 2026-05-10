@@ -1,4 +1,4 @@
-namespace MyApp.Web.ViewModels.PersonalizedOffers;
+namespace MyApp.Web.ViewModels.SanaOzelTeklifler;
 
 public class OfferItemViewModel
 {

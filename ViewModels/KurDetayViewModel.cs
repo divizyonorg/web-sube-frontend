@@ -3,6 +3,7 @@ namespace MyApp.Web.ViewModels;
 public class KurDetayViewModel
 {
     public string ActiveTab { get; set; } = "kisisel";
+    public string ActiveCreditType { get; set; } = "IHTIYAC";
 
     public KisiselRaporViewModel KisiselRapor { get; set; } = new();
     public MarketAnalysisViewModel MarketAnalysis { get; set; } = new();
@@ -30,6 +31,7 @@ public class InterestRateTrendViewModel
 
 public class MarketSliderCardViewModel
 {
+    public string CreditType { get; set; } = "IHTIYAC";
     public string ProductLabel { get; set; } = "İhtiyaç Kredisi";
     public string Description { get; set; } = string.Empty;
     public string StatusLabel { get; set; } = string.Empty;

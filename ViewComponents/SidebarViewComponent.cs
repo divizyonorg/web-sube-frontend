@@ -14,7 +14,7 @@ public class SidebarViewComponent : ViewComponent
                 new() { Label = "Anasayfa",             Href = "/anasayfa",                  Icon = SidebarIcon.Home,              IconFile = "layout-grid-01",    IsActive = activePage == "Anasayfa" },
                 new() { Label = "Kredi Başvurusu",      Href = "/KrediBasvurusu",             Icon = SidebarIcon.CreditApplication, IconFile = "loan-app",          IsActive = activePage == "Kredi Başvurusu" },
                 new() { Label = "Kredi Raporların",     Href = "/KrediRaporlari",             Icon = SidebarIcon.CreditReport, IconFile = "file-04",           IsActive = activePage == "Kredi Raporların" },
-                new() { Label = "Sana Özel Teklifler",  Href = "/PersonalizedOffers",         Icon = SidebarIcon.Offers,       IconFile = "gift-01",           IsActive = activePage == "Sana Özel Teklifler" },
+                new() { Label = "Sana Özel Teklifler",  Href = "/SanaOzelTeklifler",          Icon = SidebarIcon.Offers,       IconFile = "gift-01",           IsActive = activePage == "Sana Özel Teklifler" },
                 new() { Label = "Kredi Danışmanı",      Href = "/KrediDanismani",  Icon = SidebarIcon.Advisor,      IconFile = "message-square-02", IsActive = activePage == "Kredi Danışmanı" },
                 new() { Label = "Destek Merkezi",       Href = "/DestekMerkezi",   Icon = SidebarIcon.Support,      IconFile = "help-circle",       IsActive = activePage == "Destek Merkezi" },
                 new() { Label = "Canlı Destek",         Href = "/CanliDestek",     Icon = SidebarIcon.LiveSupport,  IconFile = "message-circle-01", IsActive = activePage == "Canlı Destek" },
@@ -27,7 +27,7 @@ public class SidebarViewComponent : ViewComponent
                 Title = "VIP Danışmanlık",
                 Description = "Krediye her zaman hazır olun. Ayrıcalıklı hizmet.",
                 ButtonText = "Paketi İncele",
-                ButtonHref = "#"
+                ButtonHref = "/VipDanismalikPaketleri"
             }
         };
 

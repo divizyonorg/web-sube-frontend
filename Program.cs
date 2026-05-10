@@ -22,7 +22,8 @@ if (useMockData)
     builder.Services.AddScoped<IClientService, MockClientService>();
     builder.Services.AddScoped<IReportService, MockReportService>();
     builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
-    builder.Services.AddScoped<IPersonalizedOffersService, MockPersonalizedOffersService>();
+    builder.Services.AddScoped<ICustomerDataService, MockCustomerDataService>();
+    builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
 }
 else
 {
@@ -30,7 +31,8 @@ else
     builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService))
         .AddHttpMessageHandler<BearerTokenHandler>();
     builder.Services.AddHttpClient<ICreditEligibilityService, CreditEligibilityService>(ConfigureClient(serviceUrls.CustomerService));
-    builder.Services.AddScoped<IPersonalizedOffersService, MockPersonalizedOffersService>();
+    builder.Services.AddHttpClient<ICustomerDataService, CustomerDataService>(ConfigureClient(serviceUrls.CustomerService));
+    builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
 }
 
 builder.Services.AddHttpContextAccessor();
@@ -44,6 +46,7 @@ builder.Services.AddHttpClient<ICustomerProfileService, CustomerProfileService>(
 builder.Services.AddHttpClient<IFinansalProfilService, FinansalProfilService>(ConfigureClient(serviceUrls.CustomerService))
     .AddHttpMessageHandler<BearerTokenHandler>();
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
 builder.Services.AddHealthChecks();
 
