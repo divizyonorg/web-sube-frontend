@@ -23,31 +23,29 @@ public class AuthService : IAuthService
         _logger = logger;
     }
 
-    public async Task<(bool Success, string? Message)> SendOtpAsync(string phoneNumber, string tckn)
+    public async Task<(bool Success, string? Message, bool IsCustomer)> SendOtpAsync(string phoneNumber)
     {
         var gsm = FormatGsm(phoneNumber);
-        _logger.LogInformation("SendOtp → gsm='{Gsm}' tckn='{Tckn}'", gsm, tckn);
+        _logger.LogInformation("SendOtp → gsm='{Gsm}'", gsm);
 
         try
         {
-            var request = new SendOtpRequest { Gsm = gsm, Tckn = tckn };
+            var request = new SendOtpRequest { Gsm = gsm };
             var response = await _httpClient.PostAsJsonAsync(Endpoints.SendOtp, request);
             var body = await response.Content.ReadAsStringAsync();
 
             _logger.LogInformation("SendOtp ← {StatusCode} {Body}", (int)response.StatusCode, body);
 
             if (!response.IsSuccessStatusCode)
-            {
-                var message = TryParseMessage(body);
-                return (false, message);
-            }
+                return (false, TryParseMessage(body), false);
 
-            return (true, null);
+            var dto = TryParseBody<SendOtpResponseDto>(body);
+            return (true, null, dto?.IsCustomer ?? false);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "SendOtp exception [{ExType}]: {Message}", ex.GetType().Name, ex.Message);
-            return (false, $"{ex.GetType().Name}: {ex.Message}");
+            return (false, $"{ex.GetType().Name}: {ex.Message}", false);
         }
     }
 
@@ -93,6 +91,12 @@ public class AuthService : IAuthService
         }
         catch { }
         return null;
+    }
+
+    private static T? TryParseBody<T>(string body)
+    {
+        try { return JsonSerializer.Deserialize<T>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }); }
+        catch { return default; }
     }
 
     private static string? TryParseToken(string body)
