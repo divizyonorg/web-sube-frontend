@@ -39,6 +39,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<BearerTokenHandler>();
 
 builder.Services.AddHttpClient<IAuthService, AuthService>(ConfigureClient(serviceUrls.AuthService));
+builder.Services.AddHttpClient<ICustomerCheckService, CustomerCheckService>(ConfigureClient(serviceUrls.CustomerService));
 builder.Services.AddHttpClient<IEvdsService, EvdsService>(ConfigureClient(serviceUrls.EvdsService))
     .AddHttpMessageHandler<BearerTokenHandler>();
 builder.Services.AddHttpClient<ICustomerProfileService, CustomerProfileService>(ConfigureClient(serviceUrls.CustomerService))
