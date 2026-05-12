@@ -400,6 +400,7 @@
                         var json = await resp.json();
                         if (json.success) {
                             localStorage.setItem('auth_token', json.token);
+                            document.cookie = 'auth_token=' + json.token + '; path=/; SameSite=Lax';
                             if (this.rememberMe) {
                                 localStorage.setItem('remember_me', JSON.stringify({ phone: this.phone, tckn: this.tckn }));
                             } else {

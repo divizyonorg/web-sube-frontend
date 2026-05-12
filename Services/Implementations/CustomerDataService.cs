@@ -12,6 +12,7 @@ public class CustomerDataService : ICustomerDataService
 {
     private readonly HttpClient _httpClient;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<CustomerDataService> _logger;
 
     private static class Endpoints
     {
@@ -26,10 +27,11 @@ public class CustomerDataService : ICustomerDataService
             => $"/api/customers/dynamic-data?module_type={moduleType}&page={page}";
     }
 
-    public CustomerDataService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+    public CustomerDataService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, ILogger<CustomerDataService> logger)
     {
         _httpClient = httpClient;
         _httpContextAccessor = httpContextAccessor;
+        _logger = logger;
     }
 
     private void AttachToken()
@@ -72,10 +74,15 @@ public class CustomerDataService : ICustomerDataService
 
         var vm = new ProfilBilgileriViewModel();
 
+        _logger.LogInformation("FULLNAME raw: {Json}", System.Text.Json.JsonSerializer.Serialize(fullnameTask.Result));
+        _logger.LogInformation("CONTACT raw: {Json}", System.Text.Json.JsonSerializer.Serialize(contactTask.Result));
+
         var fullnameItem = fullnameTask.Result?.Data.FirstOrDefault();
         if (fullnameItem is not null && fullnameItem.Details.HasValue)
         {
             var details = fullnameItem.Details.Value.Deserialize<FullnameDetailsDto>();
+            _logger.LogInformation("FULLNAME details → FirstName='{First}' LastName='{Last}' Birthday='{Birthday}' Tckn='{Tckn}'",
+                details?.FirstName, details?.LastName, details?.Birthday, details?.Tckn);
             if (details is not null)
             {
                 vm.FullName = $"{details.FirstName} {details.LastName}".Trim();
@@ -83,16 +90,23 @@ public class CustomerDataService : ICustomerDataService
                 vm.Tckn = details.Tckn ?? string.Empty;
             }
         }
+        else
+        {
+            _logger.LogWarning("FULLNAME: veri yok veya details boş. Item null={IsNull}", fullnameItem is null);
+        }
 
         foreach (var item in contactTask.Result?.Data ?? [])
         {
             if (!item.Details.HasValue) continue;
             var details = item.Details.Value.Deserialize<ContactDetailsDto>();
+            _logger.LogInformation("CONTACT item → Type='{Type}' Value='{Value}' IsPrimary={IsPrimary}", details?.Type, details?.Value, details?.IsPrimary);
             if (details is null || !details.IsPrimary) continue;
 
             if (details.Type.Equals("GSM", StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(vm.Phone)) vm.Phone = details.Value;
             if (details.Type.Equals("Email", StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(vm.Email)) vm.Email = details.Value;
         }
+
+        _logger.LogInformation("GetProfile result → FullName='{FullName}' Email='{Email}' Phone='{Phone}'", vm.FullName, vm.Email, vm.Phone);
 
         return vm;
     }
