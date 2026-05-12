@@ -22,23 +22,34 @@ if (useMockData)
     builder.Services.AddScoped<IClientService, MockClientService>();
     builder.Services.AddScoped<IReportService, MockReportService>();
     builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
-    builder.Services.AddScoped<IPersonalizedOffersService, MockPersonalizedOffersService>();
+    builder.Services.AddScoped<ICustomerDataService, MockCustomerDataService>();
+    builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
 }
 else
 {
     builder.Services.AddHttpClient<IClientService, ClientService>(ConfigureClient(serviceUrls.CustomerService));
-    builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService));
+    builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService))
+        .AddHttpMessageHandler<BearerTokenHandler>();
     builder.Services.AddHttpClient<ICreditEligibilityService, CreditEligibilityService>(ConfigureClient(serviceUrls.CustomerService));
-    builder.Services.AddScoped<IPersonalizedOffersService, MockPersonalizedOffersService>();
+    builder.Services.AddHttpClient<ICustomerDataService, CustomerDataService>(ConfigureClient(serviceUrls.CustomerService));
+    builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
 }
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<BearerTokenHandler>();
 
 builder.Services.AddHttpClient<IAuthService, AuthService>(ConfigureClient(serviceUrls.AuthService));
+builder.Services.AddHttpClient<ICustomerRegistrationService, CustomerRegistrationService>(ConfigureClient(serviceUrls.CustomerService))
+    .AddHttpMessageHandler<BearerTokenHandler>();
+builder.Services.AddHttpClient<ICustomerCheckService, CustomerCheckService>(ConfigureClient(serviceUrls.CustomerService));
 builder.Services.AddHttpClient<IEvdsService, EvdsService>(ConfigureClient(serviceUrls.EvdsService))
     .AddHttpMessageHandler<BearerTokenHandler>();
+builder.Services.AddHttpClient<ICustomerProfileService, CustomerProfileService>(ConfigureClient(serviceUrls.CustomerService))
+    .AddHttpMessageHandler<BearerTokenHandler>();
+builder.Services.AddHttpClient<IFinansalProfilService, FinansalProfilService>(ConfigureClient(serviceUrls.CustomerService))
+    .AddHttpMessageHandler<BearerTokenHandler>();
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
 builder.Services.AddHealthChecks();
 

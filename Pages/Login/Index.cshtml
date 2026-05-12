@@ -19,6 +19,25 @@
 </head>
 <body>
 
+    <script>
+        (function () {
+            function isTokenValid() {
+                var token = localStorage.getItem('auth_token');
+                if (!token) return false;
+                try {
+                    var payload = JSON.parse(atob(token.split('.')[1]));
+                    return typeof payload.exp === 'number' && payload.exp * 1000 > Date.now();
+                } catch { return false; }
+            }
+
+            if (isTokenValid()) {
+                window.location.replace('/anasayfa');
+            } else {
+                localStorage.removeItem('auth_token');
+            }
+        })();
+    </script>
+
     <div x-data="loginForm()" class="flex h-screen overflow-hidden">
 
         @* Sol panel — yalnızca desktop *@
@@ -64,7 +83,7 @@
                         @* Devam Et *@
                         <div x-show="step === 1"
                              @@click="proceed()"
-                             :class="canProceed() ? 'cursor-pointer' : 'cursor-not-allowed opacity-50 pointer-events-none'"
+                             :class="!canProceed() || proceeding ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'cursor-pointer'"
                              class="[&_button]:w-full! lg:[&_button]:w-91!">
                             <partial name="~/Partials/Components/_Button.cshtml"
                                      model='new ButtonViewModel { Label = "Devam Et", Variant = ButtonVariant.Primary, Width = 364 }' />
@@ -72,16 +91,15 @@
 
                         @* Giriş Yap *@
                         <div x-show="step === 2" x-cloak
-                             @@click="!sendingOtp && sendOtp()"
-                             :class="sendingOtp ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'"
-                             class="[&_button]:w-full! lg:[&_button]:w-91!">
+                             @@click="loginWithTckn()"
+                             class="cursor-pointer [&_button]:w-full! lg:[&_button]:w-91!">
                             <partial name="~/Partials/Components/_Button.cshtml"
                                      model='new ButtonViewModel { Label = "Giriş Yap", Variant = ButtonVariant.Primary, Width = 364 }' />
                         </div>
 
-                        @* API hata mesajı *@
-                        <p x-show="otpError" x-cloak
-                           x-text="otpErrorMsg"
+                        @* TCKN validasyon hatası *@
+                        <p x-show="step === 2 && tcknError" x-cloak
+                           x-text="tcknErrorMsg"
                            class="text-[13px] text-[#DC2626] text-center m-0"></p>
 
                         @* Beni Hatırla + Parolamı Unuttum *@
@@ -177,10 +195,6 @@
                             saniye sonra yeni kod gönderebilirsin
                         </p>
 
-                        <p x-show="otpVerifyError" x-cloak
-                           x-text="otpVerifyErrorMsg"
-                           class="text-[13px] text-[#DC2626] text-center m-0"></p>
-
                         <div @@click="!verifyingOtp && verifyOtp()"
                              :class="verifyingOtp ? 'opacity-60 cursor-not-allowed pointer-events-none' : 'cursor-pointer'"
                              class="w-full [&_button]:w-full!">
@@ -201,59 +215,89 @@
 
     <script defer src="~/lib/alpinejs/cdn.min.js"></script>
     <script src="~/lib/imask/imask.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
     <script>
         function loginForm() {
             return {
                 step: 1,
                 phone: '',
                 tckn: '',
+                rememberMe: false,
                 showOtpModal: false,
                 otpCode: '',
                 timer: 180,
                 timerInterval: null,
-                sendingOtp: false,
-                otpError: false,
-                otpErrorMsg: '',
+                proceeding: false,
+                tcknError: false,
+                tcknErrorMsg: '',
                 verifyingOtp: false,
-                otpVerifyError: false,
-                otpVerifyErrorMsg: '',
+                _tcknMask: null,
 
                 init() {
                     var self = this;
 
+                    var saved = JSON.parse(localStorage.getItem('remember_me') || 'null');
+                    if (saved) {
+                        self.rememberMe = true;
+                        self.phone      = saved.phone || '';
+                        self.tckn       = saved.tckn  || '';
+                    }
+
                     var phoneEl = document.getElementById('PhoneNumber');
                     if (phoneEl) {
                         var phoneMask = IMask(phoneEl, { mask: '+{90} 000 000 00 00' });
+                        if (self.phone) {
+                            phoneMask.value = self.phone;
+                            phoneMask.updateValue();
+                            self.phone = phoneMask.value;
+                        }
                         phoneMask.on('accept', function () { self.phone = phoneMask.value; });
-                        phoneEl.addEventListener('input', function () { self.phone = phoneEl.value; });
                     }
 
                     var tcknEl = document.getElementById('Tckn');
                     if (tcknEl) {
                         var tcknMask = IMask(tcknEl, { mask: '00000000000' });
+                        self._tcknMask = tcknMask;
+                        if (self.tckn) {
+                            tcknMask.value = self.tckn;
+                            tcknMask.updateValue();
+                            self.tckn = tcknMask.value;
+                        }
                         tcknMask.on('accept', function () { self.tckn = tcknMask.value; });
-                        tcknEl.addEventListener('input', function () { self.tckn = tcknEl.value; });
                     }
+
+                    var rememberEl = document.getElementById('RememberMe');
+                    if (rememberEl) {
+                        rememberEl.checked = self.rememberMe;
+                        rememberEl.addEventListener('change', function () { self.rememberMe = rememberEl.checked; });
+                    }
+                },
+
+                validateTckn(tckn) {
+                    if (!/^\d{11}$/.test(tckn)) return false;
+                    if (tckn[0] === '0') return false;
+                    var d = tckn.split('').map(Number);
+                    var oddSum  = d[0] + d[2] + d[4] + d[6] + d[8];
+                    var evenSum = d[1] + d[3] + d[5] + d[7];
+                    if ((oddSum * 7 - evenSum) % 10 !== d[9]) return false;
+                    var sum10 = d[0]+d[1]+d[2]+d[3]+d[4]+d[5]+d[6]+d[7]+d[8]+d[9];
+                    return sum10 % 10 === d[10];
                 },
 
                 canProceed() {
                     return this.phone.replace(/\D/g, '').length >= 12;
                 },
 
-                proceed() {
-                    if (this.canProceed()) this.step = 2;
-                },
+                async proceed() {
+                    if (!this.canProceed() || this.proceeding) return;
 
-                async sendOtp() {
-                    this.sendingOtp  = true;
-                    this.otpError    = false;
-                    this.otpErrorMsg = '';
+                    this.proceeding = true;
 
                     var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
                     var params = new URLSearchParams();
                     params.append('__RequestVerificationToken', token);
                     params.append('PhoneNumber', this.phone);
-                    params.append('Tckn', this.tckn);
 
                     try {
                         var resp = await fetch('/login?handler=SendOtp', {
@@ -263,17 +307,48 @@
                         });
                         var json = await resp.json();
                         if (json.success) {
-                            this.openOtpModal();
+                            if (!json.isCustomer) {
+                                window.location.href = '/register';
+                                return;
+                            }
+                            this.step = 2;
+                            this.startTimer();
                         } else {
-                            this.otpError    = true;
-                            this.otpErrorMsg = json.message || 'SMS gönderilemedi. Lütfen tekrar deneyin.';
+                            Toastify({
+                                text: json.message || 'SMS gönderilemedi. Lütfen tekrar deneyin.',
+                                duration: 4000,
+                                gravity: 'top',
+                                position: 'right',
+                                style: { background: '#ef4444' }
+                            }).showToast();
                         }
                     } catch (_) {
-                        this.otpError    = true;
-                        this.otpErrorMsg = 'Bağlantı hatası oluştu.';
+                        Toastify({
+                            text: 'Bağlantı hatası oluştu.',
+                            duration: 4000,
+                            gravity: 'top',
+                            position: 'right',
+                            style: { background: '#ef4444' }
+                        }).showToast();
                     } finally {
-                        this.sendingOtp = false;
+                        this.proceeding = false;
                     }
+                },
+
+                loginWithTckn() {
+                    this.tcknError    = false;
+                    this.tcknErrorMsg = '';
+
+                    if (!this.validateTckn(this.tckn)) {
+                        this.tcknError    = true;
+                        this.tcknErrorMsg = 'Geçerli bir TC Kimlik Numarası giriniz.';
+                        return;
+                    }
+
+                    this.showOtpModal     = true;
+                    this.otpVerifyError   = false;
+                    this.otpVerifyErrorMsg = '';
+                    this.otpCode          = '';
                 },
 
                 maskedPhone() {
@@ -288,27 +363,33 @@
                     return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
                 },
 
-                openOtpModal() {
-                    this.showOtpModal = true;
+                startTimer() {
                     this.timer = 180;
-                    var self = this;
                     if (this.timerInterval) clearInterval(this.timerInterval);
+                    var self = this;
                     this.timerInterval = setInterval(function () {
-                        if (self.timer > 0) { self.timer--; }
-                        else { clearInterval(self.timerInterval); }
+                        if (self.timer > 0) {
+                            self.timer--;
+                        } else {
+                            clearInterval(self.timerInterval);
+                            self.showOtpModal = false;
+                            self.step         = 1;
+                            self.otpCode      = '';
+                            self.tckn         = '';
+                            if (self._tcknMask) { self._tcknMask.value = ''; self._tcknMask.updateValue(); }
+                        }
                     }, 1000);
                 },
 
                 async verifyOtp() {
-                    this.verifyingOtp      = true;
-                    this.otpVerifyError    = false;
-                    this.otpVerifyErrorMsg = '';
+                    this.verifyingOtp = true;
 
                     var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
                     var params = new URLSearchParams();
                     params.append('__RequestVerificationToken', token);
                     params.append('PhoneNumber', this.phone);
                     params.append('OtpCode', this.otpCode);
+                    params.append('Tckn', this.tckn);
 
                     try {
                         var resp = await fetch('/login?handler=VerifyOtp', {
@@ -318,14 +399,45 @@
                         });
                         var json = await resp.json();
                         if (json.success) {
+                            localStorage.setItem('auth_token', json.token);
+                            document.cookie = 'auth_token=' + json.token + '; path=/; SameSite=Lax';
+                            if (this.rememberMe) {
+                                localStorage.setItem('remember_me', JSON.stringify({ phone: this.phone, tckn: this.tckn }));
+                            } else {
+                                localStorage.removeItem('remember_me');
+                            }
                             window.location.href = '/anasayfa';
+                        } else if (json.tcknMismatch) {
+                            clearInterval(this.timerInterval);
+                            this.showOtpModal = false;
+                            this.step         = 1;
+                            this.otpCode      = '';
+                            this.tckn         = '';
+                            if (this._tcknMask) { this._tcknMask.value = ''; this._tcknMask.updateValue(); }
+                            Toastify({
+                                text: json.message || 'TC bilgisi eşleşmemektedir.',
+                                duration: 4000,
+                                gravity: 'top',
+                                position: 'right',
+                                style: { background: '#ef4444' }
+                            }).showToast();
                         } else {
-                            this.otpVerifyError    = true;
-                            this.otpVerifyErrorMsg = json.message || 'Kod hatalı. Lütfen tekrar deneyin.';
+                            Toastify({
+                                text: json.message || 'Kod hatalı. Lütfen tekrar deneyin.',
+                                duration: 4000,
+                                gravity: 'top',
+                                position: 'right',
+                                style: { background: '#ef4444' }
+                            }).showToast();
                         }
                     } catch (_) {
-                        this.otpVerifyError    = true;
-                        this.otpVerifyErrorMsg = 'Bağlantı hatası oluştu.';
+                        Toastify({
+                            text: 'Bağlantı hatası oluştu.',
+                            duration: 4000,
+                            gravity: 'top',
+                            position: 'right',
+                            style: { background: '#ef4444' }
+                        }).showToast();
                     } finally {
                         this.verifyingOtp = false;
                     }

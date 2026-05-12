@@ -1,6 +1,115 @@
 @page
 @model MyApp.Web.Pages.Ayarlar.IndexModel
-@{
-    ViewData["Title"] = "Ayarlar";
-    ViewData["ActivePage"] = "Ayarlar";
-}
+
+<div class="font-[Poppins] flex flex-col min-h-full"
+     x-data="{ activeTab: 'finansal-profil' }">
+
+    @* ── Breadcrumb ─────────────────────────────────────────── *@
+    <div class="flex justify-between items-center mb-6">
+        <a href="javascript:history.back()"
+           class="flex items-center gap-1.5 no-underline text-[#003F75] text-[13px] font-medium">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 12L6 8L10 4" stroke="#003F75" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Geri
+        </a>
+        <div class="text-right leading-[1.4]">
+            <div class="font-semibold text-[13px] text-[#003F75]">İnteraktif Kredi</div>
+            <div class="text-[12px] text-[#7A94B8]">WEB Şube</div>
+        </div>
+    </div>
+
+    @* ── Sayfa Başlığı ───────────────────────────────────────── *@
+    <div class="mb-6">
+        <h1 class="font-[Manrope] font-bold text-[30px] text-[#101828] mb-1 leading-[1.3]">Ayarlar</h1>
+        <p class="font-[Source_Sans_3] text-[16px] text-[#4A5565]">Hesap ayarlarınızı yönetin</p>
+    </div>
+
+    @* ── İki Sütun: Tab Menü + İçerik ───────────────────────── *@
+    <div class="flex gap-5 items-start flex-1 max-md:flex-col max-md:gap-4">
+
+        @* ── Sol Tab Menüsü ──────────────────────────────────── *@
+        <div class="w-[285px] shrink-0 bg-white border border-[#E5E7EB] rounded-[14px] p-2 flex flex-col gap-0.5
+                    max-md:w-full">
+
+            <button type="button" @@click="activeTab='finansal-profil'"
+                    :class="activeTab==='finansal-profil'
+                        ? 'bg-[#0056B3] text-white shadow-sm'
+                        : 'bg-transparent text-[#364153] hover:bg-[rgba(46,109,248,0.06)]'"
+                    class="flex items-center gap-3 px-4 py-3 border-0 rounded-[10px] cursor-pointer font-[Source_Sans_3] text-[14px] font-medium text-left whitespace-nowrap transition-all w-full">
+                <img :src="activeTab==='finansal-profil' ? '/icons/white/briefcase-02.svg' : '/icons/navy/briefcase-02.svg'"
+                     width="16" height="16" class="shrink-0" alt="">
+                <span>Finansal Profil</span>
+            </button>
+
+            <button type="button" @@click="activeTab='profil-bilgileri'"
+                    :class="activeTab==='profil-bilgileri'
+                        ? 'bg-[#0056B3] text-white shadow-sm'
+                        : 'bg-transparent text-[#364153] hover:bg-[rgba(46,109,248,0.06)]'"
+                    class="flex items-center gap-3 px-4 py-3 border-0 rounded-[10px] cursor-pointer font-[Source_Sans_3] text-[14px] font-medium text-left whitespace-nowrap transition-all w-full">
+                <img :src="activeTab==='profil-bilgileri' ? '/icons/white/user-01.svg' : '/icons/navy/user-01.svg'"
+                     width="16" height="16" class="shrink-0" alt="">
+                <span>Profil Bilgileri</span>
+            </button>
+
+            <button type="button" @@click="activeTab='guvenlik'"
+                    :class="activeTab==='guvenlik'
+                        ? 'bg-[#0056B3] text-white shadow-sm'
+                        : 'bg-transparent text-[#364153] hover:bg-[rgba(46,109,248,0.06)]'"
+                    class="flex items-center gap-3 px-4 py-3 border-0 rounded-[10px] cursor-pointer font-[Source_Sans_3] text-[14px] font-medium text-left whitespace-nowrap transition-all w-full">
+                <img :src="activeTab==='guvenlik' ? '/icons/white/shield-02.svg' : '/icons/navy/shield-02.svg'"
+                     width="16" height="16" class="shrink-0" alt="">
+                <span>Güvenlik</span>
+            </button>
+
+            <button type="button" @@click="activeTab='bildirimler'"
+                    :class="activeTab==='bildirimler'
+                        ? 'bg-[#0056B3] text-white shadow-sm'
+                        : 'bg-transparent text-[#364153] hover:bg-[rgba(46,109,248,0.06)]'"
+                    class="flex items-center gap-3 px-4 py-3 border-0 rounded-[10px] cursor-pointer font-[Source_Sans_3] text-[14px] font-medium text-left whitespace-nowrap transition-all w-full">
+                <img :src="activeTab==='bildirimler' ? '/icons/white/bell-01.svg' : '/icons/navy/bell-01.svg'"
+                     width="16" height="16" class="shrink-0" alt="">
+                <span>Bildirimler</span>
+            </button>
+
+            <button type="button" @@click="activeTab='odeme-yontemleri'"
+                    :class="activeTab==='odeme-yontemleri'
+                        ? 'bg-[#0056B3] text-white shadow-sm'
+                        : 'bg-transparent text-[#364153] hover:bg-[rgba(46,109,248,0.06)]'"
+                    class="flex items-center gap-3 px-4 py-3 border-0 rounded-[10px] cursor-pointer font-[Source_Sans_3] text-[14px] font-medium text-left whitespace-nowrap transition-all w-full">
+                <img :src="activeTab==='odeme-yontemleri' ? '/icons/white/credit-card-01.svg' : '/icons/navy/credit-card-01.svg'"
+                     width="16" height="16" class="shrink-0" alt="">
+                <span>Ödeme Yöntemleri</span>
+            </button>
+
+        </div>
+
+        @* ── Sağ İçerik Alanı ───────────────────────────────── *@
+        <div class="flex-1 min-w-0 max-md:w-full">
+
+            <div x-show="activeTab==='finansal-profil'">
+                <partial name="~/Pages/Ayarlar/_FinansalProfil.cshtml" model="Model" />
+            </div>
+
+            <div x-show="activeTab==='profil-bilgileri'">
+                <partial name="~/Pages/Ayarlar/_ProfilBilgileri.cshtml" model="Model" />
+            </div>
+
+            <div x-show="activeTab==='guvenlik'">
+                <partial name="~/Pages/Ayarlar/_Guvenlik.cshtml" model="Model" />
+            </div>
+
+            <div x-show="activeTab==='bildirimler'">
+                <partial name="~/Pages/Ayarlar/_Bildirimler.cshtml" model="Model" />
+            </div>
+
+            <div x-show="activeTab==='odeme-yontemleri'">
+                <partial name="~/Pages/Ayarlar/_OdemeYontemleri.cshtml" model="Model" />
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

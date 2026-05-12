@@ -7,6 +7,7 @@ namespace MyApp.Web.Pages.Login;
 public class IndexModel : PageModel
 {
     private readonly IAuthService _authService;
+    private readonly ICustomerCheckService _customerCheckService;
     private readonly ILogger<IndexModel> _logger;
 
     [BindProperty] public string? PhoneNumber { get; set; }
@@ -14,9 +15,10 @@ public class IndexModel : PageModel
     [BindProperty] public string? OtpCode { get; set; }
     [BindProperty] public bool RememberMe { get; set; }
 
-    public IndexModel(IAuthService authService, ILogger<IndexModel> logger)
+    public IndexModel(IAuthService authService, ICustomerCheckService customerCheckService, ILogger<IndexModel> logger)
     {
         _authService = authService;
+        _customerCheckService = customerCheckService;
         _logger = logger;
     }
 
@@ -24,28 +26,26 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostSendOtpAsync()
     {
-        _logger.LogInformation("SendOtp handler: Phone='{Phone}' Tckn='{Tckn}'", PhoneNumber, Tckn);
-        var (success, message) = await _authService.SendOtpAsync(PhoneNumber!, Tckn!);
-        return new JsonResult(new { success, message });
+        _logger.LogInformation("SendOtp handler: Phone='{Phone}'", PhoneNumber);
+        var (success, message, isCustomer) = await _authService.SendOtpAsync(PhoneNumber!);
+        return new JsonResult(new { success, message, isCustomer });
     }
 
     public async Task<IActionResult> OnPostVerifyOtpAsync()
     {
-        _logger.LogInformation("VerifyOtp handler: Phone='{Phone}' OtpCode='{OtpCode}'", PhoneNumber, OtpCode);
+        _logger.LogInformation("VerifyOtp handler: Phone='{Phone}'", PhoneNumber);
+
         var (success, token, message) = await _authService.VerifyOtpAsync(PhoneNumber!, OtpCode!);
 
-        if (success && token is not null)
-        {
-            Response.Cookies.Append("auth_token", token, new CookieOptions
-            {
-                HttpOnly = true,
-                SameSite = SameSiteMode.Strict,
-                Secure = Request.IsHttps,
-                Expires = DateTimeOffset.UtcNow.AddHours(24)
-            });
-        }
+        if (!success)
+            return new JsonResult(new { success = false, message });
 
-        return new JsonResult(new { success, message });
+        var tcknMatch = await _customerCheckService.CheckTcknMatchAsync(Tckn!, token);
+
+        if (!tcknMatch)
+            return new JsonResult(new { success = false, tcknMismatch = true, message = "TC bilgisi eşleşmemektedir." });
+
+        return new JsonResult(new { success = true, token });
     }
 
     public IActionResult OnPost() => Page();
