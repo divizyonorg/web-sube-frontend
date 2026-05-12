@@ -40,7 +40,7 @@
         .mobile-backdrop.open { opacity: 1; pointer-events: auto; }
 
         .mobile-drawer {
-            position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+            position: fixed; top: 85px; left: 0; bottom: 0; z-index: 50;
             transform: translateX(-100%);
             transition: transform 0.3s ease;
         }
@@ -59,9 +59,8 @@
         }
     </style>
 
-    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;">
+<body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;" hx-boost="true">
     <script>
         (function () {
             var t = localStorage.getItem('auth_token');
@@ -72,33 +71,18 @@
         })();
     </script>
 
-    <script>
-        (function () {
-            function isTokenValid() {
-                var token = localStorage.getItem('auth_token');
-                if (!token) return false;
-                try {
-                    var payload = JSON.parse(atob(token.split('.')[1]));
-                    return typeof payload.exp === 'number' && payload.exp * 1000 > Date.now();
-                } catch { return false; }
-            }
-
-            if (!isTokenValid()) {
-                localStorage.removeItem('auth_token');
-                window.location.replace('/login');
-            }
-        })();
-    </script>
-
-    @await Component.InvokeAsync("Header", new
-    {
-        model = new MyApp.Web.ViewModels.HeaderViewModel
+    <div id="layout-header" hx-preserve>
+        @await Component.InvokeAsync("Header", new
         {
-            UserName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
-            NotificationCount = 0,
-            ProfileImageUrl   = ""
-        }
-    })
+            model = new MyApp.Web.ViewModels.HeaderViewModel
+            {
+                UserName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
+                UserRole          = "VIP Müşteri",
+                NotificationCount = 0,
+                ProfileImageUrl   = ""
+            }
+        })
+    </div>
 
     @* Mobile backdrop *@
     <div x-data
@@ -117,11 +101,12 @@
     <div style="display:flex; height:calc(100vh - 85px); overflow:hidden;">
 
         @* Desktop sidebar *@
-        <div class="desktop-sidebar" style="flex-shrink:0;">
+        <div id="layout-desktop-sidebar" class="desktop-sidebar" style="flex-shrink:0;" hx-preserve>
             @await Component.InvokeAsync("Sidebar", new { activePage = ViewData["ActivePage"]?.ToString() ?? "" })
         </div>
 
-        <main class="main-content" style="flex:1; overflow-y:auto; box-sizing:border-box;">
+        <main id="layout-main" class="main-content" style="flex:1; overflow-y:auto; box-sizing:border-box;">
+            @await RenderSectionAsync("Styles", required: false)
             <div class="page-content">
                 @RenderBody()
             </div>

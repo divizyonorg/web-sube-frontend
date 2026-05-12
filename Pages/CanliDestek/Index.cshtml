@@ -1,6 +1,280 @@
 @page
 @model MyApp.Web.Pages.CanliDestek.IndexModel
 @{
-    ViewData["Title"] = "Canlı Destek";
+    ViewData["Title"]      = "Canlı Destek";
     ViewData["ActivePage"] = "Canlı Destek";
+}
+
+@section Styles {
+<style>
+    @@keyframes typing-bounce {
+        0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+        30%            { opacity: 1;    transform: translateY(-4px); }
+    }
+    .typing-dot              { animation: typing-bounce 1.2s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    #messageInput::placeholder { color: rgba(10,10,10,0.5); }
+    #messageInput:focus        { outline: none; border-color: #0056B3; }
+</style>
+}
+
+<div style="display:flex;flex-direction:column;gap:24px;">
+
+    <div style="display:flex;flex-direction:column;gap:4px;">
+        <h1 style="font-family:'Manrope',sans-serif;font-weight:700;font-size:30px;line-height:36px;color:#101828;margin:0;">
+            Canlı Destek
+        </h1>
+        <p style="font-family:'Source Sans 3',sans-serif;font-weight:400;font-size:16px;line-height:24px;color:#4A5565;margin:0;">
+            Anlık destek için bizimle sohbet edin
+        </p>
+    </div>
+
+    <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:16px;overflow:hidden;
+                box-shadow:0px 10px 15px -3px rgba(0,0,0,0.1),0px 4px 6px -4px rgba(0,0,0,0.1);">
+
+        @* ── Header ── *@
+        <div style="background:linear-gradient(90deg,#0056B3 0%,#0054AE 9.09%,#0051AA 18.18%,#004FA5 27.27%,#004DA1 36.36%,#004A9C 45.45%,#004898 54.55%,#004693 63.64%,#00448F 72.73%,#00418B 81.82%,#003F86 90.91%,#003D82 100%);
+                    height:79px;padding:16px 16px 0;box-sizing:border-box;">
+            <div style="display:flex;flex-direction:row;align-items:center;gap:12px;height:47px;">
+
+                <div style="display:flex;align-items:center;justify-content:center;
+                            width:40px;height:40px;border-radius:50%;flex-shrink:0;
+                            background:rgba(255,255,255,0.2);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 18v-6a9 9 0 0 1 18 0v6" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5z" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5z" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+
+                <div style="display:flex;flex-direction:column;">
+                    <span style="font-family:'Manrope',sans-serif;font-weight:600;font-size:18px;line-height:27px;color:#FFFFFF;">
+                        Destek Ekibi
+                    </span>
+                    <span style="font-family:'Source Sans 3',sans-serif;font-weight:400;font-size:14px;line-height:20px;color:rgba(255,255,255,0.8);">
+                        Aktif
+                    </span>
+                </div>
+
+            </div>
+        </div>
+
+        @* ── Mesajlar alanı ── *@
+        <div id="chatMessages"
+             style="display:flex;flex-direction:column;gap:24px;padding:24px;
+                    background:#F9FAFB;height:500px;overflow-y:auto;">
+
+            <div style="display:flex;flex-direction:row;align-items:flex-start;gap:12px;">
+                <div style="flex-shrink:0;display:flex;align-items:center;justify-content:center;
+                            width:32px;height:32px;background:#D1D5DC;border-radius:50%;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 18v-6a9 9 0 0 1 18 0v6" stroke="#364153" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5z" stroke="#364153" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5z" stroke="#364153" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:16px;
+                                padding:13px 17px;max-width:448px;box-sizing:border-box;">
+                        <p style="font-family:'Source Sans 3',sans-serif;font-weight:400;font-size:16px;line-height:24px;color:#101828;margin:0;">
+                            Merhaba! Hallederiz destek ekibine hoş geldiniz. Size nasıl yardımcı olabilirim?
+                        </p>
+                    </div>
+                    <span id="initialTime"
+                          style="font-family:'Source Sans 3',sans-serif;font-weight:400;font-size:12px;line-height:16px;color:#6A7282;padding-left:8px;"></span>
+                </div>
+            </div>
+
+        </div>
+
+        @* ── Hızlı yanıt butonları ── *@
+        <div id="quickRepliesSection"
+             style="background:#F9FAFB;border-top:1px solid #E5E7EB;padding:13px 24px;">
+            <div style="display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;">
+                <button type="button" onclick="setQuickReply(this)"
+                        style="padding:6px 12px;background:#FFFFFF;border:1px solid #D1D5DC;
+                               border-radius:9999px;cursor:pointer;white-space:nowrap;
+                               font-family:'Source Sans 3',sans-serif;font-weight:500;font-size:14px;
+                               line-height:20px;color:#364153;transition:background 0.15s;"
+                        onmouseover="this.style.background='#F9FAFB'"
+                        onmouseout="this.style.background='#FFFFFF'">
+                    Kredi başvurusu yapmak istiyorum
+                </button>
+                <button type="button" onclick="setQuickReply(this)"
+                        style="padding:6px 12px;background:#FFFFFF;border:1px solid #D1D5DC;
+                               border-radius:9999px;cursor:pointer;white-space:nowrap;
+                               font-family:'Source Sans 3',sans-serif;font-weight:500;font-size:14px;
+                               line-height:20px;color:#364153;transition:background 0.15s;"
+                        onmouseover="this.style.background='#F9FAFB'"
+                        onmouseout="this.style.background='#FFFFFF'">
+                    Ödeme planımı görmek istiyorum
+                </button>
+                <button type="button" onclick="setQuickReply(this)"
+                        style="padding:6px 12px;background:#FFFFFF;border:1px solid #D1D5DC;
+                               border-radius:9999px;cursor:pointer;white-space:nowrap;
+                               font-family:'Source Sans 3',sans-serif;font-weight:500;font-size:14px;
+                               line-height:20px;color:#364153;transition:background 0.15s;"
+                        onmouseover="this.style.background='#F9FAFB'"
+                        onmouseout="this.style.background='#FFFFFF'">
+                    Hesap bilgilerimi güncellemek istiyorum
+                </button>
+            </div>
+        </div>
+
+        @* ── Mesaj giriş formu ── *@
+        <div style="background:#FFFFFF;border-top:1px solid #E5E7EB;padding:17px 16px;">
+            <div style="display:flex;flex-direction:row;align-items:center;gap:12px;">
+                <input id="messageInput"
+                       type="text"
+                       placeholder="Mesajınızı yazın..."
+                       oninput="toggleSendButton()"
+                       onkeydown="handleKeyDown(event)"
+                       style="flex:1;height:50px;padding:12px 16px;
+                              border:1px solid #D1D5DC;border-radius:14px;
+                              font-family:'Source Sans 3',sans-serif;font-weight:400;
+                              font-size:16px;line-height:23px;color:#0A0A0A;
+                              box-sizing:border-box;transition:border-color 0.15s;">
+                <button id="sendButton"
+                        type="button"
+                        onclick="sendMessage()"
+                        disabled
+                        style="display:flex;align-items:center;justify-content:center;
+                               width:68px;height:50px;flex-shrink:0;
+                               background:#0056B3;border-radius:14px;border:none;
+                               opacity:0.5;cursor:not-allowed;transition:opacity 0.15s;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="22" y1="2" x2="11" y2="13" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+<script>
+    document.getElementById('initialTime').textContent = nowTime();
+
+    function nowTime() {
+        var d = new Date();
+        return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+    }
+
+    function toggleSendButton() {
+        var input = document.getElementById('messageInput');
+        var btn   = document.getElementById('sendButton');
+        var has   = input.value.trim().length > 0;
+        btn.disabled      = !has;
+        btn.style.opacity = has ? '1'           : '0.5';
+        btn.style.cursor  = has ? 'pointer'     : 'not-allowed';
+    }
+
+    function handleKeyDown(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    }
+
+    function setQuickReply(btn) {
+        var input = document.getElementById('messageInput');
+        input.value = btn.textContent.trim();
+        toggleSendButton();
+        input.focus();
+    }
+
+    function sendMessage() {
+        var input = document.getElementById('messageInput');
+        var text  = input.value.trim();
+        if (!text) return;
+
+        appendUserMessage(text);
+        input.value = '';
+        toggleSendButton();
+
+        var qr = document.getElementById('quickRepliesSection');
+        if (qr) qr.style.display = 'none';
+
+        appendTypingIndicator();
+        setTimeout(function () {
+            removeTypingIndicator();
+            appendAgentMessage('Mesajınızı aldım. En kısa sürede size dönüş yapacağız.');
+        }, 1200);
+    }
+
+    function appendUserMessage(text) {
+        var c = document.getElementById('chatMessages');
+        var w = document.createElement('div');
+        w.style.cssText = 'display:flex;flex-direction:row;align-items:flex-start;justify-content:flex-end;gap:12px;';
+        w.innerHTML =
+            '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">' +
+                '<div style="background:#0056B3;border-radius:16px;padding:13px 17px;max-width:448px;box-sizing:border-box;">' +
+                    '<p style="font-family:\'Source Sans 3\',sans-serif;font-size:16px;line-height:24px;color:#FFFFFF;margin:0;">' + esc(text) + '</p>' +
+                '</div>' +
+                '<span style="font-family:\'Source Sans 3\',sans-serif;font-size:12px;line-height:16px;color:#6A7282;padding-right:8px;">' + nowTime() + '</span>' +
+            '</div>';
+        c.appendChild(w);
+        scrollBottom();
+    }
+
+    var agentAvatar =
+        '<div style="flex-shrink:0;display:flex;align-items:center;justify-content:center;' +
+        'width:32px;height:32px;background:#D1D5DC;border-radius:50%;">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M3 18v-6a9 9 0 0 1 18 0v6" stroke="#364153" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5z" stroke="#364153" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5z" stroke="#364153" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</svg></div>';
+
+    function appendAgentMessage(text) {
+        var c = document.getElementById('chatMessages');
+        var w = document.createElement('div');
+        w.style.cssText = 'display:flex;flex-direction:row;align-items:flex-start;gap:12px;';
+        w.innerHTML =
+            agentAvatar +
+            '<div style="display:flex;flex-direction:column;gap:4px;">' +
+                '<div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:16px;padding:13px 17px;max-width:448px;box-sizing:border-box;">' +
+                    '<p style="font-family:\'Source Sans 3\',sans-serif;font-size:16px;line-height:24px;color:#101828;margin:0;">' + esc(text) + '</p>' +
+                '</div>' +
+                '<span style="font-family:\'Source Sans 3\',sans-serif;font-size:12px;line-height:16px;color:#6A7282;padding-left:8px;">' + nowTime() + '</span>' +
+            '</div>';
+        c.appendChild(w);
+        scrollBottom();
+    }
+
+    function appendTypingIndicator() {
+        var c = document.getElementById('chatMessages');
+        var w = document.createElement('div');
+        w.id = 'typingIndicator';
+        w.style.cssText = 'display:flex;flex-direction:row;align-items:flex-start;gap:12px;';
+        w.innerHTML =
+            agentAvatar +
+            '<div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:16px;' +
+            'padding:16px 20px;display:flex;gap:5px;align-items:center;">' +
+                '<span class="typing-dot" style="width:8px;height:8px;background:#9CA3AF;border-radius:50%;display:inline-block;"></span>' +
+                '<span class="typing-dot" style="width:8px;height:8px;background:#9CA3AF;border-radius:50%;display:inline-block;"></span>' +
+                '<span class="typing-dot" style="width:8px;height:8px;background:#9CA3AF;border-radius:50%;display:inline-block;"></span>' +
+            '</div>';
+        c.appendChild(w);
+        scrollBottom();
+    }
+
+    function removeTypingIndicator() {
+        var el = document.getElementById('typingIndicator');
+        if (el) el.remove();
+    }
+
+    function scrollBottom() {
+        var c = document.getElementById('chatMessages');
+        c.scrollTop = c.scrollHeight;
+    }
+
+    function esc(text) {
+        var d = document.createElement('div');
+        d.appendChild(document.createTextNode(text));
+        return d.innerHTML;
+    }
+</script>
 }

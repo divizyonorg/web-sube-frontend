@@ -53,6 +53,7 @@
             @await Component.InvokeAsync("UserAvatar", new
             {
                 userName          = Model.UserName,
+                userRole          = Model.UserRole,
                 notificationCount = Model.NotificationCount,
                 profileImageUrl   = Model.ProfileImageUrl
             })
