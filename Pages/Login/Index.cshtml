@@ -19,6 +19,25 @@
 </head>
 <body>
 
+    <script>
+        (function () {
+            function isTokenValid() {
+                var token = localStorage.getItem('auth_token');
+                if (!token) return false;
+                try {
+                    var payload = JSON.parse(atob(token.split('.')[1]));
+                    return typeof payload.exp === 'number' && payload.exp * 1000 > Date.now();
+                } catch { return false; }
+            }
+
+            if (isTokenValid()) {
+                window.location.replace('/anasayfa');
+            } else {
+                localStorage.removeItem('auth_token');
+            }
+        })();
+    </script>
+
     <div x-data="loginForm()" class="flex h-screen overflow-hidden">
 
         @* Sol panel — yalnızca desktop *@
@@ -78,6 +97,11 @@
                             <partial name="~/Partials/Components/_Button.cshtml"
                                      model='new ButtonViewModel { Label = "Giriş Yap", Variant = ButtonVariant.Primary, Width = 364 }' />
                         </div>
+
+                        @* TCKN validasyon hatası *@
+                        <p x-show="step === 2 && tcknError" x-cloak
+                           x-text="tcknErrorMsg"
+                           class="text-[13px] text-[#DC2626] text-center m-0"></p>
 
                         @* API hata mesajı *@
                         <p x-show="otpError" x-cloak
@@ -207,6 +231,7 @@
                 step: 1,
                 phone: '',
                 tckn: '',
+                rememberMe: false,
                 showOtpModal: false,
                 otpCode: '',
                 timer: 180,
@@ -214,6 +239,8 @@
                 sendingOtp: false,
                 otpError: false,
                 otpErrorMsg: '',
+                tcknError: false,
+                tcknErrorMsg: '',
                 verifyingOtp: false,
                 otpVerifyError: false,
                 otpVerifyErrorMsg: '',
@@ -221,19 +248,52 @@
                 init() {
                     var self = this;
 
+                    // Beni Hatırla — kayıtlı bilgileri yükle
+                    var saved = JSON.parse(localStorage.getItem('remember_me') || 'null');
+                    if (saved) {
+                        self.rememberMe = true;
+                        self.phone      = saved.phone || '';
+                        self.tckn       = saved.tckn  || '';
+                    }
+
                     var phoneEl = document.getElementById('PhoneNumber');
                     if (phoneEl) {
                         var phoneMask = IMask(phoneEl, { mask: '+{90} 000 000 00 00' });
+                        if (self.phone) {
+                            phoneMask.value = self.phone;
+                            phoneMask.updateValue();
+                            self.phone = phoneMask.value;
+                        }
                         phoneMask.on('accept', function () { self.phone = phoneMask.value; });
-                        phoneEl.addEventListener('input', function () { self.phone = phoneEl.value; });
                     }
 
                     var tcknEl = document.getElementById('Tckn');
                     if (tcknEl) {
                         var tcknMask = IMask(tcknEl, { mask: '00000000000' });
+                        if (self.tckn) {
+                            tcknMask.value = self.tckn;
+                            tcknMask.updateValue();
+                            self.tckn = tcknMask.value;
+                        }
                         tcknMask.on('accept', function () { self.tckn = tcknMask.value; });
-                        tcknEl.addEventListener('input', function () { self.tckn = tcknEl.value; });
                     }
+
+                    var rememberEl = document.getElementById('RememberMe');
+                    if (rememberEl) {
+                        rememberEl.checked = self.rememberMe;
+                        rememberEl.addEventListener('change', function () { self.rememberMe = rememberEl.checked; });
+                    }
+                },
+
+                validateTckn(tckn) {
+                    if (!/^\d{11}$/.test(tckn)) return false;
+                    if (tckn[0] === '0') return false;
+                    var d = tckn.split('').map(Number);
+                    var oddSum  = d[0] + d[2] + d[4] + d[6] + d[8];
+                    var evenSum = d[1] + d[3] + d[5] + d[7];
+                    if ((oddSum * 7 - evenSum) % 10 !== d[9]) return false;
+                    var sum10 = d[0]+d[1]+d[2]+d[3]+d[4]+d[5]+d[6]+d[7]+d[8]+d[9];
+                    return sum10 % 10 === d[10];
                 },
 
                 canProceed() {
@@ -245,6 +305,15 @@
                 },
 
                 async sendOtp() {
+                    this.tcknError    = false;
+                    this.tcknErrorMsg = '';
+
+                    if (!this.validateTckn(this.tckn)) {
+                        this.tcknError    = true;
+                        this.tcknErrorMsg = 'Geçerli bir TC Kimlik Numarası giriniz.';
+                        return;
+                    }
+
                     this.sendingOtp  = true;
                     this.otpError    = false;
                     this.otpErrorMsg = '';
@@ -318,7 +387,13 @@
                         });
                         var json = await resp.json();
                         if (json.success) {
-                            window.location.href = '/dashboard';
+                            localStorage.setItem('auth_token', json.token);
+                            if (this.rememberMe) {
+                                localStorage.setItem('remember_me', JSON.stringify({ phone: this.phone, tckn: this.tckn }));
+                            } else {
+                                localStorage.removeItem('remember_me');
+                            }
+                            window.location.href = '/anasayfa';
                         } else {
                             this.otpVerifyError    = true;
                             this.otpVerifyErrorMsg = json.message || 'Kod hatalı. Lütfen tekrar deneyin.';

@@ -1,3 +1,4 @@
+using MyApp.Web.HttpClients;
 using MyApp.Web.Models;
 using MyApp.Web.Services.Implementations;
 using MyApp.Web.Services.Interfaces;
@@ -19,19 +20,47 @@ static Action<HttpClient> ConfigureClient(ServiceEndpoint endpoint) => client =>
 if (useMockData)
 {
     builder.Services.AddScoped<IClientService, MockClientService>();
+<<<<<<< HEAD
     // IReportService kaydı — 01-FO-06 PR'ı merge olunca aktif edilecek:
     // builder.Services.AddScoped<IReportService, MockReportService>();
     builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
+=======
+    builder.Services.AddScoped<IReportService, MockReportService>();
+    builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
+    builder.Services.AddScoped<ICustomerDataService, MockCustomerDataService>();
+    builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
+>>>>>>> 0df707417253d89b65e5e402be09791ae848793f
 }
 else
 {
     builder.Services.AddHttpClient<IClientService, ClientService>(ConfigureClient(serviceUrls.CustomerService));
+<<<<<<< HEAD
     builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService));
     builder.Services.AddHttpClient<ICreditEligibilityService, CreditEligibilityService>(ConfigureClient(serviceUrls.CustomerService));
+=======
+    builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService))
+        .AddHttpMessageHandler<BearerTokenHandler>();
+    builder.Services.AddHttpClient<ICreditEligibilityService, CreditEligibilityService>(ConfigureClient(serviceUrls.CustomerService));
+    builder.Services.AddHttpClient<ICustomerDataService, CustomerDataService>(ConfigureClient(serviceUrls.CustomerService));
+    builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
+>>>>>>> 0df707417253d89b65e5e402be09791ae848793f
 }
 
-builder.Services.AddHttpClient<IAuthService, AuthService>(ConfigureClient(serviceUrls.AuthService));
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<BearerTokenHandler>();
 
+builder.Services.AddHttpClient<IAuthService, AuthService>(ConfigureClient(serviceUrls.AuthService));
+<<<<<<< HEAD
+=======
+builder.Services.AddHttpClient<IEvdsService, EvdsService>(ConfigureClient(serviceUrls.EvdsService))
+    .AddHttpMessageHandler<BearerTokenHandler>();
+builder.Services.AddHttpClient<ICustomerProfileService, CustomerProfileService>(ConfigureClient(serviceUrls.CustomerService))
+    .AddHttpMessageHandler<BearerTokenHandler>();
+builder.Services.AddHttpClient<IFinansalProfilService, FinansalProfilService>(ConfigureClient(serviceUrls.CustomerService))
+    .AddHttpMessageHandler<BearerTokenHandler>();
+>>>>>>> 0df707417253d89b65e5e402be09791ae848793f
+
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
 builder.Services.AddHealthChecks();
 

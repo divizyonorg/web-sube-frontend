@@ -1,0 +1,187 @@
+@model MyApp.Web.ViewModels.KrediRaporuOdemeViewModel
+@* ══════════════════════════════════════
+   ADIM 5 — Kredi Güven Raporu'nu Al (3/3)
+══════════════════════════════════════ *@
+<div class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
+
+    @* Kart başlığı *@
+    <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
+        <button hx-get="/KrediBasvurusu?handler=Step5"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="border-none bg-transparent cursor-pointer p-0">
+            <div class="w-5 h-5 flex items-center justify-center">
+                <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
+            </div>
+        </button>
+        <img src="~/images/ik_logo.png" alt="İnteraktif Kredi" class="h-[25px] object-contain">
+        <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
+            <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
+        </a>
+    </div>
+
+    @* İlerleme çubuğu — Adım 3/3 (tümü mavi) *@
+    <div class="flex flex-col px-6 pt-5 gap-2 shrink-0">
+        <span class="font-[Poppins] font-normal text-xs leading-[18px] text-[#333]">
+            Adım 3/3: Ödemeni Tamamla
+        </span>
+        <div class="flex flex-row gap-1 w-full">
+            <div class="flex-1 h-[6px] bg-[#006EFF] rounded-full"></div>
+            <div class="flex-1 h-[6px] bg-[#006EFF] rounded-full"></div>
+            <div class="flex-1 h-[6px] bg-[#006EFF] rounded-full"></div>
+        </div>
+    </div>
+
+    @* Başlık *@
+    <div class="px-6 pt-4">
+        <h2 class="font-[Poppins] font-medium text-[18px] leading-[27px] text-center text-black m-0">
+            Kredi Güven Raporu'nu al
+        </h2>
+    </div>
+
+    @* Ürün kartı *@
+    <div class="mx-6 mt-3 bg-[linear-gradient(135deg,#F0F6FF_0%,#E8F0FE_100%)] border border-[#C7D9FB] rounded-[14px] px-[17px] pt-[17px] pb-4 flex flex-col gap-3">
+
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 shrink-0 rounded-[10px] bg-[linear-gradient(135deg,#0056B3_0%,#2E6DF8_100%)] flex items-center justify-center">
+                <img src="~/icons/white/loan-app.svg" width="20" height="20" alt="">
+            </div>
+            <div class="flex flex-col flex-1">
+                <span class="font-[Poppins] font-bold text-[14px] leading-[21px] text-[#003F75]">
+                    Kredi Güven Raporu™
+                </span>
+                <span class="font-[Poppins] font-normal text-[11px] leading-4 text-[#739FCC]">
+                    Findeks destekli kişisel analiz
+                </span>
+            </div>
+            <span class="font-[Poppins] font-bold text-[20px] leading-[30px] text-[#0056B3] shrink-0">
+                ₺39,90
+            </span>
+        </div>
+
+        <div class="flex flex-col gap-[6px]">
+            <div class="flex items-center gap-2">
+                <img src="~/icons/blue/star.svg" width="12" height="12" alt="" class="shrink-0">
+                <span class="font-[Poppins] font-normal text-[11px] leading-4 text-[#003F75]">Findeks kredi notu (0–1900 puan)</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <img src="~/icons/blue/star.svg" width="12" height="12" alt="" class="shrink-0">
+                <span class="font-[Poppins] font-normal text-[11px] leading-4 text-[#003F75]">Bankaların seni nasıl değerlendirdiği</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <img src="~/icons/blue/star.svg" width="12" height="12" alt="" class="shrink-0">
+                <span class="font-[Poppins] font-normal text-[11px] leading-4 text-[#003F75]">Sana özel kredi senaryoları</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <img src="~/icons/blue/star.svg" width="12" height="12" alt="" class="shrink-0">
+                <span class="font-[Poppins] font-normal text-[11px] leading-4 text-[#003F75]">Kredi geçmişi analizi</span>
+            </div>
+        </div>
+
+    </div>
+
+    @* Ödeme formu *@
+    <form hx-post="/KrediBasvurusu?handler=Pay"
+          hx-swap="none"
+          data-pay-trigger
+          class="px-6 pb-4 flex flex-col gap-4 mt-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="Rid" value="@Model.Rid">
+
+        @* Kart Numarası *@
+        <div class="flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Kart Numarası
+            </span>
+            <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                <input type="text" name="CardNumber" placeholder="0000 0000 0000 0000" maxlength="19"
+                       class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
+            </div>
+        </div>
+
+        @* Kart Üzerindeki Ad *@
+        <div class="flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Kart Üzerindeki Ad
+            </span>
+            <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                <input type="text" name="CardHolderName" placeholder="AD SOYAD"
+                       class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
+            </div>
+        </div>
+
+        @* Son Kullanma + CVV *@
+        <div class="flex gap-3">
+            <div class="flex-1 flex flex-col gap-[5px]">
+                <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                    Son Kullanma
+                </span>
+                <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                    <input type="text" name="ExpDate" placeholder="AA/YY" maxlength="5"
+                           class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
+                </div>
+            </div>
+            <div class="w-[96px] flex flex-col gap-[5px]">
+                <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                    CVV
+                </span>
+                <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                    <input type="text" name="Cvv" placeholder="***" maxlength="4"
+                           class="w-full border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
+                </div>
+            </div>
+        </div>
+
+        @* SSL güvenlik notu *@
+        <div class="flex items-start gap-3 bg-[#F0F0F0] rounded-[10px] px-3 py-[13px]">
+            <img src="~/icons/blue/shield.svg" width="16" height="16" alt="" class="shrink-0 mt-[1px]">
+            <p class="font-[Poppins] font-semibold text-[11px] leading-[18px] text-[#333] m-0">
+                256-bit SSL şifreleme ile güvenli ödeme. Kart bilgileriniz sistemimizde saklanmaz.
+            </p>
+        </div>
+
+        @* Ödeme butonu *@
+        <button type="submit"
+                class="flex justify-between items-center px-8 py-4 w-full h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
+            <span class="font-[Poppins] font-semibold text-[16px] text-white">₺39,90 Öde</span>
+            <img src="~/icons/white/credit-card.svg" width="20" height="20" alt="">
+        </button>
+
+        @* Koşullar metni *@
+        <p class="font-[Poppins] font-light text-[10px] leading-4 text-center text-[#999] m-0">
+            Ödeme yaparak
+            <a href="#" class="text-[#2E6DF8] underline">Kullanım Koşulları</a>'nı
+            ve
+            <a href="#" class="text-[#2E6DF8] underline">Gizlilik Politikası</a>'nı
+            kabul etmiş olursunuz.
+        </p>
+
+    </form>
+
+    @* Kupon kodu *@
+    <form hx-post="/KrediBasvurusu?handler=ApplyCoupon"
+          hx-swap="none"
+          data-coupon-trigger
+          class="px-6 pb-6 flex flex-col gap-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="Rid" value="@Model.Rid">
+
+        <div class="flex flex-col gap-[5px]">
+            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                Kampanya Kodu
+            </span>
+            <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                <input type="text" name="CouponCode" placeholder="KAMPANYA KODU"
+                       class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
+            </div>
+        </div>
+
+        <button type="submit"
+                class="flex justify-between items-center px-8 py-4 w-full h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
+            <span class="font-[Poppins] font-semibold text-[16px] text-white">Uygula</span>
+            <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="">
+        </button>
+
+    </form>
+
+</div>

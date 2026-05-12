@@ -32,8 +32,9 @@ public class IndexModel : PageModel
     public async Task<IActionResult> OnPostVerifyOtpAsync()
     {
         _logger.LogInformation("VerifyOtp handler: Phone='{Phone}' OtpCode='{OtpCode}'", PhoneNumber, OtpCode);
-        var (success, message) = await _authService.VerifyOtpAsync(PhoneNumber!, OtpCode!);
-        return new JsonResult(new { success, message });
+        var (success, token, message) = await _authService.VerifyOtpAsync(PhoneNumber!, OtpCode!);
+
+        return new JsonResult(new { success, token, message });
     }
 
     public IActionResult OnPost() => Page();

@@ -1,0 +1,65 @@
+@* ══════════════════════════════════════
+   ADIM 1 — Giriş Kartı (mavi gradient)
+══════════════════════════════════════ *@
+<div class="relative w-full max-w-[420px] h-[580px] bg-[linear-gradient(190deg,#001E8A_6.17%,#0041C2_36.85%,#006EFF_71.91%,#2E88FF_93.83%)] rounded-[24px] overflow-hidden">
+
+    @* Kapat butonu *@
+    <a href="/anasayfa"
+       class="absolute right-5 top-5 w-8 h-8 bg-[rgba(255,255,255,0.18)] rounded-full flex items-center justify-center no-underline">
+        <img src="~/icons/white/x-close.svg" width="16" height="16" alt="">
+    </a>
+
+    @* Logo *@
+    <div class="flex justify-center pt-12">
+        <img src="~/images/ik_logo.png" alt="İnteraktif Kredi"
+             class="h-7 object-contain brightness-0 invert">
+    </div>
+
+    @* Başlık ve alt başlık *@
+    <div class="px-8 pt-8 flex flex-col gap-[14px]">
+        <h2 class="font-[Poppins] font-semibold text-[24px] leading-8 text-center text-white m-0">
+            Senin için en doğru finansal rotayı çizelim
+        </h2>
+        <p class="font-[Poppins] font-light text-[16px] leading-[26px] text-center text-[rgba(255,255,255,0.85)] m-0">
+            Birkaç kısa soruyla ihtiyacını anlayalım
+        </p>
+    </div>
+
+    @* Seçim butonları *@
+    <div class="px-6 mt-4 flex flex-col gap-4">
+
+        <button hx-get="/KrediBasvurusu?handler=Step2"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="flex items-center px-4 py-[14px] gap-3 w-full h-[90px] bg-white rounded-[15px] border-none cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+            <div class="w-[54px] h-[54px] flex items-center justify-center shrink-0">
+                <img src="~/icons/black/credit-card-02.svg" width="40" height="40" alt="">
+            </div>
+            <span class="font-[Poppins] font-normal text-[15px] leading-[22px] text-center text-black flex-1">
+                Hemen krediye ihtiyacım var
+            </span>
+        </button>
+
+        <button hx-get="/KrediBasvurusu?handler=Step2"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="flex items-center px-4 py-[14px] gap-3 w-full h-[90px] bg-white rounded-[15px] border-none cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+            <div class="w-[54px] h-[54px] flex items-center justify-center shrink-0">
+                <img src="~/icons/black/user-check.svg" width="40" height="40" alt="">
+            </div>
+            <span class="font-[Poppins] font-normal text-[15px] leading-[22px] text-center text-black flex-1">
+                Sadece kredi profilimi öğrenmek istiyorum
+            </span>
+        </button>
+
+    </div>
+
+    @* Bilgi notu *@
+    <div class="px-8 mt-6">
+        <p class="font-[Poppins] font-light text-[10px] leading-[17px] text-center text-[rgba(255,255,255,0.75)] m-0">
+            Bu bilgiler kredi notunu etkilemez.<br>
+            Sadece sana özel öneriler sunmamıza yardımcı olur.
+        </p>
+    </div>
+
+</div>
