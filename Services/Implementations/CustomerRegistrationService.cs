@@ -12,15 +12,15 @@ public class CustomerRegistrationService : ICustomerRegistrationService
 
     private static class Endpoints
     {
-        public const string Create  = "api/customers/create";
-        public const string Kvkk    = "api/customers/kvkk";
+        public const string Create = "api/customers/create";
+        public const string Kvkk = "api/customers/kvkk";
         public const string Contact = "api/customers/contact";
     }
 
     public CustomerRegistrationService(HttpClient httpClient, ILogger<CustomerRegistrationService> logger)
     {
         _httpClient = httpClient;
-        _logger     = logger;
+        _logger = logger;
     }
 
     public async Task<(bool Success, string? Message, string? NewToken)> CreateCustomerAsync(CreateCustomerRequest request)
@@ -30,7 +30,7 @@ public class CustomerRegistrationService : ICustomerRegistrationService
         try
         {
             var response = await _httpClient.PostAsJsonAsync(Endpoints.Create, request);
-            var body     = await response.Content.ReadAsStringAsync();
+            var body = await response.Content.ReadAsStringAsync();
 
             _logger.LogInformation("CreateCustomer ← {StatusCode} {Body}", (int)response.StatusCode, body);
 
@@ -70,7 +70,7 @@ public class CustomerRegistrationService : ICustomerRegistrationService
                 httpRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", bearerToken);
 
             var response = await _httpClient.SendAsync(httpRequest);
-            var body     = await response.Content.ReadAsStringAsync();
+            var body = await response.Content.ReadAsStringAsync();
 
             _logger.LogInformation("UpdateKvkk ← {StatusCode} {Body}", (int)response.StatusCode, body);
 
@@ -101,7 +101,7 @@ public class CustomerRegistrationService : ICustomerRegistrationService
                 httpRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", bearerToken);
 
             var response = await _httpClient.SendAsync(httpRequest);
-            var body     = await response.Content.ReadAsStringAsync();
+            var body = await response.Content.ReadAsStringAsync();
 
             _logger.LogInformation("UpdateContact ← {StatusCode} {Body}", (int)response.StatusCode, body);
 

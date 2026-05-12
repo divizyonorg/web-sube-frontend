@@ -12,23 +12,23 @@ public class IndexModel : PageModel
     private readonly ICustomerRegistrationService _registrationService;
     private readonly ILogger<IndexModel> _logger;
 
-    [BindProperty] public string? FirstName    { get; set; }
-    [BindProperty] public string? LastName     { get; set; }
-    [BindProperty] public string? Email        { get; set; }
-    [BindProperty] public string? BirthDate    { get; set; }
-    [BindProperty] public string? Tckn         { get; set; }
-    [BindProperty] public string? PhoneNumber  { get; set; }
-    [BindProperty] public bool ConsentOpenRiza   { get; set; }
+    [BindProperty] public string? FirstName { get; set; }
+    [BindProperty] public string? LastName { get; set; }
+    [BindProperty] public string? Email { get; set; }
+    [BindProperty] public string? BirthDate { get; set; }
+    [BindProperty] public string? Tckn { get; set; }
+    [BindProperty] public string? PhoneNumber { get; set; }
+    [BindProperty] public bool ConsentOpenRiza { get; set; }
     [BindProperty] public bool ConsentAydinlatma { get; set; }
-    [BindProperty] public bool ConsentIleti      { get; set; }
-    [BindProperty] public bool ConsentSms        { get; set; }
-    [BindProperty] public bool ConsentEposta     { get; set; }
-    [BindProperty] public bool ConsentArama      { get; set; }
+    [BindProperty] public bool ConsentIleti { get; set; }
+    [BindProperty] public bool ConsentSms { get; set; }
+    [BindProperty] public bool ConsentEposta { get; set; }
+    [BindProperty] public bool ConsentArama { get; set; }
 
     public IndexModel(ICustomerRegistrationService registrationService, ILogger<IndexModel> logger)
     {
         _registrationService = registrationService;
-        _logger              = logger;
+        _logger = logger;
     }
 
     public IActionResult OnGet() => Page();
@@ -39,13 +39,13 @@ public class IndexModel : PageModel
 
         var createRequest = new CreateCustomerRequest
         {
-            Tckn      = Tckn      ?? string.Empty,
+            Tckn = Tckn ?? string.Empty,
             FirstName = FirstName ?? string.Empty,
-            LastName  = LastName  ?? string.Empty,
-            Birthday  = FormatBirthday(BirthDate),
-            Gsm       = FormatGsm(PhoneNumber),
-            App       = "web",
-            MapVisit  = "true"
+            LastName = LastName ?? string.Empty,
+            Birthday = FormatBirthday(BirthDate),
+            Gsm = FormatGsm(PhoneNumber),
+            App = "web",
+            MapVisit = "true"
         };
 
         var (createSuccess, createMessage, newToken) = await _registrationService.CreateCustomerAsync(createRequest);
@@ -55,10 +55,10 @@ public class IndexModel : PageModel
         var kvkkRequest = new KvkkRequest
         {
             ChannelId = 3,
-            Call      = ConsentArama,
-            Email     = ConsentEposta,
-            Adress    = ConsentIleti,
-            Sms       = ConsentSms
+            Call = ConsentArama,
+            Email = ConsentEposta,
+            Adress = ConsentIleti,
+            Sms = ConsentSms
         };
 
         var (kvkkSuccess, kvkkMessage) = await _registrationService.UpdateKvkkAsync(kvkkRequest, newToken);
