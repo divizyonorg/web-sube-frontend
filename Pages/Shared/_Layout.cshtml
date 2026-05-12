@@ -63,6 +63,24 @@
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;">
 
+    <script>
+        (function () {
+            function isTokenValid() {
+                var token = localStorage.getItem('auth_token');
+                if (!token) return false;
+                try {
+                    var payload = JSON.parse(atob(token.split('.')[1]));
+                    return typeof payload.exp === 'number' && payload.exp * 1000 > Date.now();
+                } catch { return false; }
+            }
+
+            if (!isTokenValid()) {
+                localStorage.removeItem('auth_token');
+                window.location.replace('/login');
+            }
+        })();
+    </script>
+
     @await Component.InvokeAsync("Header", new
     {
         model = new MyApp.Web.ViewModels.HeaderViewModel
@@ -136,6 +154,33 @@
 
     <script src="~/js/toast.js" asp-append-version="true"></script>
     <script src="~/js/app.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            var token = localStorage.getItem('auth_token');
+            if (!token) return;
+
+            // HTMX isteklerine Authorization header ekle
+            document.addEventListener('htmx:configRequest', function (e) {
+                e.detail.headers['Authorization'] = 'Bearer ' + token;
+            });
+
+            // HTMX 401 → token sil, login'e at
+            document.addEventListener('htmx:responseError', function (e) {
+                if (e.detail.xhr.status === 401) {
+                    localStorage.removeItem('auth_token');
+                    window.location.replace('/login');
+                }
+            });
+
+            // fetch çağrılarına Authorization header ekle
+            var _fetch = window.fetch;
+            window.fetch = function (input, init) {
+                init = init || {};
+                init.headers = Object.assign({ 'Authorization': 'Bearer ' + token }, init.headers || {});
+                return _fetch(input, init);
+            };
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

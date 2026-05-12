@@ -3,25 +3,39 @@
 # Proje: MyApp.Web (Razor Pages / .NET 8)
 # ─────────────────────────────────────────────────────────
 
-# ── STAGE 1: BUILD ────────────────────────────────────────
+# ── STAGE 1: NODE — CSS & JS derleme ─────────────────────
+FROM node:20-slim AS node-build
+
+WORKDIR /src
+
+COPY package.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+# ── STAGE 2: .NET BUILD ───────────────────────────────────
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 WORKDIR /src
 
-# Önce proje dosyalarını kopyala → NuGet cache korunur
 COPY *.sln ./
 COPY *.csproj ./
 RUN dotnet restore
 
-# Kaynak kodu kopyala ve publish et
 COPY . .
+
+# Node stage'inden derlenmiş CSS ve JS kütüphanelerini al
+COPY --from=node-build /src/wwwroot/css/app.css ./wwwroot/css/app.css
+COPY --from=node-build /src/wwwroot/lib ./wwwroot/lib
+
 RUN dotnet publish \
     --configuration Release \
     --output /app/publish \
     --no-restore \
     /p:UseAppHost=false
 
-# ── STAGE 2: RUNTIME ──────────────────────────────────────
+# ── STAGE 3: RUNTIME ──────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 
 # Healthcheck için curl kur

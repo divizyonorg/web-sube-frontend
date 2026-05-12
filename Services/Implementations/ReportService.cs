@@ -1,4 +1,7 @@
+using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
+using MyApp.Web.Models.Report;
 using MyApp.Web.Services.Interfaces;
 using MyApp.Web.ViewModels;
 
@@ -7,9 +10,165 @@ namespace MyApp.Web.Services.Implementations;
 public class ReportService : IReportService
 {
     private readonly HttpClient _httpClient;
+    private readonly ILogger<ReportService> _logger;
 
-    public ReportService(HttpClient httpClient)
-        => _httpClient = httpClient;
+    private static class Endpoints
+    {
+        public const string Create = "/api/v1/reports/create";
+        public const string StartPayment = "/api/v1/reports/start-payment";
+        public const string ApplyCoupon = "/api/v1/reports/apply-coupon";
+        public const string FindeksRaporTalep = "/api/v1/findeks/rapor-talep-master";
+        public const string FindeksRaporTalepOnay = "/api/v1/findeks/rapor-talep-onay";
+    }
+
+    public ReportService(HttpClient httpClient, ILogger<ReportService> logger)
+    {
+        _httpClient = httpClient;
+        _logger = logger;
+    }
+
+    public async Task<(bool Success, string Message, string Rid)> CreateAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync(Endpoints.Create, new { type = "KREDI" }, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.Create, (int)response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.Create, body);
+                var errMsg = TryParseMessage(body) ?? "Rapor oluşturulamadı.";
+                return (false, errMsg, string.Empty);
+            }
+            var dto = JsonSerializer.Deserialize<CreateReportResponseDto>(body);
+            return (true, dto?.Message ?? string.Empty, dto?.Data?.Rid ?? string.Empty);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.Create);
+            return (false, "Bağlantı hatası oluştu.", string.Empty);
+        }
+    }
+
+    public async Task<(bool Success, string Message)> StartPaymentAsync(
+        string rid, string cardNumber, string expMonth, string expYear,
+        string cvv, string cardHolderName, CancellationToken ct = default)
+    {
+        try
+        {
+            var req = new StartPaymentRequest
+            {
+                Rid = rid,
+                CardNumber = cardNumber,
+                ExpMonth = expMonth,
+                ExpYear = expYear,
+                Cvv = cvv,
+                CardHolderName = cardHolderName
+            };
+            var response = await _httpClient.PostAsJsonAsync(Endpoints.StartPayment, req, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.StartPayment, (int)response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.StartPayment, body);
+                return (false, TryParseMessage(body) ?? "Ödeme işlemi başarısız.");
+            }
+            return (true, "Ödeme başarıyla tamamlandı.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.StartPayment);
+            return (false, "Bağlantı hatası oluştu.");
+        }
+    }
+
+    public async Task<(bool Success, string Message)> ApplyCouponAsync(
+        string rid, string couponCode, CancellationToken ct = default)
+    {
+        try
+        {
+            var req = new ApplyCouponRequest { Rid = rid, CouponCode = couponCode };
+            var response = await _httpClient.PostAsJsonAsync(Endpoints.ApplyCoupon, req, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.ApplyCoupon, (int)response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.ApplyCoupon, body);
+                return (false, TryParseMessage(body) ?? "Kupon kodu geçersiz.");
+            }
+            return (true, TryParseMessage(body) ?? "Kupon kodu uygulandı.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.ApplyCoupon);
+            return (false, "Bağlantı hatası oluştu.");
+        }
+    }
+
+    public async Task<FindeksOtpViewModel> FindeksRaporTalepAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync(
+                Endpoints.FindeksRaporTalep, new { telNoSorguId = "0" }, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.FindeksRaporTalep, (int)response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.FindeksRaporTalep, body);
+                return new FindeksOtpViewModel { Basari = false, Mesaj = TryParseMessage(body) ?? "Findeks isteği başarısız." };
+            }
+            var dto = JsonSerializer.Deserialize<FindeksRaporTalepResponseDto>(body);
+            return new FindeksOtpViewModel
+            {
+                Basari = dto?.Basari ?? false,
+                Aksiyon = dto?.Aksiyon ?? string.Empty,
+                Mesaj = dto?.Mesaj ?? string.Empty,
+                TalepId = dto?.TalepId ?? string.Empty,
+                RaporDbId = dto?.RaporDbId ?? string.Empty,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.FindeksRaporTalep);
+            return new FindeksOtpViewModel { Basari = false, Mesaj = "Bağlantı hatası oluştu." };
+        }
+    }
+
+    public async Task<(bool Success, string Message)> FindeksRaporTalepOnayAsync(string pin, CancellationToken ct = default)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync(
+                Endpoints.FindeksRaporTalepOnay, new { pin }, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.FindeksRaporTalepOnay, (int)response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.FindeksRaporTalepOnay, body);
+                return (false, TryParseMessage(body) ?? "Doğrulama başarısız.");
+            }
+            var dto = JsonSerializer.Deserialize<FindeksRaporTalepOnayResponseDto>(body);
+            return (dto?.Basari ?? false, dto?.Mesaj ?? "Doğrulama tamamlandı.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.FindeksRaporTalepOnay);
+            return (false, "Bağlantı hatası oluştu.");
+        }
+    }
+
+    private static string? TryParseMessage(string body)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(body);
+            if (doc.RootElement.TryGetProperty("message", out var m)) return m.GetString();
+            if (doc.RootElement.TryGetProperty("detail", out var d)) return d.GetString();
+        }
+        catch { }
+        return null;
+    }
 
     public Task<KrediRaporlariViewModel> GetKrediRaporlariAsync()
     {

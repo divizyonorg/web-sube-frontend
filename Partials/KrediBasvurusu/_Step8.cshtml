@@ -1,0 +1,103 @@
+@* ══════════════════════════════════════
+   ADIM 8 — Kredi Güven Raporu Hazırlanıyor
+══════════════════════════════════════ *@
+<style>
+    @@keyframes fadeSlideIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeSlideIn 0.45s ease forwards; }
+</style>
+
+@* HTMX — 4 madde + bekleme süresi sonrası Step9'a geç *@
+<div hx-get="/KrediBasvurusu?handler=Step9"
+     hx-target="#wizard-container"
+     hx-swap="innerHTML"
+     hx-trigger="load delay:5s"
+     class="hidden"></div>
+
+<div class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
+
+    @* Kart başlığı — ortalı logo *@
+    <div class="box-border flex justify-center items-center px-4 py-3 h-[50px] border-b border-black/[0.08] shrink-0">
+        <img src="~/images/ik_logo.png" alt="İnteraktif Kredi" class="w-[70px] h-[25px] object-contain">
+    </div>
+
+    @* İlerleme çubuğu — Adım 3/3 (tümü mavi) *@
+    <div class="flex flex-col px-6 pt-5 pb-0 gap-2 shrink-0">
+        <span class="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#333333]">
+            Adım 3/3: Ödemeni Tamamla
+        </span>
+        <div class="flex flex-row gap-1 w-full">
+            <div class="flex-1 h-[6px] bg-[#006EFF] rounded-full"></div>
+            <div class="flex-1 h-[6px] bg-[#006EFF] rounded-full"></div>
+            <div class="flex-1 h-[6px] bg-[#006EFF] rounded-full"></div>
+        </div>
+    </div>
+
+    @* İçerik alanı *@
+    <div class="flex flex-col items-center px-6 pb-8">
+
+        @* PulsingIcon *@
+        <div class="mt-6 relative w-[80px] h-[80px] shrink-0">
+            <div class="absolute -inset-[4.7px] bg-[rgba(70,202,136,0.15)] opacity-[0.37] rounded-full"></div>
+            <div class="absolute inset-[10px] bg-[rgba(70,202,136,0.25)] rounded-full"></div>
+            <div class="absolute inset-[18px] bg-[#46CA88] rounded-full flex items-center justify-center">
+                <img src="~/icons/white/check.svg" width="22" height="16" alt="">
+            </div>
+        </div>
+
+        @* Başlık ve alt başlık *@
+        <div class="mt-6 flex flex-col gap-2 w-full">
+            <h2 class="font-[Poppins] font-medium text-[18px] leading-6 text-center text-black m-0">
+                Kredi Güven Raporun<br>
+                görüntülenmeye hazırlanıyor
+            </h2>
+            <p class="font-[Poppins] font-light text-[14px] leading-[21px] text-center text-[#666666] m-0">
+                Son kontrolleri tamamlıyoruz.
+            </p>
+        </div>
+
+        @* Kontrol listesi — CSS animation-delay ile sıralı beliriyor *@
+        <div class="mt-6 flex flex-col gap-3 w-full">
+
+            <div class="flex flex-row items-center gap-3 opacity-0 fade-in" style="animation-delay: 0.3s;">
+                <div class="w-8 h-8 shrink-0 rounded-full bg-[rgba(70,202,136,0.15)] flex items-center justify-center">
+                    <img src="~/icons/green/check.svg" width="16" height="12" alt="">
+                </div>
+                <span class="font-[Poppins] font-light text-[14px] leading-[21px] text-black">
+                    Kredi geçmişin analiz edildi.
+                </span>
+            </div>
+
+            <div class="flex flex-row items-center gap-3 opacity-0 fade-in" style="animation-delay: 1.1s;">
+                <div class="w-8 h-8 shrink-0 rounded-full bg-[rgba(70,202,136,0.15)] flex items-center justify-center">
+                    <img src="~/icons/green/check.svg" width="16" height="12" alt="">
+                </div>
+                <span class="font-[Poppins] font-light text-[14px] leading-[21px] text-black">
+                    Banka kriterleriyle eşleştirildi.
+                </span>
+            </div>
+
+            <div class="flex flex-row items-center gap-3 opacity-0 fade-in" style="animation-delay: 1.9s;">
+                <div class="w-8 h-8 shrink-0 rounded-full bg-[rgba(70,202,136,0.15)] flex items-center justify-center">
+                    <img src="~/icons/green/check.svg" width="16" height="12" alt="">
+                </div>
+                <span class="font-[Poppins] font-light text-[14px] leading-[21px] text-black">
+                    Sana uygun kredi senaryoları hazırlandı.
+                </span>
+            </div>
+
+            <div class="flex flex-row items-center gap-3 opacity-0 fade-in" style="animation-delay: 2.7s;">
+                <div class="w-8 h-8 shrink-0 rounded-full bg-[rgba(70,202,136,0.15)] flex items-center justify-center">
+                    <img src="~/icons/green/check.svg" width="16" height="12" alt="">
+                </div>
+                <span class="font-[Poppins] font-light text-[14px] leading-[21px] text-black">
+                    Kişisel yol haritan oluşturuluyor.
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+</div>
