@@ -1,6 +1,48 @@
 @page
 @model MyApp.Web.Pages.Sozlesmelerim.IndexModel
+@using MyApp.Web.ViewModels.Components
 @{
-    ViewData["Title"] = "Sözleşmelerin";
+    ViewData["Title"]      = "Sözleşmelerin";
     ViewData["ActivePage"] = "Sözleşmelerin";
+
+    var modal = new ModalViewModel
+    {
+        Id            = "sozlesmelerModal",
+        BadgeText     = "YAKINDA",
+        Description   = "Sözleşmeler sayfası yakında hizmetinize açılacaktır.",
+        IsPreview     = false,
+        BackdropStyle = "background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);"
+    };
+}
+
+<partial name="~/Partials/Components/_Modal.cshtml" model="modal" />
+
+@section Styles {
+<style>
+    #sozlesmelerModal { top: 85px; left: 0; }
+</style>
+}
+
+@section Scripts {
+<script>
+    document.addEventListener('alpine:initialized', () => {
+        const modalEl = document.getElementById('sozlesmelerModal');
+        Alpine.$data(modalEl).open = true;
+
+        function updateModalLeft() {
+            if (window.innerWidth < 768) {
+                modalEl.style.left = '0px';
+                return;
+            }
+            const sidebar = document.querySelector('#layout-desktop-sidebar .sb-wrap');
+            modalEl.style.left = (sidebar ? sidebar.offsetWidth : 260) + 'px';
+        }
+
+        updateModalLeft();
+
+        const sidebar = document.querySelector('#layout-desktop-sidebar .sb-wrap');
+        if (sidebar) new ResizeObserver(updateModalLeft).observe(sidebar);
+        window.addEventListener('resize', updateModalLeft);
+    });
+</script>
 }
