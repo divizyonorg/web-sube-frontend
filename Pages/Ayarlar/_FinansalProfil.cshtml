@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 <script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
 
-<div x-data="finansalProfilForm()">
+<div x-data='finansalProfilForm(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Settings.MaritalStatus)))'>
 
 @Html.AntiForgeryToken()
 
@@ -164,15 +164,16 @@
 </div>@* /x-data *@
 
 <script>
-    function finansalProfilForm() {
+    function finansalProfilForm(initial) {
+        initial = initial || {};
         return {
             calisma:     '',
             sektor:      '',
             meslekId:    '',
             suresi:      '',
-            medeni:      '',
-            esCalisiyor: 'evet',
-            esGeliri:    0,
+            medeni:      initial.IsMarried !== undefined ? String(initial.IsMarried) : '',
+            esCalisiyor: initial.IsWorking ? 'evet' : 'hayir',
+            esGeliri:    initial.WSalaryAmount || 0,
             saving:      false,
 
             async kaydet() {

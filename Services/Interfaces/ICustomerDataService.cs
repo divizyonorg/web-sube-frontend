@@ -13,6 +13,7 @@ public interface ICustomerDataService
     Task<bool> UpdateGsmAsync(string gsm, CancellationToken cancellationToken = default);
     Task<BildirimlerViewModel> GetKvkkAsync(CancellationToken cancellationToken = default);
     Task<bool> UpdateKvkkAsync(int channelId, bool email, bool sms, bool call, bool adress, CancellationToken cancellationToken = default);
+    Task<MaritalStatusViewModel> GetMaritalStatusAsync(CancellationToken cancellationToken = default);
     Task<bool> UpdateMaritalStatusAsync(bool maritalStatus, bool isWorking, decimal wSalaryAmount, CancellationToken cancellationToken = default);
     Task<bool> UpdateWorkAsync(int workSector, int occupationId, string totalWorkingTime, CancellationToken cancellationToken = default);
 }

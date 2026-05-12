@@ -98,3 +98,15 @@ public class ContactDetailsDto
     [JsonPropertyName("is_active")]
     public bool IsActive { get; set; }
 }
+
+public class MartialStatusDetailsDto
+{
+    [JsonPropertyName("marital_status")]
+    public bool MaritalStatus { get; set; }
+
+    [JsonPropertyName("is_working")]
+    public bool? IsWorking { get; set; }
+
+    [JsonPropertyName("w_salary_amount")]
+    public string? WSalaryAmount { get; set; }
+}

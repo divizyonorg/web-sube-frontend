@@ -79,7 +79,7 @@ public class IndexModel : PageModel
     public RadioViewModel EsCalisiyor { get; } = new()
     {
         Name = "esCalisiyor",
-        SelectedValue = "evet",
+        AlpineModel = "esCalisiyor",
         Options =
         [
             new() { Value = "evet",  Label = "Evet" },
@@ -135,14 +135,16 @@ public class IndexModel : PageModel
         var banksTask = _customerDataService.GetBanksAsync();
         var profileTask = _customerDataService.GetProfileAsync();
         var kvkkTask = _customerDataService.GetKvkkAsync();
+        var maritalStatusTask = _customerDataService.GetMaritalStatusAsync();
 
-        await Task.WhenAll(workSectorsTask, occupationsTask, banksTask, profileTask, kvkkTask);
+        await Task.WhenAll(workSectorsTask, occupationsTask, banksTask, profileTask, kvkkTask, maritalStatusTask);
 
         CalismaSektoru.Options.AddRange(workSectorsTask.Result);
         Meslek.Options.AddRange(occupationsTask.Result);
         MaasBankasi.Options.AddRange(banksTask.Result);
         Settings.Profil = profileTask.Result;
         Settings.Bildirimler = kvkkTask.Result;
+        Settings.MaritalStatus = maritalStatusTask.Result;
 
         return Page();
     }

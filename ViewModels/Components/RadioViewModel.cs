@@ -4,6 +4,7 @@ public class RadioViewModel
 {
     public string? Name { get; set; }
     public string? SelectedValue { get; set; }
+    public string? AlpineModel { get; set; }
     public List<RadioOption> Options { get; set; } = [];
 }
 

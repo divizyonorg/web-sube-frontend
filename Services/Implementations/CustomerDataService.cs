@@ -152,6 +152,27 @@ public class CustomerDataService : ICustomerDataService
         return await ApiClient.PostJsonAsync(_httpClient, Endpoints.Kvkk, request, cancellationToken);
     }
 
+    public async Task<MaritalStatusViewModel> GetMaritalStatusAsync(CancellationToken cancellationToken = default)
+    {
+        AttachToken();
+        var response = await ApiClient.GetJsonAsync<DynamicDataResponseDto>(
+            _httpClient, Endpoints.DynamicData("MARITAL_STATUS"), cancellationToken);
+
+        var item = response?.Data.FirstOrDefault();
+        if (item is null || !item.Details.HasValue) return new MaritalStatusViewModel();
+
+        var details = item.Details.Value.Deserialize<MartialStatusDetailsDto>();
+        if (details is null) return new MaritalStatusViewModel();
+
+        return new MaritalStatusViewModel
+        {
+            IsMarried = details.MaritalStatus,
+            IsWorking = details.IsWorking ?? false,
+            WSalaryAmount = decimal.TryParse(details.WSalaryAmount, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var amount) ? amount : 0
+        };
+    }
+
     public async Task<bool> UpdateMaritalStatusAsync(bool maritalStatus, bool isWorking, decimal wSalaryAmount, CancellationToken cancellationToken = default)
     {
         AttachToken();

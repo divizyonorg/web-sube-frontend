@@ -66,6 +66,14 @@ public class MockCustomerDataService : ICustomerDataService
     public Task<bool> UpdateKvkkAsync(int channelId, bool email, bool sms, bool call, bool adress, CancellationToken cancellationToken = default)
         => Task.FromResult(true);
 
+    public Task<MaritalStatusViewModel> GetMaritalStatusAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(new MaritalStatusViewModel
+        {
+            IsMarried = false,
+            IsWorking = false,
+            WSalaryAmount = 0
+        });
+
     public Task<bool> UpdateMaritalStatusAsync(bool maritalStatus, bool isWorking, decimal wSalaryAmount, CancellationToken cancellationToken = default)
         => Task.FromResult(true);
 
