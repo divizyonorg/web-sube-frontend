@@ -48,8 +48,8 @@
                  class="absolute bottom-0 left-0 w-full h-[62%] object-cover object-center z-3" />
         </div>
 
-        @* ── Sağ panel — scroll yok, içerik ortada ── *@
-        <div class="flex-1 min-w-0 h-full flex flex-col items-center justify-center overflow-hidden bg-[#EEF2FB] px-4 py-3 lg:bg-white lg:px-6 lg:py-4">
+        @* ── Sağ panel ── *@
+        <div class="flex-1 min-w-0 h-full flex flex-col items-center justify-center overflow-y-auto bg-[#EEF2FB] px-4 py-6 lg:bg-white lg:px-6 lg:py-6">
             <div class="w-full max-w-[440px] flex flex-col items-center lg:max-w-[420px]">
 
                 @* Logo 200×52 *@
@@ -93,74 +93,151 @@
                                      model='new InputViewModel { Label = "Doğum Tarihin (GG/AA/YYYY)", Type = InputFieldType.Text, Name = "BirthDate", ContainerWidth = 364 }' />
                         </div>
 
-                        @* 3 Ana checkbox *@
-                        @{
-                            var cbRiza  = new CheckboxViewModel {
-                                Name      = "ConsentOpenRiza",
-                                HtmlLabel = "İnteraktif Kredi <span style=\"font-weight:500; color:#0056B3; text-decoration:underline;\">Açık Rıza Metni</span>'ni okudum ve kişisel verilerimin işlenmesine onay veriyorum."
-                            };
-                            var cbAydin = new CheckboxViewModel {
-                                Name      = "ConsentAydinlatma",
-                                HtmlLabel = "İnteraktif Kredi <span style=\"font-weight:500; color:#0056B3; text-decoration:underline;\">Aydınlatma Metni</span>'ni okudum ve onaylıyorum."
-                            };
-                            var cbIleti = new CheckboxViewModel {
-                                Name      = "ConsentIleti",
-                                HtmlLabel = "İnteraktif Kredi tarafından ticari elektronik ileti gönderilmesini onay metni kapsamında kabul ediyorum."
-                            };
-                        }
-                        <div class="flex flex-col gap-3">
-                            <partial name="~/Partials/Components/_Checkbox.cshtml" model="cbRiza" />
-                            <partial name="~/Partials/Components/_Checkbox.cshtml" model="cbAydin" />
-                            <partial name="~/Partials/Components/_Checkbox.cshtml" model="cbIleti" />
+                        @* TC Kimlik No *@
+                        <div class="[&>div]:w-full! [&_input]:w-full!">
+                            <partial name="~/Partials/Components/_Input.cshtml"
+                                     model='new InputViewModel { Label = "TCKN", Type = InputFieldType.Tckn, Name = "Tckn", ContainerWidth = 364 }' />
+                        </div>
+
+                        @* GSM + Doğrula butonu *@
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1 [&>div]:w-full! [&_input]:w-full!">
+                                <partial name="~/Partials/Components/_Input.cshtml"
+                                         model='new InputViewModel { Label = "GSM", Type = InputFieldType.Phone, Name = "PhoneNumber", ContainerWidth = 364 }' />
+                            </div>
+                            @* Doğrula — phoneVerified=true olunca hidden class ile gizlenir *@
+                            <button type="button"
+                                    id="btnDogrula"
+                                    @@click="!sendingOtp && canVerifyPhone() && sendOtp()"
+                                    :class="{ 'hidden': phoneVerified, 'opacity-40 cursor-not-allowed': !canVerifyPhone() || sendingOtp }"
+                                    class="h-14 px-4 rounded-lg bg-[#0056B3] text-white text-sm font-semibold shrink-0 whitespace-nowrap border-0 cursor-pointer">
+                                <span :class="{ 'hidden': sendingOtp }">Doğrula</span>
+                                <span :class="{ 'hidden': !sendingOtp, 'inline-block': sendingOtp }" class="hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                            </button>
+                            @* Doğrulandı badge — başlangıçta hidden, phoneVerified=true olunca görünür *@
+                            <div :class="{ 'hidden': !phoneVerified }"
+                                 class="hidden flex items-center gap-1.5 h-14 px-3 rounded-lg bg-green-50 border border-green-200 shrink-0">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6L9 17L4 12"/>
+                                </svg>
+                                <span class="text-green-700 text-sm font-medium whitespace-nowrap">Doğrulandı</span>
+                            </div>
+                        </div>
+
+                        @* SMS gönderme hatası *@
+                        <p :class="{ 'hidden': !otpError }"
+                           class="hidden text-xs text-[#DC2626] text-center m-0 -mt-2"
+                           x-text="otpErrorMsg"></p>
+
+                        @* Açık Rıza — tıklayınca modal açar *@
+                        <div class="flex items-start gap-2">
+                            <input type="checkbox" name="ConsentOpenRiza" x-model="consentOpenRiza" class="sr-only" />
+                            <div @@click="consentOpenRiza ? (consentOpenRiza = false) : (showAcikRizaModal = true)"
+                                 :class="consentOpenRiza ? 'bg-[#0056B3] border-[#0056B3]' : 'bg-white border-[#0056B3]'"
+                                 class="w-4.5 h-4.5 border rounded-[4px] flex items-center justify-center shrink-0 cursor-pointer mt-0.5">
+                                <svg x-show="consentOpenRiza" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6L9 17L4 12"/>
+                                </svg>
+                            </div>
+                            <span @@click="consentOpenRiza ? (consentOpenRiza = false) : (showAcikRizaModal = true)"
+                                  class="text-xs font-normal text-[#374151] select-none cursor-pointer leading-[1.6]">
+                                İnteraktif Kredi <span class="font-medium text-[#0056B3] underline">Açık Rıza Metni</span>'ni okudum ve kişisel verilerimin işlenmesine onay veriyorum.
+                            </span>
+                        </div>
+
+                        @* Aydınlatma Metni — tıklayınca modal açar *@
+                        <div class="flex items-start gap-2">
+                            <input type="checkbox" name="ConsentAydinlatma" x-model="consentAydinlatma" class="sr-only" />
+                            <div @@click="consentAydinlatma ? (consentAydinlatma = false) : (showAydinlatmaModal = true)"
+                                 :class="consentAydinlatma ? 'bg-[#0056B3] border-[#0056B3]' : 'bg-white border-[#0056B3]'"
+                                 class="w-4.5 h-4.5 border rounded-[4px] flex items-center justify-center shrink-0 cursor-pointer mt-0.5">
+                                <svg x-show="consentAydinlatma" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6L9 17L4 12"/>
+                                </svg>
+                            </div>
+                            <span @@click="consentAydinlatma ? (consentAydinlatma = false) : (showAydinlatmaModal = true)"
+                                  class="text-xs font-normal text-[#374151] select-none cursor-pointer leading-[1.6]">
+                                İnteraktif Kredi <span class="font-medium text-[#0056B3] underline">Aydınlatma Metni</span>'ni okudum ve onaylıyorum.
+                            </span>
+                        </div>
+
+                        @* İleti onayı *@
+                        <div class="flex items-start gap-2">
+                            <input type="checkbox" name="ConsentIleti" x-model="consentIleti" class="sr-only" />
+                            <div @@click="consentIleti = !consentIleti"
+                                 :class="consentIleti ? 'bg-[#0056B3] border-[#0056B3]' : 'bg-white border-[#0056B3]'"
+                                 class="w-4.5 h-4.5 border rounded-[4px] flex items-center justify-center shrink-0 cursor-pointer mt-0.5">
+                                <svg x-show="consentIleti" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6L9 17L4 12"/>
+                                </svg>
+                            </div>
+                            <span @@click="consentIleti = !consentIleti"
+                                  class="text-xs font-normal text-[#374151] select-none cursor-pointer leading-[1.6]">
+                                İnteraktif Kredi tarafından ticari elektronik ileti gönderilmesini onay metni kapsamında kabul ediyorum.
+                            </span>
                         </div>
 
                         @* İletişim kanalları *@
                         <div class="flex gap-5">
-
-                            <div x-data="{ checked: false }" class="flex items-center gap-2">
-                                <input type="checkbox" name="ConsentSms" x-model="checked" class="sr-only" />
-                                <div @@click="checked = !checked"
-                                     :class="checked ? 'bg-[#0056B3] border-[#0056B3]' : 'bg-white border-[#0056B3]'"
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" name="ConsentSms" x-model="consentSms" class="sr-only" />
+                                <div @@click="consentSms = !consentSms"
+                                     :class="consentSms ? 'bg-[#0056B3] border-[#0056B3]' : 'bg-white border-[#0056B3]'"
                                      class="w-4.5 h-4.5 border rounded-[4px] flex items-center justify-center shrink-0 cursor-pointer">
-                                    <svg x-show="checked" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg x-show="consentSms" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M20 6L9 17L4 12"/>
                                     </svg>
                                 </div>
-                                <span @@click="checked = !checked" class="text-xs font-normal text-[#739FCC] select-none cursor-pointer">SMS</span>
+                                <span @@click="consentSms = !consentSms" class="text-xs font-normal text-[#739FCC] select-none cursor-pointer">SMS</span>
                             </div>
-
-                            <div x-data="{ checked: false }" class="flex items-center gap-2">
-                                <input type="checkbox" name="ConsentEposta" x-model="checked" class="sr-only" />
-                                <div @@click="checked = !checked"
-                                     :class="checked ? 'bg-[#0056B3] border-[#0056B3]' : 'bg-white border-[#0056B3]'"
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" name="ConsentEposta" x-model="consentEposta" class="sr-only" />
+                                <div @@click="consentEposta = !consentEposta"
+                                     :class="consentEposta ? 'bg-[#0056B3] border-[#0056B3]' : 'bg-white border-[#0056B3]'"
                                      class="w-4.5 h-4.5 border rounded-[4px] flex items-center justify-center shrink-0 cursor-pointer">
-                                    <svg x-show="checked" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg x-show="consentEposta" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M20 6L9 17L4 12"/>
                                     </svg>
                                 </div>
-                                <span @@click="checked = !checked" class="text-xs font-normal text-[#739FCC] select-none cursor-pointer">E-Posta</span>
+                                <span @@click="consentEposta = !consentEposta" class="text-xs font-normal text-[#739FCC] select-none cursor-pointer">E-Posta</span>
                             </div>
-
-                            <div x-data="{ checked: false }" class="flex items-center gap-2">
-                                <input type="checkbox" name="ConsentArama" x-model="checked" class="sr-only" />
-                                <div @@click="checked = !checked"
-                                     :class="checked ? 'bg-[#0056B3] border-[#0056B3]' : 'bg-white border-[#0056B3]'"
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" name="ConsentArama" x-model="consentArama" class="sr-only" />
+                                <div @@click="consentArama = !consentArama"
+                                     :class="consentArama ? 'bg-[#0056B3] border-[#0056B3]' : 'bg-white border-[#0056B3]'"
                                      class="w-4.5 h-4.5 border rounded-[4px] flex items-center justify-center shrink-0 cursor-pointer">
-                                    <svg x-show="checked" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg x-show="consentArama" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M20 6L9 17L4 12"/>
                                     </svg>
                                 </div>
-                                <span @@click="checked = !checked" class="text-xs font-normal text-[#739FCC] select-none cursor-pointer">Arama</span>
+                                <span @@click="consentArama = !consentArama" class="text-xs font-normal text-[#739FCC] select-none cursor-pointer">Arama</span>
                             </div>
-
                         </div>
 
+                        @* Kayıt hatası *@
+                        <p :class="{ 'hidden': !registerError }"
+                           class="hidden text-xs text-[#DC2626] text-center m-0"
+                           x-text="registerErrorMsg"></p>
+
                         @* Üye Ol butonu *@
-                        <div class="[&_button]:w-full!"
-                             @@click="canSubmit() && submitForm()"
-                             :class="canSubmit() ? 'cursor-pointer' : 'cursor-not-allowed opacity-50 pointer-events-none'">
-                            <partial name="~/Partials/Components/_Button.cshtml"
-                                     model='new ButtonViewModel { Label = "Üye Ol", Variant = ButtonVariant.Primary, Width = 364 }' />
+                        <div class="[&_button]:w-full! cursor-not-allowed opacity-50 pointer-events-none"
+                             :class="{
+                                 'cursor-pointer':      canSubmit(),
+                                 'opacity-100':         canSubmit(),
+                                 'pointer-events-auto': canSubmit(),
+                                 'cursor-not-allowed':  !canSubmit(),
+                                 'opacity-50':          !canSubmit(),
+                                 'pointer-events-none': !canSubmit()
+                             }"
+                             @@click="canSubmit() && submitForm()">
+                            <button type="button"
+                                    class="w-full h-12 rounded-[40px] bg-[#0056B3] text-white text-sm font-semibold border-0 cursor-inherit flex items-center justify-center gap-2">
+                                <span :class="{ 'hidden': registering }">Üye Ol</span>
+                                <span :class="{ 'hidden': !registering, 'inline-flex': registering }" class="hidden items-center gap-2">
+                                    <span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                    Kaydediliyor...
+                                </span>
+                            </button>
                         </div>
 
                         @* Giriş linki *@
@@ -178,8 +255,231 @@
             </div>
         </div>
 
+        @* OTP Modal — Telefon Doğrulama (x-data scope içinde olmalı) *@
+        <div x-show="showOtpModal" x-cloak class="fixed inset-0 z-100 overflow-y-auto lg:overflow-hidden">
+            <div class="min-h-full flex flex-col items-center bg-[#E8EDF5] px-5 py-8
+                        lg:min-h-0 lg:h-full lg:flex-row lg:justify-center lg:items-center lg:bg-[#DDE3ECBF] lg:px-4 lg:py-4">
+
+                @* Soluk başlık — yalnızca mobile *@
+                <div class="w-full flex flex-col items-center mb-5 lg:hidden">
+                    <img src="~/images/ik_logo.png"
+                         alt="İnteraktif Kredi"
+                         class="h-14 w-auto object-contain mb-4 opacity-35" />
+                    <p class="font-light text-base text-[#7B9CC4] mb-2 text-center">Bireysel</p>
+                    <h2 class="font-semibold text-[30px] leading-[1.2] text-[#7B9CC4] text-center">
+                        Üye Ol
+                    </h2>
+                </div>
+
+                @* Modal kart *@
+                <div class="bg-white w-full rounded-[20px] overflow-hidden
+                            shadow-[0_4px_24px_rgba(0,0,0,0.08)]
+                            lg:max-w-120 lg:shadow-[0_25px_60px_rgba(0,0,0,0.3)]">
+
+                    <img src="~/images/sms.png"
+                         class="w-full h-50 object-cover object-top block" />
+
+                    <div class="px-5 pt-6 pb-8 flex flex-col items-center gap-4 lg:px-9 lg:pt-7 lg:pb-8">
+
+                        <h2 class="font-bold text-xl text-[#0056B3] m-0 text-center">
+                            Telefon Doğrulama
+                        </h2>
+
+                        <p class="text-sm text-[#374151] text-center m-0 leading-[1.7]">
+                            Telefon numaranızı doğrulamak için
+                            <strong x-text="maskedPhone()" class="text-[#0056B3]"></strong>
+                            nolu cep telefonuna gönderdiğimiz kodu yazın.
+                        </p>
+
+                        <input type="text" id="RegisterOtpCode"
+                               x-model="otpCode"
+                               placeholder="SMS Kodunu Girin"
+                               maxlength="6"
+                               class="w-full h-13 border-[1.5px] border-[#DCE3FB] rounded-xl px-4 text-[15px] outline-none text-[#374151]" />
+
+                        <p class="text-[13px] text-[#374151] m-0 text-center">
+                            <span x-text="timerDisplay()" class="font-semibold text-[#0056B3]"></span>
+                            saniye sonra yeni kod gönderebilirsin
+                        </p>
+
+                        <p x-show="otpVerifyError" x-cloak
+                           x-text="otpVerifyErrorMsg"
+                           class="text-[13px] text-[#DC2626] text-center m-0"></p>
+
+                        <div @@click="!verifyingOtp && verifyOtp()"
+                             :class="verifyingOtp ? 'opacity-60 cursor-not-allowed pointer-events-none' : 'cursor-pointer'"
+                             class="w-full [&_button]:w-full!">
+                            <partial name="~/Partials/Components/_Button.cshtml"
+                                     model='new ButtonViewModel { Label = "Doğrula", Variant = ButtonVariant.Primary, Width = 408 }' />
+                        </div>
+
+                        <button type="button"
+                                @@click="showOtpModal = false"
+                                class="text-sm text-[#6B7280] underline bg-transparent border-0 cursor-pointer">
+                            Geri Dön
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Açık Rıza Metni Modalı *@
+        <div :class="{ 'hidden': !showAcikRizaModal }"
+             class="hidden fixed inset-0 z-200 flex items-center justify-center bg-black/50 px-4">
+            <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+                <div class="flex items-center justify-between px-6 pt-5 pb-3 border-b border-[#E5E7EB]">
+                    <h3 class="font-bold text-base text-[#0D2B6C]">Açık Rıza Metni</h3>
+                    <button type="button" @@click="showAcikRizaModal = false"
+                            class="text-[#9CA3AF] hover:text-[#374151] bg-transparent border-0 cursor-pointer text-xl leading-none">&times;</button>
+                </div>
+                <div class="px-6 py-4 overflow-y-auto text-xs text-[#374151] leading-[1.8] flex-1">
+                    <p class="font-semibold mb-2">KİŞİSEL VERİLERİN İŞLENMESİNE İLİŞKİN AÇIK RIZA BEYANI</p>
+                    <p>6698 Sayılı Kişisel Verilerin Korunması Kanunu ("Kanun") ve Aydınlatma Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında Tebliğ uyarınca "AYDINLATMA METNİ" veri sorumlusu tarafından tarafıma tebliğ edilmiş olup; Merkez Mah. Abide-i Hürriyet Cad. Meydan Apt. No:143/8 Şişli-İSTANBUL adresinde mukim Veri Sorumlusu İnteraktifKredi Danışmanlık A.Ş. tarafından toplanacak olan kişisel verilerimin işlenme sebeplerini, toplanma yöntemlerini, işlenme amaçlarını, işlemenin hukuki dayanağını, üçüncü kişilere aktarılıp aktarılmayacağını, aktarılacaksa hangi amaçlarla kimlere aktarılabileceğini, kişisel verilerimle ilgili olarak Kanun'un 11. maddesinde yazılı haklarımın bulunduğunu, Kanun çerçevesinde bu haklarımı kullanabileceğimi ve bu haklarım doğrultusunda Veri Sorumlusu'na nasıl başvurabileceğimi açıkça anladım.</p>
+                    <p class="mt-3">Veri sorumlusu tarafından açık rızama dayalı olarak işlenecek ve aktarılacak olan, kısmen otomatik (interakifkredi App, interaktifkredi Web) yöntemlerle/vasıtasıyla işlenen Müşteri İşlem (kredi kullanım amacı, kredi onay bilgisi, kredi tutarı, vade), Kimlik (ad-soyad, doğum tarihi), İletişim (telefon no), kategorisi altındaki kişisel verilerimin "aydınlatma metni"nde yazılı pazarlama analiz çalışmalarının yürütülmesi, reklam/kampanya/promosyon süreçlerinin Yürütülmesi amacı doğrultusunda ve bu amaçlarla sınırlı olarak: İşlenmesine ve aydınlatma metninde belirtilen üçüncü kişilere aktarılmasına; işbu kutucuğa tıklamak kaydıyla açık rıza gösteriyorum.</p>
+                </div>
+                <div class="px-6 py-4 border-t border-[#E5E7EB]">
+                    <button type="button"
+                            @@click="consentOpenRiza = true; showAcikRizaModal = false"
+                            class="w-full h-11 rounded-[40px] bg-[#0056B3] text-white text-sm font-semibold border-0 cursor-pointer">
+                        Okudum, Onaylıyorum
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        @* Aydınlatma Metni Modalı *@
+        <div :class="{ 'hidden': !showAydinlatmaModal }"
+             class="hidden fixed inset-0 z-200 flex items-center justify-center bg-black/50 px-4">
+            <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+                <div class="flex items-center justify-between px-6 pt-5 pb-3 border-b border-[#E5E7EB]">
+                    <h3 class="font-bold text-base text-[#0D2B6C]">Müşteri Aydınlatma Metni</h3>
+                    <button type="button" @@click="showAydinlatmaModal = false"
+                            class="text-[#9CA3AF] hover:text-[#374151] bg-transparent border-0 cursor-pointer text-xl leading-none">&times;</button>
+                </div>
+                <div class="px-6 py-4 overflow-y-auto flex-1 text-xs text-[#374151] leading-relaxed space-y-4">
+
+                    <div class="space-y-1">
+                        <p class="font-semibold text-[#0056B3]">1. Amaç</p>
+                        <p><strong>İnteraktifKredi Danışmanlık A.Ş.</strong> ("interaktifkredi.com.tr" veya "Şirket"), gerçek kişi müşterilerine ait kişisel verilerin 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVK Kanunu") ve sair mevzuat hükümlerine uygun şekilde işlenmesini amaçlamaktadır.</p>
+                        <p>Şirketimizin gerçek kişi müşterisi olmanız sebebiyle Şirketimize bildirdiğiniz/bildireceğiniz ve/veya Şirketimizce haricen herhangi bir yoldan temin edilen kişisel verileriniz Şirketimiz tarafından <strong>"Veri Sorumlusu"</strong> sıfatıyla;</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Kişisel verilerinizi işlenmelerini gerektiren amaç çerçevesinde ve bu amaç ile bağlantılı, sınırlı ve ölçülü şekilde, Şirketimize bildirdiğiniz veya bildirildiği şekliyle kişisel verilerin doğruluğunu ve en güncel halini koruyarak,</li>
+                            <li>Kaydedileceğini, depolanacağını, muhafaza edileceğini, yeniden düzenleneceğini, kanunen bu kişisel verileri talep etmeye yetkili olan kurumlar ile paylaşılacağını ve KVK Kanunu'nun öngördüğü şartlarda, yurt içi veya yurt dışı üçüncü kişilere aktarılacağını, devredileceğini, sınıflandırılabileceğini ve KVK Kanunu'nda sayılan sair şekillerde işlenebileceğini bildiririz.</li>
+                        </ul>
+                        <p>Aydınlatma Metni ile <strong>interaktifkredi.com.tr</strong> tarafından yürütülen faaliyetlerin KVK Kanunu'nda yer alan ilkelerle uyumlu olarak sürdürülmesi ve geliştirilmesi benimsenmiştir.</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="font-semibold text-[#0056B3]">2. Gerçek Kişi Müşterilerin Kişisel Verilerinin Toplanması ve Usulü</p>
+                        <p>Şirketimiz, kişisel verilerinizi işbu Aydınlatma Metni'nde belirtilen amaçlar doğrultusunda işleyecektir. Kişisel verilerinizin işlenme amacında herhangi bir değişiklik olması halinde tarafınızdan ayrıca izin alınacaktır. Şirketimiz tarafından toplanan ve kullanılan, müşterilere ait kişisel veriler özellikle şunlardır:</p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-[#F3F4F6]">
+                                        <th class="border border-[#D1D5DB] px-3 py-2 text-left font-semibold" colspan="2">Kişisel Verinin İçeriği</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="border border-[#D1D5DB] px-3 py-2 font-medium whitespace-nowrap">Kimlik Verisi</td><td class="border border-[#D1D5DB] px-3 py-2">Ad-soyad, T.C. kimlik numarası, vergi kimlik numarası, uyruk bilgisi, anne adı-baba adı, doğum yeri, doğum tarihi, eğitime katılan kişi, ankete katılan kişi bilgisi.</td></tr>
+                                    <tr class="bg-[#F9FAFB]"><td class="border border-[#D1D5DB] px-3 py-2 font-medium whitespace-nowrap">İletişim Verisi</td><td class="border border-[#D1D5DB] px-3 py-2">Telefon numarası, faks, açık adres bilgisi, ülke, şehir, e-posta adresi (dahili numarası ve kurumsal e-posta adresi dahil), hizmet yorumu.</td></tr>
+                                    <tr><td class="border border-[#D1D5DB] px-3 py-2 font-medium whitespace-nowrap">Görsel Verisi</td><td class="border border-[#D1D5DB] px-3 py-2">Gerçek kişiye ait fotoğraf.</td></tr>
+                                    <tr class="bg-[#F9FAFB]"><td class="border border-[#D1D5DB] px-3 py-2 font-medium whitespace-nowrap">Müşteri İşlem Verisi</td><td class="border border-[#D1D5DB] px-3 py-2">Twitter/Instagram/Facebook/Linkedin kullanıcı adı.</td></tr>
+                                    <tr><td class="border border-[#D1D5DB] px-3 py-2 font-medium whitespace-nowrap">Pazarlama Verisi</td><td class="border border-[#D1D5DB] px-3 py-2">Faaliyet raporu, ilgi alanları, sosyal sorumluluk projeleri ile ilgili bilgiler.</td></tr>
+                                    <tr class="bg-[#F9FAFB]"><td class="border border-[#D1D5DB] px-3 py-2 font-medium whitespace-nowrap">Diğer Veriler</td><td class="border border-[#D1D5DB] px-3 py-2">Vergi kimlik numarası, ankete katılan kişi ile ilgili bilgiler, ankete katılan kişi unvanı ve görevi, firma adı.</td></tr>
+                                    <tr><td class="border border-[#D1D5DB] px-3 py-2 font-medium whitespace-nowrap">Özlük Verisi</td><td class="border border-[#D1D5DB] px-3 py-2">Çalıştığı sektör, bölüm ve unvanı, bağlantı kişisi ile ilgili bilgiler.</td></tr>
+                                    <tr class="bg-[#F9FAFB]"><td class="border border-[#D1D5DB] px-3 py-2 font-medium whitespace-nowrap">Finans Verisi</td><td class="border border-[#D1D5DB] px-3 py-2">Mal ve hizmetlerin toplam bedeli, kredi/kredi kartı miktarı, kredi veya kredi kartı başvuru onay-red sonuçları, hesaplanan gelir vergisi detayları, asgari geçim indirimi detayları, gayri safi tutarı, kesilecek gelir vergisi, brüt ücret tutarı gibi bilgiler.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>Kişisel verileriniz, gerek müşteri ilişkisinin kurulmasından önce gerekse müşteri ilişkisinin kurulmasından sonra ve devamı boyunca Şirketimize ibraz etmiş olduğunuz ve üçüncü kişilerden, kanunlarda öngörülen nedenlerle kamu kurum ve kuruluşlarından elde edilen her türlü bilgi belge ve doküman aracılığı ile kanunlarda öngörülen nedenlerle fiziksel veya elektronik ortamlar aracılığıyla toplamaktadır.</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="font-semibold text-[#0056B3]">3. Kişisel Verilerin İşlenme Amaçları ve Hukuki Sebepler</p>
+                        <p>Kişisel verileriniz, Gelir Vergisi Kanunu, Kurumlar Vergisi Kanunu, Damga Vergisi Kanunu, Türk Ticaret Kanunu, Türk Borçlar Kanunu ve yukarıda sayılan mevzuatla sınırlı olmamak kaydıyla yasal yükümlülüklerin ve gerekliliklerin yerine getirilmesi, hizmet sözleşmesinin kurulması ve ifası, ilgili kişinin temel hak ve özgürlüklerine zarar vermemek kaydıyla interaktifkredi.com.tr'nin meşru menfaatleri için gerekli olması ve KVKK madde 5 ve 6 hükümlerine uygun olarak kanunlarda açıkça öngörüldüğü hallerde işlenmektedir. Kişisel Verileriniz, Şirketimiz tarafından aşağıda belirtilen amaçlar doğrultusunda ancak bunlarla sınırlı olmamak kaydıyla işlenebilir;</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Müşteri/Kullanıcı yetkili çalışan bilgilerinin sisteme kaydedilmesi</li>
+                            <li>E-bülten kayıtlarının yapılması</li>
+                            <li>Eğitim değerlendirme süreçlerinin yürütülmesi</li>
+                            <li>Eğitim katılım ve takip süreçlerinin yürütülmesi</li>
+                            <li>Yetkili kamu kurum ve kuruluşlarına zorunlu raporlamaların yapılması</li>
+                            <li>Müşteri hizmet değerlendirme ve takip süreçlerinin yürütülmesi</li>
+                            <li>Müşteri portföy çalışmalarının gerçekleştirilmesi</li>
+                            <li>Hizmet satış ve pazarlamaları için gerekli pazar araştırmalarının yapılması</li>
+                            <li>interaktifkredi.com.tr yayınlarının ilgili kişilere ulaştırılması</li>
+                            <li>Hizmet ve ürünlerin pazarlama ve satış faaliyetlerinin yürütülmesi</li>
+                            <li>İş ortakları ile olan ilişkilerin yönetilmesi</li>
+                        </ul>
+                        <p>Kişisel verileriniz, ilgili mevzuatta belirtilen veya işleme amacının ortadan kalkmasına kadar geçecek olan makul süre ve herhalde kanuni zaman aşımı süreleri kadar muhafaza edilecektir.</p>
+                    </div>
+
+                    <div class="space-y-1">
+                        <p class="font-semibold text-[#0056B3]">4. Kişisel Verilerin Üçüncü Kişilere Aktarılması</p>
+                        <p>Kişisel veri aktarımlarında uygulanacak usul ve esaslar KVK Kanunu'nun 8. ve 9. maddelerinde düzenlenmiş olup, ilgili kişinin kişisel verileri ve özel nitelikli kişisel verileri yurt içi ve yurt dışındaki üçüncü kişilere aktarılabilmektedir. Hizmetlerin yerine getirilmesi için, kişisel verileriniz Kanun ve sair mevzuat ile kanunlara ilişkin sair yönetmelikler, denetleyici ve düzenleyici kurum ve kuruluşların düzenlemeleri ile kamu otoritelerinin zorunlu kıldığı haller dâhil olmak fakat bunlarla sınırlı olmamak üzere, interaktifkredi.com.tr tarafından işlenebilecek ve İnteraktifKredi Danışmanlık A.Ş ağına bağlı şirketlere de aktarılabilecektir. Kişisel verileriniz, interaktifkredi.com.tr'nin hizmet aldığı üçüncü kişiler, anlaşmalı kurumlar, hukuki uyuşmazlıkların çözümü amacıyla avukatlar, vekâlet ilişkisi içerisinde olduğumuz gerçek ve tüzel kişiler, iş ortaklarımız ve diğer üçüncü kişilerle paylaşılabilecektir. Ancak, her halükarda istisna halleri hariç olmak üzere kişisel veriler ilgili kişinin açık rızası olmaksızın aktarılamaz. interaktifkredi.com.tr, kişisel verileri yurt içinde gerekli şartlar sağlandığı zaman aktarabileceği gibi ilgili Kanun ve mevzuatta öngörülen şartlara uygun olarak ve gerekli bütün güvenlik önlem ve tedbirleri alarak yurt dışında bulunan üçüncü kişilere de aktarabilir. Ancak hali hazırda yurtdışına veri aktarımı yapılmadığını bildiririz.</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="font-semibold text-[#0056B3]">5. Kişisel Verilerin Güvenliğinin ve Gizliliğinin Sağlanması</p>
+                        <p>Şirketimiz, KVK Kanunu'nun 12. maddesine uygun olarak, işlemekte olduğu kişisel verilerin hukuka aykırı olarak işlenmesini ve kişisel verilere hukuka aykırı erişilmesini önlemek, kişisel verilerin muhafazasını sağlamak için uygun güvenlik düzeyini temin etmeye yönelik gerekli her türlü teknik ve idari tedbirleri almaktadır.</p>
+                        <p class="font-medium">5.1. Kişisel Verilerin Hukuka Uygun İşlenmesini Sağlamak ve Kişisel Verilere Hukuka Aykırı Erişimi Engellemek İçin Alınan Teknik Tedbirler</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>KVK Kanunu'na ilişkin şirket çalışanlarının eğitilmesi ve bilinçlendirilmesi</li>
+                            <li>Kişisel veri aktarımının söz konusu olduğu durumlarda, kişisel verilerin aktarıldığı kişiler ile akdedilmiş sözleşmelere kişisel verilerin aktarıldığı tarafın veri güvenliğini yerine getireceğine ilişkin kayıt eklenmesinin sağlanması</li>
+                            <li>KVK Kanunu'na uyum için yerine getirilmesi gerekenlerin tespit edilmesi ve uygulamaları için iç politikaların hazırlanması</li>
+                        </ul>
+                        <p class="font-medium">5.2. Kişisel Verilerin Hukuka Uygun İşlenmesini Sağlamak ve Kişisel Verilere Hukuka Aykırı Erişimi Engellemek İçin Alınan İdari Tedbirler</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>KVK Kanunu'na ilişkin şirket çalışanlarının eğitilmesi ve bilinçlendirilmesi</li>
+                            <li>Kişisel veri aktarımının söz konusu olduğu durumlarda, kişisel verilerin aktarıldığı kişiler ile akdedilmiş sözleşmelere kişisel verilerin aktarıldığı tarafın veri güvenliğini yerine getireceğine ilişkin kayıt eklenmesinin sağlanması</li>
+                            <li>KVK Kanunu'na uyum için yerine getirilmesi gerekenlerin tespit edilmesi ve uygulamaları için iç politikaların hazırlanması</li>
+                        </ul>
+                        <p class="font-medium">5.3. Kişisel Verilerin Kanuni Olmayan Yollarla İfşası Durumunda Alınacak Tedbirler</p>
+                        <p class="pl-4">İşlenen kişisel verilerin kanuni olmayan yollarla başkaları tarafından elde edilmesi halinde, Şirketimiz bu durumu en kısa sürede ilgili kişiye ve Kurul'a bildirecektir.</p>
+                    </div>
+
+                    <div class="space-y-1">
+                        <p class="font-semibold text-[#0056B3]">6. Kişisel Verilerin Silinmesi, Yok Edilmesi ve Anonim Hale Getirilmesi</p>
+                        <p>KVK Kanunu'nun 7. maddesi uyarınca, kişisel verilerin ilgili mevzuata uygun olarak işlenmiş olmasına rağmen, işlenmesini gerektiren sebeplerin ortadan kalkması halinde kişisel veriler re'sen veya ilgili kişinin talebi üzerine Şirketimiz tarafından silinir, yok edilir veya anonim hale getirilir.</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="font-semibold text-[#0056B3]">7. Müşteri'nin Sahip Olduğu Haklar</p>
+                        <p>KVK Kanunu'nun 11. maddesi uyarınca, Şirketimize başvurarak kişisel verileriniz hakkında aşağıdaki konulara ilişkin taleplerde bulunabilirsiniz:</p>
+                        <ol class="list-decimal pl-5 space-y-1">
+                            <li>Kişisel verilerinin işlenip işlenmediğini öğrenme</li>
+                            <li>Kişisel verileri işlenmişse buna ilişkin bilgi talep etme</li>
+                            <li>Kişisel verilerinin işlenme amacı ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme</li>
+                            <li>Kişisel verilerinin yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri öğrenme</li>
+                            <li>Kişisel verilerinin eksik veya yanlış işlenmiş olması halinde bunların düzeltilmesini isteme ve bu kapsamda yapılan işlemin kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme</li>
+                            <li>Kişisel verilerinin işlenmesini gerektiren sebeplerin ortadan kalkması halinde bunların silinmesini, yok edilmesini veya anonim hale getirilmesini isteme ve bu kapsamda yapılan işlemin kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme</li>
+                            <li>İşlenen kişisel verilerinin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle ilgili kişinin aleyhine bir sonucun ortaya çıkmasına itiraz etme</li>
+                            <li>Kişisel verilerinin kanuna aykırı olarak işlenmesi sebebiyle zarara uğraması halinde zararın giderilmesini talep etme</li>
+                            <li>KVK Kanunu'na uyum için yerine getirilmesi gerekenlerin tespit edilmesi ve uygulamaları için iç politikaların hazırlanması</li>
+                        </ol>
+                        <p>Şirketimiz, KVK Kanunu'ndan doğan taleplerinizi "İlgili Kişi Başvuru Formu" aracılığıyla gerçekleştirecektir. Şirketimiz, KVK Kanunu'nun 13. maddesine uygun olarak, başvuru taleplerinizi, talebin niteliğine göre ve en geç 30 (otuz) gün içinde ücretsiz olarak sonuçlandıracaktır. Talebin reddedilmesi halinde, red nedeni/nedenleri tarafınıza yazılı olarak veya elektronik ortamda gerekçeleriyle bildirilir.</p>
+                        <p>İşbu Aydınlatma Metni, gerekli görüldüğü hallerde Şirketimiz tarafından revize edilebilir. Revizyonun söz konusu olduğu hallerde ise, bu hususa ilişkin olarak tarafınıza bilgilendirme yapılacaktır.</p>
+                    </div>
+
+                    <div class="space-y-1 border-t border-[#E5E7EB] pt-3">
+                        <p class="font-semibold text-[#374151]">İLETİŞİM BİLGİLERİ</p>
+                        <p>İnteraktif Kredi AŞ<br />Merkez Mah. Abide-i Hürriyet Cad. Meydan Apt. No:143/8 Şişli-İSTANBUL<br />E-posta: kvkk&#64;interaktifkredi.com.tr<br />Web Sitesi: https://www.interaktifkredi.com.tr<br />MERSİS NO: 047805662480000</p>
+                    </div>
+
+                </div>
+                <div class="px-6 py-4 border-t border-[#E5E7EB]">
+                    <button type="button"
+                            @@click="consentAydinlatma = true; showAydinlatmaModal = false"
+                            class="w-full h-11 rounded-[40px] bg-[#0056B3] text-white text-sm font-semibold border-0 cursor-pointer">
+                        Okudum, Onaylıyorum
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
+    <script src="~/js/toast.js"></script>
     <script defer src="~/lib/alpinejs/cdn.min.js"></script>
     <script src="~/lib/imask/imask.min.js"></script>
     <script>
@@ -189,6 +489,31 @@
                 lastName: '',
                 email: '',
                 birthDate: '',
+                tckn: '',
+                phone: '',
+                phoneVerified: false,
+                otpToken: '',
+                showOtpModal: false,
+                otpCode: '',
+                timer: 180,
+                timerInterval: null,
+                sendingOtp: false,
+                otpError: false,
+                otpErrorMsg: '',
+                verifyingOtp: false,
+                otpVerifyError: false,
+                otpVerifyErrorMsg: '',
+                consentOpenRiza: false,
+                consentAydinlatma: false,
+                consentIleti: false,
+                consentSms: false,
+                consentEposta: false,
+                consentArama: false,
+                showAcikRizaModal: false,
+                showAydinlatmaModal: false,
+                registering: false,
+                registerError: false,
+                registerErrorMsg: '',
 
                 init() {
                     var self = this;
@@ -207,17 +532,200 @@
                         var dateMask = IMask(birthEl, { mask: '00/00/0000' });
                         dateMask.on('accept', function () { self.birthDate = dateMask.value; });
                     }
+
+                    var tcknEl = document.getElementById('Tckn');
+                    if (tcknEl) {
+                        var tcknMask = IMask(tcknEl, { mask: '00000000000' });
+                        tcknMask.on('accept', function () {
+                            self.tckn = tcknMask.value;
+                            self.phoneVerified = false;
+                        });
+                    }
+
+                    // Login sayfasıyla birebir aynı IMask kurulumu
+                    var phoneEl = document.getElementById('PhoneNumber');
+                    if (phoneEl) {
+                        var phoneMask = IMask(phoneEl, { mask: '+{90} 000 000 00 00' });
+                        phoneMask.on('accept', function () {
+                            self.phone = phoneMask.value;
+                            self.phoneVerified = false;
+                        });
+                    }
+                },
+
+                validateTckn(tckn) {
+                    if (!/^\d{11}$/.test(tckn)) return false;
+                    if (tckn[0] === '0') return false;
+                    var d = tckn.split('').map(Number);
+                    var oddSum  = d[0] + d[2] + d[4] + d[6] + d[8];
+                    var evenSum = d[1] + d[3] + d[5] + d[7];
+                    if ((oddSum * 7 - evenSum) % 10 !== d[9]) return false;
+                    var sum10 = d[0]+d[1]+d[2]+d[3]+d[4]+d[5]+d[6]+d[7]+d[8]+d[9];
+                    return sum10 % 10 === d[10];
+                },
+
+                canVerifyPhone() {
+                    return this.phone.replace(/\D/g, '').length >= 12 && this.tckn.length === 11;
+                },
+
+                async sendOtp() {
+                    this.otpError    = false;
+                    this.otpErrorMsg = '';
+
+                    if (!this.validateTckn(this.tckn)) {
+                        this.otpError    = true;
+                        this.otpErrorMsg = 'Geçerli bir TC Kimlik Numarası giriniz.';
+                        return;
+                    }
+
+                    this.sendingOtp  = true;
+
+                    var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                    var params = new URLSearchParams();
+                    params.append('__RequestVerificationToken', token);
+                    params.append('PhoneNumber', this.phone);
+                    params.append('Tckn', this.tckn);
+
+                    try {
+                        var resp = await fetch('/login?handler=SendOtp', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: params
+                        });
+                        var json = await resp.json();
+                        if (json.success) {
+                            this.openOtpModal();
+                        } else {
+                            this.otpError    = true;
+                            this.otpErrorMsg = json.message || 'SMS gönderilemedi. Lütfen tekrar deneyin.';
+                        }
+                    } catch (_) {
+                        this.otpError    = true;
+                        this.otpErrorMsg = 'Bağlantı hatası oluştu.';
+                    } finally {
+                        this.sendingOtp = false;
+                    }
+                },
+
+                maskedPhone() {
+                    var digits = this.phone.replace(/\D/g, '');
+                    if (digits.length < 12) return this.phone;
+                    return '+90 ' + digits.substring(2, 5) + ' *** ** ' + digits.substring(10, 12);
+                },
+
+                timerDisplay() {
+                    var m = Math.floor(this.timer / 60);
+                    var s = this.timer % 60;
+                    return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+                },
+
+                openOtpModal() {
+                    this.otpCode = '';
+                    this.otpVerifyError = false;
+                    this.otpVerifyErrorMsg = '';
+                    this.showOtpModal = true;
+                    this.timer = 180;
+                    var self = this;
+                    if (this.timerInterval) clearInterval(this.timerInterval);
+                    this.timerInterval = setInterval(function () {
+                        if (self.timer > 0) { self.timer--; }
+                        else { clearInterval(self.timerInterval); }
+                    }, 1000);
+                },
+
+                async verifyOtp() {
+                    this.verifyingOtp      = true;
+                    this.otpVerifyError    = false;
+                    this.otpVerifyErrorMsg = '';
+
+                    var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                    var params = new URLSearchParams();
+                    params.append('__RequestVerificationToken', token);
+                    params.append('PhoneNumber', this.phone);
+                    params.append('OtpCode', this.otpCode);
+
+                    try {
+                        var resp = await fetch('/login?handler=VerifyOtp', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: params
+                        });
+                        var json = await resp.json();
+                        if (json.success) {
+                            this.phoneVerified = true;
+                            this.otpToken      = json.token || '';
+                            this.showOtpModal  = false;
+                            if (this.timerInterval) clearInterval(this.timerInterval);
+                        } else {
+                            this.otpVerifyError    = true;
+                            this.otpVerifyErrorMsg = json.message || 'Kod hatalı. Lütfen tekrar deneyin.';
+                        }
+                    } catch (_) {
+                        this.otpVerifyError    = true;
+                        this.otpVerifyErrorMsg = 'Bağlantı hatası oluştu.';
+                    } finally {
+                        this.verifyingOtp = false;
+                    }
                 },
 
                 canSubmit() {
                     return this.firstName.length > 0
                         && this.lastName.length > 0
                         && this.email.length > 0
-                        && this.birthDate.length === 10;
+                        && this.birthDate.length === 10
+                        && this.phoneVerified
+                        && this.consentOpenRiza
+                        && this.consentAydinlatma
+                        && !this.registering;
                 },
 
-                submitForm() {
-                    document.getElementById('registerForm').submit();
+                async submitForm() {
+                    this.registering     = true;
+                    this.registerError   = false;
+                    this.registerErrorMsg = '';
+
+                    var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                    var params = new URLSearchParams();
+                    params.append('__RequestVerificationToken', token);
+                    params.append('FirstName',          this.firstName);
+                    params.append('LastName',           this.lastName);
+                    params.append('Email',              this.email);
+                    params.append('BirthDate',          this.birthDate);
+                    params.append('Tckn',               this.tckn);
+                    params.append('PhoneNumber',        this.phone);
+                    params.append('ConsentOpenRiza',    this.consentOpenRiza   ? 'true' : 'false');
+                    params.append('ConsentAydinlatma',  this.consentAydinlatma ? 'true' : 'false');
+                    params.append('ConsentIleti',       this.consentIleti      ? 'true' : 'false');
+                    params.append('ConsentSms',         this.consentSms        ? 'true' : 'false');
+                    params.append('ConsentEposta',      this.consentEposta     ? 'true' : 'false');
+                    params.append('ConsentArama',       this.consentArama      ? 'true' : 'false');
+
+                    try {
+                        var resp = await fetch('/register?handler=Register', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type':  'application/x-www-form-urlencoded',
+                                'Authorization': 'Bearer ' + this.otpToken
+                            },
+                            body: params
+                        });
+                        var json = await resp.json();
+                        if (json.success) {
+                            toast.success('Kaydınız başarıyla oluşturulmuştur.', { duration: 3000 });
+                            setTimeout(function () { window.location.href = '/login'; }, 1800);
+                        } else {
+                            var errMsg = json.message || 'Kayıt sırasında bir hata oluştu.';
+                            toast.error(errMsg);
+                            this.registerError    = true;
+                            this.registerErrorMsg = errMsg;
+                        }
+                    } catch (_) {
+                        toast.error('Bağlantı hatası oluştu.');
+                        this.registerError    = true;
+                        this.registerErrorMsg = 'Bağlantı hatası oluştu.';
+                    } finally {
+                        this.registering = false;
+                    }
                 }
             };
         }

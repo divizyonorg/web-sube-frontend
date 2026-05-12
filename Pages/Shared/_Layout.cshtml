@@ -62,6 +62,15 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;">
+    <script>
+        (function () {
+            var t = localStorage.getItem('auth_token');
+            if (t && !document.cookie.split(';').some(function (c) { return c.trim().startsWith('auth_token='); })) {
+                document.cookie = 'auth_token=' + t + '; path=/; SameSite=Lax';
+                location.reload();
+            }
+        })();
+    </script>
 
     <script>
         (function () {
