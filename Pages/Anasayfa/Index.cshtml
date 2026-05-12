@@ -5,6 +5,28 @@
     ViewData["ActivePage"] = "Anasayfa";
 }
 
+<<<<<<< HEAD
+@section Styles {
+    <style>
+        .dots .swiper-pagination-bullet {
+            width: 10px;
+            height: 10px;
+            background: #2E6DF8;
+            opacity: 0.4;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            margin: 0 4px !important;
+        }
+
+        .dots .swiper-pagination-bullet-active {
+            width: 30px;
+            opacity: 1;
+            border-radius: 5px;
+        }
+    </style>
+}
+=======
+>>>>>>> 0df707417253d89b65e5e402be09791ae848793f
 
 @* ── PageBar ── *@
 <div class="flex items-center justify-between pb-3 border-b border-[#DCE3FB]">
@@ -22,6 +44,24 @@
 <div class="flex flex-col gap-6 mt-6">
 
     @* ── Birinci satır: 2 kart yan yana ── *@
+<<<<<<< HEAD
+    <div class="grid grid-cols-2 gap-6">
+
+        @* Kredi Uygunluk Durumu kartı — 01-FO-01 *@
+        @await Component.InvokeAsync("CreditEligibilityCard")
+
+
+    </div>
+
+    @* ── İkinci satır: Kredi Danışmanlığı kartı — 01-FO-01 *@
+    <div class="grid grid-cols-2 gap-6">
+
+        @await Component.InvokeAsync("KrediDanismanligiCard")
+
+        @* İkinci sütun — ileride başka task'ta eklenecek *@
+        <div></div>
+
+=======
     <div class="flex flex-col lg:flex-row gap-6 w-full max-w-[1210px]">
         <div class="flex-1 min-w-0">
             @await Component.InvokeAsync("CreditEligibilityCard")
@@ -86,6 +126,7 @@
 
             </section>
         </div>
+>>>>>>> 0df707417253d89b65e5e402be09791ae848793f
     </div>
 
     @* ── Üçüncü satır: Popüler Krediler ve Avantajlı Kredi Kartları ── *@
@@ -208,11 +249,19 @@
 
                                     <ul class="list-none m-0 px-5 flex flex-col gap-1">
                                         <li class="flex items-start gap-2 font-[250] text-xs leading-[18px] text-[#003F75]">
+<<<<<<< HEAD
+                                            <img src="/icons/primary/check.svg" width="12" height="12" style="flex-shrink:0;margin-top:3px" alt="" aria-hidden="true">
+                                            <span>Yeni müşterilere özel 85.000 TL'ye varan nakit!</span>
+                                        </li>
+                                        <li class="flex items-start gap-2 font-[250] text-xs leading-[18px] text-[#003F75]">
+                                            <img src="/icons/primary/check.svg" width="12" height="12" style="flex-shrink:0;margin-top:3px" alt="" aria-hidden="true">
+=======
                                             <img src="/icons/primary/check.svg" width="12" height="12" class="shrink-0 mt-[3px]" alt="" aria-hidden="true">
                                             <span>Yeni müşterilere özel 85.000 TL'ye varan nakit!</span>
                                         </li>
                                         <li class="flex items-start gap-2 font-[250] text-xs leading-[18px] text-[#003F75]">
                                             <img src="/icons/primary/check.svg" width="12" height="12" class="shrink-0 mt-[3px]" alt="" aria-hidden="true">
+>>>>>>> 0df707417253d89b65e5e402be09791ae848793f
                                             <span>%0 Faizli 25.000 TL Taksitli Nakit Avans!</span>
                                         </li>
                                     </ul>
@@ -238,6 +287,8 @@
         </section>
     </div>
 
+<<<<<<< HEAD
+=======
     @* ── Dördüncü satır: Kampanyalar ── *@
     <style>
         #campaigns-pagination .swiper-pagination-bullet {
@@ -346,6 +397,7 @@
 
     </section>
 
+>>>>>>> 0df707417253d89b65e5e402be09791ae848793f
 </div>
 
 @section Scripts {
@@ -361,6 +413,8 @@
             navigation: { prevEl: '#cards-prev', nextEl: '#cards-next' },
             pagination: { el: '#cards-pagination', clickable: true }
         });
+<<<<<<< HEAD
+=======
 
         // 3 pagination bullet için 6 slide gerekli (6 ÷ slidesPerGroup:2 = 3 sayfa)
         const campaignsWrapper = document.querySelector('#campaigns-swiper .swiper-wrapper');
@@ -377,5 +431,6 @@
             navigation: { prevEl: '#campaigns-prev', nextEl: '#campaigns-next' },
             pagination: { el: '#campaigns-pagination', clickable: true }
         });
+>>>>>>> 0df707417253d89b65e5e402be09791ae848793f
     </script>
 }

@@ -30,6 +30,8 @@
     <style>
         [x-cloak] { display: none !important; }
 
+<<<<<<< HEAD
+=======
         /* ── Mobile sidebar overlay ── */
         .mobile-backdrop {
             position: fixed; inset: 0; z-index: 40;
@@ -59,10 +61,18 @@
         }
     </style>
 
+>>>>>>> 0df707417253d89b65e5e402be09791ae848793f
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;">
 
+<<<<<<< HEAD
+    @await Component.InvokeAsync("Header", new MyApp.Web.ViewModels.HeaderViewModel
+    {
+        UserName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
+        NotificationCount = 0,
+        ProfileImageUrl   = ""
+=======
     <script>
         (function () {
             function isTokenValid() {
@@ -89,6 +99,7 @@
             NotificationCount = 0,
             ProfileImageUrl   = ""
         }
+>>>>>>> 0df707417253d89b65e5e402be09791ae848793f
     })
 
     @* Mobile backdrop *@
