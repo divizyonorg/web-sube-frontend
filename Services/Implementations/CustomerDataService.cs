@@ -152,6 +152,27 @@ public class CustomerDataService : ICustomerDataService
         return await ApiClient.PostJsonAsync(_httpClient, Endpoints.Kvkk, request, cancellationToken);
     }
 
+    public async Task<MaritalStatusViewModel> GetMaritalStatusAsync(CancellationToken cancellationToken = default)
+    {
+        AttachToken();
+        var response = await ApiClient.GetJsonAsync<DynamicDataResponseDto>(
+            _httpClient, Endpoints.DynamicData("MARITAL_STATUS"), cancellationToken);
+
+        var item = response?.Data.FirstOrDefault();
+        if (item is null || !item.Details.HasValue) return new MaritalStatusViewModel();
+
+        var details = item.Details.Value.Deserialize<MartialStatusDetailsDto>();
+        if (details is null) return new MaritalStatusViewModel();
+
+        return new MaritalStatusViewModel
+        {
+            IsMarried = details.MaritalStatus,
+            IsWorking = details.IsWorking ?? false,
+            WSalaryAmount = decimal.TryParse(details.WSalaryAmount, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var amount) ? amount : 0
+        };
+    }
+
     public async Task<bool> UpdateMaritalStatusAsync(bool maritalStatus, bool isWorking, decimal wSalaryAmount, CancellationToken cancellationToken = default)
     {
         AttachToken();
@@ -174,6 +195,40 @@ public class CustomerDataService : ICustomerDataService
             TotalWorkingTime = totalWorkingTime
         };
         return await ApiClient.PostJsonAsync(_httpClient, Endpoints.Work, request, cancellationToken);
+    }
+
+    public async Task<bool> GetWorkStatusAsync(CancellationToken cancellationToken = default)
+    {
+        var (workSector, _, _) = await GetWorkDetailsAsync(cancellationToken);
+        return workSector > 0;
+    }
+
+    public async Task<(int WorkSector, int OccupationId, string TotalWorkingTime)> GetWorkDetailsAsync(CancellationToken cancellationToken = default)
+    {
+        AttachToken();
+        var response = await ApiClient.GetJsonAsync<DynamicDataResponseDto>(
+            _httpClient, Endpoints.DynamicData("WORK"), cancellationToken);
+
+        var item = response?.Data.OrderByDescending(d => d.CreateDate).FirstOrDefault();
+        if (item is null || !item.Details.HasValue) return (0, 0, string.Empty);
+
+        var details = item.Details.Value;
+        var workSector = details.TryGetProperty("work_sector", out var ws) ? ws.GetInt32() : 0;
+        var occupationId = details.TryGetProperty("occupation_id", out var oc) ? oc.GetInt32() : 0;
+        var workingTime = details.TryGetProperty("total_working_time", out var wt) ? wt.GetString() ?? "" : "";
+        return (workSector, occupationId, workingTime);
+    }
+
+    public async Task<string> GetSalaryBankCodeAsync(CancellationToken cancellationToken = default)
+    {
+        AttachToken();
+        var response = await ApiClient.GetJsonAsync<DynamicDataResponseDto>(
+            _httpClient, Endpoints.DynamicData("SALARY"), cancellationToken);
+
+        var item = response?.Data.OrderByDescending(d => d.CreateDate).FirstOrDefault();
+        if (item is null || !item.Details.HasValue) return string.Empty;
+
+        return item.Details.Value.TryGetProperty("salary_bank_eft_code", out var bc) ? bc.GetString() ?? "" : "";
     }
 
     public async Task<bool> UpdateGsmAsync(string gsm, CancellationToken cancellationToken = default)
