@@ -175,6 +175,21 @@
             };
         })();
     </script>
+    <script>
+        (function () {
+            var token = localStorage.getItem('auth_token');
+            if (!token) return;
+            fetch('/api/me')
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (data) {
+                    if (!data || !data.fullName) return;
+                    document.querySelectorAll('[data-user-name]').forEach(function (el) {
+                        el.textContent = data.fullName;
+                    });
+                })
+                .catch(function () {});
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
