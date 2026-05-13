@@ -213,9 +213,9 @@ public class CustomerDataService : ICustomerDataService
         if (item is null || !item.Details.HasValue) return (0, 0, string.Empty);
 
         var details = item.Details.Value;
-        var workSector   = details.TryGetProperty("work_sector",       out var ws) ? ws.GetInt32()         : 0;
-        var occupationId = details.TryGetProperty("occupation_id",     out var oc) ? oc.GetInt32()         : 0;
-        var workingTime  = details.TryGetProperty("total_working_time",out var wt) ? wt.GetString() ?? "" : "";
+        var workSector = details.TryGetProperty("work_sector", out var ws) ? ws.GetInt32() : 0;
+        var occupationId = details.TryGetProperty("occupation_id", out var oc) ? oc.GetInt32() : 0;
+        var workingTime = details.TryGetProperty("total_working_time", out var wt) ? wt.GetString() ?? "" : "";
         return (workSector, occupationId, workingTime);
     }
 

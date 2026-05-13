@@ -130,14 +130,14 @@ public class IndexModel : PageModel
         ViewData["Title"] = "Ayarlar";
         ViewData["ActivePage"] = "Ayarlar";
 
-        var workSectorsTask   = _customerDataService.GetWorkSectorsAsync();
-        var occupationsTask   = _customerDataService.GetOccupationsAsync();
-        var banksTask         = _customerDataService.GetBanksAsync();
-        var profileTask       = _customerDataService.GetProfileAsync();
-        var kvkkTask          = _customerDataService.GetKvkkAsync();
+        var workSectorsTask = _customerDataService.GetWorkSectorsAsync();
+        var occupationsTask = _customerDataService.GetOccupationsAsync();
+        var banksTask = _customerDataService.GetBanksAsync();
+        var profileTask = _customerDataService.GetProfileAsync();
+        var kvkkTask = _customerDataService.GetKvkkAsync();
         var maritalStatusTask = _customerDataService.GetMaritalStatusAsync();
-        var workDetailsTask   = _customerDataService.GetWorkDetailsAsync();
-        var salaryBankTask    = _customerDataService.GetSalaryBankCodeAsync();
+        var workDetailsTask = _customerDataService.GetWorkDetailsAsync();
+        var salaryBankTask = _customerDataService.GetSalaryBankCodeAsync();
 
         await Task.WhenAll(workSectorsTask, occupationsTask, banksTask,
                            profileTask, kvkkTask, maritalStatusTask, workDetailsTask, salaryBankTask);
@@ -151,11 +151,11 @@ public class IndexModel : PageModel
         Settings.Bildirimler = kvkkTask.Result;
         Settings.MaritalStatus = maritalStatusTask.Result;
 
-        CalismaDurumu.SelectedValue   = workSector > 0 ? "calisiyor" : "calismiyor";
-        CalismaSektoru.SelectedValue  = workSector > 0 ? workSector.ToString() : null;
-        Meslek.SelectedValue          = occupationId > 0 ? occupationId.ToString() : null;
-        CalismaSuresi.SelectedValue   = totalWorkingTime;
-        MaasBankasi.SelectedValue     = salaryBankTask.Result;
+        CalismaDurumu.SelectedValue = workSector > 0 ? "calisiyor" : "calismiyor";
+        CalismaSektoru.SelectedValue = workSector > 0 ? workSector.ToString() : null;
+        Meslek.SelectedValue = occupationId > 0 ? occupationId.ToString() : null;
+        CalismaSuresi.SelectedValue = totalWorkingTime;
+        MaasBankasi.SelectedValue = salaryBankTask.Result;
 
         return Page();
     }

@@ -36,37 +36,37 @@ public class FinansalProfilService : IFinansalProfilService
     {
         var workSectorsTask = GetLookupAsync(Endpoints.WorkSectors, ct);
         var occupationsTask = GetLookupAsync(Endpoints.Occupations, ct);
-        var banksTask       = GetLookupAsync(Endpoints.Banks, ct);
-        var workDataTask    = GetDynamicAsync<WorkDetailsDto>("WORK", ct);
-        var salaryDataTask  = GetDynamicAsync<SalaryDetailsDto>("SALARY", ct);
+        var banksTask = GetLookupAsync(Endpoints.Banks, ct);
+        var workDataTask = GetDynamicAsync<WorkDetailsDto>("WORK", ct);
+        var salaryDataTask = GetDynamicAsync<SalaryDetailsDto>("SALARY", ct);
         var maritalDataTask = GetDynamicAsync<MaritalStatusDetailsDto>("MARITAL_STATUS", ct);
         var havingsDataTask = GetDynamicAsync<HavingsDetailsDto>("HAVINGS", ct);
 
         await Task.WhenAll(workSectorsTask, occupationsTask, banksTask,
                            workDataTask, salaryDataTask, maritalDataTask, havingsDataTask);
 
-        var work   = workDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
+        var work = workDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
         var salary = salaryDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
         var marital = maritalDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
         var havings = havingsDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
 
         return new FinansalProfilViewModel
         {
-            WorkSectors      = MapLookup(workSectorsTask.Result),
-            Occupations      = MapLookup(occupationsTask.Result),
-            SalaryBanks      = MapLookup(banksTask.Result),
-            IsEmployed       = (work?.WorkSector ?? 0) > 0,
-            WorkSectorId     = work?.WorkSector ?? 0,
-            OccupationId     = work?.OccupationId ?? 0,
+            WorkSectors = MapLookup(workSectorsTask.Result),
+            Occupations = MapLookup(occupationsTask.Result),
+            SalaryBanks = MapLookup(banksTask.Result),
+            IsEmployed = (work?.WorkSector ?? 0) > 0,
+            WorkSectorId = work?.WorkSector ?? 0,
+            OccupationId = work?.OccupationId ?? 0,
             TotalWorkingTime = work?.TotalWorkingTime ?? string.Empty,
-            SalaryAmount     = decimal.TryParse(salary?.CustSalaryAmount,
+            SalaryAmount = decimal.TryParse(salary?.CustSalaryAmount,
                                    System.Globalization.NumberStyles.Any,
                                    System.Globalization.CultureInfo.InvariantCulture,
                                    out var amt) ? amt : 0,
-            SalaryBankCode   = salary?.SalaryBankEftCode ?? string.Empty,
-            IsMarried        = marital?.MaritalStatus ?? false,
-            HouseStatusId    = MapHouseStatus(havings?.HouseStatusName),
-            HasCar           = havings?.CarStatus ?? false,
+            SalaryBankCode = salary?.SalaryBankEftCode ?? string.Empty,
+            IsMarried = marital?.MaritalStatus ?? false,
+            HouseStatusId = MapHouseStatus(havings?.HouseStatusName),
+            HasCar = havings?.CarStatus ?? false,
         };
     }
 
@@ -93,9 +93,9 @@ public class FinansalProfilService : IFinansalProfilService
     {
         var req = new SaveSalaryRequest
         {
-            SalaryAmount     = 0,
+            SalaryAmount = 0,
             SalaryBankEftCode = salaryBankCode,
-            SalaryDate       = salaryDate
+            SalaryDate = salaryDate
         };
         return await PostAsync(Endpoints.SaveSalary, req, ct);
     }
