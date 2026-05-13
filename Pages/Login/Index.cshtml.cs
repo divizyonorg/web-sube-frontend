@@ -4,6 +4,7 @@ using MyApp.Web.Services.Interfaces;
 
 namespace MyApp.Web.Pages.Login;
 
+[IgnoreAntiforgeryToken]
 public class IndexModel : PageModel
 {
     private readonly IAuthService _authService;
