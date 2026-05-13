@@ -79,4 +79,13 @@ public class MockCustomerDataService : ICustomerDataService
 
     public Task<bool> UpdateWorkAsync(int workSector, int occupationId, string totalWorkingTime, CancellationToken cancellationToken = default)
         => Task.FromResult(true);
+
+    public Task<bool> GetWorkStatusAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(false);
+
+    public Task<(int WorkSector, int OccupationId, string TotalWorkingTime)> GetWorkDetailsAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult((0, 0, string.Empty));
+
+    public Task<string> GetSalaryBankCodeAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(string.Empty);
 }

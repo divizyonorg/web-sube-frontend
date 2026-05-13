@@ -10,6 +10,7 @@ public class IndexModel : PageModel
 {
     private readonly ICustomerDataService _customerDataService;
     private readonly IAuthService _authService;
+    private readonly IFinansalProfilService _finansalProfilService;
 
     public AyarlarViewModel Settings { get; set; } = new();
 
@@ -20,12 +21,8 @@ public class IndexModel : PageModel
         AlpineModel = "calisma",
         Options =
         [
-            new() { Value = "ucretli",   Label = "Ücretli" },
-            new() { Value = "serbest",   Label = "Serbest Meslek / Esnaf" },
-            new() { Value = "emekli",    Label = "Emekli" },
-            new() { Value = "ev-hanimi", Label = "Ev Hanımı" },
-            new() { Value = "ogrenci",   Label = "Öğrenci" },
-            new() { Value = "issiz",     Label = "İşsiz" },
+            new() { Value = "calisiyor",  Label = "Çalışıyor" },
+            new() { Value = "calismiyor", Label = "Çalışmıyor" },
         ]
     };
 
@@ -113,16 +110,19 @@ public class IndexModel : PageModel
     [BindProperty] public int FinansalWorkSector { get; set; }
     [BindProperty] public int FinansalOccupationId { get; set; }
     [BindProperty] public string FinansalTotalWorkingTime { get; set; } = string.Empty;
+    [BindProperty] public string FinansalSalaryBankCode { get; set; } = string.Empty;
+    [BindProperty] public string FinansalSalaryDate { get; set; } = string.Empty;
     [BindProperty] public int KvkkChannelId { get; set; }
     [BindProperty] public bool KvkkEmail { get; set; }
     [BindProperty] public bool KvkkSms { get; set; }
     [BindProperty] public bool KvkkCall { get; set; }
     [BindProperty] public bool KvkkAdress { get; set; }
 
-    public IndexModel(ICustomerDataService customerDataService, IAuthService authService)
+    public IndexModel(ICustomerDataService customerDataService, IAuthService authService, IFinansalProfilService finansalProfilService)
     {
         _customerDataService = customerDataService;
         _authService = authService;
+        _finansalProfilService = finansalProfilService;
     }
 
     public async Task<IActionResult> OnGetAsync()
@@ -130,14 +130,19 @@ public class IndexModel : PageModel
         ViewData["Title"] = "Ayarlar";
         ViewData["ActivePage"] = "Ayarlar";
 
-        var workSectorsTask = _customerDataService.GetWorkSectorsAsync();
-        var occupationsTask = _customerDataService.GetOccupationsAsync();
-        var banksTask = _customerDataService.GetBanksAsync();
-        var profileTask = _customerDataService.GetProfileAsync();
-        var kvkkTask = _customerDataService.GetKvkkAsync();
+        var workSectorsTask   = _customerDataService.GetWorkSectorsAsync();
+        var occupationsTask   = _customerDataService.GetOccupationsAsync();
+        var banksTask         = _customerDataService.GetBanksAsync();
+        var profileTask       = _customerDataService.GetProfileAsync();
+        var kvkkTask          = _customerDataService.GetKvkkAsync();
         var maritalStatusTask = _customerDataService.GetMaritalStatusAsync();
+        var workDetailsTask   = _customerDataService.GetWorkDetailsAsync();
+        var salaryBankTask    = _customerDataService.GetSalaryBankCodeAsync();
 
-        await Task.WhenAll(workSectorsTask, occupationsTask, banksTask, profileTask, kvkkTask, maritalStatusTask);
+        await Task.WhenAll(workSectorsTask, occupationsTask, banksTask,
+                           profileTask, kvkkTask, maritalStatusTask, workDetailsTask, salaryBankTask);
+
+        var (workSector, occupationId, totalWorkingTime) = workDetailsTask.Result;
 
         CalismaSektoru.Options.AddRange(workSectorsTask.Result);
         Meslek.Options.AddRange(occupationsTask.Result);
@@ -145,6 +150,12 @@ public class IndexModel : PageModel
         Settings.Profil = profileTask.Result;
         Settings.Bildirimler = kvkkTask.Result;
         Settings.MaritalStatus = maritalStatusTask.Result;
+
+        CalismaDurumu.SelectedValue   = workSector > 0 ? "calisiyor" : "calismiyor";
+        CalismaSektoru.SelectedValue  = workSector > 0 ? workSector.ToString() : null;
+        Meslek.SelectedValue          = occupationId > 0 ? occupationId.ToString() : null;
+        CalismaSuresi.SelectedValue   = totalWorkingTime;
+        MaasBankasi.SelectedValue     = salaryBankTask.Result;
 
         return Page();
     }
@@ -173,6 +184,12 @@ public class IndexModel : PageModel
         var success = await _customerDataService.UpdateWorkAsync(
             FinansalWorkSector, FinansalOccupationId, FinansalTotalWorkingTime);
         return new JsonResult(new { success });
+    }
+
+    public async Task<IActionResult> OnPostUpdateSalaryAsync()
+    {
+        var (success, message) = await _finansalProfilService.SaveSalaryAsync(FinansalSalaryBankCode, FinansalSalaryDate);
+        return new JsonResult(new { success, message });
     }
 
     public async Task<IActionResult> OnPostUpdateKvkkAsync()

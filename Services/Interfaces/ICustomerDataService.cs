@@ -16,4 +16,7 @@ public interface ICustomerDataService
     Task<MaritalStatusViewModel> GetMaritalStatusAsync(CancellationToken cancellationToken = default);
     Task<bool> UpdateMaritalStatusAsync(bool maritalStatus, bool isWorking, decimal wSalaryAmount, CancellationToken cancellationToken = default);
     Task<bool> UpdateWorkAsync(int workSector, int occupationId, string totalWorkingTime, CancellationToken cancellationToken = default);
+    Task<bool> GetWorkStatusAsync(CancellationToken cancellationToken = default);
+    Task<(int WorkSector, int OccupationId, string TotalWorkingTime)> GetWorkDetailsAsync(CancellationToken cancellationToken = default);
+    Task<string> GetSalaryBankCodeAsync(CancellationToken cancellationToken = default);
 }

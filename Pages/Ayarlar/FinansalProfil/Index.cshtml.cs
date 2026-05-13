@@ -15,7 +15,8 @@ public class IndexModel : PageModel
     [BindProperty] public int WorkSectorId { get; set; }
     [BindProperty] public int OccupationId { get; set; }
     [BindProperty] public string TotalWorkingTime { get; set; } = string.Empty;
-    [BindProperty] public decimal SalaryAmount { get; set; }
+    [BindProperty] public string SalaryBankCode { get; set; } = string.Empty;
+    [BindProperty] public string SalaryDate { get; set; } = string.Empty;
     [BindProperty] public bool IsMarried { get; set; }
     [BindProperty] public int HouseStatusId { get; set; }
     [BindProperty] public bool HasCar { get; set; }
@@ -40,7 +41,7 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostSaveSalaryAsync(CancellationToken ct)
     {
-        var (success, message) = await _service.SaveSalaryAsync(SalaryAmount, ct);
+        var (success, message) = await _service.SaveSalaryAsync(SalaryBankCode, SalaryDate, ct);
         return new JsonResult(new { success, message });
     }
 

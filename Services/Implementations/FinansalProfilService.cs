@@ -15,6 +15,7 @@ public class FinansalProfilService : IFinansalProfilService
     {
         public const string WorkSectors = "/api/customers/work_sectors";
         public const string Occupations = "/api/customers/occupations";
+        public const string Banks = "/api/customers/banks";
         public const string DynamicData = "/api/customers/dynamic-data";
         public const string SaveWork = "/api/customers/work";
         public const string SaveSalary = "/api/customers/salary";
@@ -35,34 +36,45 @@ public class FinansalProfilService : IFinansalProfilService
     {
         var workSectorsTask = GetLookupAsync(Endpoints.WorkSectors, ct);
         var occupationsTask = GetLookupAsync(Endpoints.Occupations, ct);
-        var workDataTask = GetDynamicAsync<WorkDetailsDto>("WORK", ct);
-        var salaryDataTask = GetDynamicAsync<SalaryDetailsDto>("SALARY", ct);
+        var banksTask       = GetLookupAsync(Endpoints.Banks, ct);
+        var workDataTask    = GetDynamicAsync<WorkDetailsDto>("WORK", ct);
+        var salaryDataTask  = GetDynamicAsync<SalaryDetailsDto>("SALARY", ct);
         var maritalDataTask = GetDynamicAsync<MaritalStatusDetailsDto>("MARITAL_STATUS", ct);
         var havingsDataTask = GetDynamicAsync<HavingsDetailsDto>("HAVINGS", ct);
 
-        await Task.WhenAll(workSectorsTask, occupationsTask,
+        await Task.WhenAll(workSectorsTask, occupationsTask, banksTask,
                            workDataTask, salaryDataTask, maritalDataTask, havingsDataTask);
 
-        var work = workDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
+        var work   = workDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
         var salary = salaryDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
         var marital = maritalDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
         var havings = havingsDataTask.Result?.Data.MaxBy(d => d.CreateDate)?.Details;
 
         return new FinansalProfilViewModel
         {
-            WorkSectors = MapLookup(workSectorsTask.Result),
-            Occupations = MapLookup(occupationsTask.Result),
-            WorkSectorId = work?.WorkSector ?? 0,
-            OccupationId = work?.OccupationId ?? 0,
+            WorkSectors      = MapLookup(workSectorsTask.Result),
+            Occupations      = MapLookup(occupationsTask.Result),
+            SalaryBanks      = MapLookup(banksTask.Result),
+            IsEmployed       = (work?.WorkSector ?? 0) > 0,
+            WorkSectorId     = work?.WorkSector ?? 0,
+            OccupationId     = work?.OccupationId ?? 0,
             TotalWorkingTime = work?.TotalWorkingTime ?? string.Empty,
-            SalaryAmount = decimal.TryParse(salary?.CustSalaryAmount,
+            SalaryAmount     = decimal.TryParse(salary?.CustSalaryAmount,
                                    System.Globalization.NumberStyles.Any,
                                    System.Globalization.CultureInfo.InvariantCulture,
                                    out var amt) ? amt : 0,
-            IsMarried = marital?.MaritalStatus ?? false,
-            HouseStatusId = MapHouseStatus(havings?.HouseStatusName),
-            HasCar = havings?.CarStatus ?? false,
+            SalaryBankCode   = salary?.SalaryBankEftCode ?? string.Empty,
+            IsMarried        = marital?.MaritalStatus ?? false,
+            HouseStatusId    = MapHouseStatus(havings?.HouseStatusName),
+            HasCar           = havings?.CarStatus ?? false,
         };
+    }
+
+    public async Task<bool> GetWorkStatusAsync(CancellationToken ct = default)
+    {
+        var result = await GetDynamicAsync<WorkDetailsDto>("WORK", ct);
+        var work = result?.Data.MaxBy(d => d.CreateDate)?.Details;
+        return (work?.WorkSector ?? 0) > 0;
     }
 
     public async Task<(bool Success, string Message)> SaveWorkAsync(
@@ -77,9 +89,14 @@ public class FinansalProfilService : IFinansalProfilService
         return await PostAsync(Endpoints.SaveWork, req, ct);
     }
 
-    public async Task<(bool Success, string Message)> SaveSalaryAsync(decimal salaryAmount, CancellationToken ct = default)
+    public async Task<(bool Success, string Message)> SaveSalaryAsync(string salaryBankCode, string salaryDate, CancellationToken ct = default)
     {
-        var req = new SaveSalaryRequest { SalaryAmount = salaryAmount };
+        var req = new SaveSalaryRequest
+        {
+            SalaryAmount     = 0,
+            SalaryBankEftCode = salaryBankCode,
+            SalaryDate       = salaryDate
+        };
         return await PostAsync(Endpoints.SaveSalary, req, ct);
     }
 

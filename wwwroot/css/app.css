@@ -350,9 +350,6 @@
   .top-0 {
     top: calc(var(--spacing) * 0);
   }
-  .top-1 {
-    top: calc(var(--spacing) * 1);
-  }
   .top-1\/2 {
     top: calc(1 / 2 * 100%);
   }
@@ -410,9 +407,6 @@
   .right-0 {
     right: calc(var(--spacing) * 0);
   }
-  .right-2 {
-    right: calc(var(--spacing) * 2);
-  }
   .right-2\.5 {
     right: calc(var(--spacing) * 2.5);
   }
@@ -440,9 +434,6 @@
   .bottom-0 {
     bottom: calc(var(--spacing) * 0);
   }
-  .bottom-42 {
-    bottom: calc(var(--spacing) * 42);
-  }
   .bottom-42\.5 {
     bottom: calc(var(--spacing) * 42.5);
   }
@@ -455,9 +446,6 @@
   .bottom-80 {
     bottom: calc(var(--spacing) * 80);
   }
-  .bottom-92 {
-    bottom: calc(var(--spacing) * 92);
-  }
   .bottom-92\.5 {
     bottom: calc(var(--spacing) * 92.5);
   }
@@ -466,9 +454,6 @@
   }
   .left-0 {
     left: calc(var(--spacing) * 0);
-  }
-  .left-1 {
-    left: calc(var(--spacing) * 1);
   }
   .left-1\/2 {
     left: calc(1 / 2 * 100%);
@@ -484,9 +469,6 @@
   }
   .left-7\.5 {
     left: calc(var(--spacing) * 7.5);
-  }
-  .left-12 {
-    left: calc(var(--spacing) * 12);
   }
   .left-12\.5 {
     left: calc(var(--spacing) * 12.5);
@@ -893,14 +875,8 @@
   .table-row {
     display: table-row;
   }
-  .h-0 {
-    height: calc(var(--spacing) * 0);
-  }
   .h-0\.5 {
     height: calc(var(--spacing) * 0.5);
-  }
-  .h-1 {
-    height: calc(var(--spacing) * 1);
   }
   .h-1\.5 {
     height: calc(var(--spacing) * 1.5);
@@ -959,14 +935,8 @@
   .h-30 {
     height: calc(var(--spacing) * 30);
   }
-  .h-32 {
-    height: calc(var(--spacing) * 32);
-  }
   .h-32\.5 {
     height: calc(var(--spacing) * 32.5);
-  }
-  .h-37 {
-    height: calc(var(--spacing) * 37);
   }
   .h-37\.5 {
     height: calc(var(--spacing) * 37.5);
@@ -1124,9 +1094,6 @@
   .min-h-full {
     min-height: 100%;
   }
-  .w-1 {
-    width: calc(var(--spacing) * 1);
-  }
   .w-1\.5 {
     width: calc(var(--spacing) * 1.5);
   }
@@ -1180,9 +1147,6 @@
   }
   .w-32\.5 {
     width: calc(var(--spacing) * 32.5);
-  }
-  .w-37 {
-    width: calc(var(--spacing) * 37);
   }
   .w-37\.5 {
     width: calc(var(--spacing) * 37.5);
@@ -1355,16 +1319,8 @@
   .border-collapse {
     border-collapse: collapse;
   }
-  .-translate-x-1 {
-    --tw-translate-x: calc(var(--spacing) * -1);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
   .-translate-x-1\/2 {
     --tw-translate-x: calc(calc(1 / 2 * 100%) * -1);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
-  .-translate-y-1 {
-    --tw-translate-y: calc(var(--spacing) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
   .-translate-y-1\/2 {

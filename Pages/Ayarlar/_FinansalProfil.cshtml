@@ -4,7 +4,15 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 <script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
 
-<div x-data='finansalProfilForm(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Settings.MaritalStatus)))'>
+<div x-data='finansalProfilForm(
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Settings.MaritalStatus)),
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new {
+        calisma  = Model.CalismaDurumu.SelectedValue  ?? "",
+        sektor   = Model.CalismaSektoru.SelectedValue ?? "",
+        meslekId = Model.Meslek.SelectedValue         ?? "",
+        suresi   = Model.CalismaSuresi.SelectedValue  ?? ""
+    }))
+)'>
 
 @Html.AntiForgeryToken()
 
@@ -57,7 +65,7 @@
             </span>
         </div>
 
-        <div x-show="calisma !== ''"
+        <div x-show="calisma === 'calisiyor'" x-cloak
              class="border-l-2 border-[#2E6DF8] flex flex-col gap-3">
             <div class="relative pl-[14px]">
                 <div class="absolute left-0 top-[7px] w-2.5 h-0.5 bg-[#2E6DF8]"></div>
@@ -164,17 +172,24 @@
 </div>@* /x-data *@
 
 <script>
-    function finansalProfilForm(initial) {
-        initial = initial || {};
+    function finansalProfilForm(marital, work) {
+        marital = marital || {};
+        work    = work    || {};
         return {
-            calisma:     '',
-            sektor:      '',
-            meslekId:    '',
-            suresi:      '',
-            medeni:      initial.IsMarried !== undefined ? String(initial.IsMarried) : '',
-            esCalisiyor: initial.IsWorking ? 'evet' : 'hayir',
-            esGeliri:    initial.WSalaryAmount || 0,
+            calisma:     work.calisma  || '',
+            sektor:      work.sektor   || '',
+            meslekId:    work.meslekId || '',
+            suresi:      work.suresi   || '',
+            medeni:      marital.IsMarried !== undefined ? String(marital.IsMarried) : '',
+            esCalisiyor: marital.IsWorking ? 'evet' : 'hayir',
+            esGeliri:    marital.WSalaryAmount || 0,
             saving:      false,
+
+            getBankValue() {
+                var el = document.getElementById('maasBankasi');
+                if (!el) return '';
+                return el.tomselect ? el.tomselect.getValue() : el.value;
+            },
 
             async kaydet() {
                 this.saving = true;
@@ -193,12 +208,18 @@
 
                 var workParams = new URLSearchParams();
                 workParams.append('__RequestVerificationToken',  token);
-                workParams.append('FinansalWorkSector',          parseInt(this.sektor)   || 0);
-                workParams.append('FinansalOccupationId',        parseInt(this.meslekId) || 0);
-                workParams.append('FinansalTotalWorkingTime',    this.suresi);
+                var calisiyor = this.calisma === 'calisiyor';
+                workParams.append('FinansalWorkSector',       calisiyor ? (parseInt(this.sektor)   || 0) : 0);
+                workParams.append('FinansalOccupationId',     calisiyor ? (parseInt(this.meslekId) || 0) : 0);
+                workParams.append('FinansalTotalWorkingTime', calisiyor ? this.suresi : '');
+
+                var salaryParams = new URLSearchParams();
+                salaryParams.append('__RequestVerificationToken', token);
+                salaryParams.append('FinansalSalaryBankCode', this.getBankValue());
+                salaryParams.append('FinansalSalaryDate',     new Date().toISOString().split('T')[0]);
 
                 try {
-                    var [maritalResp, workResp] = await Promise.all([
+                    var [maritalResp, workResp, salaryResp] = await Promise.all([
                         fetch('?handler=UpdateMaritalStatus', {
                             method:  'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -208,15 +229,21 @@
                             method:  'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                             body:    workParams
+                        }),
+                        fetch('?handler=UpdateSalary', {
+                            method:  'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body:    salaryParams
                         })
                     ]);
 
-                    var [maritalJson, workJson] = await Promise.all([
+                    var [maritalJson, workJson, salaryJson] = await Promise.all([
                         maritalResp.json(),
-                        workResp.json()
+                        workResp.json(),
+                        salaryResp.json()
                     ]);
 
-                    var success = maritalJson.success && workJson.success;
+                    var success = maritalJson.success && workJson.success && salaryJson.success;
 
                     Toastify({
                         text:     success ? 'Finansal profil güncellendi.' : 'Güncelleme başarısız, lütfen tekrar deneyin.',
