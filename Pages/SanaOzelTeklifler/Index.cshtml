@@ -7,9 +7,11 @@
 
 @section Styles {
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+    </style>
 }
 
-<div class="flex flex-col gap-6 text-[#101828] font-['Source_Sans_3',sans-serif]">
+<div class="flex flex-col gap-6 text-[#101828]" style="font-family: 'Source Sans 3', sans-serif;">
 
     <!-- Page bar -->
     <div class="flex justify-between items-center gap-6 pb-3 border-b border-[#DCE3FB]">
@@ -26,18 +28,19 @@
 
     <!-- Section header -->
     <header>
-        <h1 class="m-0 font-bold text-[30px] leading-9 text-[#101828] font-['Manrope',sans-serif]">@Model.PageTitle</h1>
+        <h1 class="m-0 font-bold text-[30px] leading-9 text-[#101828]" style="font-family: 'Manrope', sans-serif;">@Model.PageTitle</h1>
         <p class="mt-1 text-base leading-6 text-[#4A5565]">@Model.PageSubtitle</p>
     </header>
 
     <!-- Info banner -->
-    <section class="flex gap-3 p-5 px-6 border border-[#FEE685] rounded-[14px] bg-gradient-to-r from-[#FFFBEB] to-[#FFF7ED]"
+    <section class="flex gap-3 p-5 px-6 border border-[#FEE685] rounded-[14px]"
+             style="background: linear-gradient(90deg, #FFFBEB 0%, #FFF7ED 100%);"
              aria-label="Bilgilendirme">
         <span class="flex-none mt-0.5" aria-hidden="true">
             <img src="/icons/orange/Vector.svg" width="24" height="24" alt="">
         </span>
         <div>
-            <h3 class="m-0 mb-1 text-lg leading-7 font-semibold text-[#7B3306] font-['Manrope',sans-serif]">@Model.BannerTitle</h3>
+            <h3 class="m-0 mb-1 text-lg leading-7 font-semibold text-[#7B3306]" style="font-family: 'Manrope', sans-serif;">@Model.BannerTitle</h3>
             <p class="m-0 text-base leading-6 text-[#BB4D00]">@Model.BannerText</p>
         </div>
     </section>
@@ -52,10 +55,10 @@
                     <div class="flex justify-between items-start gap-6 mb-6">
                         <div>
                             <span class="inline-block px-3 py-1 rounded-full text-xs leading-4 font-medium bg-white/20">@offer.Badge</span>
-                            <h3 class="mt-3.5 mb-1 font-bold text-2xl leading-8 font-['Manrope',sans-serif]">@offer.Title</h3>
+                            <h3 class="mt-3.5 mb-1 font-bold text-2xl leading-8" style="font-family: 'Manrope', sans-serif;">@offer.Title</h3>
                             <p class="m-0 text-base leading-6 text-white/90">@offer.Subtitle</p>
                         </div>
-                        <img src="@offer.IconPath" width="32" height="32" class="opacity-80" alt="" aria-hidden="true">
+                        <img src="@offer.IconPath" width="32" height="32" style="opacity:0.8" alt="" aria-hidden="true">
                     </div>
                     <div class="grid grid-cols-3 gap-4">
                         <div>

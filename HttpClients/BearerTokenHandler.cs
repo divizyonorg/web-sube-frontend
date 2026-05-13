@@ -10,6 +10,9 @@ public class BearerTokenHandler : DelegatingHandler
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
+        if (request.Headers.Authorization is not null)
+            return base.SendAsync(request, cancellationToken);
+
         var context = _accessor.HttpContext;
         var authHeader = context?.Request.Headers.Authorization.ToString();
 

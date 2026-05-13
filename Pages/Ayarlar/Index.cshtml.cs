@@ -1,20 +1,13 @@
-<<<<<<< HEAD
-using Microsoft.AspNetCore.Mvc.RazorPages;
-=======
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyApp.Web.Services.Interfaces;
 using MyApp.Web.ViewModels;
 using MyApp.Web.ViewModels.Components;
->>>>>>> 0df707417253d89b65e5e402be09791ae848793f
 
 namespace MyApp.Web.Pages.Ayarlar;
 
 public class IndexModel : PageModel
 {
-<<<<<<< HEAD
-    public void OnGet() { }
-=======
     private readonly ICustomerDataService _customerDataService;
     private readonly IAuthService _authService;
 
@@ -191,5 +184,4 @@ public class IndexModel : PageModel
         var (success, _, message) = await _authService.VerifyOtpAsync(GuvenlikGsm, GuvenlikOtpCode);
         return new JsonResult(new { success, message });
     }
->>>>>>> 0df707417253d89b65e5e402be09791ae848793f
 }

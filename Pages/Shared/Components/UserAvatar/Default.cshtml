@@ -2,21 +2,35 @@
 
 <style>
     @@media (max-width: 767px) {
-        .ua-container    { width: 112.3px !important; }
-        .ua-profile-btn  { width: 64.31px !important; padding: 8px 12px !important; }
-        .ua-name-wrap    { display: none !important; }
-        .ua-chevron      { display: none !important; }
+        .ua-container        { width: 112.3px !important; }
+        .ua-profile-btn      { width: 64.31px !important; padding: 8px 12px !important; }
+        .ua-name-wrap        { display: none !important; }
+        .ua-chevron          { display: none !important; }
+        .ua-dropdown         { left: auto !important; right: 0 !important; }
+        .ua-notif-dropdown   { width: calc(100vw - 48px) !important; max-width: 340px !important; right: 0 !important; }
     }
+    .ua-dropdown, .ua-notif-dropdown {
+        animation: ua-fade-in 0.15s ease;
+    }
+    @@keyframes ua-fade-in {
+        from { opacity: 0; transform: translateY(-6px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .ua-menu-item:hover   { background: #F8FAFF; }
+    .ua-notif-item:hover  { background: rgba(239,246,255,0.6) !important; }
 </style>
 
 <div class="ua-container"
+     x-data="{ open: false, notifOpen: false }"
+     @@click.outside="open = false; notifOpen = false"
      style="position:relative;
             width:284.39px;
             height:56px;
             font-family:'Poppins',sans-serif;">
 
-    @* ── Bildirim butonu — 40×40, left:0 top:8 ── *@
+    @* ── Bildirim butonu ── *@
     <button type="button"
+            @@click="notifOpen = !notifOpen; open = false"
             style="position:absolute;
                    left:0; top:8px;
                    width:40px; height:40px;
@@ -26,13 +40,11 @@
                    padding:0;
                    cursor:pointer;">
 
-        @* Zil ikonu *@
         <img src="~/icons/white/bell-01.svg"
              width="24" height="24"
              alt=""
              style="position:absolute; left:8px; top:8px; display:block; pointer-events:none;">
 
-        @* Bildirim rozeti *@
         @if (Model.NotificationCount > 0)
         {
             <span style="position:absolute;
@@ -52,9 +64,10 @@
         }
     </button>
 
-    @* ── Profil butonu — desktop: 236px, mobil: 64px ── *@
+    @* ── Profil butonu ── *@
     <button type="button"
             class="ua-profile-btn"
+            @@click="open = !open; notifOpen = false"
             style="position:absolute;
                    left:48px; top:0;
                    box-sizing:border-box;
@@ -69,37 +82,321 @@
                    border-radius:9999px;
                    cursor:pointer;">
 
-        @* Profil resmi *@
         <img src="@(string.IsNullOrEmpty(Model.ProfileImageUrl) ? "/icons/navy/user-01.svg" : Model.ProfileImageUrl)"
              alt="Profil fotoğrafı"
-             style="width:38px;
-                    height:38px;
-                    border-radius:9999px;
-                    object-fit:cover;
-                    flex:none;
-                    flex-grow:0;">
+             style="width:38px; height:38px; border-radius:9999px; object-fit:cover; flex:none;">
 
-        @* İsim (masaüstü) *@
         <span class="ua-name-wrap"
-              style="display:flex; flex-direction:row; align-items:flex-start;
-                     padding:0; width:128.39px; height:24px;
-                     flex:none; order:1; flex-grow:1; overflow:hidden;">
-            <span style="width:129px; height:24px;
-                         font-family:'Poppins',sans-serif;
-                         font-weight:500; font-size:16px; line-height:24px;
-                         text-align:center; color:#003F75;
-                         white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                @Model.UserName
-            </span>
+              style="flex:1; min-width:0; overflow:hidden;
+                     font-family:'Poppins',sans-serif;
+                     font-weight:500; font-size:16px; line-height:24px;
+                     text-align:left; color:#003F75;
+                     white-space:nowrap; text-overflow:ellipsis;">
+            @Model.UserName
         </span>
 
-        @* Chevron (masaüstü) *@
         <img src="~/icons/blue/chevron-down.svg"
              width="20" height="20"
              alt=""
              class="ua-chevron"
-             style="flex:none; order:2; flex-grow:0; display:block; pointer-events:none;">
+             :style="open ? 'transform:rotate(180deg)' : 'transform:rotate(0deg)'"
+             style="flex:none; display:block; pointer-events:none; transition:transform 0.2s ease;">
 
     </button>
+
+    @* ── Bildirim dropdown paneli ── *@
+    <div class="ua-notif-dropdown"
+         x-show="notifOpen"
+         x-cloak
+         style="position:absolute;
+                width:340px;
+                right:236.39px; left:auto; top:68px;
+                z-index:100;
+                box-sizing:border-box;
+                display:flex;
+                flex-direction:column;
+                align-items:flex-start;
+                padding:1px;
+                background:#FFFFFF;
+                border:1px solid #DCE3FB;
+                box-shadow:0px 8px 32px rgba(0,0,0,0.14);
+                border-radius:16px;
+                overflow:hidden;">
+
+        @* Başlık satırı *@
+        <div style="display:flex;
+                    flex-direction:row;
+                    justify-content:space-between;
+                    align-items:center;
+                    padding:16px 20px;
+                    width:338px;
+                    height:55.5px;
+                    border-bottom:1px solid #F3F4F6;
+                    box-sizing:border-box;">
+            <span style="font-family:'Poppins',sans-serif;
+                         font-weight:600; font-size:15px; line-height:22px;
+                         color:#003F75;">
+                Bildirimler
+            </span>
+            @if (Model.NotificationCount > 0)
+            {
+                <span style="display:inline-flex; align-items:center; justify-content:center;
+                             padding:2px 8px;
+                             background:#E6F7FF; border-radius:9999px;">
+                    <span style="font-family:'Poppins',sans-serif;
+                                 font-weight:500; font-size:12px; line-height:16px;
+                                 color:#0056B3;">
+                        @Model.NotificationCount yeni
+                    </span>
+                </span>
+            }
+        </div>
+
+        @* Bildirim listesi *@
+        <div style="display:flex; flex-direction:column; width:338px;">
+
+            @* Bildirim 1 — Kredi onaylandı (okunmamış) *@
+            <div class="ua-notif-item"
+                 style="position:relative;
+                        width:338px; height:90.5px;
+                        background:rgba(239,246,255,0.3);
+                        border-bottom:1px solid #F9FAFB;
+                        box-sizing:border-box;
+                        cursor:pointer;">
+
+                <div style="position:absolute; left:20px; top:16px;
+                             width:36px; height:36px;
+                             background:#F0FDF4; border-radius:9999px;
+                             display:flex; align-items:center; justify-content:center;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M2 8C2 4.69 4.69 2 8 2s6 2.69 6 6-2.69 6-6 6-6-2.69-6-6z"
+                              stroke="#00A63E" stroke-width="1.33"/>
+                        <path d="M5.33 8l1.67 1.67 3.67-3.34"
+                              stroke="#00A63E" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+
+                <div style="position:absolute; left:68px; top:16px; width:230px;">
+                    <p style="margin:0; width:230px; height:20px;
+                              font-family:'Poppins',sans-serif; font-weight:500; font-size:13px;
+                              line-height:20px; color:#003F75; white-space:nowrap;
+                              overflow:hidden; text-overflow:ellipsis;">
+                        Kredi başvurunuz onaylandı
+                    </p>
+                    <p style="margin:0; position:absolute; top:21.5px;
+                              width:221px; height:16px;
+                              font-family:'Poppins',sans-serif; font-weight:400; font-size:12px;
+                              line-height:16px; color:#6A7282; white-space:nowrap;
+                              overflow:hidden; text-overflow:ellipsis;">
+                        İhtiyaç kredisi başvurunuz onaylandı.
+                    </p>
+                    <p style="margin:0; position:absolute; top:41.5px;
+                              font-family:'Poppins',sans-serif; font-weight:400; font-size:12px;
+                              line-height:16px; color:#99A1AF;">
+                        2 saat önce
+                    </p>
+                </div>
+
+                <span style="position:absolute; left:310px; top:22px;
+                             width:8px; height:8px;
+                             background:#0056B3; border-radius:9999px;
+                             display:block;"></span>
+            </div>
+
+            @* Bildirim 2 — Ödeme tarihi (okunmamış) *@
+            <div class="ua-notif-item"
+                 style="position:relative;
+                        width:338px; height:90.5px;
+                        background:rgba(239,246,255,0.3);
+                        border-bottom:1px solid #F9FAFB;
+                        box-sizing:border-box;
+                        cursor:pointer;">
+
+                <div style="position:absolute; left:20px; top:16px;
+                             width:36px; height:36px;
+                             background:#FEFCE8; border-radius:9999px;
+                             display:flex; align-items:center; justify-content:center;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 2L14 13.33H2L8 2z"
+                              stroke="#D08700" stroke-width="1.33" stroke-linejoin="round"/>
+                        <path d="M8 6.5v2.67"
+                              stroke="#D08700" stroke-width="1.33" stroke-linecap="round"/>
+                        <circle cx="8" cy="11.5" r="0.67" fill="#D08700"/>
+                    </svg>
+                </div>
+
+                <div style="position:absolute; left:68px; top:16px; width:230px;">
+                    <p style="margin:0; width:230px; height:20px;
+                              font-family:'Poppins',sans-serif; font-weight:500; font-size:13px;
+                              line-height:20px; color:#003F75; white-space:nowrap;
+                              overflow:hidden; text-overflow:ellipsis;">
+                        Ödeme tarihiniz yaklaşıyor
+                    </p>
+                    <p style="margin:0; position:absolute; top:21.5px;
+                              width:234px; height:16px;
+                              font-family:'Poppins',sans-serif; font-weight:400; font-size:12px;
+                              line-height:16px; color:#6A7282; white-space:nowrap;
+                              overflow:hidden; text-overflow:ellipsis;">
+                        Nisan 2026 taksit ödemesi 3 gün sonra.
+                    </p>
+                    <p style="margin:0; position:absolute; top:41.5px;
+                              font-family:'Poppins',sans-serif; font-weight:400; font-size:12px;
+                              line-height:16px; color:#99A1AF;">
+                        Dün
+                    </p>
+                </div>
+
+                <span style="position:absolute; left:310px; top:22px;
+                             width:8px; height:8px;
+                             background:#0056B3; border-radius:9999px;
+                             display:block;"></span>
+            </div>
+
+            @* Bildirim 3 — KUR Raporu (okunmuş) *@
+            <div class="ua-notif-item"
+                 style="position:relative;
+                        width:338px; height:90.5px;
+                        border-bottom:1px solid #F9FAFB;
+                        box-sizing:border-box;
+                        cursor:pointer;">
+
+                <div style="position:absolute; left:20px; top:16px;
+                             width:36px; height:36px;
+                             background:#EFF6FF; border-radius:9999px;
+                             display:flex; align-items:center; justify-content:center;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <rect x="2.67" y="1.33" width="10.67" height="13.33" rx="1.33"
+                              stroke="#155DFC" stroke-width="1.33"/>
+                        <path d="M5.33 5.33h5.33" stroke="#155DFC" stroke-width="1.33" stroke-linecap="round"/>
+                        <path d="M5.33 8h5.33"    stroke="#155DFC" stroke-width="1.33" stroke-linecap="round"/>
+                        <path d="M5.33 10.67h2.67" stroke="#155DFC" stroke-width="1.33" stroke-linecap="round"/>
+                    </svg>
+                </div>
+
+                <div style="position:absolute; left:68px; top:16px; width:250px;">
+                    <p style="margin:0; width:250px; height:20px;
+                              font-family:'Poppins',sans-serif; font-weight:500; font-size:13px;
+                              line-height:20px; color:#003F75; white-space:nowrap;
+                              overflow:hidden; text-overflow:ellipsis;">
+                        KUR Raporunuz hazır
+                    </p>
+                    <p style="margin:0; position:absolute; top:21.5px;
+                              width:250px; height:16px;
+                              font-family:'Poppins',sans-serif; font-weight:400; font-size:12px;
+                              line-height:16px; color:#6A7282; white-space:nowrap;
+                              overflow:hidden; text-overflow:ellipsis;">
+                        Mart 2026 kredi uygunluk raporunuz oluşturuldu.
+                    </p>
+                    <p style="margin:0; position:absolute; top:41.5px;
+                              font-family:'Poppins',sans-serif; font-weight:400; font-size:12px;
+                              line-height:16px; color:#99A1AF;">
+                        3 gün önce
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        @* Tümünü Gör butonu *@
+        <a href="/Bildirimler"
+           style="display:flex; align-items:center; justify-content:center;
+                  width:338px; height:44px; padding:12px 0;
+                  text-decoration:none; box-sizing:border-box;">
+            <span style="font-family:'Poppins',sans-serif;
+                         font-weight:500; font-size:14px; line-height:20px;
+                         color:#0056B3;">
+                Tümünü Gör
+            </span>
+        </a>
+
+    </div>
+
+    @* ── Profil dropdown paneli ── *@
+    <div class="ua-dropdown"
+         x-show="open"
+         x-cloak
+         style="position:absolute;
+                width:200px;
+                right:0; left:auto; top:68px;
+                z-index:100;
+                box-sizing:border-box;
+                display:flex;
+                flex-direction:column;
+                align-items:flex-start;
+                padding:1px;
+                background:#FFFFFF;
+                border:1px solid #DCE3FB;
+                box-shadow:0px 8px 32px rgba(0,0,0,0.14);
+                border-radius:16px;
+                overflow:hidden;">
+
+        @* Kullanıcı bilgi satırı *@
+        <div style="display:flex;
+                    flex-direction:row;
+                    align-items:center;
+                    padding:12px 16px;
+                    gap:12px;
+                    width:198px;
+                    height:60.5px;
+                    border-bottom:1px solid #F3F4F6;
+                    box-sizing:border-box;">
+
+            <img src="@(string.IsNullOrEmpty(Model.ProfileImageUrl) ? "/icons/navy/user-01.svg" : Model.ProfileImageUrl)"
+                 alt=""
+                 style="width:32px; height:32px; border-radius:9999px; object-fit:cover; flex:none;">
+
+            <div style="display:flex; flex-direction:column; align-items:flex-start; padding:0; gap:1px;">
+                <span style="font-family:'Poppins',sans-serif;
+                             font-weight:600; font-size:13px; line-height:20px;
+                             color:#003F75; white-space:nowrap;">
+                    @Model.UserName
+                </span>
+                @if (!string.IsNullOrEmpty(Model.UserRole))
+                {
+                    <span style="font-family:'Poppins',sans-serif;
+                                 font-weight:400; font-size:12px; line-height:16px;
+                                 color:#99A1AF;">
+                        @Model.UserRole
+                    </span>
+                }
+            </div>
+        </div>
+
+        @* Ayarlar *@
+        <a href="/Ayarlar"
+           class="ua-menu-item"
+           style="display:flex; flex-direction:row; align-items:center;
+                  width:198px; height:45px; padding:0 16px; gap:12px;
+                  text-decoration:none; box-sizing:border-box; cursor:pointer;">
+            <img src="~/icons/dark/settings-01.svg" width="16" height="16" alt="" style="flex:none;">
+            <span style="font-family:'Poppins',sans-serif;
+                         font-weight:400; font-size:14px; line-height:21px;
+                         color:#003F75;">
+                Ayarlar
+            </span>
+        </a>
+
+        @* Çıkış *@
+        <a href="/Account/Logout"
+           class="ua-menu-item"
+           style="display:flex; flex-direction:row; align-items:center;
+                  width:198px; height:46px; padding:0 16px; gap:12px;
+                  text-decoration:none; box-sizing:border-box;
+                  border-top:1px solid #F3F4F6; cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex:none;">
+                <path d="M6 14H3.33C2.98 14 2.64 13.86 2.39 13.61C2.14 13.36 2 13.02 2 12.67V3.33C2 2.98 2.14 2.64 2.39 2.39C2.64 2.14 2.98 2 3.33 2H6"
+                      stroke="#E53E3E" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10.67 11.33L14 8L10.67 4.67"
+                      stroke="#E53E3E" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 8H6" stroke="#E53E3E" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span style="font-family:'Poppins',sans-serif;
+                         font-weight:400; font-size:14px; line-height:21px;
+                         color:#E53E3E;">
+                Çıkış
+            </span>
+        </a>
+
+    </div>
 
 </div>
