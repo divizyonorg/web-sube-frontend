@@ -11,14 +11,18 @@ jobs:
     name: Test ve Preprod'u Development ile güncelle
     runs-on: ubuntu-latest
     steps:
-      - name: Kodu çek
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.PAT_TOKEN }}
+      - name: Test branch'ini Development SHA ile güncelle
+        run: |
+          curl -s -X PATCH \
+            -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/git/refs/heads/Test \
+            -d "{\"sha\": \"${{ github.sha }}\", \"force\": true}"
 
-      - name: Test branch'ini Development ile ezip güncelle
-        run: git push origin Development:Test --force
-
-      - name: Preprod branch'ini Development ile ezip güncelle
-        run: git push origin Development:Preprod --force
+      - name: Preprod branch'ini Development SHA ile güncelle
+        run: |
+          curl -s -X PATCH \
+            -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/git/refs/heads/Preprod \
+            -d "{\"sha\": \"${{ github.sha }}\", \"force\": true}"
