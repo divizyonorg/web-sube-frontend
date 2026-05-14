@@ -587,7 +587,7 @@
                     params.append('Tckn', this.tckn);
 
                     try {
-                        var resp = await fetch('/login?handler=SendOtp', {
+                        var resp = await fetch('/register?handler=SendOtp', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                             body: params
@@ -645,7 +645,7 @@
                     params.append('OtpCode', this.otpCode);
 
                     try {
-                        var resp = await fetch('/login?handler=VerifyOtp', {
+                        var resp = await fetch('/register?handler=VerifyOtp', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                             body: params
@@ -711,8 +711,10 @@
                         });
                         var json = await resp.json();
                         if (json.success) {
+                            localStorage.setItem('auth_token', json.token);
+                            document.cookie = 'auth_token=' + json.token + '; path=/; SameSite=Lax';
                             toast.success('Kaydınız başarıyla oluşturulmuştur.', { duration: 3000 });
-                            setTimeout(function () { window.location.href = '/login'; }, 1800);
+                            setTimeout(function () { window.location.href = '/anasayfa'; }, 1800);
                         } else {
                             var errMsg = json.message || 'Kayıt sırasında bir hata oluştu.';
                             toast.error(errMsg);
