@@ -215,8 +215,7 @@
 
     <script defer src="~/lib/alpinejs/cdn.min.js"></script>
     <script src="~/lib/imask/imask.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
+    <script src="~/js/toast.js" asp-append-version="true"></script>
     <script>
         function loginForm() {
             return {
@@ -311,25 +310,14 @@
                                 window.location.href = '/register';
                                 return;
                             }
+                            toast.success('SMS kodunuz gönderildi.');
                             this.step = 2;
                             this.startTimer();
                         } else {
-                            Toastify({
-                                text: json.message || 'SMS gönderilemedi. Lütfen tekrar deneyin.',
-                                duration: 4000,
-                                gravity: 'top',
-                                position: 'right',
-                                style: { background: '#ef4444' }
-                            }).showToast();
+                            toast.error(json.message || 'SMS gönderilemedi. Lütfen tekrar deneyin.');
                         }
                     } catch (_) {
-                        Toastify({
-                            text: 'Bağlantı hatası oluştu.',
-                            duration: 4000,
-                            gravity: 'top',
-                            position: 'right',
-                            style: { background: '#ef4444' }
-                        }).showToast();
+                        toast.error('Bağlantı hatası oluştu.');
                     } finally {
                         this.proceeding = false;
                     }
@@ -406,6 +394,7 @@
                             } else {
                                 localStorage.removeItem('remember_me');
                             }
+                            toast.success('Giriş başarılı, yönlendiriliyorsunuz...');
                             window.location.href = '/anasayfa';
                         } else if (json.tcknMismatch) {
                             clearInterval(this.timerInterval);
@@ -414,30 +403,12 @@
                             this.otpCode      = '';
                             this.tckn         = '';
                             if (this._tcknMask) { this._tcknMask.value = ''; this._tcknMask.updateValue(); }
-                            Toastify({
-                                text: json.message || 'TC bilgisi eşleşmemektedir.',
-                                duration: 4000,
-                                gravity: 'top',
-                                position: 'right',
-                                style: { background: '#ef4444' }
-                            }).showToast();
+                            toast.error(json.message || 'TC bilgisi eşleşmemektedir.');
                         } else {
-                            Toastify({
-                                text: json.message || 'Kod hatalı. Lütfen tekrar deneyin.',
-                                duration: 4000,
-                                gravity: 'top',
-                                position: 'right',
-                                style: { background: '#ef4444' }
-                            }).showToast();
+                            toast.error(json.message || 'Kod hatalı. Lütfen tekrar deneyin.');
                         }
                     } catch (_) {
-                        Toastify({
-                            text: 'Bağlantı hatası oluştu.',
-                            duration: 4000,
-                            gravity: 'top',
-                            position: 'right',
-                            style: { background: '#ef4444' }
-                        }).showToast();
+                        toast.error('Bağlantı hatası oluştu.');
                     } finally {
                         this.verifyingOtp = false;
                     }
