@@ -5,7 +5,9 @@
     ViewData["ActivePage"] = "Destek Merkezi";
 }
 
-<div class="font-[Poppins] flex flex-col gap-8">
+<div class="font-[Poppins] flex flex-col gap-8" x-data="destekMerkezi()">
+
+@Html.AntiForgeryToken()
 
     @* ── PageBar ── *@
     <div class="flex justify-between items-center pb-3 border-b border-[#DCE3FB]">
@@ -95,144 +97,62 @@
     <div class="flex flex-col gap-6">
         <h2 class="font-[Poppins] font-bold text-[24px] leading-[32px] text-[#101828] m-0">Sıkça Sorulan Sorular</h2>
 
-        <div class="flex flex-col gap-6">
-
-            @* Kredi Başvurusu *@
-            <div class="bg-white border border-[#E5E7EB] rounded-[14px] px-[25px] pt-[25px] pb-[16px] flex flex-col gap-4">
-                <div class="flex items-center gap-[7px]">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <circle cx="10" cy="10" r="8.5" stroke="#0056B3" stroke-width="1.667"/>
-                        <path d="M10 6V10.5" stroke="#0056B3" stroke-width="1.667" stroke-linecap="round"/>
-                        <circle cx="10" cy="13.5" r="0.75" fill="#0056B3"/>
-                    </svg>
-                    <h3 class="font-[Poppins] font-semibold text-[18px] leading-[27px] text-[#101828] m-0">Kredi Başvurusu</h3>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                    @{
-                        var krediSorulari = new[]
-                        {
-                            "Kredi başvurusu nasıl yapılır?",
-                            "Başvuru sonucu ne kadar sürede belli olur?",
-                            "Hangi belgeler gereklidir?"
-                        };
-                    }
-                    @foreach (var (soru, index) in krediSorulari.Select((s, i) => (s, i)))
-                    {
-                        <div class="border border-[#F3F4F6] rounded-[14px] overflow-hidden">
-                            <button type="button"
-                                    onclick="toggleAccordion(this)"
-                                    class="w-full flex justify-between items-center px-5 py-4 bg-white hover:bg-[#FAFAFA] transition-colors text-left">
-                                <span class="font-[Poppins] font-medium text-[16px] leading-[24px] text-[#1E2939]">@soru</span>
-                                <svg class="shrink-0 transition-transform duration-200" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="#0056B3" stroke-width="1.667" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                            <div class="hidden px-5 pb-4">
-                                <p class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565] m-0">
-                                    Bu konuyla ilgili destek ekibimiz size yardımcı olacaktır. Lütfen yukarıdaki iletişim kanallarından bize ulaşın.
-                                </p>
-                            </div>
+        @if (Model.SssKategoriler.Count == 0)
+        {
+            <p class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565]">Henüz soru bulunmamaktadır.</p>
+        }
+        else
+        {
+            <div class="flex flex-col gap-6">
+                @foreach (var kategori in Model.SssKategoriler)
+                {
+                    <div class="bg-white border border-[#E5E7EB] rounded-[14px] px-[25px] pt-[25px] pb-[16px] flex flex-col gap-4" data-topic-id="@kategori.Id">
+                        <div class="flex items-center gap-[7px]">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <circle cx="10" cy="10" r="8.5" stroke="#0056B3" stroke-width="1.667"/>
+                                <path d="M10 6V10.5" stroke="#0056B3" stroke-width="1.667" stroke-linecap="round"/>
+                                <circle cx="10" cy="13.5" r="0.75" fill="#0056B3"/>
+                            </svg>
+                            <h3 class="font-[Poppins] font-semibold text-[18px] leading-[27px] text-[#101828] m-0">@kategori.Baslik</h3>
                         </div>
-                    }
-                </div>
-            </div>
 
-            @* Ödeme İşlemleri *@
-            <div class="bg-white border border-[#E5E7EB] rounded-[14px] px-[25px] pt-[25px] pb-[16px] flex flex-col gap-4">
-                <div class="flex items-center gap-[7px]">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <circle cx="10" cy="10" r="8.5" stroke="#0056B3" stroke-width="1.667"/>
-                        <path d="M10 6V10.5" stroke="#0056B3" stroke-width="1.667" stroke-linecap="round"/>
-                        <circle cx="10" cy="13.5" r="0.75" fill="#0056B3"/>
-                    </svg>
-                    <h3 class="font-[Poppins] font-semibold text-[18px] leading-[27px] text-[#101828] m-0">Ödeme İşlemleri</h3>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                    @{
-                        var odemeSorulari = new[]
-                        {
-                            "Kredi ödememi nasıl yapabilirim?",
-                            "Otomatik ödeme talimatı nasıl veririm?",
-                            "Erken ödeme yapabilir miyim?"
-                        };
-                    }
-                    @foreach (var soru in odemeSorulari)
-                    {
-                        <div class="border border-[#F3F4F6] rounded-[14px] overflow-hidden">
-                            <button type="button"
-                                    onclick="toggleAccordion(this)"
-                                    class="w-full flex justify-between items-center px-5 py-4 bg-white hover:bg-[#FAFAFA] transition-colors text-left">
-                                <span class="font-[Poppins] font-medium text-[16px] leading-[24px] text-[#1E2939]">@soru</span>
-                                <svg class="shrink-0 transition-transform duration-200" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="#0056B3" stroke-width="1.667" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                            <div class="hidden px-5 pb-4">
-                                <p class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565] m-0">
-                                    Bu konuyla ilgili destek ekibimiz size yardımcı olacaktır. Lütfen yukarıdaki iletişim kanallarından bize ulaşın.
-                                </p>
-                            </div>
+                        <div class="flex flex-col gap-2">
+                            @foreach (var soru in kategori.Sorular)
+                            {
+                                <div class="border border-[#F3F4F6] rounded-[14px] overflow-hidden">
+                                    <button type="button"
+                                            onclick="toggleAccordion(this)"
+                                            class="w-full flex justify-between items-center px-5 py-4 bg-white hover:bg-[#FAFAFA] transition-colors text-left">
+                                        <span class="font-[Poppins] font-medium text-[16px] leading-[24px] text-[#1E2939]">@soru.Soru</span>
+                                        <svg class="shrink-0 transition-transform duration-200" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                            <path d="M5 7.5L10 12.5L15 7.5" stroke="#0056B3" stroke-width="1.667" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </button>
+                                    <div class="hidden px-5 pb-4">
+                                        <div class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565]">
+                                            @Html.Raw(soru.Cevap)
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
-                    }
-                </div>
+                    </div>
+                }
             </div>
-
-            @* Hesap Yönetimi *@
-            <div class="bg-white border border-[#E5E7EB] rounded-[14px] px-[25px] pt-[25px] pb-[16px] flex flex-col gap-4">
-                <div class="flex items-center gap-[7px]">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <circle cx="10" cy="10" r="8.5" stroke="#0056B3" stroke-width="1.667"/>
-                        <path d="M10 6V10.5" stroke="#0056B3" stroke-width="1.667" stroke-linecap="round"/>
-                        <circle cx="10" cy="13.5" r="0.75" fill="#0056B3"/>
-                    </svg>
-                    <h3 class="font-[Poppins] font-semibold text-[18px] leading-[27px] text-[#101828] m-0">Hesap Yönetimi</h3>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                    @{
-                        var hesapSorulari = new[]
-                        {
-                            "Sisteme nasıl giriş yapabilirim?",
-                            "İletişim bilgilerimi nasıl güncellerim?",
-                            "Hesabımı nasıl kapatırım?"
-                        };
-                    }
-                    @foreach (var soru in hesapSorulari)
-                    {
-                        <div class="border border-[#F3F4F6] rounded-[14px] overflow-hidden">
-                            <button type="button"
-                                    onclick="toggleAccordion(this)"
-                                    class="w-full flex justify-between items-center px-5 py-4 bg-white hover:bg-[#FAFAFA] transition-colors text-left">
-                                <span class="font-[Poppins] font-medium text-[16px] leading-[24px] text-[#1E2939]">@soru</span>
-                                <svg class="shrink-0 transition-transform duration-200" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="#0056B3" stroke-width="1.667" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                            <div class="hidden px-5 pb-4">
-                                <p class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565] m-0">
-                                    Bu konuyla ilgili destek ekibimiz size yardımcı olacaktır. Lütfen yukarıdaki iletişim kanallarından bize ulaşın.
-                                </p>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-
-        </div>
+        }
     </div>
 
-    @* ── Açık Destek Kayıtları ── *@
+    @* ── Destek Talepleri ── *@
     <div class="flex flex-col gap-4">
 
         @* Başlık + Buton *@
         <div class="flex justify-between items-start">
             <div class="flex flex-col gap-1">
-                <h2 class="font-[Poppins] font-bold text-[24px] leading-[32px] text-[#101828] m-0">Açık Destek Kayıtları</h2>
+                <h2 class="font-[Poppins] font-bold text-[24px] leading-[32px] text-[#101828] m-0">Destek Taleplerim</h2>
                 <p class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565] m-0">Mevcut destek talepleriniz</p>
             </div>
             <button type="button"
+                    @@click="openModal(0)"
                     class="flex items-center gap-2 bg-[#0056B3] text-white font-[Poppins] font-medium text-[16px] leading-[24px] px-5 h-11 rounded-[14px] border-0 cursor-pointer hover:bg-[#00468f] transition-colors shadow-[0px_4px_10px_rgba(0,86,179,0.25)] shrink-0">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <path d="M10 4V16M4 10H16" stroke="white" stroke-width="1.667" stroke-linecap="round"/>
@@ -244,93 +164,100 @@
         @* Kayıt Listesi *@
         <div class="flex flex-col gap-3">
 
-            @* Kayıt 1 — Açık *@
-            <div class="bg-white border border-[#E5E7EB] rounded-[14px] px-[25px] py-[25px] flex justify-between items-start gap-4">
-                <div class="flex items-start gap-4 flex-1">
-                    <div class="w-[50px] h-[50px] rounded-[10px] bg-[#E6F7FF] border border-[#DCE3FB] flex items-center justify-center shrink-0">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <rect x="4" y="2" width="14" height="18" rx="2" stroke="#0056B3" stroke-width="2"/>
-                            <path d="M10 2V6H14" stroke="#0056B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M8 13H16M8 17H13" stroke="#0056B3" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                    <div class="flex flex-col gap-2 flex-1">
-                        <div class="flex items-center gap-3 flex-wrap">
-                            <span class="font-[Poppins] font-semibold text-[18px] leading-[27px] text-[#101828]">Kredi başvurusu hakkında bilgi</span>
-                            <span class="font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#1447E6] bg-[#DBEAFE] px-3 py-[3px] rounded-full">Açık</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565]">10 Nisan 2026</span>
-                            <span class="w-1 h-1 rounded-full bg-[#99A1AF] inline-block"></span>
-                            <span class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565]">Genel Soru</span>
-                        </div>
-                    </div>
+            @if (Model.DestekTalepleri.Count == 0)
+            {
+                <div class="bg-white border border-[#E5E7EB] rounded-[14px] px-[25px] py-[30px] flex items-center justify-center">
+                    <p class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565] m-0">Henüz destek talebiniz bulunmamaktadır.</p>
                 </div>
-                <button type="button" class="w-9 h-9 rounded-[10px] flex items-center justify-center hover:bg-[#F3F4F6] transition-colors border-0 bg-transparent cursor-pointer shrink-0">
+            }
+            else
+            {
+                @foreach (var talep in Model.DestekTalepleri)
+                {
+                    <div class="bg-white border border-[#E5E7EB] rounded-[14px] px-[25px] py-[25px] flex justify-between items-start gap-4">
+                        <div class="flex items-start gap-4 flex-1">
+                            <div class="w-[50px] h-[50px] rounded-[10px] bg-[#E6F7FF] border border-[#DCE3FB] flex items-center justify-center shrink-0">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <rect x="4" y="2" width="14" height="18" rx="2" stroke="#0056B3" stroke-width="2"/>
+                                    <path d="M10 2V6H14" stroke="#0056B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M8 13H16M8 17H13" stroke="#0056B3" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="flex flex-col gap-2 flex-1">
+                                <div class="flex items-center gap-3 flex-wrap">
+                                    <span class="font-[Poppins] font-semibold text-[18px] leading-[27px] text-[#101828]">@talep.KonuBasligi</span>
+                                    <span class="@talep.DurumBadgeClass">@talep.DurumLabel</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565]">@talep.Tarih</span>
+                                    @if (!string.IsNullOrEmpty(talep.AtananBirim))
+                                    {
+                                        <span class="w-1 h-1 rounded-full bg-[#99A1AF] inline-block"></span>
+                                        <span class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565]">@talep.AtananBirim</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="w-9 h-9 rounded-[10px] flex items-center justify-center hover:bg-[#F3F4F6] transition-colors border-0 bg-transparent cursor-pointer shrink-0">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M1.5 10C1.5 10 4.5 4 10 4C15.5 4 18.5 10 18.5 10C18.5 10 15.5 16 10 16C4.5 16 1.5 10 1.5 10Z" stroke="#6A7282" stroke-width="1.667"/>
+                                <circle cx="10" cy="10" r="2.5" stroke="#6A7282" stroke-width="1.667"/>
+                            </svg>
+                        </button>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+
+    @* ── Yeni Destek Talebi Modalı ── *@
+    <div x-show="modalOpen"
+         x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+         @@click.self="closeModal()">
+        <div class="bg-white w-full max-w-[520px] rounded-[24px] shadow-[0px_20px_60px_rgba(0,86,179,0.18),0px_4px_20px_rgba(0,0,0,0.1)] border border-[#DCE3FB] flex flex-col">
+
+            @* Başlık *@
+            <div class="flex items-center justify-between px-8 pt-7 pb-5 border-b border-[#F3F4F6]">
+                <div>
+                    <h3 class="font-[Poppins] font-semibold text-[20px] leading-[30px] text-[#101828] m-0">Yeni Destek Talebi</h3>
+                    <p class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565] m-0 mt-1">Talebinizi detaylı şekilde açıklayınız</p>
+                </div>
+                <button type="button"
+                        @@click="closeModal()"
+                        class="w-9 h-9 rounded-[10px] flex items-center justify-center hover:bg-[#F3F4F6] transition-colors border-0 bg-transparent cursor-pointer shrink-0">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M1.5 10C1.5 10 4.5 4 10 4C15.5 4 18.5 10 18.5 10C18.5 10 15.5 16 10 16C4.5 16 1.5 10 1.5 10Z" stroke="#6A7282" stroke-width="1.667"/>
-                        <circle cx="10" cy="10" r="2.5" stroke="#6A7282" stroke-width="1.667"/>
+                        <path d="M15 5L5 15M5 5L15 15" stroke="#6A7282" stroke-width="1.667" stroke-linecap="round"/>
                     </svg>
                 </button>
             </div>
 
-            @* Kayıt 2 — İşlemde *@
-            <div class="bg-white border border-[#E5E7EB] rounded-[14px] px-[25px] py-[25px] flex justify-between items-start gap-4">
-                <div class="flex items-start gap-4 flex-1">
-                    <div class="w-[50px] h-[50px] rounded-[10px] bg-[#E6F7FF] border border-[#DCE3FB] flex items-center justify-center shrink-0">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <rect x="4" y="2" width="14" height="18" rx="2" stroke="#0056B3" stroke-width="2"/>
-                            <path d="M10 2V6H14" stroke="#0056B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M8 13H16M8 17H13" stroke="#0056B3" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                    <div class="flex flex-col gap-2 flex-1">
-                        <div class="flex items-center gap-3 flex-wrap">
-                            <span class="font-[Poppins] font-semibold text-[18px] leading-[27px] text-[#101828]">Rapor indirme sorunu yaşıyorum</span>
-                            <span class="font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#A65F00] bg-[#FEF9C2] px-3 py-[3px] rounded-full">İşlemde</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565]">05 Nisan 2026</span>
-                            <span class="w-1 h-1 rounded-full bg-[#99A1AF] inline-block"></span>
-                            <span class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565]">Teknik Destek</span>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" class="w-9 h-9 rounded-[10px] flex items-center justify-center hover:bg-[#F3F4F6] transition-colors border-0 bg-transparent cursor-pointer shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M1.5 10C1.5 10 4.5 4 10 4C15.5 4 18.5 10 18.5 10C18.5 10 15.5 16 10 16C4.5 16 1.5 10 1.5 10Z" stroke="#6A7282" stroke-width="1.667"/>
-                        <circle cx="10" cy="10" r="2.5" stroke="#6A7282" stroke-width="1.667"/>
-                    </svg>
-                </button>
+            @* Form Alanı *@
+            <div class="px-8 py-6">
+                <label class="font-[Source_Sans_3] font-semibold text-[14px] leading-[20px] text-[#374151] block mb-2">
+                    Talep Detayı
+                </label>
+                <textarea x-model="detailText"
+                          placeholder="Sorununuzu veya talebinizi detaylı şekilde açıklayınız..."
+                          rows="5"
+                          class="w-full border border-[#D1D5DC] rounded-[10px] px-4 py-3 font-[Source_Sans_3] text-[14px] leading-[20px] text-[#1F2937] outline-none focus:border-[#0056B3] transition-colors resize-none"></textarea>
             </div>
 
-            @* Kayıt 3 — Kapatıldı *@
-            <div class="bg-white border border-[#E5E7EB] rounded-[14px] px-[25px] py-[25px] flex justify-between items-start gap-4">
-                <div class="flex items-start gap-4 flex-1">
-                    <div class="w-[50px] h-[50px] rounded-[10px] bg-[#E6F7FF] border border-[#DCE3FB] flex items-center justify-center shrink-0">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <rect x="4" y="2" width="14" height="18" rx="2" stroke="#0056B3" stroke-width="2"/>
-                            <path d="M10 2V6H14" stroke="#0056B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M8 13H16M8 17H13" stroke="#0056B3" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                    <div class="flex flex-col gap-2 flex-1">
-                        <div class="flex items-center gap-3 flex-wrap">
-                            <span class="font-[Poppins] font-semibold text-[18px] leading-[27px] text-[#101828]">Ödeme güncelleme talebi</span>
-                            <span class="font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#4A5565] bg-[#F3F4F6] px-3 py-[3px] rounded-full">Kapatıldı</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565]">28 Mart 2026</span>
-                            <span class="w-1 h-1 rounded-full bg-[#99A1AF] inline-block"></span>
-                            <span class="font-[Source_Sans_3] text-[14px] leading-[20px] text-[#4A5565]">İşlem Talebi</span>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" class="w-9 h-9 rounded-[10px] flex items-center justify-center hover:bg-[#F3F4F6] transition-colors border-0 bg-transparent cursor-pointer shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M1.5 10C1.5 10 4.5 4 10 4C15.5 4 18.5 10 18.5 10C18.5 10 15.5 16 10 16C4.5 16 1.5 10 1.5 10Z" stroke="#6A7282" stroke-width="1.667"/>
-                        <circle cx="10" cy="10" r="2.5" stroke="#6A7282" stroke-width="1.667"/>
-                    </svg>
+            @* Butonlar *@
+            <div class="flex gap-3 px-8 pb-7">
+                <button type="button"
+                        @@click="closeModal()"
+                        class="flex-1 h-11 rounded-[14px] border border-[#D1D5DC] bg-white font-[Poppins] font-medium text-[14px] leading-[20px] text-[#374151] cursor-pointer hover:bg-[#F9FAFB] transition-colors">
+                    İptal
+                </button>
+                <button type="button"
+                        @@click="submitTalebi()"
+                        :disabled="!detailText.trim() || sending"
+                        :class="(!detailText.trim() || sending) ? 'opacity-60 cursor-not-allowed' : 'hover:bg-[#00468f] cursor-pointer'"
+                        class="flex-1 h-11 rounded-[14px] bg-[#0056B3] text-white font-[Poppins] font-medium text-[14px] leading-[20px] border-0 transition-colors shadow-[0px_4px_10px_rgba(0,86,179,0.25)]">
+                    <span x-show="!sending">Gönder</span>
+                    <span x-show="sending" x-cloak>Gönderiliyor...</span>
                 </button>
             </div>
 
@@ -340,6 +267,9 @@
 </div>
 
 @section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
+
     <script>
         function toggleAccordion(btn) {
             const panel = btn.nextElementSibling;
@@ -354,5 +284,86 @@
                 icon.style.transform = 'rotate(180deg)';
             }
         }
+
+        function destekMerkezi() {
+            return {
+                modalOpen:    false,
+                parentTopicId: 0,
+                detailText:   '',
+                sending:      false,
+
+                openModal(topicId) {
+                    this.parentTopicId = topicId ?? 0;
+                    this.detailText    = '';
+                    this.modalOpen     = true;
+                },
+
+                closeModal() {
+                    this.modalOpen = false;
+                },
+
+                async submitTalebi() {
+                    if (!this.detailText.trim()) return;
+                    this.sending = true;
+
+                    const token  = document.querySelector('[name="__RequestVerificationToken"]').value;
+                    const params = new URLSearchParams();
+                    params.append('__RequestVerificationToken', token);
+                    params.append('parentTopicId', this.parentTopicId);
+                    params.append('detailText',    this.detailText.trim());
+
+                    try {
+                        const resp = await fetch('?handler=CreateTalebi', {
+                            method:  'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body:    params
+                        });
+
+                        const data = await resp.json();
+
+                        if (data.success) {
+                            this.modalOpen = false;
+                            Toastify({
+                                text:     'Destek talebiniz başarıyla oluşturuldu.',
+                                duration: 3000,
+                                gravity:  'top',
+                                position: 'right',
+                                style:    { background: '#22c55e' }
+                            }).showToast();
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            Toastify({
+                                text:     'Bir hata oluştu, lütfen tekrar deneyin.',
+                                duration: 3000,
+                                gravity:  'top',
+                                position: 'right',
+                                style:    { background: '#ef4444' }
+                            }).showToast();
+                        }
+                    } catch {
+                        Toastify({
+                            text:     'Bağlantı hatası, lütfen tekrar deneyin.',
+                            duration: 3000,
+                            gravity:  'top',
+                            position: 'right',
+                            style:    { background: '#ef4444' }
+                        }).showToast();
+                    } finally {
+                        this.sending = false;
+                    }
+                }
+            };
+        }
+
+        // SSS cevabı içindeki "Destek Talebi Oluştur" butonu için event delegation
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.id === 'createSupportApply') {
+                const topicEl = e.target.closest('[data-topic-id]');
+                const topicId = topicEl ? parseInt(topicEl.dataset.topicId) : 0;
+
+                const pageEl = document.querySelector('[x-data]');
+                if (pageEl) Alpine.$data(pageEl).openModal(topicId);
+            }
+        });
     </script>
 }

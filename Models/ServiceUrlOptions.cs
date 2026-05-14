@@ -12,4 +12,5 @@ public class ServiceUrls
     public ServiceEndpoint CustomerService { get; set; } = new();
     public ServiceEndpoint ReportService { get; set; } = new();
     public ServiceEndpoint EvdsService { get; set; } = new();
+    public ServiceEndpoint IcrmAnalyticsService { get; set; } = new();
 }
