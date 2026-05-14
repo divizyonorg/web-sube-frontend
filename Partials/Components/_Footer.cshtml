@@ -1,7 +1,16 @@
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model MyApp.Web.ViewModels.Components.FooterViewModel
-@{ Layout = null; }
 
-@* Global footer — içerik ve stillendirme detayları daha sonra eklenecek. *@
-<footer>
+<footer class="site-footer">
+    <div class="site-footer__inner">
+        <div class="site-footer__top">
+            <span class="site-footer__trust">@Model.TrustText</span>
+            <div class="site-footer__logos">
+                <img src="~/images/bddk-logo.svg" alt="BDDK" class="site-footer__bddk" />
+            </div>
+            <span class="site-footer__brand">@Model.BrandText</span>
+        </div>
+        <div class="site-footer__legal">
+            <p>@Model.LegalText</p>
+        </div>
+    </div>
 </footer>
