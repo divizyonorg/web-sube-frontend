@@ -66,9 +66,52 @@ public class MockCustomerDataService : ICustomerDataService
     public Task<bool> UpdateKvkkAsync(int channelId, bool email, bool sms, bool call, bool adress, CancellationToken cancellationToken = default)
         => Task.FromResult(true);
 
+    public Task<MaritalStatusViewModel> GetMaritalStatusAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(new MaritalStatusViewModel
+        {
+            IsMarried = false,
+            IsWorking = false,
+            WSalaryAmount = 0
+        });
+
     public Task<bool> UpdateMaritalStatusAsync(bool maritalStatus, bool isWorking, decimal wSalaryAmount, CancellationToken cancellationToken = default)
         => Task.FromResult(true);
 
     public Task<bool> UpdateWorkAsync(int workSector, int occupationId, string totalWorkingTime, CancellationToken cancellationToken = default)
+        => Task.FromResult(true);
+
+    public Task<bool> GetWorkStatusAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(false);
+
+    public Task<(int WorkSector, int OccupationId, string TotalWorkingTime)> GetWorkDetailsAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult((0, 0, string.Empty));
+
+    public Task<string> GetSalaryBankCodeAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(string.Empty);
+
+    public Task<List<DestekTalebiViewModel>> GetDestekTalebiGecmisiAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult<List<DestekTalebiViewModel>>(
+        [
+            new()
+            {
+                Id = 1,
+                KonuBasligi = "Kredi başvurusu hakkında bilgi",
+                DurumLabel = "Açık",
+                DurumBadgeClass = "font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#1447E6] bg-[#DBEAFE] px-3 py-[3px] rounded-full",
+                Tarih = "10 Nisan 2026",
+                AtananBirim = "Genel Soru"
+            },
+            new()
+            {
+                Id = 2,
+                KonuBasligi = "Rapor indirme sorunu yaşıyorum",
+                DurumLabel = "İşlemde",
+                DurumBadgeClass = "font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#A65F00] bg-[#FEF9C2] px-3 py-[3px] rounded-full",
+                Tarih = "05 Nisan 2026",
+                AtananBirim = "Teknik Destek"
+            }
+        ]);
+
+    public Task<bool> CreateDestekTalebiAsync(int parentTopicId, string detailText, CancellationToken cancellationToken = default)
         => Task.FromResult(true);
 }

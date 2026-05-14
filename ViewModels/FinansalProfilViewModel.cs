@@ -11,8 +11,15 @@ public class FinansalProfilViewModel
     public int OccupationId { get; set; }
     public string TotalWorkingTime { get; set; } = string.Empty;
 
+    // Çalışma durumu
+    public bool IsEmployed { get; set; }
+
     // Gelir
     public decimal SalaryAmount { get; set; }
+
+    // Maaş bankası
+    public string SalaryBankCode { get; set; } = string.Empty;
+    public List<LookupItemViewModel> SalaryBanks { get; set; } = [];
 
     // Medeni durum
     public bool IsMarried { get; set; }
