@@ -19,4 +19,6 @@ public interface ICustomerDataService
     Task<bool> GetWorkStatusAsync(CancellationToken cancellationToken = default);
     Task<(int WorkSector, int OccupationId, string TotalWorkingTime)> GetWorkDetailsAsync(CancellationToken cancellationToken = default);
     Task<string> GetSalaryBankCodeAsync(CancellationToken cancellationToken = default);
+    Task<List<DestekTalebiViewModel>> GetDestekTalebiGecmisiAsync(CancellationToken cancellationToken = default);
+    Task<bool> CreateDestekTalebiAsync(int parentTopicId, string detailText, CancellationToken cancellationToken = default);
 }

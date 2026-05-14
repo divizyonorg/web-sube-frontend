@@ -25,6 +25,11 @@ public class CustomerDataService : ICustomerDataService
 
         public static string DynamicData(string moduleType, int page = 1)
             => $"/api/customers/dynamic-data?module_type={moduleType}&page={page}";
+
+        public static string DestekTalebiGecmisi(int customerId)
+            => $"/support/customer/{customerId}";
+
+        public const string CreateDestekTalebi = "/support/";
     }
 
     public CustomerDataService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, ILogger<CustomerDataService> logger)
@@ -237,6 +242,74 @@ public class CustomerDataService : ICustomerDataService
         var normalized = Regex.Replace(gsm ?? "", @"\D", "");
         var request = new UpdateGsmRequest { Gsm = normalized };
         return await ApiClient.PostJsonAsync(_httpClient, Endpoints.FindeksGsm, request, cancellationToken);
+    }
+
+    public async Task<List<DestekTalebiViewModel>> GetDestekTalebiGecmisiAsync(CancellationToken cancellationToken = default)
+    {
+        AttachToken();
+        var customerId = GetCustomerIdFromCookie();
+        if (customerId <= 0) return [];
+
+        var dtos = await ApiClient.GetJsonAsync<List<DestekTalebiDto>>(
+            _httpClient, Endpoints.DestekTalebiGecmisi(customerId), cancellationToken) ?? [];
+
+        return dtos.Select(MapToDestekTalebiViewModel).ToList();
+    }
+
+    public async Task<bool> CreateDestekTalebiAsync(int parentTopicId, string detailText, CancellationToken cancellationToken = default)
+    {
+        AttachToken();
+        var customerId = GetCustomerIdFromCookie();
+        var request = new CreateDestekTalebiRequest
+        {
+            IsRegistered = true,
+            CustomerId = customerId,
+            ParentTopicId = parentTopicId,
+            DetailText = detailText
+        };
+        return await ApiClient.PostJsonAsync(_httpClient, Endpoints.CreateDestekTalebi, request, cancellationToken);
+    }
+
+    private int GetCustomerIdFromCookie()
+    {
+        var token = _httpContextAccessor.HttpContext?.Request.Cookies["auth_token"];
+        if (string.IsNullOrEmpty(token)) return 0;
+
+        var parts = token.Split('.');
+        if (parts.Length != 3) return 0;
+
+        try
+        {
+            var payload = parts[1];
+            var padded = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
+            var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(padded));
+            using var doc = JsonDocument.Parse(json);
+            return doc.RootElement.TryGetProperty("cid", out var cid) ? cid.GetInt32() : 0;
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
+    private static DestekTalebiViewModel MapToDestekTalebiViewModel(DestekTalebiDto dto)
+    {
+        var (label, badgeClass) = dto.Durum switch
+        {
+            "Kayıt Alındı" => ("Açık", "font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#1447E6] bg-[#DBEAFE] px-3 py-[3px] rounded-full"),
+            "Çözüldü / Tamamlandı" => ("Kapatıldı", "font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#4A5565] bg-[#F3F4F6] px-3 py-[3px] rounded-full"),
+            _ => ("İşlemde", "font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#A65F00] bg-[#FEF9C2] px-3 py-[3px] rounded-full")
+        };
+
+        return new DestekTalebiViewModel
+        {
+            Id = dto.Id,
+            KonuBasligi = dto.KonuBasligi,
+            DurumLabel = label,
+            DurumBadgeClass = badgeClass,
+            Tarih = dto.DestekTarihi.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR")),
+            AtananBirim = dto.AtananBirim ?? string.Empty
+        };
     }
 
 }
