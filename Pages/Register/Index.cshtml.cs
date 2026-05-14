@@ -7,9 +7,11 @@ using MyApp.Web.Services.Interfaces;
 
 namespace MyApp.Web.Pages.Register;
 
+[IgnoreAntiforgeryToken]
 public class IndexModel : PageModel
 {
     private readonly ICustomerRegistrationService _registrationService;
+    private readonly IAuthService _authService;
     private readonly ILogger<IndexModel> _logger;
 
     [BindProperty] public string? FirstName { get; set; }
@@ -18,6 +20,7 @@ public class IndexModel : PageModel
     [BindProperty] public string? BirthDate { get; set; }
     [BindProperty] public string? Tckn { get; set; }
     [BindProperty] public string? PhoneNumber { get; set; }
+    [BindProperty] public string? OtpCode { get; set; }
     [BindProperty] public bool ConsentOpenRiza { get; set; }
     [BindProperty] public bool ConsentAydinlatma { get; set; }
     [BindProperty] public bool ConsentIleti { get; set; }
@@ -25,13 +28,32 @@ public class IndexModel : PageModel
     [BindProperty] public bool ConsentEposta { get; set; }
     [BindProperty] public bool ConsentArama { get; set; }
 
-    public IndexModel(ICustomerRegistrationService registrationService, ILogger<IndexModel> logger)
+    public IndexModel(ICustomerRegistrationService registrationService, IAuthService authService, ILogger<IndexModel> logger)
     {
         _registrationService = registrationService;
+        _authService = authService;
         _logger = logger;
     }
 
     public IActionResult OnGet() => Page();
+
+    public async Task<IActionResult> OnPostSendOtpAsync()
+    {
+        _logger.LogInformation("Register SendOtp: Phone='{Phone}'", PhoneNumber);
+        var (success, message, isCustomer) = await _authService.SendOtpAsync(PhoneNumber!);
+        return new JsonResult(new { success, message, isCustomer });
+    }
+
+    public async Task<IActionResult> OnPostVerifyOtpAsync()
+    {
+        _logger.LogInformation("Register VerifyOtp: Phone='{Phone}'", PhoneNumber);
+        var (success, token, message) = await _authService.VerifyOtpAsync(PhoneNumber!, OtpCode!);
+
+        if (!success)
+            return new JsonResult(new { success = false, message });
+
+        return new JsonResult(new { success = true, token });
+    }
 
     public async Task<IActionResult> OnPostRegisterAsync()
     {
@@ -70,7 +92,7 @@ public class IndexModel : PageModel
         if (!contactSuccess)
             _logger.LogWarning("Contact güncelleme başarısız: {Message}", contactMessage);
 
-        return new JsonResult(new { success = true });
+        return new JsonResult(new { success = true, token = newToken });
     }
 
     // "23/05/2003" → "2003-05-23"

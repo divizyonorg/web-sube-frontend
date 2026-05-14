@@ -33,7 +33,8 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\Pages\\\\Shared\\\\Components\" -ErrorAction SilentlyContinue)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\Pages\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\) {\"Folder\"} else {\"File\"}}} | Format-Table -AutoSize)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\Partials\" -Force -Recurse | Select-Object FullName | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\\", \"\"\\) })",
-      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\Pages\" -Directory | ForEach-Object { $_.Name } | Sort-Object)"
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\Pages\" -Directory | ForEach-Object { $_.Name } | Sort-Object)",
+      "Bash(grep -E \"\\\\.\\(cs|cshtml\\)$\")"
     ]
   }
 }
