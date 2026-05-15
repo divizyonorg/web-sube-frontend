@@ -219,8 +219,8 @@
                             @if (report.IsReady)
                             {
                                 var kurDetayUrl = string.IsNullOrEmpty(report.Rid)
-                                    ? "/KrediRaporlari/KurDetay"
-                                    : $"/KrediRaporlari/KurDetay?rid={report.Rid}";
+                                    ? "/KrediRaporlari/KurDetay?tab=kisisel"
+                                    : $"/KrediRaporlari/KurDetay?rid={report.Rid}&tab=kisisel";
                                 @if (isFirst)
                                 {
                                     <a href="@kurDetayUrl" class="flex items-center gap-2 bg-[#0056B3] hover:bg-[#004799] text-white font-['Source_Sans_3'] text-sm font-medium rounded-[10px] px-4 py-2 transition-colors">
