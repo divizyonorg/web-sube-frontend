@@ -1,11 +1,12 @@
 @model MyApp.Web.Pages.Ayarlar.IndexModel
 @{ Layout = null; }
 
-<div class="bg-white border border-[#E5E7EB] rounded-[14px] p-[33px] font-[Poppins]">
+<div class="bg-white border border-[#E5E7EB] rounded-[14px] p-[33px] font-[Poppins]"
+     x-data="profilBilgileriForm()">
 
     <p class="font-[Manrope] font-bold text-[20px] text-[#101828] mb-5">Profil Bilgileri</p>
 
-    <form id="profil-form" method="post" asp-page-handler="UpdateContact">
+    <form x-ref="form" method="post" asp-page-handler="UpdateContact">
         @Html.AntiForgeryToken()
 
         <div class="flex flex-col gap-4">
@@ -45,6 +46,7 @@
                      class="border rounded-[10px] bg-white transition-colors h-[50px] flex items-center gap-3 px-[15px] pr-4">
                     <img src="~/icons/gray/phone.svg" width="20" height="20" alt="" class="shrink-0">
                     <input type="tel"
+                           id="profilGsmInput"
                            name="ProfilGsm"
                            value="@Model.Settings.Profil.Phone"
                            @@focus="focused = true" @@blur="focused = false"
@@ -56,8 +58,9 @@
 
         @* Kaydet *@
         <div class="mt-5">
-            <button type="submit"
-                    id="profil-kaydet-btn"
+            <button type="button"
+                    :disabled="submitting"
+                    x-on:click="submit()"
                     class="flex items-center gap-2 h-12 bg-[#0056B3] text-white border-0 rounded-[10px] px-5 font-[Source_Sans_3] font-medium text-[16px] cursor-pointer transition-colors hover:bg-[#003F75] disabled:opacity-60 disabled:cursor-not-allowed">
                 <img src="~/icons/white/save-02.svg" width="16" height="16" alt="">
                 Kaydet
@@ -68,51 +71,37 @@
 
 </div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-<script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
-
 <script>
-    document.getElementById('profil-form').addEventListener('submit', async function (e) {
-        e.preventDefault();
+    function profilBilgileriForm() {
+        return {
+            submitting: false,
 
-        const btn = document.getElementById('profil-kaydet-btn');
-        btn.disabled = true;
+            init() {
+                var el = document.getElementById('profilGsmInput');
+                if (!el) return;
+                var digits = el.value.replace(/\D/g, '');
+                if (digits.length === 10) digits = '0' + digits;
+                var mask = IMask(el, { mask: '0000 000 00 00' });
+                mask.unmaskedValue = digits;
+            },
 
-        try {
-            const resp = await fetch(e.target.action, {
-                method: 'POST',
-                body: new FormData(e.target)
-            });
-
-            const result = await resp.json();
-
-            if (result.success) {
-                Toastify({
-                    text: "Profil bilgileri güncellendi.",
-                    duration: 3000,
-                    gravity: "top",
-                    position: "right",
-                    style: { background: "#22c55e" }
-                }).showToast();
-            } else {
-                Toastify({
-                    text: "Güncelleme başarısız, lütfen tekrar deneyin.",
-                    duration: 3000,
-                    gravity: "top",
-                    position: "right",
-                    style: { background: "#ef4444" }
-                }).showToast();
+            async submit() {
+                this.submitting = true;
+                try {
+                    const form = this.$refs.form;
+                    const resp = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form)
+                    });
+                    const result = await resp.json();
+                    if (result.success) toast.success('Profil bilgileri güncellendi.');
+                    else toast.error('Güncelleme başarısız, lütfen tekrar deneyin.');
+                } catch {
+                    toast.error('Bir hata oluştu, lütfen tekrar deneyin.');
+                } finally {
+                    this.submitting = false;
+                }
             }
-        } catch {
-            Toastify({
-                text: "Bir hata oluştu, lütfen tekrar deneyin.",
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-                style: { background: "#ef4444" }
-            }).showToast();
-        } finally {
-            btn.disabled = false;
-        }
-    });
+        };
+    }
 </script>
