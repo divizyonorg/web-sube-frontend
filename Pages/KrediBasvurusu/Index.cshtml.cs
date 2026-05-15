@@ -72,8 +72,8 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostApplyCouponAsync(CancellationToken ct)
     {
-        var (success, message) = await _reportService.ApplyCouponAsync(Rid, CouponCode, ct);
-        return new JsonResult(new { success, message });
+        var (success, message, finalAmount, discountAmount) = await _reportService.ApplyCouponAsync(Rid, CouponCode, ct);
+        return new JsonResult(new { success, message, finalAmount, discountAmount });
     }
 
     public async Task<IActionResult> OnPostVerifyOtpAsync(CancellationToken ct)
