@@ -83,7 +83,7 @@ public class UygunlukSeridiViewModel
         new()
         {
             Baslik         = "Aylık Nakit Akışı Dengesi",
-            IkonYolu       = "~/icons/coins-stacked-03.svg",
+            IkonYolu       = "~/icons/Outher/coins-stacked-03.svg",
             DolulukYuzdesi = 95,
             LeftLabel      = "%95 Dolu",
             Aciklama       = ["Gelirinin %90'ı borçlara gidiyor.", "Bu, bankalar için 'yeni kredi alanı yok' demektir."]
@@ -91,7 +91,7 @@ public class UygunlukSeridiViewModel
         new()
         {
             Baslik         = "Yasal Kart Limit Kotası",
-            IkonYolu       = "~/icons/credit-card-01.svg",
+            IkonYolu       = "~/icons/Outher/credit-card-01.svg",
             DolulukYuzdesi = 85,
             LeftLabel      = "%85 Dolu",
             Aciklama       = ["Yasal kart limit kotası dolmak üzere.", "Yeni kart veya limit artışı şu an mümkün değil."]
@@ -99,7 +99,7 @@ public class UygunlukSeridiViewModel
         new()
         {
             Baslik         = "Kredi Limit Kullanım Oranı",
-            IkonYolu       = "~/icons/scales-01.svg",
+            IkonYolu       = "~/icons/Outher/scales-01.svg",
             DolulukYuzdesi = 95,
             LeftLabel      = "%95 Dolu",
             Aciklama       = ["Kredi limitlerinin %85'ini kullanıyorsun.", "Bu durum kredi profilini olumsuz etkiliyor."]
