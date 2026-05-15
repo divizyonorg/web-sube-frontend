@@ -87,6 +87,7 @@
              style="width:38px; height:38px; border-radius:9999px; object-fit:cover; flex:none;">
 
         <span class="ua-name-wrap"
+              data-user-name
               style="flex:1; min-width:0; overflow:hidden;
                      font-family:'Poppins',sans-serif;
                      font-weight:500; font-size:16px; line-height:24px;
@@ -346,7 +347,8 @@
                  style="width:32px; height:32px; border-radius:9999px; object-fit:cover; flex:none;">
 
             <div style="display:flex; flex-direction:column; align-items:flex-start; padding:0; gap:1px;">
-                <span style="font-family:'Poppins',sans-serif;
+                <span data-user-name
+                      style="font-family:'Poppins',sans-serif;
                              font-weight:600; font-size:13px; line-height:20px;
                              color:#003F75; white-space:nowrap;">
                     @Model.UserName
@@ -377,12 +379,13 @@
         </a>
 
         @* Çıkış *@
-        <a href="/Account/Logout"
-           class="ua-menu-item"
-           style="display:flex; flex-direction:row; align-items:center;
-                  width:198px; height:46px; padding:0 16px; gap:12px;
-                  text-decoration:none; box-sizing:border-box;
-                  border-top:1px solid #F3F4F6; cursor:pointer;">
+        <button type="button"
+                onclick="localStorage.removeItem('auth_token'); window.location.replace('/Login');"
+                class="ua-menu-item"
+                style="display:flex; flex-direction:row; align-items:center;
+                       width:198px; height:46px; padding:0 16px; gap:12px;
+                       background:none; border:none;
+                       border-top:1px solid #F3F4F6; cursor:pointer;">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex:none;">
                 <path d="M6 14H3.33C2.98 14 2.64 13.86 2.39 13.61C2.14 13.36 2 13.02 2 12.67V3.33C2 2.98 2.14 2.64 2.39 2.39C2.64 2.14 2.98 2 3.33 2H6"
                       stroke="#E53E3E" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
@@ -395,7 +398,7 @@
                          color:#E53E3E;">
                 Çıkış
             </span>
-        </a>
+        </button>
 
     </div>
 

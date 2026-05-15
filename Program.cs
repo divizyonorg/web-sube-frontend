@@ -24,6 +24,7 @@ if (useMockData)
     builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
     builder.Services.AddScoped<ICustomerDataService, MockCustomerDataService>();
     builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
+    builder.Services.AddScoped<ISssService, MockSssService>();
 }
 else
 {
@@ -33,6 +34,7 @@ else
     builder.Services.AddHttpClient<ICreditEligibilityService, CreditEligibilityService>(ConfigureClient(serviceUrls.CustomerService));
     builder.Services.AddHttpClient<ICustomerDataService, CustomerDataService>(ConfigureClient(serviceUrls.CustomerService));
     builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
+    builder.Services.AddHttpClient<ISssService, SssService>(ConfigureClient(serviceUrls.IcrmAnalyticsService));
 }
 
 builder.Services.AddHttpContextAccessor();
