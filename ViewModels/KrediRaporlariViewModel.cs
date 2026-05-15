@@ -10,6 +10,7 @@ public class KrediRaporlariViewModel
 
 public class ReportItemViewModel
 {
+    public string Rid { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string ReportNo { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
