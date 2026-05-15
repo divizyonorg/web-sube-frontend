@@ -29,30 +29,19 @@ public class KurDetayModel : PageModel
 
         if (ViewModel.ActiveTab == "kisisel")
         {
-            var mode = Request.Query["mode"].ToString();
             var rid = Request.Query["rid"].ToString();
 
-            if (mode == "analiz")
+            if (!string.IsNullOrWhiteSpace(rid))
             {
-                var (success, message, rapor) = await _reportService.AnalizUretAsync(ct);
+                var (success, _, rapor) = await _reportService.GetAiReportAsync(rid, ct);
                 if (success && rapor is not null)
                     ViewModel.KisiselRapor = rapor;
-                else
-                {
-                    ViewModel.IsError = true;
-                    ViewModel.ErrorMessage = message;
-                }
             }
-            else if (!string.IsNullOrWhiteSpace(rid))
+            else
             {
-                var (success, message, rapor) = await _reportService.GetAiReportAsync(rid, ct);
+                var (success, _, rapor) = await _reportService.AnalizUretAsync(ct);
                 if (success && rapor is not null)
                     ViewModel.KisiselRapor = rapor;
-                else
-                {
-                    ViewModel.IsError = true;
-                    ViewModel.ErrorMessage = message;
-                }
             }
         }
 
