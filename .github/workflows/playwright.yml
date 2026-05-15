@@ -2,7 +2,7 @@ name: E2E Canli Site Testleri
 
 on:
   push:
-    branches: [Development, Preprod]
+    branches: [Development, Preprod, ci/playwright-workflow, test/e2e-canli-rapor]
   pull_request:
     branches: [Preprod]
   schedule:
