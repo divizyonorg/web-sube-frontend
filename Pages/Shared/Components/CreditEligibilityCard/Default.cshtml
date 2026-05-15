@@ -16,31 +16,31 @@
             <span class="font-['Poppins'] text-[16px] font-medium text-[#003F75]">Kredi Uygunluk Durumun</span>
         </div>
 
-        @* Slider alanı: bar (15px) + boşluk + durum etiketi (33px) + ölçek etiketleri (14px) *@
-        <div class="relative w-full" style="height: 79px;">
+        @* Slider alanı *@
+        <div class="flex flex-col gap-2 px-2">
 
             @* Gradient bar *@
-            <div class="absolute left-0 right-0 h-[15px] rounded-full"
-                 style="top: 8px; background: linear-gradient(90deg, rgba(255,255,255,0.5) 0%, #37B8C7 20%, #2E6DF8 50%, #122B62 100%);">
+            <div class="relative w-full h-5 rounded-full overflow-visible">
+                <div class="absolute inset-0 rounded-full"
+                     style="background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);">
+                </div>
+                <div class="absolute top-1/2 -translate-y-1/2 w-[10px] h-[25px] bg-white shadow-[0px_1px_4px_rgba(0,0,0,0.2)] rounded-[6px]"
+                     style="left: calc(@Model.SliderPositionPercent% - 5px);"></div>
             </div>
 
-            @* Diamond thumb — bar merkezi ile dikey hizalı (bar merkezi top:15.5px, thumb merkezi top:3+12.5=15.5px) *@
-            <img src="~/icons/primary/slider-thumb.svg"
-                 class="absolute overflow-visible"
-                 style="left: calc(@Model.SliderPositionPercent% - 5px); top: 3px; width: 10px; height: 25px;"
-                 alt="" aria-hidden="true">
+            @* Durum etiketi — thumb pozisyonunda ortalı *@
+            <div class="relative w-full h-[28px]">
+                <span class="absolute font-['Poppins'] text-[22px] font-semibold text-[#1D459C] leading-none whitespace-nowrap"
+                      style="left: @(Model.SliderPositionPercent)%; top: 0; transform: translateX(-50%);">
+                    @Model.StatusLabel
+                </span>
+            </div>
 
-            @* Durum etiketi — Poppins 600 22px #1D459C; bar'ın altında, thumb pozisyonunda ortalı *@
-            <span class="absolute font-['Poppins'] text-[22px] font-semibold text-[#1D459C] leading-none whitespace-nowrap"
-                  style="left: @(Model.SliderPositionPercent)%; top: 36px; transform: translateX(-50%);">
-                @Model.StatusLabel
-            </span>
-
-            @* Ölçek etiketleri — Poppins 400 9px rgba(0,0,0,0.5); SVG'den: premium @0%, kritik @~70%, düşük @100% *@
-            <div class="absolute left-0 right-0 top-[57px] h-[14px]">
-                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50 left-0">premium</span>
-                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50 left-[70%] -translate-x-1/2">kritik</span>
-                <span class="absolute font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50 right-0">düşük</span>
+            @* Ölçek etiketleri *@
+            <div class="flex justify-between">
+                <span class="font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50">premium</span>
+                <span class="font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50">kritik</span>
+                <span class="font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50">düşük</span>
             </div>
 
         </div>
