@@ -213,25 +213,25 @@ public class ReportService : IReportService
     {
         var vm = new UygunlukSeridiViewModel
         {
-            UygunlukEtiketi       = MapUygunlukEtiketi(ui.ProfilSeviyesi),
+            UygunlukEtiketi = MapUygunlukEtiketi(ui.ProfilSeviyesi),
             MarkerPositionPercent = MapMarkerPosition(ui.ProfilSeviyesi),
-            AnalizVurgular        = string.IsNullOrWhiteSpace(ui.RaporBasligi?.AnaAnalizParagrafi)
+            AnalizVurgular = string.IsNullOrWhiteSpace(ui.RaporBasligi?.AnaAnalizParagrafi)
                 ? []
                 : [new AnalizVurguViewModel { Text = ui.RaporBasligi.AnaAnalizParagrafi, IsBold = false }],
-            BuSekildeBulgular     = string.IsNullOrWhiteSpace(ui.RaporBasligi?.GelecekProjeksiyonu)
+            BuSekildeBulgular = string.IsNullOrWhiteSpace(ui.RaporBasligi?.GelecekProjeksiyonu)
                 ? []
                 : [ui.RaporBasligi.GelecekProjeksiyonu],
-            NelerYapilabilir      = ui.NelerYapilabilirListesi,
-            OlumluNoktalar        = ui.GucluYanlar,
-            UyariKartlari         = ui.KritikUyariKartlari
+            NelerYapilabilir = ui.NelerYapilabilirListesi,
+            OlumluNoktalar = ui.GucluYanlar,
+            UyariKartlari = ui.KritikUyariKartlari
                 .Select(u => new UyariKartiViewModel
                 {
-                    Baslik   = u.Baslik,
+                    Baslik = u.Baslik,
                     Aciklama = u.Metin,
                     IsKritik = u.Baslik.Contains("kritik", StringComparison.OrdinalIgnoreCase)
                 })
                 .ToList(),
-            KrediTuruKartlari   = MapKrediTuruKartlari(ui.KrediOlasilikTahmini),
+            KrediTuruKartlari = MapKrediTuruKartlari(ui.KrediOlasilikTahmini),
             FinansalGostergeler = MapFinansalGostergeler(ui.FinansalGostergeler)
         };
         return new KisiselRaporViewModel { UygunlukSeridi = vm };
@@ -242,23 +242,23 @@ public class ReportService : IReportService
         var aiData = data.AiData!;
         var vm = new UygunlukSeridiViewModel
         {
-            UygunlukEtiketi       = MapUygunlukEtiketi(data.ProfilSeviyesi),
+            UygunlukEtiketi = MapUygunlukEtiketi(data.ProfilSeviyesi),
             MarkerPositionPercent = MapMarkerPosition(data.ProfilSeviyesi),
-            AnalizVurgular        = string.IsNullOrWhiteSpace(aiData.RaporOzeti)
+            AnalizVurgular = string.IsNullOrWhiteSpace(aiData.RaporOzeti)
                 ? []
                 : [new AnalizVurguViewModel { Text = aiData.RaporOzeti, IsBold = false }],
-            BuSekildeBulgular     = [],
-            NelerYapilabilir      = aiData.AksiyonPlani,
-            OlumluNoktalar        = aiData.OlumluEtkenler,
-            UyariKartlari         = aiData.RiskEtkenleri
+            BuSekildeBulgular = [],
+            NelerYapilabilir = aiData.AksiyonPlani,
+            OlumluNoktalar = aiData.OlumluEtkenler,
+            UyariKartlari = aiData.RiskEtkenleri
                 .Select(r => new UyariKartiViewModel
                 {
-                    Baslik   = r.Baslik,
+                    Baslik = r.Baslik,
                     Aciklama = r.Metin,
                     IsKritik = r.Baslik.Contains("kritik", StringComparison.OrdinalIgnoreCase)
                 })
                 .ToList(),
-            KrediTuruKartlari   = [],
+            KrediTuruKartlari = [],
             FinansalGostergeler = []
         };
         return new KisiselRaporViewModel { UygunlukSeridi = vm };
@@ -267,19 +267,19 @@ public class ReportService : IReportService
     private static int MapMarkerPosition(string profilSeviyesi) => profilSeviyesi.ToUpperInvariant() switch
     {
         "YÜKSEK" => 15,
-        "ORTA"   => 40,
+        "ORTA" => 40,
         "KRİTİK" => 65,
-        "DÜŞÜK"  => 88,
-        _        => 40
+        "DÜŞÜK" => 88,
+        _ => 40
     };
 
     private static string MapUygunlukEtiketi(string profilSeviyesi) => profilSeviyesi.ToUpperInvariant() switch
     {
         "YÜKSEK" => "yüksek",
-        "ORTA"   => "orta",
+        "ORTA" => "orta",
         "KRİTİK" => "kritik",
-        "DÜŞÜK"  => "düşük",
-        _        => "orta"
+        "DÜŞÜK" => "düşük",
+        _ => "orta"
     };
 
     private static List<KrediTuruKartViewModel> MapKrediTuruKartlari(AnalizKrediOlasilikDto? dto)
@@ -310,9 +310,9 @@ public class ReportService : IReportService
     private static string MapOlasilikEtiketi(string seviye) => seviye.ToUpperInvariant() switch
     {
         "YÜKSEK" => "yüksek",
-        "ORTA"   => "orta",
-        "DÜŞÜK"  => "düşük",
-        _        => "orta"
+        "ORTA" => "orta",
+        "DÜŞÜK" => "düşük",
+        _ => "orta"
     };
 
     private static bool IsYuksek(string seviye) =>
