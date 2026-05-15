@@ -2143,10 +2143,6 @@
     --tw-gradient-position: to right in oklab;
     background-image: linear-gradient(var(--tw-gradient-stops));
   }
-  .bg-gradient-to-tl {
-    --tw-gradient-position: to top left in oklab;
-    background-image: linear-gradient(var(--tw-gradient-stops));
-  }
   .bg-\[linear-gradient\(90deg\,\#0056B3_0\%\,\#2E6DF8_100\%\)\] {
     background-image: linear-gradient(90deg,#0056B3 0%,#2E6DF8 100%);
   }
@@ -2167,6 +2163,9 @@
   }
   .bg-\[linear-gradient\(190deg\,\#001E8A_6\.17\%\,\#0041C2_36\.85\%\,\#006EFF_71\.91\%\,\#2E88FF_93\.83\%\)\] {
     background-image: linear-gradient(190deg,#001E8A 6.17%,#0041C2 36.85%,#006EFF 71.91%,#2E88FF 93.83%);
+  }
+  .bg-\[linear-gradient\(342\.77deg\,\#2E6DF8_8\.17\%\,\#0056B3_91\.83\%\)\] {
+    background-image: linear-gradient(342.77deg,#2E6DF8 8.17%,#0056B3 91.83%);
   }
   .from-\[\#00C950\] {
     --tw-gradient-from: #00C950;
