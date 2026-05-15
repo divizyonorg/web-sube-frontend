@@ -61,6 +61,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
 
 app.UseStaticFiles();
+app.UseMiddleware<MyApp.Web.Middleware.TokenAuthMiddleware>();
 app.UseRouting();
 app.UseAuthorization();
 app.MapRazorPages();
