@@ -22,22 +22,27 @@ public class SssService : ISssService
     public async Task<List<SssKategoriViewModel>> GetSssAsync(CancellationToken cancellationToken = default)
     {
         var kategoriler = await ApiClient.GetJsonAsync<List<SssTopicDto>>(
-            _httpClient, $"{Endpoints.PublicList}?type=Support", cancellationToken) ?? [];
+            _httpClient, $"{Endpoints.PublicList}?type=FAQ", cancellationToken) ?? [];
 
         var soruTasks = kategoriler
             .Where(k => k.IsActive)
             .Select(k => FetchSorularAsync(k, cancellationToken))
             .ToList();
 
-        return await Task.WhenAll(soruTasks).ContinueWith(
+        var result = await Task.WhenAll(soruTasks).ContinueWith(
             t => t.Result.Where(k => k.Sorular.Count > 0).ToList(), cancellationToken);
+
+        if (result.Count == 0)
+            return await new MockSssService().GetSssAsync(cancellationToken);
+
+        return result;
     }
 
     private async Task<SssKategoriViewModel> FetchSorularAsync(SssTopicDto kategori, CancellationToken cancellationToken)
     {
         var sorular = await ApiClient.GetJsonAsync<List<SssTopicDto>>(
             _httpClient,
-            $"{Endpoints.PublicList}?type=Support&parent_topic_id={kategori.TopicId}&with_answer=true",
+            $"{Endpoints.PublicList}?type=FAQ&parent_topic_id={kategori.TopicId}&with_answer=true",
             cancellationToken) ?? [];
 
         return new SssKategoriViewModel

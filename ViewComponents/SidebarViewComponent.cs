@@ -18,7 +18,7 @@ public class SidebarViewComponent : ViewComponent
                 new() { Label = "Kredi Danışmanı",      Href = "/KrediDanismani",  Icon = SidebarIcon.Advisor,      IconFile = "message-square-02", IsActive = activePage == "Kredi Danışmanı" },
                 new() { Label = "Destek Merkezi",       Href = "/DestekMerkezi",   Icon = SidebarIcon.Support,      IconFile = "help-circle",       IsActive = activePage == "Destek Merkezi" },
                 new() { Label = "Canlı Destek",         Href = "/CanliDestek",     Icon = SidebarIcon.LiveSupport,  IconFile = "message-circle-01", IsActive = activePage == "Canlı Destek" },
-                new() { Label = "Faturaların",          Href = "/Faturalarim",     Icon = SidebarIcon.Invoices,     IconFile = "receipt",           IsActive = activePage == "Faturaların" },
+                new() { Label = "Faturaların",          Href = "/Faturalarin",     Icon = SidebarIcon.Invoices,     IconFile = "receipt",           IsActive = activePage == "Faturaların" },
                 new() { Label = "Sözleşmelerin",        Href = "/Sozlesmelerim",   Icon = SidebarIcon.Contracts,    IconFile = "file-check-02",     IsActive = activePage == "Sözleşmelerin" },
                 new() { Label = "Ayarlar",              Href = "/Ayarlar",         Icon = SidebarIcon.Settings,     IconFile = "settings-01",       IsActive = activePage == "Ayarlar" }
             ],
