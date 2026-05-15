@@ -7,6 +7,15 @@ const GSM      = process.env.TEST_GSM  ?? '';
 const TCKN     = process.env.TEST_TCKN ?? '';
 
 export default async function globalSetup() {
+  const authDir  = path.join('tests', '.auth');
+  const authFile = path.join(authDir, 'state.json');
+
+  // CI'da auth state secret olarak inject edilir — login atlanır
+  if (process.env.CI && fs.existsSync(authFile)) {
+    console.log('✅ CI: mevcut auth state kullanılıyor, login atlanıyor.');
+    return;
+  }
+
   if (!GSM || !TCKN) {
     throw new Error(
       'TEST_GSM ve TEST_TCKN ortam değişkenleri tanımlanmamış.\n' +
@@ -14,11 +23,9 @@ export default async function globalSetup() {
     );
   }
 
-  const authDir  = path.join('tests', '.auth');
-  const authFile = path.join(authDir, 'state.json');
   if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
 
-  const browser = await chromium.launch({ headless: false, slowMo: 300 });
+  const browser = await chromium.launch({ headless: !process.env.CI, slowMo: 300 });
   const context = await browser.newContext();
   const page    = await context.newPage();
 
