@@ -32,7 +32,7 @@ jobs:
       - name: Auth state oluştur
         run: |
           mkdir -p tests/.auth
-          echo '${{ secrets.PLAYWRIGHT_AUTH_STATE }}' > tests/.auth/state.json
+          echo '${{ secrets.PLAYWRIGHT_AUTH_STATE }}' | base64 --decode > tests/.auth/state.json
 
       - name: E2E testleri çalıştır
         run: npx playwright test
