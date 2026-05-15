@@ -26,7 +26,19 @@ public class MockSssService : ISssService
                 Sorular =
                 [
                     new() { Id = 4, Soru = "Kredi ödememi nasıl yapabilirim?", Cevap = "Online bankacılık veya şubelerden ödeme yapabilirsiniz." },
-                    new() { Id = 5, Soru = "Erken ödeme yapabilir miyim?", Cevap = "Evet, erken ödeme yapabilirsiniz." }
+                    new() { Id = 5, Soru = "Otomatik ödeme talimatı nasıl veririm?", Cevap = "İnternet bankacılığı veya şubemiz aracılığıyla otomatik ödeme talimatı verebilirsiniz." },
+                    new() { Id = 6, Soru = "Erken ödeme yapabilir miyim?", Cevap = "Evet, erken ödeme yapabilirsiniz." }
+                ]
+            },
+            new()
+            {
+                Id = 3,
+                Baslik = "Hesap Yönetimi",
+                Sorular =
+                [
+                    new() { Id = 7, Soru = "Sisteme nasıl giriş yapabilirim?", Cevap = "GSM numaranız ve şifrenizle giriş yapabilirsiniz." },
+                    new() { Id = 8, Soru = "İletişim bilgilerimi nasıl güncellerim?", Cevap = "Ayarlar > Profil Bilgileri bölümünden iletişim bilgilerinizi güncelleyebilirsiniz." },
+                    new() { Id = 9, Soru = "Hesabımı nasıl kapatabilirim?", Cevap = "Hesap kapatma işlemi için destek ekibimizle iletişime geçiniz." }
                 ]
             }
         ]);

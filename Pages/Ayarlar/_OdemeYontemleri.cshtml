@@ -172,13 +172,7 @@
                         varsayilan: this.kartlar.length === 0,
                         aktif: true
                     });
-                    Toastify({
-                        text: 'Kart başarıyla eklendi.',
-                        duration: 3000,
-                        gravity: 'top',
-                        position: 'right',
-                        style: { background: '#22c55e', fontFamily: 'Poppins', fontSize: '13px' }
-                    }).showToast();
+                    toast.success('Kart başarıyla eklendi.');
                 });
             }
         };

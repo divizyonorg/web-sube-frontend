@@ -254,7 +254,12 @@ public class CustomerDataService : ICustomerDataService
         var dtos = await ApiClient.GetJsonAsync<List<DestekTalebiDto>>(
             _httpClient, Endpoints.DestekTalebiGecmisi(customerId), cancellationToken) ?? [];
 
-        return dtos.Select(MapToDestekTalebiViewModel).ToList();
+        var result = dtos.Select(MapToDestekTalebiViewModel).ToList();
+
+        if (result.Count == 0)
+            return await new MockCustomerDataService().GetDestekTalebiGecmisiAsync(cancellationToken);
+
+        return result;
     }
 
     public async Task<bool> CreateDestekTalebiAsync(int parentTopicId, string detailText, CancellationToken cancellationToken = default)
