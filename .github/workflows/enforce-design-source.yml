@@ -2,6 +2,8 @@ name: Enforce Design Branch Source
 
 on:
   pull_request:
+    branches:
+      - Preprod
 
 jobs:
   check-source-branch:
