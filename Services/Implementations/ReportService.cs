@@ -84,7 +84,7 @@ public class ReportService : IReportService
         }
     }
 
-    public async Task<(bool Success, string Message)> ApplyCouponAsync(
+    public async Task<(bool Success, string Message, decimal? FinalAmount, decimal? DiscountAmount)> ApplyCouponAsync(
         string rid, string couponCode, CancellationToken ct = default)
     {
         try
@@ -96,14 +96,15 @@ public class ReportService : IReportService
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.ApplyCoupon, body);
-                return (false, TryParseMessage(body) ?? "Kupon kodu geçersiz.");
+                return (false, TryParseMessage(body) ?? "Kupon kodu geçersiz.", null, null);
             }
-            return (true, TryParseMessage(body) ?? "Kupon kodu uygulandı.");
+            var dto = JsonSerializer.Deserialize<ApplyCouponResponseDto>(body);
+            return (true, "Kupon kodu uygulandı.", dto?.Data?.FinalAmount, dto?.Data?.DiscountAmount);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.ApplyCoupon);
-            return (false, "Bağlantı hatası oluştu.");
+            return (false, "Bağlantı hatası oluştu.", null, null);
         }
     }
 
