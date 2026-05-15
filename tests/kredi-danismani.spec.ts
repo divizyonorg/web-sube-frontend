@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { bug } from './bug';
 
 test.describe('Kredi Danışmanı', () => {
 
@@ -14,15 +15,14 @@ test.describe('Kredi Danışmanı', () => {
 
   test('form alanları görünür (Kredi Türü, Tutar, Vade)', async ({ page }) => {
     await page.locator('h1').first().waitFor({ timeout: 15_000 });
-
-    const krediTuruSelect = page.locator('select[name*="KrediTuru"], select[id*="KrediTuru"]').first();
-    const tutarInput     = page.locator('input[name*="KrediTutari"], input[id*="KrediTutari"]').first();
-    const vadeSelect     = page.locator('select[name*="Vade"], select[id*="Vade"]').first();
-
-    for (const [label, el] of [['Kredi Türü select', krediTuruSelect], ['Kredi Tutarı input', tutarInput], ['Vade select', vadeSelect]] as const) {
-      const exists = await el.count() > 0;
-      if (!exists) {
-        console.warn(`🐛 BUG: ${label} alanı bulunamadı`);
+    const fields = [
+      ['Kredi Türü select', page.locator('select[name*="KrediTuru"], select[id*="KrediTuru"]').first()],
+      ['Kredi Tutarı input', page.locator('input[name*="KrediTutari"], input[id*="KrediTutari"]').first()],
+      ['Vade select', page.locator('select[name*="Vade"], select[id*="Vade"]').first()],
+    ] as const;
+    for (const [label, el] of fields) {
+      if (await el.count() === 0) {
+        bug(`${label} alanı bulunamadı`);
       } else {
         await expect(el).toBeVisible({ timeout: 5_000 });
       }
@@ -32,54 +32,37 @@ test.describe('Kredi Danışmanı', () => {
   test('"Başvuruyu Gönder" boş formda devre dışı', async ({ page }) => {
     await page.locator('h1').first().waitFor({ timeout: 15_000 });
     const submitBtn = page.locator('button:has-text("Başvuruyu Gönder")').first();
-    const exists = await submitBtn.count() > 0;
-    if (!exists) {
-      console.warn('🐛 BUG: "Başvuruyu Gönder" butonu sayfada bulunamadı');
+    if (await submitBtn.count() === 0) {
+      bug('"Başvuruyu Gönder" butonu sayfada bulunamadı');
       return;
     }
-    const isDisabled = await submitBtn.isDisabled();
-    if (!isDisabled) {
-      console.warn('🐛 BUG: Boş formda "Başvuruyu Gönder" butonu aktif — validasyon çalışmıyor');
-    }
+    if (!await submitBtn.isDisabled()) bug('Boş formda "Başvuruyu Gönder" butonu aktif — validasyon çalışmıyor');
   });
 
   test('form doldurulunca "Başvuruyu Gönder" aktifleşir', async ({ page }) => {
     await page.locator('h1').first().waitFor({ timeout: 15_000 });
-
     const krediTuruSelect = page.locator('select[name*="KrediTuru"]').or(page.locator('select').first());
     const tutarInput     = page.locator('input[name*="KrediTutari"]').or(page.locator('input[type="number"]').first());
     const vadeSelect     = page.locator('select[name*="Vade"]').or(page.locator('select').nth(1));
-
     await krediTuruSelect.selectOption({ index: 1 }).catch(() => {});
     await tutarInput.fill('50000').catch(() => {});
     await vadeSelect.selectOption({ index: 1 }).catch(() => {});
-
     await page.waitForTimeout(300);
     const submitBtn = page.locator('button:has-text("Başvuruyu Gönder")').first();
-    if (await submitBtn.count() > 0) {
-      const isEnabled = await submitBtn.isEnabled();
-      if (!isEnabled) {
-        console.warn('🐛 BUG: Form doldurulunca "Başvuruyu Gönder" butonu aktifleşmiyor');
-      }
-    }
+    if (await submitBtn.count() > 0 && !await submitBtn.isEnabled())
+      bug('Form doldurulunca "Başvuruyu Gönder" butonu aktifleşmiyor');
   });
 
   test('"Nasıl Çalışır?" bilgi bölümü görünür', async ({ page }) => {
     await page.locator('h1').first().waitFor({ timeout: 15_000 });
-    const nasilCalisir = page.locator('text=Nasıl Çalışır').first();
-    const exists = await nasilCalisir.count() > 0;
-    if (!exists) {
-      console.warn('⚠️ BİLGİ: "Nasıl Çalışır?" bölümü sayfada bulunamadı');
-    }
+    if (await page.locator('text=Nasıl Çalışır').first().count() === 0)
+      bug('"Nasıl Çalışır?" bölümü sayfada bulunamadı');
   });
 
   test('iletişim bilgileri bölümü görünür', async ({ page }) => {
     await page.locator('h1').first().waitFor({ timeout: 15_000 });
-    const iletisim = page.locator('text=İletişim').first();
-    const exists = await iletisim.count() > 0;
-    if (!exists) {
-      console.warn('⚠️ BİLGİ: İletişim bilgileri bölümü sayfada bulunamadı');
-    }
+    if (await page.locator('text=İletişim').first().count() === 0)
+      bug('İletişim bilgileri bölümü sayfada bulunamadı');
   });
 
 });
