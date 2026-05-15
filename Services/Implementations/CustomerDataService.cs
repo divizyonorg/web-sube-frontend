@@ -119,7 +119,8 @@ public class CustomerDataService : ICustomerDataService
     public async Task<bool> UpdateContactAsync(string gsm, string email, CancellationToken cancellationToken = default)
     {
         AttachToken();
-        var request = new UpdateContactRequest { Gsm = gsm, Email = email };
+        var normalizedGsm = Regex.Replace(gsm ?? "", @"\D", "");
+        var request = new UpdateContactRequest { Gsm = normalizedGsm, Email = email };
         return await ApiClient.PostJsonAsync(_httpClient, Endpoints.Contact, request, cancellationToken);
     }
 

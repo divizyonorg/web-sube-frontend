@@ -11,20 +11,13 @@
         if (!e.detail.successful) return;
         try {
             var r = JSON.parse(e.detail.xhr.responseText);
-            Toastify({
-                text: r.message,
-                duration: 3000,
-                gravity: 'top',
-                position: 'right',
-                style: { background: r.success ? '#22c55e' : '#ef4444' }
-            }).showToast();
+            if (r.success) toast.success(r.message || 'Güncellendi.');
+            else toast.error(r.message || 'Güncelleme başarısız.');
         } catch (_) {}
     });
 
     document.addEventListener('htmx:sendError', function () {
-        Toastify({ text: 'Bağlantı hatası oluştu.', duration: 3000,
-                   gravity: 'top', position: 'right',
-                   style: { background: '#ef4444' } }).showToast();
+        toast.error('Bağlantı hatası oluştu.');
     });
 
     // TOM Select — HTMX swap sonrası başlat
