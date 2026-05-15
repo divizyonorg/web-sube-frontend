@@ -38,9 +38,9 @@ public class MockReportService : IReportService
         string cvv, string cardHolderName, CancellationToken ct = default)
         => Task.FromResult((true, "Ödeme başarıyla tamamlandı."));
 
-    public Task<(bool Success, string Message)> ApplyCouponAsync(
+    public Task<(bool Success, string Message, decimal? FinalAmount, decimal? DiscountAmount)> ApplyCouponAsync(
         string rid, string couponCode, CancellationToken ct = default)
-        => Task.FromResult((true, "Kupon kodu uygulandı. %50 indirim kazandınız!"));
+        => Task.FromResult<(bool, string, decimal?, decimal?)>((true, "Kupon kodu uygulandı.", 19.95m, 19.95m));
 
     public Task<FindeksOtpViewModel> FindeksRaporTalepAsync(CancellationToken ct = default)
         => Task.FromResult(new FindeksOtpViewModel

@@ -56,6 +56,15 @@
                 var r = JSON.parse(e.detail.xhr.responseText);
                 Toastify({ text: r.message, duration: 3000, gravity: 'top', position: 'right',
                            style: { background: r.success ? '#22c55e' : '#ef4444' } }).showToast();
+                if (r.success && r.finalAmount != null) {
+                    var fmt = '₺' + r.finalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    var cardPrice = document.getElementById('coupon-card-price');
+                    var payBtn = document.getElementById('coupon-pay-amount');
+                    if (cardPrice) cardPrice.textContent = fmt;
+                    if (payBtn) payBtn.textContent = fmt + ' Öde';
+                    var input = e.detail.elt.querySelector('input[name="CouponCode"]');
+                    if (input) input.value = '';
+                }
             } catch (_) {}
             return;
         }
