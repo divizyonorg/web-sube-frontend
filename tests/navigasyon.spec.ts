@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { bug } from './bug';
 
 const SIDEBAR_PAGES = [
   { label: 'Anasayfa',             href: '/anasayfa',            check: 'Tekrar Hoşgeldin' },
@@ -29,19 +30,15 @@ test.describe('Navigasyon', () => {
   test('kullanıcı avatarı/adı görünür', async ({ page }) => {
     await page.locator('header, [class*="header"]').first().waitFor({ timeout: 10_000 });
     const avatar = page.locator('[class*="avatar"], [class*="user"]').first();
-    const exists = await avatar.count() > 0;
-    if (!exists) {
-      console.warn('🐛 BUG: Header\'da kullanıcı avatarı/adı bulunamadı');
-    }
+    if (await avatar.count() === 0)
+      bug('Header\'da kullanıcı avatarı/adı bulunamadı');
   });
 
   test('bildirim alanı görünür', async ({ page }) => {
     await page.locator('header, [class*="header"]').first().waitFor({ timeout: 10_000 });
     const notif = page.locator('[class*="notif"], [class*="badge"]').first();
-    const exists = await notif.count() > 0;
-    if (!exists) {
-      console.warn('⚠️ BİLGİ: Header\'da bildirim alanı bulunamadı');
-    }
+    if (await notif.count() === 0)
+      bug('Header\'da bildirim alanı bulunamadı');
   });
 
   // ─── Sidebar ──────────────────────────────────────────────────────────────
@@ -54,10 +51,8 @@ test.describe('Navigasyon', () => {
     await page.locator('aside, nav, [class*="sidebar"]').first().waitFor({ timeout: 10_000 });
     for (const p of SIDEBAR_PAGES) {
       const link = page.locator(`a[href="${p.href}"]`).first();
-      const exists = await link.count() > 0;
-      if (!exists) {
-        console.warn(`🐛 BUG: Sidebar\'da "${p.label}" (${p.href}) linki bulunamadı`);
-      }
+      if (await link.count() === 0)
+        bug(`Sidebar'da "${p.label}" (${p.href}) linki bulunamadı`);
     }
   });
 
@@ -68,27 +63,19 @@ test.describe('Navigasyon', () => {
       await page.waitForLoadState('domcontentloaded');
 
       const status = response?.status();
-      if (status && status >= 400) {
-        console.warn(`🐛 BUG: ${p.href} → HTTP ${status} hatası`);
-      }
+      if (status && status >= 400)
+        bug(`${p.href} → HTTP ${status} hatası`);
 
-      const is404 = await page.locator('text=404').or(page.locator('text=Bulunamadı')).count() > 0;
-      if (is404) {
-        console.warn(`🐛 BUG: ${p.href} 404 sayfası gösteriyor`);
-      }
+      if (await page.locator('text=404').or(page.locator('text=Bulunamadı')).count() > 0)
+        bug(`${p.href} 404 sayfası gösteriyor`);
 
-      // URL redirect kontrolü
       const finalUrl = page.url();
-      if (finalUrl.includes('/login') || finalUrl.includes('/Login')) {
-        console.warn(`🐛 BUG: ${p.href} → Login sayfasına yönlendirdi — oturum geçersiz olabilir`);
-      }
+      if (finalUrl.includes('/login') || finalUrl.includes('/Login'))
+        bug(`${p.href} → Login sayfasına yönlendirdi — oturum geçersiz olabilir`);
 
       if (p.check) {
-        const content = page.locator(`text=${p.check}`).first();
-        const found = await content.count() > 0;
-        if (!found) {
-          console.warn(`🐛 BUG: ${p.href} yüklendi ama "${p.check}" içeriği bulunamadı`);
-        }
+        if (await page.locator(`text=${p.check}`).count() === 0)
+          bug(`${p.href} yüklendi ama "${p.check}" içeriği bulunamadı`);
       }
     });
   }
@@ -98,34 +85,48 @@ test.describe('Navigasyon', () => {
     const response = await page.goto('/VipDanismalikPaketleri');
     await page.waitForLoadState('domcontentloaded');
     const status = response?.status();
-    if (status && status >= 400) {
-      console.warn(`🐛 BUG: /VipDanismalikPaketleri → HTTP ${status}`);
-    }
+    if (status && status >= 400)
+      bug(`/VipDanismalikPaketleri → HTTP ${status}`);
   });
 
   // ─── Logo tıklaması ───────────────────────────────────────────────────────
   test('logo\'ya tıklayınca anasayfaya gidiliyor', async ({ page }) => {
     const logo = page.locator('a[href="/anasayfa"], a[href="/"], header a, [class*="logo"] a').first();
-    const exists = await logo.count() > 0;
-    if (!exists) {
-      console.warn('🐛 BUG: Header\'da logo linki bulunamadı');
+    if (await logo.count() === 0) {
+      bug('Header\'da logo linki bulunamadı');
       return;
     }
     await logo.click();
     await page.waitForLoadState('domcontentloaded');
     const url = page.url();
-    if (!url.includes('anasayfa') && !url.endsWith('/')) {
-      console.warn(`🐛 BUG: Logo tıklaması anasayfaya götürmüyor — mevcut URL: ${url}`);
+    if (!url.includes('anasayfa') && !url.endsWith('/'))
+      bug(`Logo tıklaması anasayfaya götürmüyor — mevcut URL: ${url}`);
+  });
+
+  // ─── Logout ───────────────────────────────────────────────────────────────
+  test('çıkış yapılabiliyor ve login sayfasına yönlendiriyor', async ({ page }) => {
+    const logoutBtn = page
+      .locator('button:has-text("Çıkış"), a:has-text("Çıkış"), button:has-text("Çık"), a[href*="logout"], a[href*="Logout"], form[action*="logout"] button')
+      .first();
+
+    if (await logoutBtn.count() === 0) {
+      bug('Çıkış yap butonu/linki sayfada bulunamadı');
+      return;
     }
+
+    await logoutBtn.click();
+    await page.waitForLoadState('domcontentloaded', { timeout: 10_000 });
+
+    const url = page.url();
+    if (!url.includes('/login') && !url.includes('/Login'))
+      bug(`Çıkış sonrası login sayfasına yönlendirilmedi — mevcut URL: ${url}`);
   });
 
   // ─── Mobil menü ───────────────────────────────────────────────────────────
   test('mobil hamburger menü butonu DOM\'da mevcut', async ({ page }) => {
-    const hamburger = page.locator('button[@@click*="mobileMenu"], button[aria-label*="menü"], button[class*="hamburger"]').first();
-    const exists = await hamburger.count() > 0;
-    if (!exists) {
-      console.warn('⚠️ BİLGİ: Mobil hamburger menü butonu bulunamadı');
-    }
+    const hamburger = page.locator('button[aria-label*="menü"], button[class*="hamburger"], button[class*="mobile"]').first();
+    if (await hamburger.count() === 0)
+      bug('Mobil hamburger menü butonu bulunamadı');
   });
 
 });

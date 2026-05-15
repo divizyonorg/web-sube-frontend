@@ -24,12 +24,32 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     storageState: 'tests/.auth/state.json',
+    launchOptions: {
+      slowMo: process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0,
+    },
   },
 
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      testMatch: [
+        'tests/login.spec.ts',
+        'tests/register.spec.ts',
+        'tests/anasayfa.spec.ts',
+        'tests/navigasyon.spec.ts',
+        'tests/kredi-basvurusu.spec.ts',
+        'tests/kredi-raporlari.spec.ts',
+        'tests/sana-ozel-teklifler.spec.ts',
+        'tests/vip-paketler.spec.ts',
+        'tests/kredi-danismani.spec.ts',
+        'tests/destek-merkezi.spec.ts',
+        'tests/canli-destek.spec.ts',
+        'tests/faturalarim.spec.ts',
+        'tests/sozlesmelerim.spec.ts',
+        'tests/ayarlar.spec.ts',
+        'tests/clients.spec.ts',
+      ],
     },
   ],
 });
