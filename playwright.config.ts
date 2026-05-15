@@ -2,23 +2,28 @@
 
 import { defineConfig, devices } from '@playwright/test';
 
+const BASE_URL = process.env.BASE_URL ?? 'https://websube.divizyon.org';
+
 export default defineConfig({
   testDir: './tests',
+  globalSetup: './tests/global-setup.ts',
 
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  retries: 0,
+  workers: 1,
 
   reporter: [
     ['list'],
-    ['html'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
   ],
 
   use: {
-    trace: 'on-first-retry',
+    baseURL: BASE_URL,
+    trace: 'on',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    storageState: 'tests/.auth/state.json',
   },
 
   projects: [
