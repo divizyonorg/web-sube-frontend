@@ -19,6 +19,8 @@ public class ReportService : IReportService
         public const string ApplyCoupon = "/api/v1/reports/apply-coupon";
         public const string FindeksRaporTalep = "/api/v1/findeks/rapor-talep-master";
         public const string FindeksRaporTalepOnay = "/api/v1/findeks/rapor-talep-onay";
+        public const string AnalizUret = "/analiz-uret";
+        public const string GetAiReport = "/api/v1/reports/ai-report/{0}";
     }
 
     public ReportService(HttpClient httpClient, ILogger<ReportService> logger)
@@ -157,6 +159,164 @@ public class ReportService : IReportService
             return (false, "Bağlantı hatası oluştu.");
         }
     }
+
+    public async Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> AnalizUretAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync(Endpoints.AnalizUret, new { }, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.AnalizUret, (int)response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.AnalizUret, body);
+                return (false, TryParseMessage(body) ?? "Analiz oluşturulamadı.", null);
+            }
+            var dto = JsonSerializer.Deserialize<AnalizUretResponseDto>(body);
+            if (dto?.FrontendUi is null)
+                return (false, "Geçersiz API yanıtı.", null);
+            return (true, string.Empty, MapFromAnalizUret(dto.FrontendUi));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.AnalizUret);
+            return (false, "Bağlantı hatası oluştu.", null);
+        }
+    }
+
+    public async Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> GetAiReportAsync(string rid, CancellationToken ct = default)
+    {
+        var endpoint = string.Format(Endpoints.GetAiReport, rid);
+        try
+        {
+            var response = await _httpClient.GetAsync(endpoint, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("GET {Endpoint} → {Status}", endpoint, (int)response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("GET {Endpoint} başarısız: {Body}", endpoint, body);
+                return (false, TryParseMessage(body) ?? "Rapor getirilemedi.", null);
+            }
+            var dto = JsonSerializer.Deserialize<AiReportResponseDto>(body);
+            if (dto?.Data?.AiData is null)
+                return (false, "Geçersiz API yanıtı.", null);
+            return (true, string.Empty, MapFromAiReport(dto.Data));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GET {Endpoint} exception", endpoint);
+            return (false, "Bağlantı hatası oluştu.", null);
+        }
+    }
+
+    private static KisiselRaporViewModel MapFromAnalizUret(AnalizFrontendUiDto ui)
+    {
+        var vm = new UygunlukSeridiViewModel
+        {
+            UygunlukEtiketi = MapUygunlukEtiketi(ui.ProfilSeviyesi),
+            MarkerPositionPercent = MapMarkerPosition(ui.ProfilSeviyesi),
+            AnalizVurgular = string.IsNullOrWhiteSpace(ui.RaporBasligi?.AnaAnalizParagrafi)
+                ? []
+                : [new AnalizVurguViewModel { Text = ui.RaporBasligi.AnaAnalizParagrafi, IsBold = false }],
+            BuSekildeBulgular = string.IsNullOrWhiteSpace(ui.RaporBasligi?.GelecekProjeksiyonu)
+                ? []
+                : [ui.RaporBasligi.GelecekProjeksiyonu],
+            NelerYapilabilir = ui.NelerYapilabilirListesi,
+            OlumluNoktalar = ui.GucluYanlar,
+            UyariKartlari = ui.KritikUyariKartlari
+                .Select(u => new UyariKartiViewModel
+                {
+                    Baslik = u.Baslik,
+                    Aciklama = u.Metin,
+                    IsKritik = u.Baslik.Contains("kritik", StringComparison.OrdinalIgnoreCase)
+                })
+                .ToList(),
+            KrediTuruKartlari = MapKrediTuruKartlari(ui.KrediOlasilikTahmini),
+            FinansalGostergeler = MapFinansalGostergeler(ui.FinansalGostergeler)
+        };
+        return new KisiselRaporViewModel { UygunlukSeridi = vm };
+    }
+
+    private static KisiselRaporViewModel MapFromAiReport(AiReportDataDto data)
+    {
+        var aiData = data.AiData!;
+        var vm = new UygunlukSeridiViewModel
+        {
+            UygunlukEtiketi = MapUygunlukEtiketi(data.ProfilSeviyesi),
+            MarkerPositionPercent = MapMarkerPosition(data.ProfilSeviyesi),
+            AnalizVurgular = string.IsNullOrWhiteSpace(aiData.RaporOzeti)
+                ? []
+                : [new AnalizVurguViewModel { Text = aiData.RaporOzeti, IsBold = false }],
+            BuSekildeBulgular = [],
+            NelerYapilabilir = aiData.AksiyonPlani,
+            OlumluNoktalar = aiData.OlumluEtkenler,
+            UyariKartlari = aiData.RiskEtkenleri
+                .Select(r => new UyariKartiViewModel
+                {
+                    Baslik = r.Baslik,
+                    Aciklama = r.Metin,
+                    IsKritik = r.Baslik.Contains("kritik", StringComparison.OrdinalIgnoreCase)
+                })
+                .ToList(),
+            KrediTuruKartlari = [],
+            FinansalGostergeler = []
+        };
+        return new KisiselRaporViewModel { UygunlukSeridi = vm };
+    }
+
+    private static int MapMarkerPosition(string profilSeviyesi) => profilSeviyesi.ToUpperInvariant() switch
+    {
+        "YÜKSEK" => 15,
+        "ORTA" => 40,
+        "KRİTİK" => 65,
+        "DÜŞÜK" => 88,
+        _ => 40
+    };
+
+    private static string MapUygunlukEtiketi(string profilSeviyesi) => profilSeviyesi.ToUpperInvariant() switch
+    {
+        "YÜKSEK" => "yüksek",
+        "ORTA" => "orta",
+        "KRİTİK" => "kritik",
+        "DÜŞÜK" => "düşük",
+        _ => "orta"
+    };
+
+    private static List<KrediTuruKartViewModel> MapKrediTuruKartlari(AnalizKrediOlasilikDto? dto)
+    {
+        if (dto is null) return [];
+        return
+        [
+            new() { Baslik = "Borç Kapama",   OlasilikEtiketi = MapOlasilikEtiketi(dto.BorcKapama), IsYuksekOlasilik = IsYuksek(dto.BorcKapama) },
+            new() { Baslik = "Konut Kredisi", OlasilikEtiketi = MapOlasilikEtiketi(dto.Konut),      IsYuksekOlasilik = IsYuksek(dto.Konut)      },
+            new() { Baslik = "Taşıt Kredisi", OlasilikEtiketi = MapOlasilikEtiketi(dto.Tasit),      IsYuksekOlasilik = IsYuksek(dto.Tasit)      },
+            new() { Baslik = "Nakit Kredi",   OlasilikEtiketi = MapOlasilikEtiketi(dto.Nakit),      IsYuksekOlasilik = IsYuksek(dto.Nakit)      }
+        ];
+    }
+
+    private static List<FinansalGostergelerKartViewModel> MapFinansalGostergeler(AnalizFinansalGostergelerDto? dto)
+    {
+        if (dto is null) return [];
+        var result = new List<FinansalGostergelerKartViewModel>();
+        if (dto.NakitAkisiDengesi is not null)
+            result.Add(new() { Baslik = "Aylık Nakit Akışı Dengesi", IkonYolu = "~/icons/coins-stacked-03.svg", LeftLabel = $"{dto.NakitAkisiDengesi.Oran} Dolu", Aciklama = [dto.NakitAkisiDengesi.Yorum] });
+        if (dto.KartLimitKotasi is not null)
+            result.Add(new() { Baslik = "Yasal Kart Limit Kotası", IkonYolu = "~/icons/credit-card-01.svg", LeftLabel = $"{dto.KartLimitKotasi.Oran} Dolu", Aciklama = [dto.KartLimitKotasi.Yorum] });
+        if (dto.GenelLimitKullanim is not null)
+            result.Add(new() { Baslik = "Kredi Limit Kullanım Oranı", IkonYolu = "~/icons/scales-01.svg", LeftLabel = $"{dto.GenelLimitKullanim.Oran} Dolu", Aciklama = [dto.GenelLimitKullanim.Yorum] });
+        return result;
+    }
+
+    private static string MapOlasilikEtiketi(string seviye) => seviye.ToUpperInvariant() switch
+    {
+        "YÜKSEK" => "yüksek",
+        "ORTA" => "orta",
+        "DÜŞÜK" => "düşük",
+        _ => "orta"
+    };
+
+    private static bool IsYuksek(string seviye) =>
+        string.Equals(seviye, "YÜKSEK", StringComparison.OrdinalIgnoreCase);
 
     private static string? TryParseMessage(string body)
     {

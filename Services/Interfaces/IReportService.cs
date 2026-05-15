@@ -13,4 +13,7 @@ public interface IReportService
 
     Task<FindeksOtpViewModel> FindeksRaporTalepAsync(CancellationToken ct = default);
     Task<(bool Success, string Message)> FindeksRaporTalepOnayAsync(string pin, CancellationToken ct = default);
+
+    Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> AnalizUretAsync(CancellationToken ct = default);
+    Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> GetAiReportAsync(string rid, CancellationToken ct = default);
 }

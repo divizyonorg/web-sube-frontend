@@ -157,12 +157,13 @@
                                 @if (report.IsReady)
                                 {
                                     <div class="rapor-mobile-actions items-center gap-1 flex-shrink-0">
-                                        <button class="w-9 h-9 flex items-center justify-center rounded-[10px] hover:bg-gray-100 transition-colors">
+                                        <a href="@(string.IsNullOrEmpty(report.Rid) ? "/KrediRaporlari/KurDetay" : $"/KrediRaporlari/KurDetay?rid={report.Rid}")"
+                                           class="w-9 h-9 flex items-center justify-center rounded-[10px] hover:bg-gray-100 transition-colors">
                                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                                                 <path d="M1.67 10C1.67 10 5 5.83 10 5.83C15 5.83 18.33 10 18.33 10C18.33 10 15 14.17 10 14.17C5 14.17 1.67 10 1.67 10Z" stroke="#6A7282" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
                                                 <circle cx="10" cy="10" r="2.5" stroke="#6A7282" stroke-width="1.67"/>
                                             </svg>
-                                        </button>
+                                        </a>
                                         <a asp-page-handler="DownloadPdf"
                                            asp-route-reportNo="@report.ReportNo"
                                            class="w-9 h-9 flex items-center justify-center rounded-[10px] hover:bg-gray-100 transition-colors">
@@ -217,24 +218,27 @@
 
                             @if (report.IsReady)
                             {
+                                var kurDetayUrl = string.IsNullOrEmpty(report.Rid)
+                                    ? "/KrediRaporlari/KurDetay"
+                                    : $"/KrediRaporlari/KurDetay?rid={report.Rid}";
                                 @if (isFirst)
                                 {
-                                    <button class="flex items-center gap-2 bg-[#0056B3] hover:bg-[#004799] text-white font-['Source_Sans_3'] text-sm font-medium rounded-[10px] px-4 py-2 transition-colors">
+                                    <a href="@kurDetayUrl" class="flex items-center gap-2 bg-[#0056B3] hover:bg-[#004799] text-white font-['Source_Sans_3'] text-sm font-medium rounded-[10px] px-4 py-2 transition-colors">
                                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                                             <path d="M1.33 8C1.33 8 4 4.67 8 4.67C12 4.67 14.67 8 14.67 8C14.67 8 12 11.33 8 11.33C4 11.33 1.33 8 1.33 8Z" stroke="white" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
                                             <circle cx="8" cy="8" r="2" stroke="white" stroke-width="1.33"/>
                                         </svg>
                                         Raporu Gör
-                                    </button>
+                                    </a>
                                 }
                                 else
                                 {
-                                    <button class="w-9 h-9 flex items-center justify-center rounded-[10px] hover:bg-gray-100 transition-colors">
+                                    <a href="@kurDetayUrl" class="w-9 h-9 flex items-center justify-center rounded-[10px] hover:bg-gray-100 transition-colors">
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                                             <path d="M1.67 10C1.67 10 5 5.83 10 5.83C15 5.83 18.33 10 18.33 10C18.33 10 15 14.17 10 14.17C5 14.17 1.67 10 1.67 10Z" stroke="#6A7282" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
                                             <circle cx="10" cy="10" r="2.5" stroke="#6A7282" stroke-width="1.67"/>
                                         </svg>
-                                    </button>
+                                    </a>
                                 }
 
                                 <a asp-page-handler="DownloadPdf"
