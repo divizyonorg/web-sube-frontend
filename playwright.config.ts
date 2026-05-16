@@ -2,29 +2,57 @@
 
 import { defineConfig, devices } from '@playwright/test';
 
+const BASE_URL = process.env.BASE_URL ?? 'https://websube.divizyon.org';
+
 export default defineConfig({
   testDir: './tests',
+  globalSetup: './tests/global-setup.ts',
 
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  retries: 0,
+  workers: 1,
 
   reporter: [
     ['list'],
-    ['html'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
   ],
 
   use: {
-    trace: 'on-first-retry',
+    baseURL: BASE_URL,
+    trace: 'on',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    storageState: 'tests/.auth/state.json',
+    launchOptions: {
+      slowMo: process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0,
+    },
   },
 
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      testMatch: [
+        'tests/login.spec.ts',
+        'tests/register.spec.ts',
+        'tests/anasayfa.spec.ts',
+        'tests/navigasyon.spec.ts',
+        'tests/kredi-basvurusu.spec.ts',
+        'tests/kredi-raporlari.spec.ts',
+        'tests/sana-ozel-teklifler.spec.ts',
+        'tests/vip-paketler.spec.ts',
+        'tests/kredi-danismani.spec.ts',
+        'tests/destek-merkezi.spec.ts',
+        'tests/canli-destek.spec.ts',
+        'tests/faturalarim.spec.ts',
+        'tests/sozlesmelerim.spec.ts',
+        'tests/ayarlar.spec.ts',
+        'tests/finansal-profil.spec.ts',
+        'tests/odeme.spec.ts',
+        'tests/input-validasyon.spec.ts',
+        'tests/clients.spec.ts',
+      ],
     },
   ],
 });

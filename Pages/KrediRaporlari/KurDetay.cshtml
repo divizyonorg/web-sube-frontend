@@ -2,44 +2,152 @@
 @model MyApp.Web.Pages.KrediRaporlari.KurDetayModel
 @{
     ViewData["Title"] = "KUR Detay";
+    ViewData["ActivePage"] = "Kredi Raporların";
+
+    var market = Model.ViewModel.MarketAnalysis;
 }
 
-<div class="p-6">
+<div class="p-3 md:p-6 flex flex-col items-center gap-4">
+
+    @* ─── PageBar ─── *@
+    <div class="flex justify-between items-center w-full pb-3 border-b border-[#DCE3FB]">
+        <a href="/KrediRaporlari" class="flex items-center gap-1 font-[Poppins] text-sm font-normal text-[#1B4092]">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M12.5 15L7.5 10L12.5 5" stroke="#1B4092" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Geri
+        </a>
+        <div class="flex flex-col items-end">
+            <span class="font-[Poppins] text-sm font-normal text-[#003F75]">İnteraktif Kredi</span>
+            <span class="font-[Poppins] text-lg font-light text-[#003F75]">WEB Şube</span>
+        </div>
+    </div>
+
+    @* ─── Tab geçişi ─── *@
     <div class="flex justify-center items-center w-full">
         <div class="flex items-center bg-[#F2F8FF] rounded-[10px] p-[5px] h-12 w-fit">
 
-            <a href="?tab=kisisel"
+            <a href="?tab=kisisel@(!string.IsNullOrEmpty(Model.ViewModel.Rid) ? $"&rid={Model.ViewModel.Rid}" : "")"
                class="flex items-center gap-2 rounded-[10px] text-[12px] font-normal font-[Poppins]
                       @(Model.ViewModel.ActiveTab == "kisisel"
                           ? "grow bg-white shadow-[0px_0px_5px_rgba(46,109,248,0.5)] px-[15px] py-[10px] text-[#003F75]"
                           : "bg-transparent p-[10px] text-black/50")">
-                <svg width="18" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0">
-                    <path d="M8.49992 9.3786H4.90699C3.79273 9.3786 3.2356 9.3786 2.78225 9.50072C1.76153 9.77569 0.962778 10.4851 0.653146 11.3915C0.515625 11.794 0.515625 12.2889 0.515625 13.2783M11.6936 11.1512L13.2905 12.5693L16.4843 9.73312M10.496 3.7063C10.496 5.46845 8.88738 6.89697 6.90307 6.89697C4.91874 6.89697 3.31013 5.46845 3.31013 3.7063C3.31013 1.94414 4.91874 0.515625 6.90307 0.515625C8.88738 0.515625 10.496 1.94414 10.496 3.7063Z" stroke="currentColor" stroke-width="1.03133" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <img src="/icons/@(Model.ViewModel.ActiveTab == "kisisel" ? "Outher/" : "gray/")user-check-01.svg" width="18" height="14" class="flex-shrink-0" alt="">
                 Kişisel Raporum
             </a>
 
             <div class="w-px h-5 bg-gray-300 flex-shrink-0"></div>
 
-            <a href="?tab=piyasa"
+            <a href="?tab=piyasa@(!string.IsNullOrEmpty(Model.ViewModel.Rid) ? $"&rid={Model.ViewModel.Rid}" : "")"
                class="flex items-center gap-2 rounded-[10px] text-[12px] font-normal font-[Poppins]
                       @(Model.ViewModel.ActiveTab == "piyasa"
                           ? "grow bg-white shadow-[0px_0px_5px_rgba(46,109,248,0.5)] px-[15px] py-[10px] text-[#003F75]"
                           : "bg-transparent p-[10px] text-black/50")">
-                <svg width="18" height="14" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0">
-                    <g clip-path="url(#kur-detay-chart-clip)">
-                        <path d="M17.291 14.4545H2.18116C1.66517 14.4545 1.40717 14.4545 1.21009 14.3703C1.03673 14.2962 0.895781 14.178 0.807451 14.0325C0.707031 13.8673 0.707031 13.6509 0.707031 13.2182V0.54541M17.291 3.63632L12.2842 7.83556C12.1018 7.98857 12.0106 8.06507 11.9054 8.09374C11.8129 8.11895 11.7132 8.11895 11.6207 8.09374C11.5155 8.06507 11.4242 7.98857 11.2418 7.83556L9.52022 6.39162C9.33779 6.23861 9.24657 6.16211 9.14139 6.13345C9.04886 6.10824 8.94921 6.10824 8.85668 6.13345C8.7515 6.16211 8.66028 6.23861 8.47785 6.39162L4.39237 9.81814M17.291 3.63632H13.6057M17.291 3.63632V6.72723" stroke="currentColor" stroke-width="1.09091" stroke-linecap="round" stroke-linejoin="round"/>
-                    </g>
-                    <defs>
-                        <clipPath id="kur-detay-chart-clip">
-                            <rect width="18" height="15" fill="white"/>
-                        </clipPath>
-                    </defs>
-                </svg>
+                <img src="/icons/@(Model.ViewModel.ActiveTab == "piyasa" ? "navy/" : "Outher/")line-chart-up-02.svg" width="18" height="15" class="flex-shrink-0" alt="">
                 Piyasa Analizi
             </a>
 
         </div>
     </div>
+
+    @* ─── Alt başlık (sana özel ✨ yapay zeka analizi…) ─── *@
+    <div class="flex justify-center items-center gap-1">
+        <span class="font-[Poppins] text-[12px] font-normal leading-[18px] text-[#003F75]">Sana özel</span>
+        <img src="/icons/primary/sparkle.svg" width="14" height="14" alt="">
+        <span class="font-[Poppins] text-[12px] font-normal leading-[18px] text-[#003F75]">yapay zeka analizi ve finansal yol haritan</span>
+    </div>
+
+    @* ─── Tab içeriği ─── *@
+    @if (Model.ViewModel.ActiveTab == "kisisel")
+    {
+        @if (Model.ViewModel.IsError)
+        {
+            <div class="mt-4 w-full flex flex-col items-center px-4">
+                <div class="w-full max-w-sm bg-white border border-[#DCE3FB] rounded-2xl overflow-hidden">
+
+                    <div class="bg-[linear-gradient(120.44deg,#2E6DF8_70.34%,#1B4092_100.84%)] px-5 py-4 flex items-center gap-3">
+                        <img src="~/icons/white/loan-app.svg" class="w-6 h-6 shrink-0" alt="">
+                        <span class="font-[Poppins] font-medium text-[14px] text-white">Kişisel Raporunuz Henüz Hazır Değil</span>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-5 px-6 py-6">
+                        <p class="font-[Poppins] font-normal text-[13px] text-[#003F75] text-center leading-[20px]">
+                            Yapay zeka destekli kişisel raporunuzu görebilmek için önce kredi başvurusu yapmanız gerekiyor. Başvurunuz onaylandıktan sonra raporunuz burada hazır olacak.
+                        </p>
+
+                        <div class="flex flex-col w-full gap-[10px]">
+                            <div class="flex items-center gap-2">
+                                <img src="~/icons/check-circle-broken.svg" class="w-5 h-5 shrink-0" alt="">
+                                <span class="font-[Poppins] font-normal text-[12px] text-[#3AD7B3]">Finansal durum analizi</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <img src="~/icons/check-circle-broken.svg" class="w-5 h-5 shrink-0" alt="">
+                                <span class="font-[Poppins] font-normal text-[12px] text-[#3AD7B3]">Kredi uygunluk skoru</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <img src="~/icons/check-circle-broken.svg" class="w-5 h-5 shrink-0" alt="">
+                                <span class="font-[Poppins] font-normal text-[12px] text-[#3AD7B3]">Kişiselleştirilmiş kredi önerileri</span>
+                            </div>
+                        </div>
+
+                        <a href="/KrediBasvurusu"
+                           class="flex items-center justify-center gap-2 w-full h-[44px] bg-[#0056B3] rounded-[40px] font-[Poppins] font-medium text-[14px] text-white no-underline">
+                            <img src="~/icons/white/credit-card-01.svg" class="w-5 h-5" alt="">
+                            Kredi Başvurusu Yap
+                        </a>
+
+                        <p class="font-[Poppins] font-light text-[11px] text-gray-400 text-center">
+                            @Model.ViewModel.ErrorMessage.Replace("(PENDING)", "").Trim()
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="mt-6 w-full">
+                <partial name="~/Partials/_UygunlukSeridi.cshtml" model="Model.ViewModel.KisiselRapor.UygunlukSeridi" />
+            </div>
+        }
+    }
+
+    @if (Model.ViewModel.ActiveTab == "piyasa")
+    {
+        <div class="w-full max-w-[1210px] flex flex-col gap-5 px-2 sm:px-4 pt-2 pb-6">
+
+            @* Info banner *@
+            <div class="bg-[#F9FAFB] border border-[#DCE3FB] rounded-2xl text-center py-5 px-4">
+                <span class="font-['Poppins'] font-medium text-[13px] leading-5 text-[#0A0A0A]">
+                    Kişisel durumunu analiz ettik. Şimdi de piyasadaki koşulların senin için ne anlama geldiğine bakalım.
+                </span>
+            </div>
+
+            @* ─── Kart 1 · Faiz Oranı Trendi ─── *@
+            <partial name="~/Partials/KurDetay/_FaizOraniTrendiCard.cshtml" model="market.InterestRateTrend" />
+
+            @* ─── Kart 2 · Kredi Nabzı ─── *@
+            <partial name="~/Partials/KurDetay/_KrediNabziCard.cshtml" model="market.CreditPulse" />
+
+            @* ─── Kart 3 · Kredi Talebi Radarı ─── *@
+            <partial name="~/Partials/KurDetay/_KrediTalebiRadariCard.cshtml" model="market.CreditDemandRadar" />
+
+            @* ─── Kart 4 · Mantıklı Kredi Oranı ─── *@
+            <partial name="~/Partials/KurDetay/_MantikliKrediOraniCard.cshtml" model="market.ReasonableCreditRate" />
+
+        </div>
+    }
 </div>
 
+<script>
+    (function () {
+        var savedY;
+        document.addEventListener('htmx:beforeRequest', function () { savedY = window.scrollY; });
+        document.addEventListener('htmx:afterSettle', function () {
+            if (savedY !== undefined) {
+                var y = savedY;
+                savedY = undefined;
+                requestAnimationFrame(function () { window.scrollTo(0, y); });
+            }
+        });
+    })();
+</script>

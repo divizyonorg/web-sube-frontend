@@ -1,0 +1,83 @@
+@model MyApp.Web.ViewModels.InterestRateTrendViewModel
+@{ Layout = null; }
+@{
+    var opts = new (string Type, string Label)[]
+    {
+        ("IHTIYAC", "İhtiyaç Kredisi"),
+        ("TASIT",   "Taşıt Kredisi"),
+        ("KONUT",   "Konut Kredisi"),
+        ("TICARI",  "Ticari Kredi")
+    };
+}
+
+<div id="card-faiz-trendi" class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
+
+    <div class="flex flex-col gap-1 px-4 py-3 border-b border-black/10">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <img src="/icons/primary/activity.svg" width="20" height="20" alt="">
+                <span class="font-[Poppins] text-[13px] font-semibold leading-5 text-[#003F75]">Faiz Oranı Trendi</span>
+            </div>
+            <div x-data="{ open: false }" class="relative">
+                <button @@click="open = !open" type="button"
+                        class="flex items-center gap-1 bg-white border border-[#E5E7EB] shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-[10px] px-2 py-1">
+                    <span class="font-[Poppins] text-[11px] font-normal leading-4 text-[#003F75]">@Model.ProductLabel</span>
+                    <img src="/icons/navy/chevron-down.svg" width="12" height="12" alt="">
+                </button>
+                <div x-show="open" @@click.outside="open = false" x-transition
+                     class="absolute right-0 top-full mt-1 z-50 bg-white border border-[#E5E7EB] rounded-[10px] shadow-lg overflow-hidden min-w-[140px]">
+                    @foreach (var opt in opts)
+                    {
+                        var cls = Model.CreditType == opt.Type
+                            ? "block px-4 py-2 text-[11px] font-[Poppins] font-semibold text-[#003F75] bg-[#F2F8FF] cursor-pointer"
+                            : "block px-4 py-2 text-[11px] font-[Poppins] text-black/60 hover:bg-[#F2F8FF] cursor-pointer";
+                        <button type="button"
+                                hx-get="/KrediRaporlari/KurDetay?handler=FaizTrendi&kredi=@opt.Type"
+                                hx-target="#card-faiz-trendi"
+                                hx-swap="outerHTML show:none"
+                                @@click="open = false"
+                                class="w-full text-left @cls">@opt.Label</button>
+                    }
+                </div>
+            </div>
+        </div>
+        <p class="font-[Poppins] italic font-light text-[10px] leading-[15px] text-black/50">
+            Faiz oranı trendi, bankaların geçen hafta müşterilere fiilen kullandırılan kredilerin ağırlıklı ortalamasıdır.
+        </p>
+    </div>
+
+    <div class="flex flex-col gap-3 rounded-b-2xl overflow-hidden bg-[#122B62] px-4 pt-4 pb-0">
+
+        <div class="flex justify-between items-start">
+            <div class="flex flex-col gap-0.5">
+                <span class="font-['Poppins'] text-[10px] font-light leading-[15px] text-white opacity-80">@Model.RateLabel</span>
+                <div class="flex items-end gap-1.5">
+                    <span class="font-['Poppins'] text-[28px] font-bold leading-[42px] text-white">@Model.RateValue</span>
+                    <span class="font-['Poppins'] text-[12px] font-light leading-[18px] text-white pb-1">@Model.PeriodSuffix</span>
+                </div>
+            </div>
+            <div class="flex flex-col items-end gap-0.5">
+                <div class="flex items-center gap-1">
+                    <img src="/icons/green/line-chart-up-02.svg" width="14" height="14" alt="">
+                    <span class="font-['Poppins'] text-[13px] font-semibold leading-5 text-[#46CA88]">@Model.AnnualRateValue</span>
+                </div>
+                <span class="font-['Poppins'] text-[10px] font-light leading-[15px] text-[#46CA88] opacity-75">Anlık Oran</span>
+            </div>
+        </div>
+
+        <div class="relative w-full h-[72px]">
+            <div class="absolute left-[0.44%] right-[0.44%] top-[34.72%] border-t-[2.5px] border-[#46CA88]"></div>
+        </div>
+
+        <div class="flex items-center justify-between flex-wrap gap-2 pb-4">
+            <span class="font-['Poppins'] text-[9px] font-light leading-[14px] text-white px-3 py-1 bg-white/25 border border-black/25 rounded-full">
+                @Model.MarketAverageLabel
+            </span>
+            <span class="flex items-center gap-1 font-['Poppins'] text-[9px] font-semibold leading-[14px] text-white px-[10px] py-1 bg-[rgba(70,202,136,0.6)] border border-black/25 rounded-full">
+                <img src="/icons/white/sparkle.svg" width="12" height="12" alt="">
+                @Model.OpportunityLabel
+            </span>
+        </div>
+
+    </div>
+</div>

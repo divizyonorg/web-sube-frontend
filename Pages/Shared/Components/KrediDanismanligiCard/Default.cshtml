@@ -1,0 +1,66 @@
+@* Dış kart (açık mavi arka plan) *@
+<div class="flex flex-col gap-3 bg-[#E6F7FF] rounded-[15px] pt-[14px] flex-1">
+
+    @* Başlık — Poppins 250 18px #003F75 *@
+    <div class="text-center">
+        <span class="font-['Poppins'] text-[18px] font-[250] text-[#003F75]">Kredi başvuruların onaylanmıyor mu?</span>
+    </div>
+
+    @* İç beyaz kart — shadow tasarımda bu kartta var *@
+    <div class="flex flex-col gap-4 bg-white border border-[#DCE3FB] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[15px] p-4">
+
+        @* Başlık + ayraç — Poppins 500 14px *@
+        <div class="border-b border-black/15 pb-1">
+            <p class="font-['Poppins'] text-[14px] font-medium text-[#003F75] leading-[21px]">
+                Kredi Danışmanlığı ile Kredi Sürecine Başla!
+            </p>
+        </div>
+
+        @* Açıklama — ayraç altında, check items üstünde; Poppins 300 10px *@
+        <p class="font-['Poppins'] text-[10px] font-[300] text-[#003F75] leading-[15px]">
+            Kredi uzmanları ile senin kredi profiline bakarak seni yönlendirir. Sistemin otomatik reddetmesinin önüne geçer.
+        </p>
+
+        @* Check item listesi — gap 8px, px 16px *@
+        <div class="flex flex-col gap-2 px-4">
+
+            <div class="flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="10" cy="10" r="7.5" stroke="#3AD7B3" stroke-width="1.667"/>
+                    <path d="M7.5 10.5L9.5 12.5L14 7.5" stroke="#3AD7B3" stroke-width="1.667" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru kredi türü</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="10" cy="10" r="7.5" stroke="#3AD7B3" stroke-width="1.667"/>
+                    <path d="M7.5 10.5L9.5 12.5L14 7.5" stroke="#3AD7B3" stroke-width="1.667" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru kredi limiti</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="10" cy="10" r="7.5" stroke="#3AD7B3" stroke-width="1.667"/>
+                    <path d="M7.5 10.5L9.5 12.5L14 7.5" stroke="#3AD7B3" stroke-width="1.667" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru banka, kanal ve şubesi</span>
+            </div>
+
+        </div>
+
+        @* Buton + alt not — gap 4px, items-center *@
+        <div class="flex flex-col items-center gap-1">
+            <a href="/KrediDanismani"
+               class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] hover:bg-[#004494] transition-all">
+                <span class="font-['Poppins'] font-medium text-[16px] leading-6 text-center text-white">Kredi Uzmanı ile Devam Et</span>
+            </a>
+            <p class="font-['Poppins'] text-[9px] font-[300] text-[#003F75] text-center leading-[14px]">
+                Ön görüşme güncel raporu olan müşteriler için ücretsizdir.
+            </p>
+        </div>
+
+    </div>
+
+</div>

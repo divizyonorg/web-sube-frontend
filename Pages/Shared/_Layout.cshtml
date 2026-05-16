@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Grid.js -->
     <link rel="stylesheet" href="~/lib/gridjs/mermaid.min.css" asp-append-version="true" />
@@ -18,8 +18,6 @@
     <!-- FilePond -->
     <link rel="stylesheet" href="~/lib/filepond/filepond.min.css" asp-append-version="true" />
 
-    <!-- Toastify.js -->
-    <link rel="stylesheet" href="~/lib/toastify-js/toastify.css" asp-append-version="true" />
 
     <!-- Flatpickr -->
     <link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css" asp-append-version="true" />
@@ -27,25 +25,90 @@
     <!-- TOM Select -->
     <link rel="stylesheet" href="~/lib/tom-select/tom-select.default.min.css" asp-append-version="true" />
 
-    <style>[x-cloak] { display: none !important; }</style>
+    <style>
+        [x-cloak] { display: none !important; }
+
+        /* ── Mobile sidebar overlay ── */
+        .mobile-backdrop {
+            position: fixed; inset: 0; z-index: 40;
+            background: rgba(0,0,0,0.5);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .mobile-backdrop.open { opacity: 1; pointer-events: auto; }
+
+        .mobile-drawer {
+            position: fixed; top: 85px; left: 0; bottom: 0; z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-drawer.open { transform: translateX(0); }
+
+        @@media (min-width: 768px) {
+            .mobile-backdrop, .mobile-drawer { display: none !important; }
+            .main-content { padding: 0 !important; }
+            .page-content { padding: 24px; }
+        }
+
+        @@media (max-width: 767px) {
+            .desktop-sidebar { display: none !important; }
+            .main-content { padding: 0 !important; }
+            .page-content { padding: 16px; }
+        }
+    </style>
 
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;">
+<body class="bg-gray-50 text-gray-900 antialiased" style="height:100vh; overflow:hidden;" hx-boost="true">
+    <script>
+        (function () {
+            var t = localStorage.getItem('auth_token');
+            if (t && !document.cookie.split(';').some(function (c) { return c.trim().startsWith('auth_token='); })) {
+                document.cookie = 'auth_token=' + t + '; path=/; SameSite=Lax';
+                location.reload();
+            }
+        })();
+    </script>
 
-    @await Component.InvokeAsync("Header", new {
-        userName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
-        notificationCount = 0,
-        profileImageUrl   = ""
-    })
+    <div id="layout-header" hx-preserve>
+        @await Component.InvokeAsync("Header", new
+        {
+            model = new MyApp.Web.ViewModels.HeaderViewModel
+            {
+                UserName          = User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : "Kullanıcı",
+                UserRole          = "VIP Müşteri",
+                NotificationCount = 0,
+                ProfileImageUrl   = ""
+            }
+        })
+    </div>
+
+    @* Mobile backdrop *@
+    <div x-data
+         class="mobile-backdrop"
+         :class="{ 'open': $store.layout.mobileMenuOpen }"
+         @@click="$store.layout.mobileMenuOpen = false">
+    </div>
+
+    @* Mobile sidebar drawer *@
+    <div x-data
+         class="mobile-drawer"
+         :class="{ 'open': $store.layout.mobileMenuOpen }">
+        @await Component.InvokeAsync("Sidebar", new { activePage = ViewData["ActivePage"]?.ToString() ?? "" })
+    </div>
 
     <div style="display:flex; height:calc(100vh - 85px); overflow:hidden;">
 
-        @await Component.InvokeAsync("Sidebar", new {
-            activePage = ViewData["ActivePage"]?.ToString() ?? ""
-        })
+        @* Desktop sidebar *@
+        <div id="layout-desktop-sidebar" class="desktop-sidebar" style="flex-shrink:0;" hx-preserve>
+            @await Component.InvokeAsync("Sidebar", new { activePage = ViewData["ActivePage"]?.ToString() ?? "" })
+        </div>
 
-        <main style="flex:1; padding:24px; overflow-y:auto; box-sizing:border-box;">
-            @RenderBody()
+        <main id="layout-main" class="main-content" style="flex:1; overflow-y:auto; box-sizing:border-box; display:flex; flex-direction:column;">
+            @await RenderSectionAsync("Styles", required: false)
+            <div class="page-content" style="flex:1;">
+                @RenderBody()
+            </div>
+            @await Component.InvokeAsync("Footer")
         </main>
 
     </div>
@@ -68,9 +131,6 @@
     <!-- IMask.js -->
     <script src="~/lib/imask/imask.min.js" asp-append-version="true"></script>
 
-    <!-- Toastify.js -->
-    <script src="~/lib/toastify-js/toastify.js" asp-append-version="true"></script>
-
     <!-- JustValidate -->
     <script src="~/lib/just-validate/just-validate.production.min.js" asp-append-version="true"></script>
 
@@ -83,6 +143,33 @@
 
     <script src="~/js/toast.js" asp-append-version="true"></script>
     <script src="~/js/app.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            var token = localStorage.getItem('auth_token');
+            if (!token) return;
+
+            // HTMX isteklerine Authorization header ekle
+            document.addEventListener('htmx:configRequest', function (e) {
+                e.detail.headers['Authorization'] = 'Bearer ' + token;
+            });
+
+            // HTMX 401 → token sil, login'e at
+            document.addEventListener('htmx:responseError', function (e) {
+                if (e.detail.xhr.status === 401) {
+                    localStorage.removeItem('auth_token');
+                    window.location.replace('/login');
+                }
+            });
+
+            // fetch çağrılarına Authorization header ekle
+            var _fetch = window.fetch;
+            window.fetch = function (input, init) {
+                init = init || {};
+                init.headers = Object.assign({ 'Authorization': 'Bearer ' + token }, init.headers || {});
+                return _fetch(input, init);
+            };
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

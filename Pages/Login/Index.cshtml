@@ -19,6 +19,25 @@
 </head>
 <body>
 
+    <script>
+        (function () {
+            function isTokenValid() {
+                var token = localStorage.getItem('auth_token');
+                if (!token) return false;
+                try {
+                    var payload = JSON.parse(atob(token.split('.')[1]));
+                    return typeof payload.exp === 'number' && payload.exp * 1000 > Date.now();
+                } catch { return false; }
+            }
+
+            if (isTokenValid()) {
+                window.location.replace('/anasayfa');
+            } else {
+                localStorage.removeItem('auth_token');
+            }
+        })();
+    </script>
+
     <div x-data="loginForm()" class="flex h-screen overflow-hidden">
 
         @* Sol panel — yalnızca desktop *@
@@ -34,7 +53,7 @@
 
                 <img src="~/images/ik_logo.png"
                      alt="İnteraktif Kredi"
-                     class="h-14 w-auto object-contain mb-5" />
+                     class="h-14 w-[220px] object-contain mb-5" />
 
                 <p class="font-light text-base text-[#0056B3] mb-1.5 text-center">
                     Bireysel
@@ -43,7 +62,7 @@
                     İnteraktif Şube Girişi
                 </h1>
 
-                <div class="w-full border-[1.5px] border-[#DCE3FB] rounded-2xl px-5 py-6 bg-white lg:px-7">
+                <div class="w-full rounded-2xl px-5 py-6 bg-white lg:px-7" style="box-shadow:0 4px 32px 0 rgba(0,86,179,0.10);">
                     <form id="loginForm" method="post" class="flex flex-col gap-4">
                         @Html.AntiForgeryToken()
 
@@ -64,7 +83,7 @@
                         @* Devam Et *@
                         <div x-show="step === 1"
                              @@click="proceed()"
-                             :class="canProceed() ? 'cursor-pointer' : 'cursor-not-allowed opacity-50 pointer-events-none'"
+                             :class="!canProceed() || proceeding ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'cursor-pointer'"
                              class="[&_button]:w-full! lg:[&_button]:w-91!">
                             <partial name="~/Partials/Components/_Button.cshtml"
                                      model='new ButtonViewModel { Label = "Devam Et", Variant = ButtonVariant.Primary, Width = 364 }' />
@@ -72,24 +91,34 @@
 
                         @* Giriş Yap *@
                         <div x-show="step === 2" x-cloak
-                             @@click="!sendingOtp && sendOtp()"
-                             :class="sendingOtp ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'"
-                             class="[&_button]:w-full! lg:[&_button]:w-91!">
+                             @@click="loginWithTckn()"
+                             class="cursor-pointer [&_button]:w-full! lg:[&_button]:w-91!">
                             <partial name="~/Partials/Components/_Button.cshtml"
                                      model='new ButtonViewModel { Label = "Giriş Yap", Variant = ButtonVariant.Primary, Width = 364 }' />
                         </div>
 
-                        @* API hata mesajı *@
-                        <p x-show="otpError" x-cloak
-                           x-text="otpErrorMsg"
+                        @* TCKN validasyon hatası *@
+                        <p x-show="step === 2 && tcknError" x-cloak
+                           x-text="tcknErrorMsg"
                            class="text-[13px] text-[#DC2626] text-center m-0"></p>
 
                         @* Beni Hatırla + Parolamı Unuttum *@
                         <div class="flex items-center justify-between">
-                            <partial name="~/Partials/Components/_Checkbox.cshtml"
-                                     model='new CheckboxViewModel { Label = "Beni Hatırla!", Name = "RememberMe", IsChecked = false }' />
+                            <div class="flex items-center gap-2.5 cursor-pointer" @@click="rememberMe = !rememberMe">
+                                <input type="checkbox" name="RememberMe" x-model="rememberMe"
+                                       style="position:absolute;opacity:0;width:0;height:0;margin:0;padding:0;" />
+                                <div :style="{ backgroundColor: rememberMe ? '#0056B3' : '#FFFFFF' }"
+                                     style="box-sizing:border-box;display:flex;justify-content:center;align-items:center;width:24px;min-width:24px;height:24px;min-height:24px;flex-shrink:0;border:2px solid #0056B3;border-radius:5px;overflow:hidden;">
+                                    <svg x-show="rememberMe" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0;">
+                                        <path d="M20 6L9 17L4 12" />
+                                    </svg>
+                                </div>
+                                <span style="font-family:'Poppins';font-weight:300;font-size:12px;line-height:18px;color:#222854;user-select:none;">
+                                    Beni Hatırla!
+                                </span>
+                            </div>
                             <a x-show="step === 2" x-cloak href="/forgot-password"
-                               class="text-[13px] font-medium text-[#0056B3] underline">
+                               class="text-[14px] font-bold text-[#0056B3] underline">
                                 Parolamı unuttum
                             </a>
                         </div>
@@ -103,7 +132,8 @@
                         </div>
 
                         <button type="button"
-                                class="flex items-center justify-center gap-2.5 w-full lg:w-91 h-12 bg-[#F9FAFB] border-0 rounded-[40px] text-sm font-medium text-[#374151] cursor-pointer shrink-0">
+                                style="background-color:#D4E2F2;"
+                                class="flex items-center justify-center gap-2.5 w-full lg:w-91 h-12 border-0 rounded-[40px] text-sm font-medium text-[#374151] cursor-pointer shrink-0">
                             <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -112,15 +142,6 @@
                             </svg>
                             Google ile Giriş Yap
                         </button>
-
-                        <div x-show="step === 2" x-cloak class="text-center">
-                            <a href="/" class="inline-flex items-center gap-2 no-underline">
-                                <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M15 6H1M1 6L6 1M1 6L6 11" stroke="#2E6DF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                <span style="font-size:15px; font-weight:700; color:#2E6DF8; text-decoration:underline;">Anasayfa</span>
-                            </a>
-                        </div>
 
                     </form>
                 </div>
@@ -140,8 +161,8 @@
                     <img src="~/images/ik_logo.png"
                          alt="İnteraktif Kredi"
                          class="h-14 w-auto object-contain mb-4 opacity-35" />
-                    <p class="font-light text-base text-[#7B9CC4] mb-2 text-center">Bireysel</p>
-                    <h2 class="font-semibold text-[30px] leading-[1.2] text-[#7B9CC4] text-center">
+                    <p class="font-light text-2xl text-[#7B9CC4] mb-2 text-center">Bireysel</p>
+                    <h2 class="font-semibold text-[32px] leading-[1.2] text-[#7B9CC4] text-center">
                         İnteraktif Şube Girişi
                     </h2>
                 </div>
@@ -177,20 +198,12 @@
                             saniye sonra yeni kod gönderebilirsin
                         </p>
 
-                        <p x-show="otpVerifyError" x-cloak
-                           x-text="otpVerifyErrorMsg"
-                           class="text-[13px] text-[#DC2626] text-center m-0"></p>
-
                         <div @@click="!verifyingOtp && verifyOtp()"
                              :class="verifyingOtp ? 'opacity-60 cursor-not-allowed pointer-events-none' : 'cursor-pointer'"
                              class="w-full [&_button]:w-full!">
                             <partial name="~/Partials/Components/_Button.cshtml"
                                      model='new ButtonViewModel { Label = "Devam Et", Variant = ButtonVariant.Primary, Width = 408 }' />
                         </div>
-
-                        <p class="text-xs text-[#9CA3AF] m-0 text-center">
-                            Demo: Geçerli kod <strong class="text-[#374151]">123456</strong>
-                        </p>
 
                     </div>
                 </div>
@@ -201,59 +214,124 @@
 
     <script defer src="~/lib/alpinejs/cdn.min.js"></script>
     <script src="~/lib/imask/imask.min.js"></script>
+    <script src="~/js/toast.js" asp-append-version="true"></script>
     <script>
         function loginForm() {
             return {
                 step: 1,
                 phone: '',
                 tckn: '',
+                rememberMe: false,
                 showOtpModal: false,
                 otpCode: '',
                 timer: 180,
                 timerInterval: null,
-                sendingOtp: false,
-                otpError: false,
-                otpErrorMsg: '',
+                proceeding: false,
+                tcknError: false,
+                tcknErrorMsg: '',
                 verifyingOtp: false,
-                otpVerifyError: false,
-                otpVerifyErrorMsg: '',
+                _tcknMask: null,
 
                 init() {
                     var self = this;
 
-                    var phoneEl = document.getElementById('PhoneNumber');
-                    if (phoneEl) {
-                        var phoneMask = IMask(phoneEl, { mask: '+{90} 000 000 00 00' });
-                        phoneMask.on('accept', function () { self.phone = phoneMask.value; });
-                        phoneEl.addEventListener('input', function () { self.phone = phoneEl.value; });
+                    var saved = JSON.parse(localStorage.getItem('remember_me') || 'null');
+                    if (saved) {
+                        self.rememberMe = true;
+                        self.phone      = saved.phone || '';
+                        self.tckn       = saved.tckn  || '';
                     }
 
-                    var tcknEl = document.getElementById('Tckn');
-                    if (tcknEl) {
-                        var tcknMask = IMask(tcknEl, { mask: '00000000000' });
-                        tcknMask.on('accept', function () { self.tckn = tcknMask.value; });
-                        tcknEl.addEventListener('input', function () { self.tckn = tcknEl.value; });
-                    }
+                    self.$nextTick(function () {
+                        var phoneEl = document.getElementById('PhoneNumber');
+                        if (phoneEl) {
+                            var phoneMask = null;
+
+                            function initPhoneMask(initial) {
+                                // Türk GSM: +90 sonrası daima 5 ile başlar (5XX XXX XX XX)
+                                phoneMask = IMask(phoneEl, {
+                                    mask: '+9\\0 N00 000 00 00',
+                                    definitions: { 'N': /[5]/ }
+                                });
+                                if (initial) phoneMask.value = initial;
+                                phoneMask.on('accept', function () { self.phone = phoneMask.value; });
+                            }
+
+                            if (self.phone) {
+                                initPhoneMask(self.phone);
+                                self.phone = phoneMask.value;
+                                phoneEl.dispatchEvent(new Event('input', { bubbles: true }));
+                            } else {
+                                function onFirstKeyDown(e) {
+                                    if (e.key !== '5') return;
+                                    e.preventDefault();
+                                    phoneEl.removeEventListener('keydown', onFirstKeyDown);
+                                    phoneEl.removeEventListener('input', onAutoFill);
+                                    initPhoneMask('+90 ' + e.key);
+                                    phoneMask.updateCursor(phoneMask.value.length);
+                                    self.phone = phoneMask.value;
+                                }
+
+                                // Tarayıcı autocomplete veya yapıştırma: keydown tetiklenmez,
+                                // input eventi gelir; tam numara varsa mask'i başlat.
+                                function onAutoFill() {
+                                    if (phoneMask !== null) return;
+                                    var raw = phoneEl.value.replace(/\D/g, '');
+                                    if (raw.length < 10) return;
+                                    if (raw.startsWith('90') && raw.length >= 12) raw = raw.substring(2);
+                                    else if (raw.startsWith('0')) raw = raw.substring(1);
+                                    phoneEl.removeEventListener('keydown', onFirstKeyDown);
+                                    phoneEl.removeEventListener('input', onAutoFill);
+                                    initPhoneMask('+90 ' + raw);
+                                    phoneMask.updateCursor(phoneMask.value.length);
+                                    self.phone = phoneMask.value;
+                                }
+
+                                phoneEl.addEventListener('keydown', onFirstKeyDown);
+                                phoneEl.addEventListener('input', onAutoFill);
+                            }
+                        }
+
+                        var tcknEl = document.getElementById('Tckn');
+                        if (tcknEl) {
+                            var tcknMask = IMask(tcknEl, { mask: '00000000000' });
+                            self._tcknMask = tcknMask;
+                            if (self.tckn) {
+                                tcknMask.value = self.tckn;
+                                tcknMask.updateValue();
+                                self.tckn = tcknMask.value;
+                                tcknEl.dispatchEvent(new Event('input', { bubbles: true }));
+                            }
+                            tcknMask.on('accept', function () { self.tckn = tcknMask.value; });
+                        }
+                    });
+
+                },
+
+                validateTckn(tckn) {
+                    if (!/^\d{11}$/.test(tckn)) return false;
+                    if (tckn[0] === '0') return false;
+                    var d = tckn.split('').map(Number);
+                    var oddSum  = d[0] + d[2] + d[4] + d[6] + d[8];
+                    var evenSum = d[1] + d[3] + d[5] + d[7];
+                    if ((oddSum * 7 - evenSum) % 10 !== d[9]) return false;
+                    var sum10 = d[0]+d[1]+d[2]+d[3]+d[4]+d[5]+d[6]+d[7]+d[8]+d[9];
+                    return sum10 % 10 === d[10];
                 },
 
                 canProceed() {
                     return this.phone.replace(/\D/g, '').length >= 12;
                 },
 
-                proceed() {
-                    if (this.canProceed()) this.step = 2;
-                },
+                async proceed() {
+                    if (!this.canProceed() || this.proceeding) return;
 
-                async sendOtp() {
-                    this.sendingOtp  = true;
-                    this.otpError    = false;
-                    this.otpErrorMsg = '';
+                    this.proceeding = true;
 
                     var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
                     var params = new URLSearchParams();
                     params.append('__RequestVerificationToken', token);
                     params.append('PhoneNumber', this.phone);
-                    params.append('Tckn', this.tckn);
 
                     try {
                         var resp = await fetch('/login?handler=SendOtp', {
@@ -263,17 +341,37 @@
                         });
                         var json = await resp.json();
                         if (json.success) {
-                            this.openOtpModal();
+                            if (!json.isCustomer) {
+                                window.location.href = '/register';
+                                return;
+                            }
+                            toast.success('SMS kodunuz gönderildi.');
+                            this.step = 2;
+                            this.startTimer();
                         } else {
-                            this.otpError    = true;
-                            this.otpErrorMsg = json.message || 'SMS gönderilemedi. Lütfen tekrar deneyin.';
+                            toast.error(json.message || 'SMS gönderilemedi. Lütfen tekrar deneyin.');
                         }
                     } catch (_) {
-                        this.otpError    = true;
-                        this.otpErrorMsg = 'Bağlantı hatası oluştu.';
+                        toast.error('Bağlantı hatası oluştu.');
                     } finally {
-                        this.sendingOtp = false;
+                        this.proceeding = false;
                     }
+                },
+
+                loginWithTckn() {
+                    this.tcknError    = false;
+                    this.tcknErrorMsg = '';
+
+                    if (!this.validateTckn(this.tckn)) {
+                        this.tcknError    = true;
+                        this.tcknErrorMsg = 'Geçerli bir TC Kimlik Numarası giriniz.';
+                        return;
+                    }
+
+                    this.showOtpModal     = true;
+                    this.otpVerifyError   = false;
+                    this.otpVerifyErrorMsg = '';
+                    this.otpCode          = '';
                 },
 
                 maskedPhone() {
@@ -288,27 +386,34 @@
                     return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
                 },
 
-                openOtpModal() {
-                    this.showOtpModal = true;
+                startTimer() {
                     this.timer = 180;
-                    var self = this;
                     if (this.timerInterval) clearInterval(this.timerInterval);
+                    var self = this;
                     this.timerInterval = setInterval(function () {
-                        if (self.timer > 0) { self.timer--; }
-                        else { clearInterval(self.timerInterval); }
+                        if (self.timer > 0) {
+                            self.timer--;
+                        } else {
+                            clearInterval(self.timerInterval);
+                            self.showOtpModal = false;
+                            self.step         = 1;
+                            self.otpCode      = '';
+                            self.tckn         = '';
+                            if (self._tcknMask) { self._tcknMask.value = ''; self._tcknMask.updateValue(); }
+                            toast.error('SMS doğrulama süresi doldu. Lütfen tekrar deneyin.');
+                        }
                     }, 1000);
                 },
 
                 async verifyOtp() {
-                    this.verifyingOtp      = true;
-                    this.otpVerifyError    = false;
-                    this.otpVerifyErrorMsg = '';
+                    this.verifyingOtp = true;
 
                     var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
                     var params = new URLSearchParams();
                     params.append('__RequestVerificationToken', token);
                     params.append('PhoneNumber', this.phone);
                     params.append('OtpCode', this.otpCode);
+                    params.append('Tckn', this.tckn);
 
                     try {
                         var resp = await fetch('/login?handler=VerifyOtp', {
@@ -318,14 +423,28 @@
                         });
                         var json = await resp.json();
                         if (json.success) {
-                            window.location.href = '/dashboard';
+                            localStorage.setItem('auth_token', json.token);
+                            document.cookie = 'auth_token=' + json.token + '; path=/; SameSite=Lax';
+                            if (this.rememberMe) {
+                                localStorage.setItem('remember_me', JSON.stringify({ phone: this.phone, tckn: this.tckn }));
+                            } else {
+                                localStorage.removeItem('remember_me');
+                            }
+                            toast.success('Giriş başarılı, yönlendiriliyorsunuz...');
+                            window.location.href = '/anasayfa';
+                        } else if (json.tcknMismatch) {
+                            clearInterval(this.timerInterval);
+                            this.showOtpModal = false;
+                            this.step         = 1;
+                            this.otpCode      = '';
+                            this.tckn         = '';
+                            if (this._tcknMask) { this._tcknMask.value = ''; this._tcknMask.updateValue(); }
+                            toast.error(json.message || 'TC bilgisi eşleşmemektedir.');
                         } else {
-                            this.otpVerifyError    = true;
-                            this.otpVerifyErrorMsg = json.message || 'Kod hatalı. Lütfen tekrar deneyin.';
+                            toast.error(json.message || 'Kod hatalı. Lütfen tekrar deneyin.');
                         }
                     } catch (_) {
-                        this.otpVerifyError    = true;
-                        this.otpVerifyErrorMsg = 'Bağlantı hatası oluştu.';
+                        toast.error('Bağlantı hatası oluştu.');
                     } finally {
                         this.verifyingOtp = false;
                     }
