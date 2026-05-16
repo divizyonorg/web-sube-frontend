@@ -1,10 +1,12 @@
 @* ══════════════════════════════════════
    ADIM 3 — Kredi Detayları (1/3)
 ══════════════════════════════════════ *@
+@Html.AntiForgeryToken()
 <div x-data="{
          vade: 24,
          krediAmaci: '',
          krediTutar: '',
+         loading: false,
          get tutar() {
              return parseFloat(this.krediTutar.replace(/\./g, '').replace(',', '.')) || 0;
          },
@@ -15,6 +17,29 @@
          },
          get taksitFormatli() {
              return this.aylikTaksit.toLocaleString('tr-TR');
+         },
+         async devamEt() {
+             if (this.loading) return;
+             this.loading = true;
+             try {
+                 const token = document.querySelector('input[name=__RequestVerificationToken]')?.value ?? '';
+                 const resp = await fetch('/KrediBasvurusu?handler=Create', {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                     body: new URLSearchParams({ __RequestVerificationToken: token })
+                 });
+                 const json = await resp.json();
+                 if (json.success) {
+                     window.krediRid = json.rid;
+                     htmx.ajax('GET', '/KrediBasvurusu?handler=Step4', { target: '#wizard-container', swap: 'innerHTML' });
+                 } else {
+                     toast.error(json.message || 'Bir hata oluştu.');
+                 }
+             } catch {
+                 toast.error('Bağlantı hatası oluştu.');
+             } finally {
+                 this.loading = false;
+             }
          }
      }"
      class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
@@ -29,7 +54,7 @@
                 <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
             </div>
         </button>
-        <img src="~/images/ik_logo.png" alt="İnteraktif Kredi" class="h-[25px] object-contain">
+        <img src="~/images/IKLogo-blue.svg" width="70" height="25" alt="İnteraktif Kredi" class="object-contain">
         <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
             <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
         </a>
@@ -130,12 +155,13 @@
         </div>
 
         @* Devam Et *@
-        <button hx-get="/KrediBasvurusu?handler=Step4"
-                hx-target="#wizard-container"
-                hx-swap="innerHTML"
-                class="mt-5 flex justify-between items-center px-8 py-4 w-full h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
-            <span class="font-[Poppins] font-semibold text-[16px] text-white">Devam Et</span>
-            <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="">
+        <button type="button"
+                @@click="devamEt()"
+                :disabled="loading"
+                :class="loading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'"
+                class="mt-5 flex justify-between items-center px-8 py-4 w-full h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none">
+            <span class="font-[Poppins] font-semibold text-[16px] text-white" x-text="loading ? 'Lütfen bekleyin...' : 'Devam Et'"></span>
+            <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="" x-show="!loading">
         </button>
 
     </div>

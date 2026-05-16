@@ -5,7 +5,7 @@ namespace MyApp.Web.Services.Implementations;
 
 public class MockReportService : IReportService
 {
-    public Task<KrediRaporlariViewModel> GetKrediRaporlariAsync()
+    public Task<KrediRaporlariViewModel> GetKrediRaporlariAsync(CancellationToken ct = default)
     {
         var reports = new List<ReportItemViewModel>
         {

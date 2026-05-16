@@ -168,8 +168,8 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostUpdateGsmAsync()
     {
-        var success = await _customerDataService.UpdateGsmAsync(GuvenlikGsm);
-        return new JsonResult(new { success });
+        var (success, message, _) = await _authService.SendOtpAsync(GuvenlikGsm);
+        return new JsonResult(new { success, message });
     }
 
     public async Task<IActionResult> OnPostUpdateMaritalStatusAsync()
@@ -201,6 +201,8 @@ public class IndexModel : PageModel
     public async Task<IActionResult> OnPostVerifyGsmOtpAsync()
     {
         var (success, _, message) = await _authService.VerifyOtpAsync(GuvenlikGsm, GuvenlikOtpCode);
+        if (success)
+            await _customerDataService.UpdateGsmAsync(GuvenlikGsm);
         return new JsonResult(new { success, message });
     }
 }

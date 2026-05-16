@@ -19,6 +19,9 @@ bld/
 *.user
 *.suo
 
+# Cursor IDE
+*.lscache
+
 # Rider / JetBrains
 .idea/
 

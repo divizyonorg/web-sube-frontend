@@ -10,7 +10,7 @@
 <div class="flex items-center justify-between pb-3 border-b border-[#DCE3FB]">
     <div class="flex flex-col">
         <span class="text-[13px] sm:text-[14px] text-[#003F75]">Tekrar Hoşgeldin👋🏻</span>
-        <span class="text-[16px] sm:text-[18px] font-light text-[#003F75]">Mustafa</span>
+        <span class="text-[16px] sm:text-[18px] font-light text-[#003F75]">@Model.UserFullName</span>
     </div>
     <div class="text-right">
         <div class="text-[13px] sm:text-[14px] text-[#003F75]">İnteraktif Kredi</div>
@@ -117,8 +117,8 @@
                                 <article class="bg-white rounded-[10px] p-3 flex flex-col gap-3">
                                     <div class="flex justify-between items-center">
                                         <div class="flex items-center gap-2">
-                                           <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                                             <img src="/images/BbvaLogo.png"
+                                           <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-[#F2F8FF]">
+                                             <img src="/images/garantibbva.png"
                                                   alt="Garanti BBVA"
                                                   class="w-full h-full object-contain" />
                                             </div>
@@ -240,14 +240,28 @@
 
     @* ── Dördüncü satır: Kampanyalar ── *@
     <style>
+        #campaigns-pagination {
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 8px !important;
+            position: static !important;
+            width: 100% !important;
+        }
         #campaigns-pagination .swiper-pagination-bullet {
-            width: 10px !important; height: 10px !important;
-            background: #2E6DF8 !important; opacity: 0.4 !important;
-            border-radius: 5px !important; margin: 0 4px !important;
-            transition: width 0.3s ease;
+            width: 10px !important;
+            height: 10px !important;
+            background: #2E6DF8 !important;
+            opacity: 0.4 !important;
+            border-radius: 5px !important;
+            margin: 0 !important;
+            flex-shrink: 0 !important;
+            transition: width 0.3s ease, opacity 0.3s ease;
         }
         #campaigns-pagination .swiper-pagination-bullet-active {
-            width: 30px !important; opacity: 1 !important;
+            width: 30px !important;
+            opacity: 1 !important;
         }
         #campaigns-swiper {
             overflow: hidden;
@@ -338,11 +352,69 @@
                         </article>
                     </div>
 
+                    @* Kart 3 — Kredi Skoru Takibi *@
+                    <div class="swiper-slide py-2 px-1">
+                        <article class="bg-white border border-[#DCE3FB] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[15px] p-4 flex flex-col gap-4 h-full">
+                            <div class="border-b border-black/15 pb-1">
+                                <p class="m-0 font-['Poppins'] text-[14px] font-medium text-[#003F75] leading-[21px]">Kredi Skorunu Ücretsiz Takip Et!</p>
+                            </div>
+                            <p class="m-0 font-['Poppins'] text-[10px] font-[300] text-[#003F75] leading-[15px] text-center">Kredi skorundaki değişimleri anlık olarak izle, güçlü ve zayıf yönlerini keşfet, finansal hedeflerine daha hızlı ulaş.</p>
+                            <div class="flex flex-col gap-2 px-4 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Anlık skor bildirimleri</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Detaylı analiz raporu</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">İyileştirme önerileri</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <button type="button" class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] border-0 hover:bg-[#004494] transition-all cursor-pointer">
+                                    <span class="font-['Poppins'] font-medium text-[16px] leading-6 text-white">Skorumu Gör</span>
+                                </button>
+                            </div>
+                        </article>
+                    </div>
+
+                    @* Kart 4 — Hızlı Kredi Başvurusu *@
+                    <div class="swiper-slide py-2 px-1">
+                        <article class="bg-white border border-[#DCE3FB] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[15px] p-4 flex flex-col gap-4 h-full">
+                            <div class="border-b border-black/15 pb-1">
+                                <p class="m-0 font-['Poppins'] text-[14px] font-medium text-[#003F75] leading-[21px]">Hızlı Başvuru ile Anında Sonuç Al!</p>
+                            </div>
+                            <p class="m-0 font-['Poppins'] text-[10px] font-[300] text-[#003F75] leading-[15px] text-center">Dakikalar içinde başvurunu tamamla, onay durumunu gerçek zamanlı takip et. Uzman desteğiyle sürecini hızlandır.</p>
+                            <div class="flex flex-col gap-2 px-4 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Çoklu banka karşılaştırma</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Gerçek zamanlı bildirim</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">En uygun faiz garantisi</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <button type="button" class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] border-0 hover:bg-[#004494] transition-all cursor-pointer">
+                                    <span class="font-['Poppins'] font-medium text-[16px] leading-6 text-white">Hemen Başvur</span>
+                                </button>
+                            </div>
+                        </article>
+                    </div>
+
                 </div>
             </div>
         </div>
 
-        <div class="dots flex justify-center items-center gap-2 py-3" id="campaigns-pagination"></div>
+        <div id="campaigns-pagination" class="py-3"></div>
 
     </section>
 
@@ -366,7 +438,7 @@
             loop: true,
             spaceBetween: 16,
             navigation: { prevEl: '#campaigns-prev', nextEl: '#campaigns-next' },
-            pagination: { el: '#campaigns-pagination', clickable: true, dynamicBullets: true },
+            pagination: { el: '#campaigns-pagination', clickable: true },
             breakpoints: {
                 0: {
                     slidesPerView: 1,
