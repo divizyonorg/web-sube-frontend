@@ -251,13 +251,9 @@
                 payBtn.style.cursor = '';
                 try {
                     var json = JSON.parse(e.detail.xhr.responseText);
-                    if (json.success) {
-                        if (json.bankaLinki) {
-                            openBankModal(json.bankaLinki);
-                        } else {
-                            htmx.ajax('GET', '/KrediBasvurusu?handler=Step7', { target: '#wizard-container', swap: 'innerHTML' });
-                        }
-                    } else if (json.message) {
+                    if (json.success && json.bankaLinki) {
+                        openBankModal(json.bankaLinki);
+                    } else if (!json.success && json.message) {
                         toast.error(json.message);
                     }
                 } catch {}

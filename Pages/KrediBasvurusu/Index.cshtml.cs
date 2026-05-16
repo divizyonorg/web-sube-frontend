@@ -93,7 +93,7 @@ public class IndexModel : PageModel
         return new JsonResult(new { status });
     }
 
-    public async Task<IActionResult> OnGetStep7Async(string? telNoSorguId, CancellationToken ct)
+    public async Task<IActionResult> OnGetStep7Async(CancellationToken ct)
     {
         var model = await _reportService.FindeksRaporTalepAsync(telNoSorguId ?? "0", ct);
         return Partial("~/Partials/KrediBasvurusu/_Step7.cshtml", model);
