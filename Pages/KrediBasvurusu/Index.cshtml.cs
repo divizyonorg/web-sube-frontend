@@ -42,6 +42,12 @@ public class IndexModel : PageModel
     public IActionResult OnGetStep3() =>
         Partial("~/Partials/KrediBasvurusu/_Step3.cshtml");
 
+    public async Task<IActionResult> OnPostCreateAsync(CancellationToken ct)
+    {
+        var (success, message, rid) = await _reportService.CreateAsync(ct);
+        return new JsonResult(new { success, message, rid });
+    }
+
     public async Task<IActionResult> OnGetStep4Async(CancellationToken ct)
     {
         var model = await _finansalProfilService.GetAsync(ct);
@@ -51,12 +57,8 @@ public class IndexModel : PageModel
     public IActionResult OnGetStep5() =>
         Partial("~/Partials/KrediBasvurusu/_Step5.cshtml");
 
-    public async Task<IActionResult> OnGetStep6Async(CancellationToken ct)
-    {
-        var (success, message, rid) = await _reportService.CreateAsync(ct);
-        var model = new KrediRaporuOdemeViewModel { Rid = rid, IsResumed = message.Contains("devam") };
-        return Partial("~/Partials/KrediBasvurusu/_Step6.cshtml", model);
-    }
+    public IActionResult OnGetStep6() =>
+        Partial("~/Partials/KrediBasvurusu/_Step6.cshtml", new KrediRaporuOdemeViewModel());
 
     public async Task<IActionResult> OnPostPayAsync(CancellationToken ct)
     {

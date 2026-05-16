@@ -15,7 +15,7 @@ public class MockCreditEligibilityService : ICreditEligibilityService
         var dto = new CreditEligibilityDto
         {
             Status = "uygun",
-            Score = 38
+            Score = 70
         };
 
         return Task.FromResult(CreditEligibilityService.MapToViewModel(dto));
