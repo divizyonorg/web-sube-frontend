@@ -64,21 +64,40 @@ public class EvdsService : IEvdsService
 
         return new InterestRateTrendViewModel
         {
+            CreditType = creditType,
             ProductLabel = label,
             RateLabel = $"{label} Faizi",
             RateValue = $"%{monthlyRate.ToString("N2", new CultureInfo("tr-TR"))}",
             PeriodSuffix = "/ Ay",
-            ChangePercent = "-0.45%",
-            ChangePeriodLabel = "Son 3 Ay",
+            AnnualRateValue = $"%{entry.Rate.ToString("N2", new CultureInfo("tr-TR"))} / Yıl",
             MarketAverageLabel = "Ortalama Piyasa Faizi",
             OpportunityLabel = "FIRSAT: Yılın En Düşük Seviyesi"
         };
+    }
+
+    public async Task<InterestRateTrendViewModel> GetInterestRateTrendAsync(string creditType = "IHTIYAC")
+    {
+        var dto = await GetAsync<MarketRatesDto>(Endpoints.MarketRates);
+        return MapInterestRateTrend(dto, creditType);
     }
 
     public async Task<MarketSliderCardViewModel> GetCreditPulseAsync(string creditType = "IHTIYAC")
     {
         var dto = await GetAsync<CreditPulseDto>(string.Format(Endpoints.CreditPulse, creditType));
         return MapCreditPulse(dto, creditType);
+    }
+
+    public async Task<MarketSliderCardViewModel> GetDemandRadarAsync(string creditType = "IHTIYAC")
+    {
+        var dto = await GetAsync<DemandRadarDto>(string.Format(Endpoints.DemandRadar, creditType));
+        return MapDemandRadar(dto, creditType);
+    }
+
+    public async Task<ReasonableCreditRateViewModel> GetLogicalRateAsync(string creditType = "IHTIYAC", double offeredRate = 3.15)
+    {
+        var dto = await GetAsync<LogicalRateDto>(string.Format(Endpoints.LogicalRate, creditType,
+                      offeredRate.ToString("F2", CultureInfo.InvariantCulture)));
+        return MapLogicalRate(dto, creditType);
     }
 
     private static MarketSliderCardViewModel MapCreditPulse(CreditPulseDto? dto, string creditType)
@@ -145,6 +164,7 @@ public class EvdsService : IEvdsService
 
         return new ReasonableCreditRateViewModel
         {
+            CreditType = creditType,
             ProductLabel = CreditTypeToLabel(creditType),
             Description = "Bankaların müşterilere fiilen kullandırılan kredi uygunluk gerçek faiz oranının özüdür.",
             RateValue = $"%{dto.MarketRateMonthly.ToString("N2", new CultureInfo("tr-TR"))}",
