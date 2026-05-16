@@ -12,7 +12,8 @@ public interface IReportService
     Task<(bool Success, string Message, string? BankaLinki)> StartPaymentAsync(string rid, string cardNumber, string expMonth, string expYear, string cvv, string cardHolderName, CancellationToken ct = default);
     Task<(bool Success, string Message, decimal? FinalAmount, decimal? DiscountAmount)> ApplyCouponAsync(string rid, string couponCode, CancellationToken ct = default);
 
-    Task<FindeksOtpViewModel> FindeksRaporTalepAsync(CancellationToken ct = default);
+    Task<FindeksOtpViewModel> FindeksRaporTalepAsync(string telNoSorguId = "0", CancellationToken ct = default);
+    Task<(bool Basari, string Aksiyon, string Mesaj, string TelNoSorguId)> TelefonSorgulaEftAsync(string bankaEftKodu, CancellationToken ct = default);
     Task<(bool Success, string Message)> FindeksRaporTalepOnayAsync(string pin, CancellationToken ct = default);
 
     Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> AnalizUretAsync(CancellationToken ct = default);
