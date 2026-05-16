@@ -20,7 +20,7 @@
                 <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
             </div>
         </button>
-        <img src="~/images/ik_logo.png" alt="İnteraktif Kredi" class="h-[25px] object-contain">
+        <img src="~/images/IKLogo-blue.svg" width="70" height="25" alt="İnteraktif Kredi" class="object-contain">
         <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
             <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
         </a>
@@ -53,7 +53,7 @@
             Finansal profilinizden bilgileri otomatik doldurma için
         </p>
         <div>
-            <a href="/Ayarlar/FinansalProfil"
+            <a href="/Ayarlar"
                class="font-[Poppins] font-semibold text-[16px] leading-6 text-[#0056B3] underline">Ayarlar › Finansal Profil</a>
             <span class="font-[Poppins] font-normal text-[11px] text-[#0056B3]"> sayfasını ziyaret edin.</span>
         </div>
@@ -83,7 +83,7 @@
         </div>
 
         @* Meslek *@
-        <div class="mt-5 flex flex-col gap-[5px]">
+        <div x-show="calismaId !== '' && calismaId !== '7'" class="mt-5 flex flex-col gap-[5px]">
             <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
                 Meslek
             </span>
@@ -115,13 +115,13 @@
         </div>
 
         @* Çalışma Süresi *@
-        <div class="mt-5 flex flex-col gap-[5px]">
+        <div x-show="calismaId !== '' && calismaId !== '7'" class="mt-5 flex flex-col gap-[5px]">
             <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
                 Çalışma Süresi
             </span>
             <div class="relative box-border w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
                 <select class="w-full h-full border-none outline-none py-[11px] pl-3.5 pr-10 appearance-none font-[Poppins] text-[14px] text-[#003F75] bg-transparent cursor-pointer">
-                    <option value="">Seçiniz…</option>
+                    <option value=""></option>
                     @foreach (var t in MyApp.Web.ViewModels.FinansalProfilViewModel.WorkingTimeOptions)
                     {
                         <option value="@t.Value" selected="@(t.Value == Model.TotalWorkingTime ? "selected" : null)">@t.Label</option>

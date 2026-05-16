@@ -16,17 +16,15 @@
                 @* Sol: logo + kart bilgisi *@
                 <div class="flex items-center gap-3.5 min-w-0 flex-1">
 
-                    <div :class="{
-                             'bg-gradient-to-r from-[#155DFC] to-[#193CB8]': kart.marka === \'VISA\',
-                             'bg-gradient-to-br from-[#EB001B] to-[#F79E1B]': kart.marka === \'MC\',
-                             'bg-[#2E77BC]':                              kart.marka === \'AMEX\',
-                             'bg-gray-500':                               kart.marka === \'DIGER\'
-                         }"
-                         class="w-[46px] h-8 rounded-[4px] shrink-0 flex items-center justify-center">
-                        <span x-show="kart.marka === 'VISA'"  class="text-white text-[11px] font-extrabold tracking-[0.5px] italic leading-none">VISA</span>
-                        <span x-show="kart.marka === 'MC'"    class="text-white text-[9px]  font-bold leading-none">MC</span>
-                        <span x-show="kart.marka === 'AMEX'"  class="text-white text-[9px]  font-bold leading-none">AMEX</span>
-                        <span x-show="kart.marka === 'DIGER'" class="text-white text-[9px]  font-bold leading-none">KART</span>
+                    <div :style="kart.marka === 'VISA'  ? 'background: linear-gradient(90deg, #155DFC 0%, #193CB8 100%)' :
+                                kart.marka === 'MC'    ? 'background: linear-gradient(135deg, #EB001B 0%, #F79E1B 100%)' :
+                                kart.marka === 'AMEX'  ? 'background: #2E77BC' :
+                                                         'background: #6B7280'"
+                         class="w-[48px] h-8 rounded-[4px] shrink-0 flex items-center justify-center">
+                        <span x-show="kart.marka === 'VISA'"  class="font-['Source_Sans_3'] text-white text-[12px] font-bold leading-[16px]">VISA</span>
+                        <span x-show="kart.marka === 'MC'"    class="font-['Source_Sans_3'] text-white text-[10px] font-bold leading-none">MC</span>
+                        <span x-show="kart.marka === 'AMEX'"  class="font-['Source_Sans_3'] text-white text-[9px]  font-bold leading-none">AMEX</span>
+                        <span x-show="kart.marka === 'DIGER'" class="font-['Source_Sans_3'] text-white text-[9px]  font-bold leading-none">KART</span>
                     </div>
 
                     <div class="min-w-0">

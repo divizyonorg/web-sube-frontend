@@ -545,7 +545,9 @@
                     // Login sayfasıyla birebir aynı IMask kurulumu
                     var phoneEl = document.getElementById('PhoneNumber');
                     if (phoneEl) {
-                        var phoneMask = IMask(phoneEl, { mask: '+{90} 000 000 00 00' });
+                        var phoneMask = IMask(phoneEl, { mask: '+9\\0 000 000 00 00' });
+                        phoneMask.value = '+90 ';
+                        self.phone = phoneMask.value;
                         phoneMask.on('accept', function () {
                             self.phone = phoneMask.value;
                             self.phoneVerified = false;
