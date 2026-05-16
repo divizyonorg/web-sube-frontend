@@ -5,13 +5,6 @@
     ViewData["ActivePage"] = "Kredi Raporların";
 
     var market = Model.ViewModel.MarketAnalysis;
-    var typeOptions = new (string Type, string Label)[]
-    {
-        ("IHTIYAC", "İhtiyaç Kredisi"),
-        ("TASIT",   "Taşıt Kredisi"),
-        ("KONUT",   "Konut Kredisi"),
-        ("TICARI",  "Ticari Kredi")
-    };
 }
 
 <div class="p-3 md:p-6 flex flex-col items-center gap-4">
@@ -116,215 +109,31 @@
             </div>
 
             @* ─── Kart 1 · Faiz Oranı Trendi ─── *@
-            <div class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
-
-                <div class="flex flex-col gap-1 px-4 py-3 border-b border-black/10">
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <img src="/icons/primary/activity.svg" width="20" height="20" alt="">
-                            <span class="font-[Poppins] text-[13px] font-semibold leading-5 text-[#003F75]">Faiz Oranı Trendi</span>
-                        </div>
-                        <div x-data="{ open: false, pos: { top: 0, right: 0 }, toggle() { const r = this.$refs.btn.getBoundingClientRect(); this.pos = { top: r.bottom + 4, right: window.innerWidth - r.right }; this.open = !this.open; } }" class="relative">
-                            <button x-ref="btn" @@click="toggle()" type="button"
-                                    class="flex items-center gap-1 bg-white border border-[#E5E7EB] shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-[10px] px-2 py-1">
-                                <span class="font-[Poppins] text-[11px] font-normal leading-4 text-[#003F75]">@market.InterestRateTrend.ProductLabel</span>
-                                <img src="/icons/navy/chevron-down.svg" width="12" height="12" alt="">
-                            </button>
-                            <template x-teleport="body">
-                                <div x-show="open" @@click.outside="open = false" x-transition
-                                     :style="'position:fixed;top:'+pos.top+'px;right:'+pos.right+'px;z-index:9999'"
-                                     class="bg-white border border-[#E5E7EB] rounded-[10px] shadow-lg overflow-hidden min-w-[140px]">
-                                    @foreach (var opt in typeOptions)
-                                    {
-                                        var cls1 = Model.ViewModel.ActiveCreditType == opt.Type
-                                            ? "block px-4 py-2 text-[11px] font-[Poppins] font-semibold text-[#003F75] bg-[#F2F8FF]"
-                                            : "block px-4 py-2 text-[11px] font-[Poppins] text-black/60 hover:bg-[#F2F8FF]";
-                                        <a href="?tab=piyasa&kredi=@opt.Type" class="@cls1">@opt.Label</a>
-                                    }
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                    <p class="font-[Poppins] italic font-light text-[10px] leading-[15px] text-black/50">
-                        Faiz oranı trendi, bankaların geçen hafta müşterilere fiilen kullandırılan kredilerin ağırlıklı ortalamasıdır.
-                    </p>
-                </div>
-
-                @* Koyu mavi gövde *@
-                <div class="flex flex-col gap-3 rounded-b-2xl overflow-hidden bg-[#122B62] px-4 pt-4 pb-0">
-
-                    @* Üst satır: sol = label + %5,04 / Ay  |  sağ = -0.45% + Son 3 Ay *@
-                    <div class="flex justify-between items-start">
-                        <div class="flex flex-col gap-0.5">
-                            <span class="font-['Poppins'] text-[10px] font-light leading-[15px] text-white opacity-80">@market.InterestRateTrend.RateLabel</span>
-                            <div class="flex items-end gap-1.5">
-                                <span class="font-['Poppins'] text-[28px] font-bold leading-[42px] text-white">@market.InterestRateTrend.RateValue</span>
-                                <span class="font-['Poppins'] text-[12px] font-light leading-[18px] text-white pb-1">@market.InterestRateTrend.PeriodSuffix</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    @* Chart line — düz yatay yeşil çizgi *@
-                    <div class="relative w-full h-[72px]">
-                        <div class="absolute left-[0.44%] right-[0.44%] top-[34.72%] border-t-[2.5px] border-[#46CA88]"></div>
-                    </div>
-
-                    @* Alt satır: iki pill *@
-                    <div class="flex items-center justify-between flex-wrap gap-2 pb-4">
-                        <span class="font-['Poppins'] text-[9px] font-light leading-[14px] text-white px-3 py-1 bg-white/25 border border-black/25 rounded-full">
-                            @market.InterestRateTrend.MarketAverageLabel
-                        </span>
-                        <span class="flex items-center gap-1 font-['Poppins'] text-[9px] font-semibold leading-[14px] text-white px-[10px] py-1 bg-[rgba(70,202,136,0.6)] border border-black/25 rounded-full">
-                            <img src="/icons/white/sparkle.svg" width="12" height="12" alt="">
-                            @market.InterestRateTrend.OpportunityLabel
-                        </span>
-                    </div>
-
-                </div>
-            </div>
+            <partial name="~/Partials/KurDetay/_FaizOraniTrendiCard.cshtml" model="market.InterestRateTrend" />
 
             @* ─── Kart 2 · Kredi Nabzı ─── *@
-            <div class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
-                <div class="flex flex-col gap-1 px-4 py-3 border-b border-black/10">
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <img src="/icons/primary/heartbeat.svg" width="20" height="20" alt="">
-                            <span class="font-[Poppins] text-[13px] font-semibold leading-5 text-[#003F75]">Kredi Nabzı</span>
-                        </div>
-                        <div x-data="{ open: false, pos: { top: 0, right: 0 }, toggle() { const r = this.$refs.btn.getBoundingClientRect(); this.pos = { top: r.bottom + 4, right: window.innerWidth - r.right }; this.open = !this.open; } }" class="relative">
-                            <button x-ref="btn" @@click="toggle()" type="button"
-                                    class="flex items-center gap-1 bg-white border border-[#E5E7EB] shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-[10px] px-2 py-1">
-                                <span class="font-[Poppins] text-[11px] font-normal leading-4 text-[#003F75]">@market.CreditPulse.ProductLabel</span>
-                                <img src="/icons/navy/chevron-down.svg" width="12" height="12" alt="">
-                            </button>
-                            <template x-teleport="body">
-                                <div x-show="open" @@click.outside="open = false" x-transition
-                                     :style="'position:fixed;top:'+pos.top+'px;right:'+pos.right+'px;z-index:9999'"
-                                     class="bg-white border border-[#E5E7EB] rounded-[10px] shadow-lg overflow-hidden min-w-[140px]">
-                                    @foreach (var opt in typeOptions)
-                                    {
-                                        var cls2 = Model.ViewModel.ActiveCreditType == opt.Type
-                                            ? "block px-4 py-2 text-[11px] font-[Poppins] font-semibold text-[#003F75] bg-[#F2F8FF]"
-                                            : "block px-4 py-2 text-[11px] font-[Poppins] text-black/60 hover:bg-[#F2F8FF]";
-                                        <a href="?tab=piyasa&kredi=@opt.Type" class="@cls2">@opt.Label</a>
-                                    }
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                    <p class="font-[Poppins] italic font-light text-[10px] leading-[15px] text-black/50">
-                        @market.CreditPulse.Description
-                    </p>
-                </div>
-
-                <partial name="~/Partials/_MarketSliderCard.cshtml" model="market.CreditPulse" />
-            </div>
+            <partial name="~/Partials/KurDetay/_KrediNabziCard.cshtml" model="market.CreditPulse" />
 
             @* ─── Kart 3 · Kredi Talebi Radarı ─── *@
-            <div class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
-                <div class="flex flex-col gap-1 px-4 py-3 border-b border-black/10">
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <img src="/icons/primary/radar.svg" width="20" height="20" alt="">
-                            <span class="font-[Poppins] text-[13px] font-semibold leading-5 text-[#003F75]">Kredi Talebi Radarı</span>
-                        </div>
-                        <div x-data="{ open: false, pos: { top: 0, right: 0 }, toggle() { const r = this.$refs.btn.getBoundingClientRect(); this.pos = { top: r.bottom + 4, right: window.innerWidth - r.right }; this.open = !this.open; } }" class="relative">
-                            <button x-ref="btn" @@click="toggle()" type="button"
-                                    class="flex items-center gap-1 bg-white border border-[#E5E7EB] shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-[10px] px-2 py-1">
-                                <span class="font-[Poppins] text-[11px] font-normal leading-4 text-[#003F75]">@market.CreditDemandRadar.ProductLabel</span>
-                                <img src="/icons/navy/chevron-down.svg" width="12" height="12" alt="">
-                            </button>
-                            <template x-teleport="body">
-                                <div x-show="open" @@click.outside="open = false" x-transition
-                                     :style="'position:fixed;top:'+pos.top+'px;right:'+pos.right+'px;z-index:9999'"
-                                     class="bg-white border border-[#E5E7EB] rounded-[10px] shadow-lg overflow-hidden min-w-[140px]">
-                                    @foreach (var opt in typeOptions)
-                                    {
-                                        var cls3 = Model.ViewModel.ActiveCreditType == opt.Type
-                                            ? "block px-4 py-2 text-[11px] font-[Poppins] font-semibold text-[#003F75] bg-[#F2F8FF]"
-                                            : "block px-4 py-2 text-[11px] font-[Poppins] text-black/60 hover:bg-[#F2F8FF]";
-                                        <a href="?tab=piyasa&kredi=@opt.Type" class="@cls3">@opt.Label</a>
-                                    }
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                    <p class="font-[Poppins] italic font-light text-[10px] leading-[15px] text-black/50">
-                        @market.CreditDemandRadar.Description
-                    </p>
-                </div>
-
-                <partial name="~/Partials/_MarketSliderCard.cshtml" model="market.CreditDemandRadar" />
-            </div>
+            <partial name="~/Partials/KurDetay/_KrediTalebiRadariCard.cshtml" model="market.CreditDemandRadar" />
 
             @* ─── Kart 4 · Mantıklı Kredi Oranı ─── *@
-            <div class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
-                <div class="flex flex-col gap-1 px-4 py-3 border-b border-black/10">
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <img src="/icons/primary/info-circle.svg" width="20" height="20" alt="">
-                            <span class="font-[Poppins] text-[13px] font-semibold leading-5 text-[#003F75]">Mantıklı Kredi Oranı</span>
-                        </div>
-                        <div x-data="{ open: false, pos: { top: 0, right: 0 }, toggle() { const r = this.$refs.btn.getBoundingClientRect(); this.pos = { top: r.bottom + 4, right: window.innerWidth - r.right }; this.open = !this.open; } }" class="relative">
-                            <button x-ref="btn" @@click="toggle()" type="button"
-                                    class="flex items-center gap-1 bg-white border border-[#E5E7EB] shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-[10px] px-2 py-1">
-                                <span class="font-[Poppins] text-[11px] font-normal leading-4 text-[#003F75]">@market.ReasonableCreditRate.ProductLabel</span>
-                                <img src="/icons/navy/chevron-down.svg" width="12" height="12" alt="">
-                            </button>
-                            <template x-teleport="body">
-                                <div x-show="open" @@click.outside="open = false" x-transition
-                                     :style="'position:fixed;top:'+pos.top+'px;right:'+pos.right+'px;z-index:9999'"
-                                     class="bg-white border border-[#E5E7EB] rounded-[10px] shadow-lg overflow-hidden min-w-[140px]">
-                                    @foreach (var opt in typeOptions)
-                                    {
-                                        var cls4 = Model.ViewModel.ActiveCreditType == opt.Type
-                                            ? "block px-4 py-2 text-[11px] font-[Poppins] font-semibold text-[#003F75] bg-[#F2F8FF]"
-                                            : "block px-4 py-2 text-[11px] font-[Poppins] text-black/60 hover:bg-[#F2F8FF]";
-                                        <a href="?tab=piyasa&kredi=@opt.Type" class="@cls4">@opt.Label</a>
-                                    }
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                    <p class="font-[Poppins] italic font-light text-[10px] leading-[15px] text-black/50">
-                        @market.ReasonableCreditRate.Description
-                    </p>
-                </div>
-
-                @* Beyaz gövde *@
-                @{
-                    var ratePct = Math.Clamp(market.ReasonableCreditRate.SliderPercent, 0, 100);
-                }
-                <div class="relative w-full bg-white rounded-b-2xl overflow-hidden h-[188px]">
-
-                    <div class="absolute left-4 right-4 top-4 text-center">
-                        <span class="font-['Poppins'] font-bold text-[34px] leading-[51px] text-[#003F75]">@market.ReasonableCreditRate.RateValue</span>
-                    </div>
-
-                    <p class="absolute left-4 right-4 top-[71px] text-center font-['Poppins'] font-light text-[11px] leading-4 text-black/50">
-                        @market.ReasonableCreditRate.SubText
-                    </p>
-
-                    <div class="absolute left-4 right-4 top-[103.5px]">
-                        <div class="relative w-full rounded-full h-5 bg-[linear-gradient(90deg,#122B62_0%,#2E6DF8_50%,#36FC99_100%)]">
-                            <div class="absolute rounded-full bg-white border border-[#E5E7EB] w-[10px] h-[28px] -top-1 shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.1),0px_2px_4px_-2px_rgba(0,0,0,0.1)]"
-                                 style="left: calc(@ratePct% - 5px);"></div>
-                        </div>
-                        <div class="flex justify-between mt-2 px-1">
-                            <span class="font-['Poppins'] font-normal text-[9px] leading-[14px] text-[#122B62] opacity-75">@market.ReasonableCreditRate.LeftLabel</span>
-                            <span class="font-['Poppins'] font-normal text-[9px] leading-[14px] text-[#2E6DF8] opacity-75">@market.ReasonableCreditRate.MiddleLabel</span>
-                            <span class="font-['Poppins'] font-normal text-[9px] leading-[14px] text-[#37C6B3] opacity-75">@market.ReasonableCreditRate.RightLabel</span>
-                        </div>
-                    </div>
-
-                    <div class="absolute left-4 top-[157px] flex items-center gap-1.5">
-                        <img src="/icons/primary/sparkle-ai.svg" width="12" height="12" alt="">
-                        <span class="font-['Poppins'] italic font-normal text-[10px] leading-[15px] text-[#2E6DF8]">@market.ReasonableCreditRate.AiText</span>
-                    </div>
-
-                </div>
-            </div>
+            <partial name="~/Partials/KurDetay/_MantikliKrediOraniCard.cshtml" model="market.ReasonableCreditRate" />
 
         </div>
     }
 </div>
+
+<script>
+    (function () {
+        var savedY;
+        document.addEventListener('htmx:beforeRequest', function () { savedY = window.scrollY; });
+        document.addEventListener('htmx:afterSettle', function () {
+            if (savedY !== undefined) {
+                var y = savedY;
+                savedY = undefined;
+                requestAnimationFrame(function () { window.scrollTo(0, y); });
+            }
+        });
+    })();
+</script>
