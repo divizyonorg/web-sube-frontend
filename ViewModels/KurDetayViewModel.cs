@@ -53,7 +53,7 @@ public class ReasonableCreditRateViewModel
     public string ProductLabel { get; set; } = "İhtiyaç Kredisi";
     public string Description { get; set; } = string.Empty;
     public string RateValue { get; set; } = "%3,00";
-    public string SubText { get; set; } = "Son 7 Gün Piyasa Ortalaması";
+    public string SubText { get; set; } = "Son 1 Aydaki Piyasa Ortalaması";
     public int SliderPercent { get; set; } = 28;
     public string LeftLabel { get; set; } = "Düşük Faiz";
     public string MiddleLabel { get; set; } = "Orta";
