@@ -48,6 +48,8 @@ export default defineConfig({
         'tests/faturalarim.spec.ts',
         'tests/sozlesmelerim.spec.ts',
         'tests/ayarlar.spec.ts',
+        'tests/finansal-profil.spec.ts',
+        'tests/odeme.spec.ts',
         'tests/clients.spec.ts',
       ],
     },

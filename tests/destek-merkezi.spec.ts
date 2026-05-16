@@ -99,4 +99,37 @@ test.describe('Destek Merkezi', () => {
       bug('Destek talebi listesi boş — bu kullanıcıya ait talep yok olabilir');
   });
 
+  // ─── Bug 3: Destek talebi gönderilemiyor ─────────────────────────────────
+  test('[BUG-3] Destek talebi gönderilince "Bir hata oluştu" alınmamalı', async ({ page }) => {
+    await page.locator('h1').first().waitFor({ timeout: 15_000 });
+    await page.locator('button:has-text("Yeni Destek Talebi")').click();
+    await expect(page.locator('textarea').first()).toBeVisible({ timeout: 5_000 });
+
+    // Formu doldur
+    await page.locator('textarea').first().fill('Otomatik test talebi — lütfen görmezden gelin');
+
+    const subjectInput = page
+      .locator('input[name*="konu"], input[name*="subject"], input[placeholder*="Konu"], input[placeholder*="Başlık"]')
+      .first();
+    if (await subjectInput.count() > 0)
+      await subjectInput.fill('Test Talebi');
+
+    const categorySelect = page.locator('select[name*="kategori"], select[name*="category"]').first();
+    if (await categorySelect.count() > 0)
+      await categorySelect.selectOption({ index: 1 });
+
+    // Gönder
+    const submitBtn = page
+      .locator('button[type="submit"]:visible, button:has-text("Gönder"):visible, button:has-text("Kaydet"):visible')
+      .last();
+    if (await submitBtn.count() === 0) { bug('[BUG-3] Destek talebi gönder butonu bulunamadı'); return; }
+    await submitBtn.click({ force: true });
+    await page.waitForTimeout(2500);
+
+    // Hata mesajı kontrolü
+    const errorMsg = page.locator('text=Bir hata oluştu').or(page.locator('text=hata oluştu')).first();
+    if (await errorMsg.count() > 0)
+      bug('[BUG-3] Destek talebi gönderilince "Bir hata oluştu" mesajı alındı — API isteği başarısız');
+  });
+
 });

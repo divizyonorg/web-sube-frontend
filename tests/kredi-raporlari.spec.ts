@@ -57,4 +57,36 @@ test.describe('Kredi Raporları', () => {
       bug('/KrediRaporlari/KurDetay sayfası 404 döndürüyor');
   });
 
+  // ─── Bug 4: "Raporu Gör" yanlış yönlendiriyor ────────────────────────────
+  test('[BUG-4] Farklı raporlar için "Raporu Gör" farklı URL\'e gitmeli', async ({ page }) => {
+    await page.locator('h1, h2').first().waitFor({ timeout: 15_000 });
+    const viewBtns = page.locator('button:has-text("Raporu Gör"), a:has-text("Raporu Gör")');
+    const count = await viewBtns.count();
+    info(`"Raporu Gör" buton sayısı: ${count}`);
+    if (count < 2) {
+      info('[BUG-4] Test için en az 2 rapor gerekli — bu kullanıcıda yeterli rapor olmayabilir');
+      return;
+    }
+
+    // 1. rapor
+    await viewBtns.nth(0).click({ force: true });
+    await page.waitForLoadState('domcontentloaded', { timeout: 10_000 });
+    const firstUrl = page.url();
+    info(`1. rapor URL: ${firstUrl}`);
+
+    await page.goto('/KrediRaporlari');
+    await page.waitForLoadState('domcontentloaded');
+    await page.locator('h1, h2').first().waitFor({ timeout: 15_000 });
+
+    // 2. rapor
+    const viewBtns2 = page.locator('button:has-text("Raporu Gör"), a:has-text("Raporu Gör")');
+    await viewBtns2.nth(1).click({ force: true });
+    await page.waitForLoadState('domcontentloaded', { timeout: 10_000 });
+    const secondUrl = page.url();
+    info(`2. rapor URL: ${secondUrl}`);
+
+    if (firstUrl === secondUrl)
+      bug(`[BUG-4] Farklı raporlar için "Raporu Gör" aynı URL'e yönlendiriyor: ${firstUrl} — yönlendirme sabit`);
+  });
+
 });

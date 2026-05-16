@@ -34,6 +34,22 @@ test.describe('Navigasyon', () => {
       bug('Header\'da kullanıcı avatarı/adı bulunamadı');
   });
 
+  // ─── Bug 1: Header'da kullanıcı adı kısaltılıyor ─────────────────────────
+  test('[BUG-1] Header\'da kullanıcı adı "..." ile kısaltılmamalı', async ({ page }) => {
+    await page.locator('header, [class*="header"]').first().waitFor({ timeout: 10_000 });
+    const nameEl = page
+      .locator('header [class*="name"], header [class*="user"] span, header strong, header p[class*="name"]')
+      .first();
+    if (await nameEl.count() === 0) {
+      info('[BUG-1] Header\'da kullanıcı adı elementi bulunamadı');
+      return;
+    }
+    const nameText = (await nameEl.textContent()) ?? '';
+    info(`Header kullanıcı adı: "${nameText.trim()}"`);
+    if (nameText.includes('...') || nameText.includes('…'))
+      bug(`[BUG-1] Header'daki kullanıcı adı kısaltılmış: "${nameText.trim()}" — CSS text-overflow/truncate sorunu`);
+  });
+
   test('bildirim alanı görünür', async ({ page }) => {
     await page.locator('header, [class*="header"]').first().waitFor({ timeout: 10_000 });
     const notif = page.locator('[class*="notif"], [class*="badge"]').first();
@@ -90,17 +106,20 @@ test.describe('Navigasyon', () => {
   });
 
   // ─── Logo tıklaması ───────────────────────────────────────────────────────
-  test('logo\'ya tıklayınca anasayfaya gidiliyor', async ({ page }) => {
-    const logo = page.locator('a[href="/anasayfa"], a[href="/"], header a, [class*="logo"] a').first();
+  test('İnteraktif Kredi logosu tıklanınca anasayfaya gidiliyor', async ({ page }) => {
+    // Sol üstteki İnteraktif Kredi logosu — sidebar veya header içinde
+    const logo = page
+      .locator('a[href="/anasayfa"], a[href="/"], aside a img, aside a svg, [class*="logo"] a, header a img, header a svg')
+      .first();
     if (await logo.count() === 0) {
-      bug('Header\'da logo linki bulunamadı');
+      bug('Sol üstteki İnteraktif Kredi logosu linki bulunamadı');
       return;
     }
-    await logo.click();
+    await logo.click({ force: true });
     await page.waitForLoadState('domcontentloaded');
     const url = page.url();
     if (!url.includes('anasayfa') && !url.endsWith('/'))
-      bug(`Logo tıklaması anasayfaya götürmüyor — mevcut URL: ${url}`);
+      bug(`İnteraktif Kredi logosu tıklaması anasayfaya götürmüyor — mevcut URL: ${url}`);
   });
 
   // ─── Logout ───────────────────────────────────────────────────────────────

@@ -111,4 +111,32 @@ test.describe('Anasayfa', () => {
       bug('Kampanyalar swiper nav butonları swiper-button-lock ile kilitli — yeterli slide yok');
   });
 
+  // ─── Bug 7: Hardcoded "Mustafa" isim ─────────────────────────────────────
+  test('[BUG-7] Karşılama mesajındaki isim giriş yapan kullanıcıya ait olmalı (hardcoded değil)', async ({ page }) => {
+    const welcomeEl = page.locator('text=Tekrar Hoşgeldin').first();
+    await welcomeEl.waitFor({ timeout: 10_000 });
+
+    // Karşılama container metnini al
+    const containerText = await page
+      .locator('h1:has-text("Hoşgeldin"), h2:has-text("Hoşgeldin"), p:has-text("Hoşgeldin"), [class*="welcome"]:has-text("Hoşgeldin")')
+      .first()
+      .textContent()
+      .catch(() => '');
+    info(`Karşılama metni: "${containerText?.trim()}"`);
+
+    // Header'daki kullanıcı adını al ve karşılamayla karşılaştır
+    const headerName = await page
+      .locator('header [class*="name"], header [class*="user"] span, header strong, header [class*="profile"] span')
+      .first()
+      .textContent()
+      .catch(() => '');
+    info(`Header kullanıcı adı: "${headerName?.trim()}"`);
+
+    if (headerName?.trim() && containerText) {
+      const firstName = headerName.trim().split(' ')[0];
+      if (firstName && !containerText.includes(firstName))
+        bug(`[BUG-7] Karşılama mesajı ("${containerText?.trim()}") header'daki kullanıcı adıyla ("${headerName?.trim()}") eşleşmiyor — hardcoded isim kullanılıyor`);
+    }
+  });
+
 });
