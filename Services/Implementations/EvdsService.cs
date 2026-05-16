@@ -29,21 +29,28 @@ public class EvdsService : IEvdsService
 
     public async Task<MarketAnalysisViewModel> GetMarketAnalysisAsync(string creditType = "IHTIYAC", double offeredRate = 3.15)
     {
-        var ratesTask = GetAsync<MarketRatesDto>(Endpoints.MarketRates);
-        var pulseTask = GetAsync<CreditPulseDto>(string.Format(Endpoints.CreditPulse, creditType));
-        var radarTask = GetAsync<DemandRadarDto>(string.Format(Endpoints.DemandRadar, creditType));
-        var logicalTask = GetAsync<LogicalRateDto>(string.Format(Endpoints.LogicalRate, creditType,
-                              offeredRate.ToString("F2", CultureInfo.InvariantCulture)));
-
-        await Task.WhenAll(ratesTask, pulseTask, radarTask, logicalTask);
-
-        return new MarketAnalysisViewModel
+        try
         {
-            InterestRateTrend = MapInterestRateTrend(ratesTask.Result, creditType),
-            CreditPulse = MapCreditPulse(pulseTask.Result, creditType),
-            CreditDemandRadar = MapDemandRadar(radarTask.Result, creditType),
-            ReasonableCreditRate = MapLogicalRate(logicalTask.Result, creditType)
-        };
+            var ratesTask = GetAsync<MarketRatesDto>(Endpoints.MarketRates);
+            var pulseTask = GetAsync<CreditPulseDto>(string.Format(Endpoints.CreditPulse, creditType));
+            var radarTask = GetAsync<DemandRadarDto>(string.Format(Endpoints.DemandRadar, creditType));
+            var logicalTask = GetAsync<LogicalRateDto>(string.Format(Endpoints.LogicalRate, creditType,
+                                  offeredRate.ToString("F2", CultureInfo.InvariantCulture)));
+
+            await Task.WhenAll(ratesTask, pulseTask, radarTask, logicalTask);
+
+            return new MarketAnalysisViewModel
+            {
+                InterestRateTrend = MapInterestRateTrend(ratesTask.Result, creditType),
+                CreditPulse = MapCreditPulse(pulseTask.Result, creditType),
+                CreditDemandRadar = MapDemandRadar(radarTask.Result, creditType),
+                ReasonableCreditRate = MapLogicalRate(logicalTask.Result, creditType)
+            };
+        }
+        catch
+        {
+            return await new MockEvdsService().GetMarketAnalysisAsync(creditType, offeredRate);
+        }
     }
 
     private static InterestRateTrendViewModel MapInterestRateTrend(MarketRatesDto? dto, string creditType)
@@ -83,8 +90,15 @@ public class EvdsService : IEvdsService
 
     public async Task<MarketSliderCardViewModel> GetCreditPulseAsync(string creditType = "IHTIYAC")
     {
-        var dto = await GetAsync<CreditPulseDto>(string.Format(Endpoints.CreditPulse, creditType));
-        return MapCreditPulse(dto, creditType);
+        try
+        {
+            var dto = await GetAsync<CreditPulseDto>(string.Format(Endpoints.CreditPulse, creditType));
+            return MapCreditPulse(dto, creditType);
+        }
+        catch
+        {
+            return await new MockEvdsService().GetCreditPulseAsync(creditType);
+        }
     }
 
     public async Task<MarketSliderCardViewModel> GetDemandRadarAsync(string creditType = "IHTIYAC")

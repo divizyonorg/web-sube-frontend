@@ -9,11 +9,11 @@ public class MockReportService : IReportService
     {
         var reports = new List<ReportItemViewModel>
         {
-            new() { Title = "Kredi Notu Raporu",          ReportNo = "RPT-2024-001", Status = "Hazır",      Date = "15.03.2024", ReportType = "Kredi Notu" },
-            new() { Title = "Gelir Analiz Raporu",        ReportNo = "RPT-2024-002", Status = "Hazır",      Date = "10.03.2024", ReportType = "Gelir Analizi" },
-            new() { Title = "Borç Durum Raporu",          ReportNo = "RPT-2024-003", Status = "İşleniyor",  Date = "08.03.2024", ReportType = "Borç Durumu" },
-            new() { Title = "Kredi Geçmişi Raporu",       ReportNo = "RPT-2024-004", Status = "Hazır",      Date = "01.03.2024", ReportType = "Kredi Geçmişi" },
-            new() { Title = "Risk Değerlendirme Raporu",  ReportNo = "RPT-2024-005", Status = "Beklemede",  Date = "28.02.2024", ReportType = "Risk Değerlendirme" },
+            new() { Rid = "KRD-MOCK-00001", Title = "Kredi Notu Raporu",          ReportNo = "RPT-2024-001", Status = "Hazır",      Date = "15.03.2024", ReportType = "Kredi Notu" },
+            new() { Rid = "KRD-MOCK-00002", Title = "Gelir Analiz Raporu",        ReportNo = "RPT-2024-002", Status = "Hazır",      Date = "10.03.2024", ReportType = "Gelir Analizi" },
+            new() { Rid = "KRD-MOCK-00003", Title = "Borç Durum Raporu",          ReportNo = "RPT-2024-003", Status = "İşleniyor",  Date = "08.03.2024", ReportType = "Borç Durumu" },
+            new() { Rid = "KRD-MOCK-00004", Title = "Kredi Geçmişi Raporu",       ReportNo = "RPT-2024-004", Status = "Hazır",      Date = "01.03.2024", ReportType = "Kredi Geçmişi" },
+            new() { Rid = "KRD-MOCK-00005", Title = "Risk Değerlendirme Raporu",  ReportNo = "RPT-2024-005", Status = "Beklemede",  Date = "28.02.2024", ReportType = "Risk Değerlendirme" },
         };
 
         var viewModel = new KrediRaporlariViewModel
@@ -30,17 +30,20 @@ public class MockReportService : IReportService
     public Task<byte[]> GetReportPdfAsync(string reportNo)
         => Task.FromResult(Array.Empty<byte>());
 
-    public Task<(bool Success, string Message, string Rid)> CreateAsync(CancellationToken ct = default)
-        => Task.FromResult((true, "Kaldığınız yerden devam ediliyor.", "KRD-MOCK-00001"));
+    public Task<(bool Success, string Message, string Rid, string Status)> CreateAsync(CancellationToken ct = default)
+        => Task.FromResult((true, "Kaldığınız yerden devam ediliyor.", "KRD-MOCK-00001", "DRAFT"));
 
-    public Task<(bool Success, string Message)> StartPaymentAsync(
+    public Task<(bool Success, string Message, string? BankaLinki)> StartPaymentAsync(
         string rid, string cardNumber, string expMonth, string expYear,
         string cvv, string cardHolderName, CancellationToken ct = default)
-        => Task.FromResult((true, "Ödeme başarıyla tamamlandı."));
+        => Task.FromResult<(bool, string, string?)>((true, "Ödeme başarıyla tamamlandı.", null));
 
     public Task<(bool Success, string Message, decimal? FinalAmount, decimal? DiscountAmount)> ApplyCouponAsync(
         string rid, string couponCode, CancellationToken ct = default)
         => Task.FromResult<(bool, string, decimal?, decimal?)>((true, "Kupon kodu uygulandı.", 19.95m, 19.95m));
+
+    public Task<string> GetReportStatusAsync(string rid, CancellationToken ct = default)
+        => Task.FromResult("PENDING");
 
     public Task<FindeksOtpViewModel> FindeksRaporTalepAsync(CancellationToken ct = default)
         => Task.FromResult(new FindeksOtpViewModel

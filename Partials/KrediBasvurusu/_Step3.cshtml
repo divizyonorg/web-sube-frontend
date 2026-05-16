@@ -7,6 +7,9 @@
          krediAmaci: '',
          krediTutar: '',
          loading: false,
+         formatMoney(v) {
+             return v.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+         },
          get tutar() {
              return parseFloat(this.krediTutar.replace(/\./g, '').replace(',', '.')) || 0;
          },
@@ -30,6 +33,10 @@
                  });
                  const json = await resp.json();
                  if (json.success) {
+                     if (json.status && json.status.toUpperCase() !== 'DRAFT') {
+                         toast.error('Bu raporunuz için ödeme zaten tamamlanmış veya işleniyor.');
+                         return;
+                     }
                      window.krediRid = json.rid;
                      htmx.ajax('GET', '/KrediBasvurusu?handler=Step4', { target: '#wizard-container', swap: 'innerHTML' });
                  } else {
@@ -89,7 +96,9 @@
             </span>
             <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
                 <input type="text" placeholder="Örn: 50.000"
-                       x-model="krediTutar"
+                       inputmode="numeric"
+                       :value="krediTutar"
+                       @@input="krediTutar = formatMoney($event.target.value); $event.target.value = krediTutar"
                        class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
                 <span class="font-[Poppins] font-medium text-[13px] text-[#739FCC] pr-3 shrink-0">TL</span>
             </div>

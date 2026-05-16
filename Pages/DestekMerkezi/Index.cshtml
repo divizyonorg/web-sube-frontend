@@ -323,31 +323,13 @@
 
                         if (data.success) {
                             this.modalOpen = false;
-                            Toastify({
-                                text:     'Destek talebiniz başarıyla oluşturuldu.',
-                                duration: 3000,
-                                gravity:  'top',
-                                position: 'right',
-                                style:    { background: '#22c55e' }
-                            }).showToast();
+                            toast.success('Destek talebiniz başarıyla oluşturuldu.');
                             setTimeout(() => location.reload(), 1500);
                         } else {
-                            Toastify({
-                                text:     'Bir hata oluştu, lütfen tekrar deneyin.',
-                                duration: 3000,
-                                gravity:  'top',
-                                position: 'right',
-                                style:    { background: '#ef4444' }
-                            }).showToast();
+                            toast.error('Bir hata oluştu, lütfen tekrar deneyin.');
                         }
                     } catch {
-                        Toastify({
-                            text:     'Bağlantı hatası, lütfen tekrar deneyin.',
-                            duration: 3000,
-                            gravity:  'top',
-                            position: 'right',
-                            style:    { background: '#ef4444' }
-                        }).showToast();
+                        toast.error('Bağlantı hatası, lütfen tekrar deneyin.');
                     } finally {
                         this.sending = false;
                     }
