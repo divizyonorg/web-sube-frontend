@@ -1,9 +1,6 @@
 @model MyApp.Web.Pages.Ayarlar.IndexModel
 @{ Layout = null; }
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-<script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
-
 <div x-data="bildirimlerForm()"
      class="bg-white border border-[#E5E7EB] rounded-[14px] pt-[33px] px-[33px] pb-[33px] font-[Poppins]">
 
@@ -118,21 +115,10 @@
                     });
                     var json = await resp.json();
 
-                    Toastify({
-                        text:     json.success ? 'Bildirim tercihleriniz güncellendi.' : 'Güncelleme başarısız, lütfen tekrar deneyin.',
-                        duration: 3000,
-                        gravity:  'top',
-                        position: 'right',
-                        style:    { background: json.success ? '#22c55e' : '#ef4444' }
-                    }).showToast();
+                    if (json.success) toast.success('Bildirim tercihleriniz güncellendi.');
+                    else              toast.error('Güncelleme başarısız, lütfen tekrar deneyin.');
                 } catch {
-                    Toastify({
-                        text:     'Bağlantı hatası oluştu.',
-                        duration: 3000,
-                        gravity:  'top',
-                        position: 'right',
-                        style:    { background: '#ef4444' }
-                    }).showToast();
+                    toast.error('Bağlantı hatası oluştu.');
                 } finally {
                     this.saving = false;
                 }

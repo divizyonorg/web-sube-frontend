@@ -5,6 +5,12 @@ namespace MyApp.Web.ViewModels.CreditEligibility;
 /// </summary>
 public class CreditEligibilityCardViewModel
 {
-    public string StatusLabel { get; set; } = string.Empty;     // "uygun" — büyük yazı için
-    public int SliderPositionPercent { get; set; }              // 0-100 arası, thumb için
+    public bool HasData { get; set; }
+    public string StatusLabel { get; set; } = string.Empty;
+    public int SliderPositionPercent { get; set; }
+    public string LatestReadyRid { get; set; } = string.Empty;
+
+    public string KurDetayUrl => string.IsNullOrEmpty(LatestReadyRid)
+        ? "/KrediRaporlari/KurDetay"
+        : $"/KrediRaporlari/KurDetay?rid={LatestReadyRid}&tab=kisisel";
 }

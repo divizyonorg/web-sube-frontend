@@ -17,24 +17,28 @@ static Action<HttpClient> ConfigureClient(ServiceEndpoint endpoint) => client =>
     client.Timeout = TimeSpan.FromSeconds(endpoint.TimeoutSeconds);
 };
 
+// Kredi uygunluk API'si henüz aktif değil — her zaman mock kullanılır
+builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
+
 if (useMockData)
 {
     builder.Services.AddScoped<IClientService, MockClientService>();
     builder.Services.AddScoped<IReportService, MockReportService>();
-    builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
     builder.Services.AddScoped<ICustomerDataService, MockCustomerDataService>();
     builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
     builder.Services.AddScoped<ISssService, MockSssService>();
+    builder.Services.AddScoped<IEvdsService, MockEvdsService>();
 }
 else
 {
     builder.Services.AddHttpClient<IClientService, ClientService>(ConfigureClient(serviceUrls.CustomerService));
     builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService))
         .AddHttpMessageHandler<BearerTokenHandler>();
-    builder.Services.AddHttpClient<ICreditEligibilityService, CreditEligibilityService>(ConfigureClient(serviceUrls.CustomerService));
     builder.Services.AddHttpClient<ICustomerDataService, CustomerDataService>(ConfigureClient(serviceUrls.CustomerService));
     builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
     builder.Services.AddHttpClient<ISssService, SssService>(ConfigureClient(serviceUrls.IcrmAnalyticsService));
+    builder.Services.AddHttpClient<IEvdsService, EvdsService>(ConfigureClient(serviceUrls.EvdsService))
+        .AddHttpMessageHandler<BearerTokenHandler>();
 }
 
 builder.Services.AddHttpContextAccessor();
@@ -44,8 +48,6 @@ builder.Services.AddHttpClient<IAuthService, AuthService>(ConfigureClient(servic
 builder.Services.AddHttpClient<ICustomerRegistrationService, CustomerRegistrationService>(ConfigureClient(serviceUrls.CustomerService))
     .AddHttpMessageHandler<BearerTokenHandler>();
 builder.Services.AddHttpClient<ICustomerCheckService, CustomerCheckService>(ConfigureClient(serviceUrls.CustomerService));
-builder.Services.AddHttpClient<IEvdsService, EvdsService>(ConfigureClient(serviceUrls.EvdsService))
-    .AddHttpMessageHandler<BearerTokenHandler>();
 builder.Services.AddHttpClient<ICustomerProfileService, CustomerProfileService>(ConfigureClient(serviceUrls.CustomerService))
     .AddHttpMessageHandler<BearerTokenHandler>();
 builder.Services.AddHttpClient<IFinansalProfilService, FinansalProfilService>(ConfigureClient(serviceUrls.CustomerService))
@@ -61,6 +63,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
 
 app.UseStaticFiles();
+app.UseMiddleware<MyApp.Web.Middleware.TokenAuthMiddleware>();
 app.UseRouting();
 app.UseAuthorization();
 app.MapRazorPages();

@@ -18,8 +18,6 @@
     <!-- FilePond -->
     <link rel="stylesheet" href="~/lib/filepond/filepond.min.css" asp-append-version="true" />
 
-    <!-- Toastify.js -->
-    <link rel="stylesheet" href="~/lib/toastify-js/toastify.css" asp-append-version="true" />
 
     <!-- Flatpickr -->
     <link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css" asp-append-version="true" />
@@ -105,9 +103,9 @@
             @await Component.InvokeAsync("Sidebar", new { activePage = ViewData["ActivePage"]?.ToString() ?? "" })
         </div>
 
-        <main id="layout-main" class="main-content" style="flex:1; overflow-y:auto; box-sizing:border-box;">
+        <main id="layout-main" class="main-content" style="flex:1; overflow-y:auto; box-sizing:border-box; display:flex; flex-direction:column;">
             @await RenderSectionAsync("Styles", required: false)
-            <div class="page-content">
+            <div class="page-content" style="flex:1;">
                 @RenderBody()
             </div>
             @await Component.InvokeAsync("Footer")
@@ -132,9 +130,6 @@
 
     <!-- IMask.js -->
     <script src="~/lib/imask/imask.min.js" asp-append-version="true"></script>
-
-    <!-- Toastify.js -->
-    <script src="~/lib/toastify-js/toastify.js" asp-append-version="true"></script>
 
     <!-- JustValidate -->
     <script src="~/lib/just-validate/just-validate.production.min.js" asp-append-version="true"></script>
@@ -173,21 +168,6 @@
                 init.headers = Object.assign({ 'Authorization': 'Bearer ' + token }, init.headers || {});
                 return _fetch(input, init);
             };
-        })();
-    </script>
-    <script>
-        (function () {
-            var token = localStorage.getItem('auth_token');
-            if (!token) return;
-            fetch('/api/me')
-                .then(function (r) { return r.ok ? r.json() : null; })
-                .then(function (data) {
-                    if (!data || !data.fullName) return;
-                    document.querySelectorAll('[data-user-name]').forEach(function (el) {
-                        el.textContent = data.fullName;
-                    });
-                })
-                .catch(function () {});
         })();
     </script>
     @await RenderSectionAsync("Scripts", required: false)

@@ -42,6 +42,12 @@ public class IndexModel : PageModel
     public IActionResult OnGetStep3() =>
         Partial("~/Partials/KrediBasvurusu/_Step3.cshtml");
 
+    public async Task<IActionResult> OnPostCreateAsync(CancellationToken ct)
+    {
+        var (success, message, rid, status) = await _reportService.CreateAsync(ct);
+        return new JsonResult(new { success, message, rid, status });
+    }
+
     public async Task<IActionResult> OnGetStep4Async(CancellationToken ct)
     {
         var model = await _finansalProfilService.GetAsync(ct);
@@ -51,35 +57,39 @@ public class IndexModel : PageModel
     public IActionResult OnGetStep5() =>
         Partial("~/Partials/KrediBasvurusu/_Step5.cshtml");
 
-    public async Task<IActionResult> OnGetStep6Async(CancellationToken ct)
-    {
-        var (success, message, rid) = await _reportService.CreateAsync(ct);
-        var model = new KrediRaporuOdemeViewModel { Rid = rid, IsResumed = message.Contains("devam") };
-        return Partial("~/Partials/KrediBasvurusu/_Step6.cshtml", model);
-    }
+    public IActionResult OnGetStep6() =>
+        Partial("~/Partials/KrediBasvurusu/_Step6.cshtml", new KrediRaporuOdemeViewModel());
 
     public async Task<IActionResult> OnPostPayAsync(CancellationToken ct)
     {
         var parts = ExpDate.Split('/');
         var expMonth = parts.Length > 0 ? parts[0].Trim() : string.Empty;
-        var expYear = parts.Length > 1 ? parts[1].Trim() : string.Empty;
+        var rawYear = parts.Length > 1 ? parts[1].Trim() : string.Empty;
+        var expYear = rawYear.Length == 2 ? "20" + rawYear : rawYear;
+        var cleanCardNumber = CardNumber.Replace(" ", "");
 
-        var (success, message) = await _reportService.StartPaymentAsync(
-            Rid, CardNumber, expMonth, expYear, Cvv, CardHolderName, ct);
+        var (success, message, bankaLinki) = await _reportService.StartPaymentAsync(
+            Rid, cleanCardNumber, expMonth, expYear, Cvv, CardHolderName, ct);
 
-        return new JsonResult(new { success, message });
+        return new JsonResult(new { success, message, bankaLinki });
     }
 
     public async Task<IActionResult> OnPostApplyCouponAsync(CancellationToken ct)
     {
-        var (success, message) = await _reportService.ApplyCouponAsync(Rid, CouponCode, ct);
-        return new JsonResult(new { success, message });
+        var (success, message, finalAmount, discountAmount) = await _reportService.ApplyCouponAsync(Rid, CouponCode, ct);
+        return new JsonResult(new { success, message, finalAmount, discountAmount });
     }
 
     public async Task<IActionResult> OnPostVerifyOtpAsync(CancellationToken ct)
     {
         var (success, message) = await _reportService.FindeksRaporTalepOnayAsync(Pin, ct);
         return new JsonResult(new { success, message });
+    }
+
+    public async Task<IActionResult> OnGetCheckStatusAsync(string rid, CancellationToken ct)
+    {
+        var status = await _reportService.GetReportStatusAsync(rid, ct);
+        return new JsonResult(new { status });
     }
 
     public async Task<IActionResult> OnGetStep7Async(CancellationToken ct)

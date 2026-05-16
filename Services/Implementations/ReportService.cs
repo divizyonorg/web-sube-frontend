@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -19,6 +20,9 @@ public class ReportService : IReportService
         public const string ApplyCoupon = "/api/v1/reports/apply-coupon";
         public const string FindeksRaporTalep = "/api/v1/findeks/rapor-talep-master";
         public const string FindeksRaporTalepOnay = "/api/v1/findeks/rapor-talep-onay";
+        public const string AnalizUret = "/analiz-uret";
+        public const string GetAiReport = "/api/v1/reports/ai-report/{0}";
+        public const string ListKredi = "/api/v1/reports/list?type=KREDI&updated_after=2025-01-01";
     }
 
     public ReportService(HttpClient httpClient, ILogger<ReportService> logger)
@@ -27,7 +31,7 @@ public class ReportService : IReportService
         _logger = logger;
     }
 
-    public async Task<(bool Success, string Message, string Rid)> CreateAsync(CancellationToken ct = default)
+    public async Task<(bool Success, string Message, string Rid, string Status)> CreateAsync(CancellationToken ct = default)
     {
         try
         {
@@ -38,19 +42,19 @@ public class ReportService : IReportService
             {
                 _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.Create, body);
                 var errMsg = TryParseMessage(body) ?? "Rapor oluşturulamadı.";
-                return (false, errMsg, string.Empty);
+                return (false, errMsg, string.Empty, string.Empty);
             }
             var dto = JsonSerializer.Deserialize<CreateReportResponseDto>(body);
-            return (true, dto?.Message ?? string.Empty, dto?.Data?.Rid ?? string.Empty);
+            return (true, dto?.Message ?? string.Empty, dto?.Data?.Rid ?? string.Empty, dto?.Data?.Status ?? string.Empty);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.Create);
-            return (false, "Bağlantı hatası oluştu.", string.Empty);
+            return (false, "Bağlantı hatası oluştu.", string.Empty, string.Empty);
         }
     }
 
-    public async Task<(bool Success, string Message)> StartPaymentAsync(
+    public async Task<(bool Success, string Message, string? BankaLinki)> StartPaymentAsync(
         string rid, string cardNumber, string expMonth, string expYear,
         string cvv, string cardHolderName, CancellationToken ct = default)
     {
@@ -71,18 +75,23 @@ public class ReportService : IReportService
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.StartPayment, body);
-                return (false, TryParseMessage(body) ?? "Ödeme işlemi başarısız.");
+                return (false, TryParseMessage(body) ?? "Ödeme işlemi başarısız.", null);
             }
-            return (true, "Ödeme başarıyla tamamlandı.");
+            using var doc = JsonDocument.Parse(body);
+            var bankaLinki = doc.RootElement
+                .TryGetProperty("data", out var data)
+                    ? data.TryGetProperty("banka_3d_linki", out var link) ? link.GetString() : null
+                    : null;
+            return (true, TryParseMessage(body) ?? "Ödeme işlemi başarıyla başlatıldı.", bankaLinki);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.StartPayment);
-            return (false, "Bağlantı hatası oluştu.");
+            return (false, "Bağlantı hatası oluştu.", null);
         }
     }
 
-    public async Task<(bool Success, string Message)> ApplyCouponAsync(
+    public async Task<(bool Success, string Message, decimal? FinalAmount, decimal? DiscountAmount)> ApplyCouponAsync(
         string rid, string couponCode, CancellationToken ct = default)
     {
         try
@@ -94,14 +103,15 @@ public class ReportService : IReportService
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.ApplyCoupon, body);
-                return (false, TryParseMessage(body) ?? "Kupon kodu geçersiz.");
+                return (false, TryParseMessage(body) ?? "Kupon kodu geçersiz.", null, null);
             }
-            return (true, TryParseMessage(body) ?? "Kupon kodu uygulandı.");
+            var dto = JsonSerializer.Deserialize<ApplyCouponResponseDto>(body);
+            return (true, "Kupon kodu uygulandı.", dto?.Data?.FinalAmount, dto?.Data?.DiscountAmount);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.ApplyCoupon);
-            return (false, "Bağlantı hatası oluştu.");
+            return (false, "Bağlantı hatası oluştu.", null, null);
         }
     }
 
@@ -158,6 +168,185 @@ public class ReportService : IReportService
         }
     }
 
+    public async Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> AnalizUretAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync(Endpoints.AnalizUret, new { }, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.AnalizUret, (int)response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.AnalizUret, body);
+                return (false, TryParseMessage(body) ?? "Analiz oluşturulamadı.", null);
+            }
+            var dto = JsonSerializer.Deserialize<AnalizUretResponseDto>(body);
+            if (dto?.FrontendUi is null)
+                return (false, "Geçersiz API yanıtı.", null);
+            return (true, string.Empty, MapFromAnalizUret(dto.FrontendUi));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.AnalizUret);
+            return (false, "Bağlantı hatası oluştu.", null);
+        }
+    }
+
+    public async Task<string> GetReportStatusAsync(string rid, CancellationToken ct = default)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"/api/v1/reports/detail/{rid}", ct);
+            if (!response.IsSuccessStatusCode) return string.Empty;
+            var body = await response.Content.ReadAsStringAsync(ct);
+            using var doc = JsonDocument.Parse(body);
+            if (doc.RootElement.TryGetProperty("data", out var data) &&
+                data.TryGetProperty("status", out var status))
+                return status.GetString() ?? string.Empty;
+            if (doc.RootElement.TryGetProperty("status", out var rootStatus))
+                return rootStatus.GetString() ?? string.Empty;
+            return string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+
+    public async Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> GetAiReportAsync(string rid, CancellationToken ct = default)
+    {
+        var endpoint = string.Format(Endpoints.GetAiReport, rid);
+        try
+        {
+            var response = await _httpClient.GetAsync(endpoint, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("GET {Endpoint} → {Status}", endpoint, (int)response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("GET {Endpoint} başarısız: {Body}", endpoint, body);
+                return (false, TryParseMessage(body) ?? "Rapor getirilemedi.", null);
+            }
+            var dto = JsonSerializer.Deserialize<AiReportResponseDto>(body);
+            if (dto?.Data?.AiData is null)
+                return (false, "Geçersiz API yanıtı.", null);
+            return (true, string.Empty, MapFromAiReport(dto.Data));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GET {Endpoint} exception", endpoint);
+            return (false, "Bağlantı hatası oluştu.", null);
+        }
+    }
+
+    private static KisiselRaporViewModel MapFromAnalizUret(AnalizFrontendUiDto ui)
+    {
+        var vm = new UygunlukSeridiViewModel
+        {
+            UygunlukEtiketi = MapUygunlukEtiketi(ui.ProfilSeviyesi),
+            MarkerPositionPercent = MapMarkerPosition(ui.ProfilSeviyesi),
+            AnalizVurgular = string.IsNullOrWhiteSpace(ui.RaporBasligi?.AnaAnalizParagrafi)
+                ? []
+                : [new AnalizVurguViewModel { Text = ui.RaporBasligi.AnaAnalizParagrafi, IsBold = false }],
+            BuSekildeBulgular = string.IsNullOrWhiteSpace(ui.RaporBasligi?.GelecekProjeksiyonu)
+                ? []
+                : [ui.RaporBasligi.GelecekProjeksiyonu],
+            NelerYapilabilir = ui.NelerYapilabilirListesi,
+            OlumluNoktalar = ui.GucluYanlar,
+            UyariKartlari = ui.KritikUyariKartlari
+                .Select(u => new UyariKartiViewModel
+                {
+                    Baslik = u.Baslik,
+                    Aciklama = u.Metin,
+                    IsKritik = u.Baslik.Contains("kritik", StringComparison.OrdinalIgnoreCase)
+                })
+                .ToList(),
+            KrediTuruKartlari = MapKrediTuruKartlari(ui.KrediOlasilikTahmini),
+            FinansalGostergeler = MapFinansalGostergeler(ui.FinansalGostergeler)
+        };
+        return new KisiselRaporViewModel { UygunlukSeridi = vm };
+    }
+
+    private static KisiselRaporViewModel MapFromAiReport(AiReportDataDto data)
+    {
+        var aiData = data.AiData!;
+        var vm = new UygunlukSeridiViewModel
+        {
+            UygunlukEtiketi = MapUygunlukEtiketi(data.ProfilSeviyesi),
+            MarkerPositionPercent = MapMarkerPosition(data.ProfilSeviyesi),
+            AnalizVurgular = string.IsNullOrWhiteSpace(aiData.RaporOzeti)
+                ? []
+                : [new AnalizVurguViewModel { Text = aiData.RaporOzeti, IsBold = false }],
+            BuSekildeBulgular = [],
+            NelerYapilabilir = aiData.AksiyonPlani,
+            OlumluNoktalar = aiData.OlumluEtkenler,
+            UyariKartlari = aiData.RiskEtkenleri
+                .Select(r => new UyariKartiViewModel
+                {
+                    Baslik = r.Baslik,
+                    Aciklama = r.Metin,
+                    IsKritik = r.Baslik.Contains("kritik", StringComparison.OrdinalIgnoreCase)
+                })
+                .ToList(),
+            KrediTuruKartlari = [],
+            FinansalGostergeler = []
+        };
+        return new KisiselRaporViewModel { UygunlukSeridi = vm };
+    }
+
+    private static int MapMarkerPosition(string profilSeviyesi) => profilSeviyesi.ToUpperInvariant() switch
+    {
+        "YÜKSEK" => 15,
+        "ORTA" => 40,
+        "KRİTİK" => 65,
+        "DÜŞÜK" => 88,
+        _ => 40
+    };
+
+    private static string MapUygunlukEtiketi(string profilSeviyesi) => profilSeviyesi.ToUpperInvariant() switch
+    {
+        "YÜKSEK" => "yüksek",
+        "ORTA" => "orta",
+        "KRİTİK" => "kritik",
+        "DÜŞÜK" => "düşük",
+        _ => "orta"
+    };
+
+    private static List<KrediTuruKartViewModel> MapKrediTuruKartlari(AnalizKrediOlasilikDto? dto)
+    {
+        if (dto is null) return [];
+        return
+        [
+            new() { Baslik = "Borç Kapama",   OlasilikEtiketi = MapOlasilikEtiketi(dto.BorcKapama), IsYuksekOlasilik = IsYuksek(dto.BorcKapama) },
+            new() { Baslik = "Konut Kredisi", OlasilikEtiketi = MapOlasilikEtiketi(dto.Konut),      IsYuksekOlasilik = IsYuksek(dto.Konut)      },
+            new() { Baslik = "Taşıt Kredisi", OlasilikEtiketi = MapOlasilikEtiketi(dto.Tasit),      IsYuksekOlasilik = IsYuksek(dto.Tasit)      },
+            new() { Baslik = "Nakit Kredi",   OlasilikEtiketi = MapOlasilikEtiketi(dto.Nakit),      IsYuksekOlasilik = IsYuksek(dto.Nakit)      }
+        ];
+    }
+
+    private static List<FinansalGostergelerKartViewModel> MapFinansalGostergeler(AnalizFinansalGostergelerDto? dto)
+    {
+        if (dto is null) return [];
+        var result = new List<FinansalGostergelerKartViewModel>();
+        if (dto.NakitAkisiDengesi is not null)
+            result.Add(new() { Baslik = "Aylık Nakit Akışı Dengesi", IkonYolu = "~/icons/coins-stacked-03.svg", LeftLabel = $"{dto.NakitAkisiDengesi.Oran} Dolu", Aciklama = [dto.NakitAkisiDengesi.Yorum] });
+        if (dto.KartLimitKotasi is not null)
+            result.Add(new() { Baslik = "Yasal Kart Limit Kotası", IkonYolu = "~/icons/credit-card-01.svg", LeftLabel = $"{dto.KartLimitKotasi.Oran} Dolu", Aciklama = [dto.KartLimitKotasi.Yorum] });
+        if (dto.GenelLimitKullanim is not null)
+            result.Add(new() { Baslik = "Kredi Limit Kullanım Oranı", IkonYolu = "~/icons/scales-01.svg", LeftLabel = $"{dto.GenelLimitKullanim.Oran} Dolu", Aciklama = [dto.GenelLimitKullanim.Yorum] });
+        return result;
+    }
+
+    private static string MapOlasilikEtiketi(string seviye) => seviye.ToUpperInvariant() switch
+    {
+        "YÜKSEK" => "yüksek",
+        "ORTA" => "orta",
+        "DÜŞÜK" => "düşük",
+        _ => "orta"
+    };
+
+    private static bool IsYuksek(string seviye) =>
+        string.Equals(seviye, "YÜKSEK", StringComparison.OrdinalIgnoreCase);
+
     private static string? TryParseMessage(string body)
     {
         try
@@ -170,37 +359,75 @@ public class ReportService : IReportService
         return null;
     }
 
-    public Task<KrediRaporlariViewModel> GetKrediRaporlariAsync()
+    public async Task<KrediRaporlariViewModel> GetKrediRaporlariAsync(CancellationToken ct = default)
     {
-        var reports = GetMockReports();
-        var viewModel = new KrediRaporlariViewModel
+        try
         {
-            TotalCount = reports.Count,
-            ReadyCount = reports.Count(r => r.IsReady),
-            ProcessingCount = reports.Count(r => r.IsProcessing),
-            Reports = reports
-        };
-        return Task.FromResult(viewModel);
+            var response = await _httpClient.GetAsync(Endpoints.ListKredi, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("GET {Endpoint} → {Status}", Endpoints.ListKredi, (int)response.StatusCode);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("GET {Endpoint} başarısız: {Body}", Endpoints.ListKredi, body);
+                return new KrediRaporlariViewModel();
+            }
+
+            var dto = JsonSerializer.Deserialize<ReportListResponseDto>(body);
+            var reports = dto?.Data.Select(MapToViewModel).ToList() ?? [];
+
+            return new KrediRaporlariViewModel
+            {
+                TotalCount = dto?.Pagination?.TotalRecords ?? reports.Count,
+                ReadyCount = reports.Count(r => r.IsReady),
+                ProcessingCount = reports.Count(r => r.IsProcessing),
+                Reports = reports
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GET {Endpoint} exception", Endpoints.ListKredi);
+            return new KrediRaporlariViewModel();
+        }
     }
 
     public Task<byte[]> GetReportPdfAsync(string reportNo)
     {
-        var report = GetMockReports().FirstOrDefault(r => r.ReportNo == reportNo);
-
-        return report is null
-            ? Task.FromResult(Array.Empty<byte>())
-            : Task.FromResult(BuildMockPdf(report));
+        var report = new ReportItemViewModel
+        {
+            ReportNo = reportNo,
+            Rid = reportNo,
+            Title = "Kredi Detay Raporu",
+            Status = "Hazır",
+            Date = DateTime.Now.ToString("dd MMMM yyyy", new CultureInfo("tr-TR")),
+            ReportType = "Kredi Raporu"
+        };
+        return Task.FromResult(BuildMockPdf(report));
     }
 
-    private static List<ReportItemViewModel> GetMockReports() =>
-    [
-        new() { Title = "Kredi Uygunluk Raporu",    ReportNo = "RPR-2026-004", Status = "Hazır",     Date = "10 Nisan 2026",  ReportType = "KUR Raporu"        },
-        new() { Title = "Aylık Kredi Detay Raporu", ReportNo = "RPR-2026-003", Status = "Hazır",     Date = "01 Mart 2026",   ReportType = "Detay Raporu"      },
-        new() { Title = "Kredi Geçmişi Özeti",      ReportNo = "RPR-2026-002", Status = "Hazır",     Date = "15 Şubat 2026",  ReportType = "Genel Rapor"       },
-        new() { Title = "Ödeme Performans Analizi", ReportNo = "RPR-2026-001", Status = "İşleniyor", Date = "01 Ocak 2026",   ReportType = "Performans Raporu" },
-        new() { Title = "Piyasa Analiz Raporu",     ReportNo = "RPR-2025-012", Status = "Hazır",     Date = "15 Aralık 2025", ReportType = "Piyasa Raporu"     },
-        new() { Title = "Yıllık Kredi Özet Raporu", ReportNo = "RPR-2025-011", Status = "Beklemede", Date = "01 Kasım 2025",  ReportType = "Yıllık Rapor"      }
-    ];
+    private static ReportItemViewModel MapToViewModel(ReportListItemDto dto) => new()
+    {
+        Rid = dto.Rid,
+        ReportNo = dto.Rid,
+        Title = "Kredi Detay Raporu",
+        Status = MapStatus(dto.Status),
+        Date = dto.CreateDate.ToString("dd MMMM yyyy", new CultureInfo("tr-TR")),
+        ReportType = MapReportType(dto.Type)
+    };
+
+    private static string MapStatus(string apiStatus) => apiStatus.ToUpperInvariant() switch
+    {
+        "COMPLETED" or "READY" => "Hazır",
+        "PROCESSING" or "IN_PROGRESS" => "İşleniyor",
+        _ => "Beklemede"
+    };
+
+    private static string MapReportType(string apiType) => apiType.ToUpperInvariant() switch
+    {
+        "KREDI" => "Kredi Raporu",
+        "FINDEKS" => "Findeks Raporu",
+        _ => apiType
+    };
 
     // Türkçe karakterleri ve PDF string özel karakterlerini temizler
     private static string PdfSafe(string text) =>

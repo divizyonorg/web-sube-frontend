@@ -34,7 +34,19 @@
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\Pages\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\) {\"Folder\"} else {\"File\"}}} | Format-Table -AutoSize)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\Partials\" -Force -Recurse | Select-Object FullName | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\\", \"\"\\) })",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\Pages\" -Directory | ForEach-Object { $_.Name } | Sort-Object)",
-      "Bash(grep -E \"\\\\.\\(cs|cshtml\\)$\")"
+      "Bash(grep -E \"\\\\.\\(cs|cshtml\\)$\")",
+      "Bash(curl -s -X GET \"https://icrm-analytics-api-285687897296.europe-west3.run.app/sss/public-list?with_answer=true&type=FAQ\" -H \"accept: application/json\")",
+      "Bash(python -m json.tool)",
+      "Bash(curl *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(New-Item -ItemType Directory -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\Pages\\\\Api\" -Force)",
+      "Bash(Out-Null)",
+      "Bash(Write-Output \"ok\")",
+      "Bash(git restore *)"
     ]
   }
 }

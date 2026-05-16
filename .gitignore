@@ -19,6 +19,9 @@ bld/
 *.user
 *.suo
 
+# Cursor IDE
+*.lscache
+
 # Rider / JetBrains
 .idea/
 
@@ -75,9 +78,10 @@ CLAUDE.md
 
 # Playwright
 /test-results/
-/playwright-report/
+/playwright-report/trace/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+/tests/.auth/
 
 .claude/

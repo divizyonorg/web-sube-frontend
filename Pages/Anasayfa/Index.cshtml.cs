@@ -7,10 +7,22 @@ namespace MyApp.Web.Pages.Anasayfa;
 public class IndexModel : PageModel
 {
     private readonly IEvdsService _evdsService;
+    private readonly ICustomerDataService _customerDataService;
 
-    public IndexModel(IEvdsService evdsService) => _evdsService = evdsService;
+    public string UserFullName { get; set; } = string.Empty;
 
-    public IActionResult OnGet() => Page();
+    public IndexModel(IEvdsService evdsService, ICustomerDataService customerDataService)
+    {
+        _evdsService = evdsService;
+        _customerDataService = customerDataService;
+    }
+
+    public async Task<IActionResult> OnGetAsync(CancellationToken ct)
+    {
+        var profile = await _customerDataService.GetProfileAsync(ct);
+        UserFullName = profile.FullName.Split(' ')[0];
+        return Page();
+    }
 
     public async Task<IActionResult> OnGetKrediNabziAsync(string creditType = "IHTIYAC")
     {

@@ -34,43 +34,5 @@
             Alpine.initTree(e.detail.target);
         }
     });
-
-    document.body.addEventListener('htmx:afterRequest', function (e) {
-        if (!e.detail.successful) return;
-
-        if (e.detail.elt.hasAttribute('data-pay-trigger')) {
-            try {
-                var r = JSON.parse(e.detail.xhr.responseText);
-                if (r.success) {
-                    htmx.ajax('GET', '/KrediBasvurusu?handler=Step7', { target: '#wizard-container', swap: 'innerHTML' });
-                } else {
-                    Toastify({ text: r.message || 'Ödeme sırasında hata oluştu.', duration: 3000,
-                               gravity: 'top', position: 'right', style: { background: '#ef4444' } }).showToast();
-                }
-            } catch (_) {}
-            return;
-        }
-
-        if (e.detail.elt.hasAttribute('data-coupon-trigger')) {
-            try {
-                var r = JSON.parse(e.detail.xhr.responseText);
-                Toastify({ text: r.message, duration: 3000, gravity: 'top', position: 'right',
-                           style: { background: r.success ? '#22c55e' : '#ef4444' } }).showToast();
-            } catch (_) {}
-            return;
-        }
-
-        if (e.detail.elt.hasAttribute('data-verify-trigger')) {
-            try {
-                var r = JSON.parse(e.detail.xhr.responseText);
-                if (r.success) {
-                    htmx.ajax('GET', '/KrediBasvurusu?handler=Step8', { target: '#wizard-container', swap: 'innerHTML' });
-                } else {
-                    Toastify({ text: r.message || 'Doğrulama başarısız.', duration: 3000,
-                               gravity: 'top', position: 'right', style: { background: '#ef4444' } }).showToast();
-                }
-            } catch (_) {}
-        }
-    });
 </script>
 }

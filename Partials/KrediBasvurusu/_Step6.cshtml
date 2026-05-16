@@ -14,7 +14,7 @@
                 <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
             </div>
         </button>
-        <img src="~/images/ik_logo.png" alt="İnteraktif Kredi" class="h-[25px] object-contain">
+        <img src="~/images/IKLogo-blue.svg" width="70" height="25" alt="İnteraktif Kredi" class="object-contain">
         <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
             <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
         </a>
@@ -54,7 +54,7 @@
                     Findeks destekli kişisel analiz
                 </span>
             </div>
-            <span class="font-[Poppins] font-bold text-[20px] leading-[30px] text-[#0056B3] shrink-0">
+            <span id="coupon-card-price" class="font-[Poppins] font-bold text-[20px] leading-[30px] text-[#0056B3] shrink-0">
                 ₺39,90
             </span>
         </div>
@@ -86,64 +86,74 @@
           data-pay-trigger
           class="px-6 pb-4 flex flex-col gap-4 mt-4">
         @Html.AntiForgeryToken()
-        <input type="hidden" name="Rid" value="@Model.Rid">
+        <input type="hidden" name="Rid" id="pay-rid">
 
-        @* Kart Numarası *@
-        <div class="flex flex-col gap-[5px]">
-            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
-                Kart Numarası
-            </span>
-            <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
-                <input type="text" name="CardNumber" placeholder="0000 0000 0000 0000" maxlength="19"
-                       class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
-            </div>
-        </div>
+        @* Kart alanları — kupon 0 TL yapınca gizlenir *@
+        <div id="card-fields">
 
-        @* Kart Üzerindeki Ad *@
-        <div class="flex flex-col gap-[5px]">
-            <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
-                Kart Üzerindeki Ad
-            </span>
-            <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
-                <input type="text" name="CardHolderName" placeholder="AD SOYAD"
-                       class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
-            </div>
-        </div>
-
-        @* Son Kullanma + CVV *@
-        <div class="flex gap-3">
-            <div class="flex-1 flex flex-col gap-[5px]">
+            @* Kart Numarası *@
+            <div class="flex flex-col gap-[5px]">
                 <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
-                    Son Kullanma
+                    Kart Numarası
                 </span>
                 <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
-                    <input type="text" name="ExpDate" placeholder="AA/YY" maxlength="5"
+                    <input type="text" name="CardNumber" id="card-number-input" placeholder="0000 0000 0000 0000" maxlength="19"
+                           inputmode="numeric"
                            class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
                 </div>
             </div>
-            <div class="w-[96px] flex flex-col gap-[5px]">
+
+            @* Kart Üzerindeki Ad *@
+            <div class="flex flex-col gap-[5px] mt-4">
                 <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
-                    CVV
+                    Kart Üzerindeki Ad
                 </span>
                 <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
-                    <input type="text" name="Cvv" placeholder="***" maxlength="4"
-                           class="w-full border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
+                    <input type="text" name="CardHolderName" placeholder="AD SOYAD"
+                           oninput="this.value=this.value.replace(/[^a-zA-ZğüşıöçĞÜŞİÖÇ ]/g,'').toUpperCase()"
+                           class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
                 </div>
             </div>
-        </div>
 
-        @* SSL güvenlik notu *@
-        <div class="flex items-start gap-3 bg-[#F0F0F0] rounded-[10px] px-3 py-[13px]">
-            <img src="~/icons/blue/shield.svg" width="16" height="16" alt="" class="shrink-0 mt-[1px]">
-            <p class="font-[Poppins] font-semibold text-[11px] leading-[18px] text-[#333] m-0">
-                256-bit SSL şifreleme ile güvenli ödeme. Kart bilgileriniz sistemimizde saklanmaz.
-            </p>
+            @* Son Kullanma + CVV *@
+            <div class="flex gap-3 mt-4">
+                <div class="flex-1 flex flex-col gap-[5px]">
+                    <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                        Son Kullanma
+                    </span>
+                    <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                        <input type="text" name="ExpDate" id="exp-date-input" placeholder="AA/YY" maxlength="5"
+                               inputmode="numeric"
+                               class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
+                    </div>
+                </div>
+                <div class="w-[96px] flex flex-col gap-[5px]">
+                    <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
+                        CVV
+                    </span>
+                    <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
+                        <input type="text" name="Cvv" placeholder="***" maxlength="4"
+                               inputmode="numeric"
+                               oninput="this.value=this.value.replace(/\D/g,'')"
+                               class="w-full border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
+                    </div>
+                </div>
+            </div>
+
+            @* SSL güvenlik notu *@
+            <div class="flex items-start gap-3 bg-[#F0F0F0] rounded-[10px] px-3 py-[13px] mt-4">
+                <img src="~/icons/blue/shield.svg" width="16" height="16" alt="" class="shrink-0 mt-[1px]">
+                <p class="font-[Poppins] font-semibold text-[11px] leading-[18px] text-[#333] m-0">
+                    256-bit SSL şifreleme ile güvenli ödeme. Kart bilgileriniz sistemimizde saklanmaz.
+                </p>
+            </div>
+
         </div>
 
         @* Ödeme butonu *@
-        <button type="submit"
+        <button type="submit" id="pay-submit-btn"
                 class="flex justify-between items-center px-8 py-4 w-full h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
-            <span class="font-[Poppins] font-semibold text-[16px] text-white">₺39,90 Öde</span>
+            <span id="coupon-pay-amount" class="font-[Poppins] font-semibold text-[16px] text-white">₺39,90 Öde</span>
             <img src="~/icons/white/credit-card.svg" width="20" height="20" alt="">
         </button>
 
@@ -164,7 +174,7 @@
           data-coupon-trigger
           class="px-6 pb-6 flex flex-col gap-4">
         @Html.AntiForgeryToken()
-        <input type="hidden" name="Rid" value="@Model.Rid">
+        <input type="hidden" name="Rid" id="coupon-rid">
 
         <div class="flex flex-col gap-[5px]">
             <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
@@ -172,6 +182,7 @@
             </span>
             <div class="box-border flex items-center w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
                 <input type="text" name="CouponCode" placeholder="KAMPANYA KODU"
+                       oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase()"
                        class="flex-1 border-none outline-none px-3.5 py-[11px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-transparent">
             </div>
         </div>
@@ -185,3 +196,131 @@
     </form>
 
 </div>
+
+<script>
+    (function () {
+        var rid = window.krediRid || '';
+        var payRid = document.getElementById('pay-rid');
+        var couponRid = document.getElementById('coupon-rid');
+        if (payRid) payRid.value = rid;
+        if (couponRid) couponRid.value = rid;
+
+        var freePass = false;
+
+        var payForm = document.querySelector('[data-pay-trigger]');
+        var payBtn = document.getElementById('pay-submit-btn');
+        var cardFields = document.getElementById('card-fields');
+        var payAmount = document.getElementById('coupon-pay-amount');
+
+        // Kupon yanıtını dinle
+        var couponForm = document.querySelector('[data-coupon-trigger]');
+        if (couponForm) {
+            couponForm.addEventListener('htmx:afterRequest', function (e) {
+                try {
+                    var json = JSON.parse(e.detail.xhr.responseText);
+                    if (json.success) {
+                        if (json.finalAmount === 0) {
+                            freePass = true;
+                            if (cardFields) cardFields.style.display = 'none';
+                            if (payAmount) payAmount.textContent = '0 TL Öde';
+                        } else if (json.finalAmount != null) {
+                            var fmt = json.finalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 });
+                            if (payAmount) payAmount.textContent = '₺' + fmt + ' Öde';
+                        }
+                    } else if (json.message) {
+                        toast.error(json.message);
+                    }
+                } catch {}
+            });
+        }
+
+        if (payForm && payBtn) {
+            payForm.addEventListener('htmx:beforeRequest', function (e) {
+                if (freePass) {
+                    e.preventDefault();
+                    htmx.ajax('GET', '/KrediBasvurusu?handler=Step7', { target: '#wizard-container', swap: 'innerHTML' });
+                    return;
+                }
+                payBtn.disabled = true;
+                payBtn.style.opacity = '0.6';
+                payBtn.style.cursor = 'not-allowed';
+            });
+            payForm.addEventListener('htmx:afterRequest', function (e) {
+                payBtn.disabled = false;
+                payBtn.style.opacity = '';
+                payBtn.style.cursor = '';
+                try {
+                    var json = JSON.parse(e.detail.xhr.responseText);
+                    if (json.success && json.bankaLinki) {
+                        openBankModal(json.bankaLinki);
+                    } else if (!json.success && json.message) {
+                        toast.error(json.message);
+                    }
+                } catch {}
+            });
+        }
+
+        // Banka 3D modal
+        var bankModal = document.createElement('div');
+        bankModal.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;align-items:center;justify-content:center;';
+        bankModal.innerHTML =
+            '<div style="background:#fff;border-radius:16px;overflow:hidden;width:min(540px,95vw);height:min(680px,90vh);display:flex;flex-direction:column;">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #e2eaf5;flex-shrink:0;">' +
+                    '<span style="font-family:Poppins,sans-serif;font-weight:600;font-size:14px;color:#003F75;">3D Güvenli Ödeme</span>' +
+                    '<button id="bank-modal-close" style="border:none;background:none;cursor:pointer;font-size:20px;line-height:1;color:#739FCC;">&#x2715;</button>' +
+                '</div>' +
+                '<iframe id="bank-3d-iframe" src="" style="flex:1;border:none;width:100%;"></iframe>' +
+            '</div>';
+        document.body.appendChild(bankModal);
+
+        var pollTimer = null;
+
+        function stopPolling() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
+
+        function startPolling() {
+            stopPolling();
+            pollTimer = setInterval(function () {
+                fetch('/KrediBasvurusu?handler=CheckStatus&rid=' + encodeURIComponent(rid))
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        if (data.status && data.status.toUpperCase() === 'PENDING') {
+                            stopPolling();
+                            bankModal.style.display = 'none';
+                            htmx.ajax('GET', '/KrediBasvurusu?handler=Step7', { target: '#wizard-container', swap: 'innerHTML' });
+                        }
+                    })
+                    .catch(function () {});
+            }, 3000);
+        }
+
+        function openBankModal(url) {
+            document.getElementById('bank-3d-iframe').src = url;
+            bankModal.style.display = 'flex';
+            startPolling();
+        }
+
+        document.getElementById('bank-modal-close').addEventListener('click', function () {
+            stopPolling();
+            bankModal.style.display = 'none';
+            document.getElementById('bank-3d-iframe').src = '';
+        });
+
+        // Kart numarası: xxxx xxxx xxxx xxxx
+        var cardEl = document.getElementById('card-number-input');
+        if (cardEl) {
+            cardEl.addEventListener('input', function () {
+                var digits = this.value.replace(/\D/g, '').slice(0, 16);
+                this.value = digits.replace(/(.{4})/g, '$1 ').trim();
+            });
+        }
+
+        // Son kullanma: AA/YY otomatik eğik çizgi
+        var expEl = document.getElementById('exp-date-input');
+        if (expEl) {
+            expEl.addEventListener('input', function (e) {
+                var digits = this.value.replace(/\D/g, '').slice(0, 4);
+                this.value = digits.length > 2 ? digits.slice(0, 2) + '/' + digits.slice(2) : digits;
+            });
+        }
+    })();
+</script>

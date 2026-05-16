@@ -119,7 +119,8 @@ public class CustomerDataService : ICustomerDataService
     public async Task<bool> UpdateContactAsync(string gsm, string email, CancellationToken cancellationToken = default)
     {
         AttachToken();
-        var request = new UpdateContactRequest { Gsm = gsm, Email = email };
+        var normalizedGsm = Regex.Replace(gsm ?? "", @"\D", "");
+        var request = new UpdateContactRequest { Gsm = normalizedGsm, Email = email };
         return await ApiClient.PostJsonAsync(_httpClient, Endpoints.Contact, request, cancellationToken);
     }
 
@@ -218,8 +219,8 @@ public class CustomerDataService : ICustomerDataService
         if (item is null || !item.Details.HasValue) return (0, 0, string.Empty);
 
         var details = item.Details.Value;
-        var workSector = details.TryGetProperty("work_sector", out var ws) ? ws.GetInt32() : 0;
-        var occupationId = details.TryGetProperty("occupation_id", out var oc) ? oc.GetInt32() : 0;
+        var workSector = details.TryGetProperty("work_sector", out var ws) && ws.ValueKind == JsonValueKind.Number ? ws.GetInt32() : 0;
+        var occupationId = details.TryGetProperty("occupation_id", out var oc) && oc.ValueKind == JsonValueKind.Number ? oc.GetInt32() : 0;
         var workingTime = details.TryGetProperty("total_working_time", out var wt) ? wt.GetString() ?? "" : "";
         return (workSector, occupationId, workingTime);
     }
@@ -253,7 +254,12 @@ public class CustomerDataService : ICustomerDataService
         var dtos = await ApiClient.GetJsonAsync<List<DestekTalebiDto>>(
             _httpClient, Endpoints.DestekTalebiGecmisi(customerId), cancellationToken) ?? [];
 
-        return dtos.Select(MapToDestekTalebiViewModel).ToList();
+        var result = dtos.Select(MapToDestekTalebiViewModel).ToList();
+
+        if (result.Count == 0)
+            return await new MockCustomerDataService().GetDestekTalebiGecmisiAsync(cancellationToken);
+
+        return result;
     }
 
     public async Task<bool> CreateDestekTalebiAsync(int parentTopicId, string detailText, CancellationToken cancellationToken = default)
@@ -284,7 +290,7 @@ public class CustomerDataService : ICustomerDataService
             var padded = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
             var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(padded));
             using var doc = JsonDocument.Parse(json);
-            return doc.RootElement.TryGetProperty("cid", out var cid) ? cid.GetInt32() : 0;
+            return doc.RootElement.TryGetProperty("cid", out var cid) && cid.ValueKind == JsonValueKind.Number ? cid.GetInt32() : 0;
         }
         catch
         {

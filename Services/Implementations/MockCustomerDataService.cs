@@ -109,6 +109,15 @@ public class MockCustomerDataService : ICustomerDataService
                 DurumBadgeClass = "font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#A65F00] bg-[#FEF9C2] px-3 py-[3px] rounded-full",
                 Tarih = "05 Nisan 2026",
                 AtananBirim = "Teknik Destek"
+            },
+            new()
+            {
+                Id = 3,
+                KonuBasligi = "Ödeme güncelleme talebi",
+                DurumLabel = "Kapalı",
+                DurumBadgeClass = "font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#4A5565] bg-[#F3F4F6] px-3 py-[3px] rounded-full",
+                Tarih = "28 Mart 2026",
+                AtananBirim = "İşlem Talebi"
             }
         ]);
 

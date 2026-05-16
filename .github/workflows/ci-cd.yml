@@ -2,9 +2,8 @@ name: CI/CD — Build & Deploy
 
 # ─────────────────────────────────────────────────────────
 # AKIŞ:
-#   dev   (push + PR)  → CI (deploy yok, sadece doğrulama)
-#   test  push         → CI → Docker push → TEST deploy
-#   preprod push       → CI → Docker push → PRE-PROD deploy (onaylı)
+#   Development (push + PR)  → CI (deploy yok, sadece doğrulama)
+#   Test        push         → CI → Docker push → TEST deploy
 # ─────────────────────────────────────────────────────────
 
 on:
@@ -12,12 +11,10 @@ on:
     branches:
       - Development
       - Test
-      - Preprod
   pull_request:
     branches:
       - Development
       - Test
-      - Preprod
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -79,7 +76,7 @@ jobs:
 
   # ══════════════════════════════════════════════════════
   # 2. DOCKER — CI geçtikten sonra
-  #    Sadece test ve preprod push'larında çalışır
+  #    Sadece Test push'larında çalışır
   # ══════════════════════════════════════════════════════
   docker:
     name: Docker Build & Push
@@ -87,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'push' &&
-      (github.ref == 'refs/heads/Test' || github.ref == 'refs/heads/Preprod')
+      github.ref == 'refs/heads/Test'
     permissions:
       contents: read
       packages: write
@@ -95,7 +92,6 @@ jobs:
     outputs:
       image_tag: ${{ steps.meta.outputs.tag }}
       previous_tag: ${{ steps.meta.outputs.previous_tag }}
-      env_name: ${{ steps.meta.outputs.env_name }}
 
     steps:
       - name: Kodu çek
@@ -111,27 +107,20 @@ jobs:
           username: ${{ secrets.GHCR_USER }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Image tag ve env belirle
+      - name: Image tag belirle
         id: meta
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/Test" ]; then
-            ENV_NAME="test"
-          else
-            ENV_NAME="preprod"
-          fi
-
-          echo "env_name=${ENV_NAME}" >> $GITHUB_OUTPUT
-          echo "tag=${ENV_NAME}-${{ github.sha }}" >> $GITHUB_OUTPUT
-          echo "previous_tag=${ENV_NAME}-previous" >> $GITHUB_OUTPUT
+          echo "tag=test-${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "previous_tag=test-previous" >> $GITHUB_OUTPUT
 
       - name: Önceki latest'i "previous" olarak etiketle (rollback için)
         continue-on-error: true
         run: |
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.env_name }}-latest || exit 0
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:test-latest || exit 0
           docker tag \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.env_name }}-latest \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.previous_tag }}
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.previous_tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:test-latest \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:test-previous
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:test-previous
 
       - name: Yeni image build & push
         uses: docker/build-push-action@v5
@@ -141,7 +130,7 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tag }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.env_name }}-latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:test-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           labels: |
@@ -213,71 +202,4 @@ jobs:
               docker-compose --profile test pull
             IMAGE_TAG="${{ needs.docker.outputs.previous_tag }}" \
               docker-compose --profile test up -d --no-build
-            exit 1
-
-  # ══════════════════════════════════════════════════════
-  # 4. PRE-PROD DEPLOY — preprod branch
-  #    GitHub Settings → Environments → preprod → Required reviewers
-  # ══════════════════════════════════════════════════════
-  deploy-preprod:
-    name: Deploy → PRE-PROD
-    needs: docker
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/Preprod'
-    environment:
-      name: Preprod
-      url: http://34.185.143.147:5001
-
-    steps:
-      - name: Sunucuya deploy et
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          script_stop: true
-          script: |
-            set -euo pipefail
-            cd /app/webshube
-
-            echo "→ Compose dosyasını güncelle"
-            git fetch origin Preprod
-            git reset --hard origin/Preprod
-            echo "${{ secrets.ENV_PREPROD }}" > .env.Preprod
-
-            echo "→ GHCR login"
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
-              -u ${{ secrets.GHCR_USER }} --password-stdin
-
-            echo "→ Image çek (tag: ${{ needs.docker.outputs.image_tag }})"
-            IMAGE_TAG="${{ needs.docker.outputs.image_tag }}" \
-              docker-compose --profile preprod pull
-
-            echo "→ Container yeniden başlat"
-            IMAGE_TAG="${{ needs.docker.outputs.image_tag }}" \
-              docker-compose --profile preprod up -d --no-build
-
-            echo "→ Healthcheck (max 60sn)"
-            HEALTHY=0
-            for i in {1..12}; do
-              if curl -fs http://localhost:5001/health > /dev/null; then
-                echo "✓ Sağlıklı"
-                HEALTHY=1
-                break
-              fi
-              echo "  [$i/12] bekleniyor..."
-              sleep 5
-            done
-
-            if [ "$HEALTHY" = "1" ]; then
-              docker image prune -f
-              exit 0
-            fi
-
-            echo "✗ Healthcheck başarısız — önceki image'a rollback"
-            IMAGE_TAG="${{ needs.docker.outputs.previous_tag }}" \
-              docker-compose --profile preprod pull
-            IMAGE_TAG="${{ needs.docker.outputs.previous_tag }}" \
-              docker-compose --profile preprod up -d --no-build
             exit 1

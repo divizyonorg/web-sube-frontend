@@ -4,6 +4,10 @@ public class KurDetayViewModel
 {
     public string ActiveTab { get; set; } = "kisisel";
     public string ActiveCreditType { get; set; } = "IHTIYAC";
+    public string Rid { get; set; } = string.Empty;
+
+    public bool IsError { get; set; }
+    public string ErrorMessage { get; set; } = string.Empty;
 
     public KisiselRaporViewModel KisiselRapor { get; set; } = new();
     public MarketAnalysisViewModel MarketAnalysis { get; set; } = new();
@@ -19,12 +23,12 @@ public class MarketAnalysisViewModel
 
 public class InterestRateTrendViewModel
 {
+    public string CreditType { get; set; } = "IHTIYAC";
     public string ProductLabel { get; set; } = "İhtiyaç Kredisi";
     public string RateLabel { get; set; } = "İhtiyaç Kredisi Faizi";
     public string RateValue { get; set; } = "%5,04";
     public string PeriodSuffix { get; set; } = "/ Ay";
-    public string ChangePercent { get; set; } = "-0.45%";
-    public string ChangePeriodLabel { get; set; } = "Son 3 Ay";
+    public string AnnualRateValue { get; set; } = string.Empty;
     public string MarketAverageLabel { get; set; } = "Ortalama Piyasa Faizi";
     public string OpportunityLabel { get; set; } = "FIRSAT: Yılın En Düşük Seviyesi";
 }
@@ -46,10 +50,11 @@ public class MarketSliderCardViewModel
 
 public class ReasonableCreditRateViewModel
 {
+    public string CreditType { get; set; } = "IHTIYAC";
     public string ProductLabel { get; set; } = "İhtiyaç Kredisi";
     public string Description { get; set; } = string.Empty;
     public string RateValue { get; set; } = "%3,00";
-    public string SubText { get; set; } = "Son 7 Gün Piyasa Ortalaması";
+    public string SubText { get; set; } = "Son 1 Aydaki Piyasa Ortalaması";
     public int SliderPercent { get; set; } = 28;
     public string LeftLabel { get; set; } = "Düşük Faiz";
     public string MiddleLabel { get; set; } = "Orta";
