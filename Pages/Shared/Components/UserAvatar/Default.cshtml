@@ -380,7 +380,7 @@
 
         @* Çıkış *@
         <button type="button"
-                onclick="localStorage.removeItem('auth_token'); window.location.replace('/Login');"
+                onclick="localStorage.removeItem('auth_token'); document.cookie='auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'; window.location.replace('/Login');"
                 class="ua-menu-item"
                 style="display:flex; flex-direction:row; align-items:center;
                        width:198px; height:46px; padding:0 16px; gap:12px;
