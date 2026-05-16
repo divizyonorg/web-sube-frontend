@@ -83,6 +83,7 @@ else
                x-model="value"
                @@focus="focused = true"
                @@blur="focused = false"
+               @@change="value = $event.target.value; $el.dispatchEvent(new Event('input', { bubbles: true }))"
                :style="(focused || value !== '')
                    ? { paddingTop: '20px', paddingBottom: '4px' }
                    : { paddingTop: '12px', paddingBottom: '12px' }"
