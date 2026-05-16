@@ -53,9 +53,55 @@
     @* ─── Tab içeriği ─── *@
     @if (Model.ViewModel.ActiveTab == "kisisel")
     {
-        <div class="mt-6 w-full">
-            <partial name="~/Partials/_UygunlukSeridi.cshtml" model="Model.ViewModel.KisiselRapor.UygunlukSeridi" />
-        </div>
+        @if (Model.ViewModel.IsError)
+        {
+            <div class="mt-4 w-full flex flex-col items-center px-4">
+                <div class="w-full max-w-sm bg-white border border-[#DCE3FB] rounded-2xl overflow-hidden">
+
+                    <div class="bg-[linear-gradient(120.44deg,#2E6DF8_70.34%,#1B4092_100.84%)] px-5 py-4 flex items-center gap-3">
+                        <img src="~/icons/white/loan-app.svg" class="w-6 h-6 shrink-0" alt="">
+                        <span class="font-[Poppins] font-medium text-[14px] text-white">Kişisel Raporunuz Henüz Hazır Değil</span>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-5 px-6 py-6">
+                        <p class="font-[Poppins] font-normal text-[13px] text-[#003F75] text-center leading-[20px]">
+                            Yapay zeka destekli kişisel raporunuzu görebilmek için önce kredi başvurusu yapmanız gerekiyor. Başvurunuz onaylandıktan sonra raporunuz burada hazır olacak.
+                        </p>
+
+                        <div class="flex flex-col w-full gap-[10px]">
+                            <div class="flex items-center gap-2">
+                                <img src="~/icons/check-circle-broken.svg" class="w-5 h-5 shrink-0" alt="">
+                                <span class="font-[Poppins] font-normal text-[12px] text-[#3AD7B3]">Finansal durum analizi</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <img src="~/icons/check-circle-broken.svg" class="w-5 h-5 shrink-0" alt="">
+                                <span class="font-[Poppins] font-normal text-[12px] text-[#3AD7B3]">Kredi uygunluk skoru</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <img src="~/icons/check-circle-broken.svg" class="w-5 h-5 shrink-0" alt="">
+                                <span class="font-[Poppins] font-normal text-[12px] text-[#3AD7B3]">Kişiselleştirilmiş kredi önerileri</span>
+                            </div>
+                        </div>
+
+                        <a href="/KrediBasvurusu"
+                           class="flex items-center justify-center gap-2 w-full h-[44px] bg-[#0056B3] rounded-[40px] font-[Poppins] font-medium text-[14px] text-white no-underline">
+                            <img src="~/icons/white/credit-card-01.svg" class="w-5 h-5" alt="">
+                            Kredi Başvurusu Yap
+                        </a>
+
+                        <p class="font-[Poppins] font-light text-[11px] text-gray-400 text-center">
+                            @Model.ViewModel.ErrorMessage.Replace("(PENDING)", "").Trim()
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="mt-6 w-full">
+                <partial name="~/Partials/_UygunlukSeridi.cshtml" model="Model.ViewModel.KisiselRapor.UygunlukSeridi" />
+            </div>
+        }
     }
 
     @if (Model.ViewModel.ActiveTab == "piyasa")
