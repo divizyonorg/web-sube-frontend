@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -21,6 +22,7 @@ public class ReportService : IReportService
         public const string FindeksRaporTalepOnay = "/api/v1/findeks/rapor-talep-onay";
         public const string AnalizUret = "/analiz-uret";
         public const string GetAiReport = "/api/v1/reports/ai-report/{0}";
+        public const string ListKredi = "/api/v1/reports/list?type=KREDI&updated_after=2025-01-01";
     }
 
     public ReportService(HttpClient httpClient, ILogger<ReportService> logger)
@@ -331,37 +333,64 @@ public class ReportService : IReportService
         return null;
     }
 
-    public Task<KrediRaporlariViewModel> GetKrediRaporlariAsync()
+    public async Task<KrediRaporlariViewModel> GetKrediRaporlariAsync(CancellationToken ct = default)
     {
-        var reports = GetMockReports();
-        var viewModel = new KrediRaporlariViewModel
+        try
         {
-            TotalCount = reports.Count,
-            ReadyCount = reports.Count(r => r.IsReady),
-            ProcessingCount = reports.Count(r => r.IsProcessing),
-            Reports = reports
-        };
-        return Task.FromResult(viewModel);
+            var response = await _httpClient.GetAsync(Endpoints.ListKredi, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("GET {Endpoint} → {Status}", Endpoints.ListKredi, (int)response.StatusCode);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("GET {Endpoint} başarısız: {Body}", Endpoints.ListKredi, body);
+                return new KrediRaporlariViewModel();
+            }
+
+            var dto = JsonSerializer.Deserialize<ReportListResponseDto>(body);
+            var reports = dto?.Data.Select(MapToViewModel).ToList() ?? [];
+
+            return new KrediRaporlariViewModel
+            {
+                TotalCount = dto?.Pagination?.TotalRecords ?? reports.Count,
+                ReadyCount = reports.Count(r => r.IsReady),
+                ProcessingCount = reports.Count(r => r.IsProcessing),
+                Reports = reports
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GET {Endpoint} exception", Endpoints.ListKredi);
+            return new KrediRaporlariViewModel();
+        }
     }
 
     public Task<byte[]> GetReportPdfAsync(string reportNo)
+        => Task.FromResult(Array.Empty<byte>());
+
+    private static ReportItemViewModel MapToViewModel(ReportListItemDto dto) => new()
     {
-        var report = GetMockReports().FirstOrDefault(r => r.ReportNo == reportNo);
+        Rid = dto.Rid,
+        ReportNo = dto.Rid,
+        Title = "Kredi Detay Raporu",
+        Status = MapStatus(dto.Status),
+        Date = dto.CreateDate.ToString("dd MMMM yyyy", new CultureInfo("tr-TR")),
+        ReportType = MapReportType(dto.Type)
+    };
 
-        return report is null
-            ? Task.FromResult(Array.Empty<byte>())
-            : Task.FromResult(BuildMockPdf(report));
-    }
+    private static string MapStatus(string apiStatus) => apiStatus.ToUpperInvariant() switch
+    {
+        "COMPLETED" or "READY" => "Hazır",
+        "PROCESSING" or "IN_PROGRESS" => "İşleniyor",
+        _ => "Beklemede"
+    };
 
-    private static List<ReportItemViewModel> GetMockReports() =>
-    [
-        new() { Title = "Kredi Uygunluk Raporu",    ReportNo = "RPR-2026-004", Status = "Hazır",     Date = "10 Nisan 2026",  ReportType = "KUR Raporu"        },
-        new() { Title = "Aylık Kredi Detay Raporu", ReportNo = "RPR-2026-003", Status = "Hazır",     Date = "01 Mart 2026",   ReportType = "Detay Raporu"      },
-        new() { Title = "Kredi Geçmişi Özeti",      ReportNo = "RPR-2026-002", Status = "Hazır",     Date = "15 Şubat 2026",  ReportType = "Genel Rapor"       },
-        new() { Title = "Ödeme Performans Analizi", ReportNo = "RPR-2026-001", Status = "İşleniyor", Date = "01 Ocak 2026",   ReportType = "Performans Raporu" },
-        new() { Title = "Piyasa Analiz Raporu",     ReportNo = "RPR-2025-012", Status = "Hazır",     Date = "15 Aralık 2025", ReportType = "Piyasa Raporu"     },
-        new() { Title = "Yıllık Kredi Özet Raporu", ReportNo = "RPR-2025-011", Status = "Beklemede", Date = "01 Kasım 2025",  ReportType = "Yıllık Rapor"      }
-    ];
+    private static string MapReportType(string apiType) => apiType.ToUpperInvariant() switch
+    {
+        "KREDI" => "Kredi Raporu",
+        "FINDEKS" => "Findeks Raporu",
+        _ => apiType
+    };
 
     // Türkçe karakterleri ve PDF string özel karakterlerini temizler
     private static string PdfSafe(string text) =>
