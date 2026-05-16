@@ -22,10 +22,12 @@ public class MarketAnalysisViewModel
 
 public class InterestRateTrendViewModel
 {
+    public string CreditType { get; set; } = "IHTIYAC";
     public string ProductLabel { get; set; } = "İhtiyaç Kredisi";
     public string RateLabel { get; set; } = "İhtiyaç Kredisi Faizi";
     public string RateValue { get; set; } = "%5,04";
     public string PeriodSuffix { get; set; } = "/ Ay";
+    public string AnnualRateValue { get; set; } = string.Empty;
     public string MarketAverageLabel { get; set; } = "Ortalama Piyasa Faizi";
     public string OpportunityLabel { get; set; } = "FIRSAT: Yılın En Düşük Seviyesi";
 }
@@ -47,6 +49,7 @@ public class MarketSliderCardViewModel
 
 public class ReasonableCreditRateViewModel
 {
+    public string CreditType { get; set; } = "IHTIYAC";
     public string ProductLabel { get; set; } = "İhtiyaç Kredisi";
     public string Description { get; set; } = string.Empty;
     public string RateValue { get; set; } = "%3,00";
