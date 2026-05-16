@@ -75,8 +75,6 @@ public class EvdsService : IEvdsService
             RateLabel = $"{label} Faizi",
             RateValue = $"%{monthlyRate.ToString("N2", new CultureInfo("tr-TR"))}",
             PeriodSuffix = "/ Ay",
-            ChangePercent = "-0.45%",
-            ChangePeriodLabel = "Son 3 Ay",
             MarketAverageLabel = "Ortalama Piyasa Faizi",
             OpportunityLabel = "FIRSAT: Yılın En Düşük Seviyesi"
         };
@@ -92,6 +90,46 @@ public class EvdsService : IEvdsService
         catch
         {
             return await new MockEvdsService().GetCreditPulseAsync(creditType);
+        }
+    }
+
+    public async Task<InterestRateTrendViewModel> GetInterestRateTrendAsync(string creditType = "IHTIYAC")
+    {
+        try
+        {
+            var dto = await GetAsync<MarketRatesDto>(Endpoints.MarketRates);
+            return MapInterestRateTrend(dto, creditType);
+        }
+        catch
+        {
+            return await new MockEvdsService().GetInterestRateTrendAsync(creditType);
+        }
+    }
+
+    public async Task<MarketSliderCardViewModel> GetDemandRadarAsync(string creditType = "IHTIYAC")
+    {
+        try
+        {
+            var dto = await GetAsync<DemandRadarDto>(string.Format(Endpoints.DemandRadar, creditType));
+            return MapDemandRadar(dto, creditType);
+        }
+        catch
+        {
+            return await new MockEvdsService().GetDemandRadarAsync(creditType);
+        }
+    }
+
+    public async Task<ReasonableCreditRateViewModel> GetLogicalRateAsync(string creditType = "IHTIYAC", double offeredRate = 3.15)
+    {
+        try
+        {
+            var dto = await GetAsync<LogicalRateDto>(string.Format(Endpoints.LogicalRate, creditType,
+                          offeredRate.ToString("F2", CultureInfo.InvariantCulture)));
+            return MapLogicalRate(dto, creditType);
+        }
+        catch
+        {
+            return await new MockEvdsService().GetLogicalRateAsync(creditType, offeredRate);
         }
     }
 

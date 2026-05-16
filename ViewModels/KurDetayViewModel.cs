@@ -26,8 +26,6 @@ public class InterestRateTrendViewModel
     public string RateLabel { get; set; } = "İhtiyaç Kredisi Faizi";
     public string RateValue { get; set; } = "%5,04";
     public string PeriodSuffix { get; set; } = "/ Ay";
-    public string ChangePercent { get; set; } = "-0.45%";
-    public string ChangePeriodLabel { get; set; } = "Son 3 Ay";
     public string MarketAverageLabel { get; set; } = "Ortalama Piyasa Faizi";
     public string OpportunityLabel { get; set; } = "FIRSAT: Yılın En Düşük Seviyesi";
 }

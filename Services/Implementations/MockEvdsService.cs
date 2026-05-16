@@ -30,8 +30,7 @@ public class MockEvdsService : IEvdsService
                 RateLabel = $"{CreditTypeToLabel(creditType)} Faizi",
                 RateValue = "%3,15",
                 PeriodSuffix = "/ Ay",
-                ChangePercent = "-0.10%",
-                ChangePeriodLabel = "Son 3 Ay",
+
                 MarketAverageLabel = "Ortalama Piyasa Faizi",
                 OpportunityLabel = "Piyasa ortalamalarını takip edin"
             },
