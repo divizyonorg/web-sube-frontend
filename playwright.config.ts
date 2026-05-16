@@ -50,6 +50,7 @@ export default defineConfig({
         'tests/ayarlar.spec.ts',
         'tests/finansal-profil.spec.ts',
         'tests/odeme.spec.ts',
+        'tests/input-validasyon.spec.ts',
         'tests/clients.spec.ts',
       ],
     },

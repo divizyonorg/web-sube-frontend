@@ -13,19 +13,42 @@ test.describe('Finansal Profil Tamamla Akışı', () => {
     await page.waitForTimeout(500);
   });
 
-  // ─── Bug 2: Sıfırla başlayan gelir değeri ─────────────────────────────────
-  test('[BUG-2] Aylık net gelir "0707" gibi sıfırla başlayan değer kabul edilmemeli', async ({ page }) => {
-    const gelirInput = page.locator('input[name*="Gelir"], input[id*="Gelir"], input[placeholder*="Gelir"], input[placeholder*="gelir"]').first();
+  // ─── Bug 2: Sıfırla başlayan gelir değeri + harf girişi ──────────────────
+  test('[BUG-2] Aylık net gelir — sıfırla başlayan değer kabul edilmemeli', async ({ page }) => {
+    const gelirInput = page
+      .locator('input[type="number"], input[x-model*="gelir" i], input[name*="Gelir"], input[placeholder*="Gelir" i]')
+      .first();
     if (await gelirInput.count() === 0) {
       info('Aylık net gelir input bulunamadı — sekme içeriği farklı olabilir');
       return;
     }
+
+    // "0707" gibi sıfırla başlayan değer
     await gelirInput.fill('0707');
+    await gelirInput.press('Tab');
     await page.waitForTimeout(300);
-    const val = await gelirInput.inputValue();
-    // 0 ile başlayan değer ya reddedilmeli ya da otomatik düzeltilmeli
-    if (val === '0707')
-      bug('[BUG-2] Aylık net gelir alanı "0707" gibi sıfırla başlayan geçersiz değeri kabul ediyor');
+    const val0 = await gelirInput.inputValue();
+    info(`Gelir — "0707" girince: "${val0}"`);
+    if (val0 === '0707')
+      bug('[BUG-2] Aylık net gelir alanı "0707" gibi sıfırla başlayan değeri kabul ediyor — başa 0 girilememelidir');
+
+    // Tek sıfır
+    await gelirInput.fill('0');
+    await gelirInput.press('Tab');
+    await page.waitForTimeout(200);
+    const val1 = await gelirInput.inputValue();
+    info(`Gelir — tek "0" girince: "${val1}"`);
+    if (val1 === '0')
+      bug('[BUG-2] Aylık net gelir alanına "0" girilebiliyor — tutar 0 olamaz');
+
+    // Harf / string girişi
+    await gelirInput.fill('');
+    await gelirInput.type('bin');
+    await page.waitForTimeout(200);
+    const valStr = await gelirInput.inputValue();
+    info(`Gelir — "bin" type() girince: "${valStr}"`);
+    if (/[a-zA-ZığüşöçĞÜŞÖÇİ]/.test(valStr))
+      bug(`[BUG-2] Aylık net gelir alanına harf girilebiliyor: "${valStr}" — sadece sayı kabul edilmeli`);
   });
 
   // ─── Bug 5: Profil Bilgileri kaydedilince toast yok ───────────────────────
