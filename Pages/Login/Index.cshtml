@@ -248,7 +248,11 @@
                             var phoneMask = null;
 
                             function initPhoneMask(initial) {
-                                phoneMask = IMask(phoneEl, { mask: '+9\\0 000 000 00 00' });
+                                // Türk GSM: +90 sonrası daima 5 ile başlar (5XX XXX XX XX)
+                                phoneMask = IMask(phoneEl, {
+                                    mask: '+9\\0 N00 000 00 00',
+                                    definitions: { 'N': /[5]/ }
+                                });
                                 if (initial) phoneMask.value = initial;
                                 phoneMask.on('accept', function () { self.phone = phoneMask.value; });
                             }
@@ -258,14 +262,33 @@
                                 self.phone = phoneMask.value;
                                 phoneEl.dispatchEvent(new Event('input', { bubbles: true }));
                             } else {
-                                phoneEl.addEventListener('keydown', function onFirstDigit(e) {
-                                    if (!/^\d$/.test(e.key)) return;
+                                function onFirstKeyDown(e) {
+                                    if (e.key !== '5') return;
                                     e.preventDefault();
-                                    phoneEl.removeEventListener('keydown', onFirstDigit);
+                                    phoneEl.removeEventListener('keydown', onFirstKeyDown);
+                                    phoneEl.removeEventListener('input', onAutoFill);
                                     initPhoneMask('+90 ' + e.key);
                                     phoneMask.updateCursor(phoneMask.value.length);
                                     self.phone = phoneMask.value;
-                                });
+                                }
+
+                                // Tarayıcı autocomplete veya yapıştırma: keydown tetiklenmez,
+                                // input eventi gelir; tam numara varsa mask'i başlat.
+                                function onAutoFill() {
+                                    if (phoneMask !== null) return;
+                                    var raw = phoneEl.value.replace(/\D/g, '');
+                                    if (raw.length < 10) return;
+                                    if (raw.startsWith('90') && raw.length >= 12) raw = raw.substring(2);
+                                    else if (raw.startsWith('0')) raw = raw.substring(1);
+                                    phoneEl.removeEventListener('keydown', onFirstKeyDown);
+                                    phoneEl.removeEventListener('input', onAutoFill);
+                                    initPhoneMask('+90 ' + raw);
+                                    phoneMask.updateCursor(phoneMask.value.length);
+                                    self.phone = phoneMask.value;
+                                }
+
+                                phoneEl.addEventListener('keydown', onFirstKeyDown);
+                                phoneEl.addEventListener('input', onAutoFill);
                             }
                         }
 

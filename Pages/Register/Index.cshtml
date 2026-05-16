@@ -556,10 +556,13 @@
                         });
                     }
 
-                    // Login sayfasıyla birebir aynı IMask kurulumu
+                    // Türk GSM: +90 sonrası daima 5 ile başlar (5XX XXX XX XX)
                     var phoneEl = document.getElementById('PhoneNumber');
                     if (phoneEl) {
-                        var phoneMask = IMask(phoneEl, { mask: '+9\\0 000 000 00 00' });
+                        var phoneMask = IMask(phoneEl, {
+                            mask: '+9\\0 N00 000 00 00',
+                            definitions: { 'N': /[5]/ }
+                        });
                         phoneMask.value = '+90 ';
                         self.phone = phoneMask.value;
                         phoneMask.on('accept', function () {
