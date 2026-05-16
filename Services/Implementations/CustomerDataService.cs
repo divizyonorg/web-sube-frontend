@@ -219,8 +219,8 @@ public class CustomerDataService : ICustomerDataService
         if (item is null || !item.Details.HasValue) return (0, 0, string.Empty);
 
         var details = item.Details.Value;
-        var workSector = details.TryGetProperty("work_sector", out var ws) ? ws.GetInt32() : 0;
-        var occupationId = details.TryGetProperty("occupation_id", out var oc) ? oc.GetInt32() : 0;
+        var workSector = details.TryGetProperty("work_sector", out var ws) && ws.ValueKind == JsonValueKind.Number ? ws.GetInt32() : 0;
+        var occupationId = details.TryGetProperty("occupation_id", out var oc) && oc.ValueKind == JsonValueKind.Number ? oc.GetInt32() : 0;
         var workingTime = details.TryGetProperty("total_working_time", out var wt) ? wt.GetString() ?? "" : "";
         return (workSector, occupationId, workingTime);
     }
@@ -290,7 +290,7 @@ public class CustomerDataService : ICustomerDataService
             var padded = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
             var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(padded));
             using var doc = JsonDocument.Parse(json);
-            return doc.RootElement.TryGetProperty("cid", out var cid) ? cid.GetInt32() : 0;
+            return doc.RootElement.TryGetProperty("cid", out var cid) && cid.ValueKind == JsonValueKind.Number ? cid.GetInt32() : 0;
         }
         catch
         {

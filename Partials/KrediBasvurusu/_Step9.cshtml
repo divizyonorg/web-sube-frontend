@@ -111,13 +111,22 @@
             @* Butonlar *@
             <div class="flex flex-col items-center gap-[12px] w-full">
 
-                <a href="/KrediRaporlari"
+                <a id="step9-rapor-link" href="/KrediRaporlari"
                    class="box-border flex flex-row justify-between items-center px-6 w-full h-[77px] bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] no-underline">
                     <span class="font-[Poppins] font-semibold text-[15px] leading-[22px] text-white flex-1 text-center">
                         Kredi Güven Raporunu Görüntüle
                     </span>
                     <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="">
                 </a>
+                <script>
+                    (function () {
+                        var rid = window.krediRid;
+                        if (rid) {
+                            var link = document.getElementById('step9-rapor-link');
+                            if (link) link.href = '/KrediRaporlari/KurDetay?rid=' + encodeURIComponent(rid) + '&tab=kisisel';
+                        }
+                    })();
+                </script>
 
                 <a href="/SanaOzelTeklifler"
                    class="box-border flex justify-center items-center w-full h-[57px] border border-[#D1DDF5] rounded-[59px] no-underline">

@@ -31,7 +31,7 @@ public class ReportService : IReportService
         _logger = logger;
     }
 
-    public async Task<(bool Success, string Message, string Rid)> CreateAsync(CancellationToken ct = default)
+    public async Task<(bool Success, string Message, string Rid, string Status)> CreateAsync(CancellationToken ct = default)
     {
         try
         {
@@ -42,19 +42,19 @@ public class ReportService : IReportService
             {
                 _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.Create, body);
                 var errMsg = TryParseMessage(body) ?? "Rapor oluşturulamadı.";
-                return (false, errMsg, string.Empty);
+                return (false, errMsg, string.Empty, string.Empty);
             }
             var dto = JsonSerializer.Deserialize<CreateReportResponseDto>(body);
-            return (true, dto?.Message ?? string.Empty, dto?.Data?.Rid ?? string.Empty);
+            return (true, dto?.Message ?? string.Empty, dto?.Data?.Rid ?? string.Empty, dto?.Data?.Status ?? string.Empty);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.Create);
-            return (false, "Bağlantı hatası oluştu.", string.Empty);
+            return (false, "Bağlantı hatası oluştu.", string.Empty, string.Empty);
         }
     }
 
-    public async Task<(bool Success, string Message)> StartPaymentAsync(
+    public async Task<(bool Success, string Message, string? BankaLinki)> StartPaymentAsync(
         string rid, string cardNumber, string expMonth, string expYear,
         string cvv, string cardHolderName, CancellationToken ct = default)
     {
@@ -75,14 +75,19 @@ public class ReportService : IReportService
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.StartPayment, body);
-                return (false, TryParseMessage(body) ?? "Ödeme işlemi başarısız.");
+                return (false, TryParseMessage(body) ?? "Ödeme işlemi başarısız.", null);
             }
-            return (true, "Ödeme başarıyla tamamlandı.");
+            using var doc = JsonDocument.Parse(body);
+            var bankaLinki = doc.RootElement
+                .TryGetProperty("data", out var data)
+                    ? data.TryGetProperty("banka_3d_linki", out var link) ? link.GetString() : null
+                    : null;
+            return (true, TryParseMessage(body) ?? "Ödeme işlemi başarıyla başlatıldı.", bankaLinki);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.StartPayment);
-            return (false, "Bağlantı hatası oluştu.");
+            return (false, "Bağlantı hatası oluştu.", null);
         }
     }
 
@@ -184,6 +189,27 @@ public class ReportService : IReportService
         {
             _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.AnalizUret);
             return (false, "Bağlantı hatası oluştu.", null);
+        }
+    }
+
+    public async Task<string> GetReportStatusAsync(string rid, CancellationToken ct = default)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"/api/v1/reports/detail/{rid}", ct);
+            if (!response.IsSuccessStatusCode) return string.Empty;
+            var body = await response.Content.ReadAsStringAsync(ct);
+            using var doc = JsonDocument.Parse(body);
+            if (doc.RootElement.TryGetProperty("data", out var data) &&
+                data.TryGetProperty("status", out var status))
+                return status.GetString() ?? string.Empty;
+            if (doc.RootElement.TryGetProperty("status", out var rootStatus))
+                return rootStatus.GetString() ?? string.Empty;
+            return string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
         }
     }
 

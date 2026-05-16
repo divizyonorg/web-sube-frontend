@@ -34,52 +34,5 @@
             Alpine.initTree(e.detail.target);
         }
     });
-
-    document.body.addEventListener('htmx:afterRequest', function (e) {
-        if (!e.detail.successful) return;
-
-        if (e.detail.elt.hasAttribute('data-pay-trigger')) {
-            try {
-                var r = JSON.parse(e.detail.xhr.responseText);
-                if (r.success) {
-                    htmx.ajax('GET', '/KrediBasvurusu?handler=Step7', { target: '#wizard-container', swap: 'innerHTML' });
-                } else {
-                    Toastify({ text: r.message || 'Ödeme sırasında hata oluştu.', duration: 3000,
-                               gravity: 'top', position: 'right', style: { background: '#ef4444' } }).showToast();
-                }
-            } catch (_) {}
-            return;
-        }
-
-        if (e.detail.elt.hasAttribute('data-coupon-trigger')) {
-            try {
-                var r = JSON.parse(e.detail.xhr.responseText);
-                Toastify({ text: r.message, duration: 3000, gravity: 'top', position: 'right',
-                           style: { background: r.success ? '#22c55e' : '#ef4444' } }).showToast();
-                if (r.success && r.finalAmount != null) {
-                    var fmt = '₺' + r.finalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    var cardPrice = document.getElementById('coupon-card-price');
-                    var payBtn = document.getElementById('coupon-pay-amount');
-                    if (cardPrice) cardPrice.textContent = fmt;
-                    if (payBtn) payBtn.textContent = fmt + ' Öde';
-                    var input = e.detail.elt.querySelector('input[name="CouponCode"]');
-                    if (input) input.value = '';
-                }
-            } catch (_) {}
-            return;
-        }
-
-        if (e.detail.elt.hasAttribute('data-verify-trigger')) {
-            try {
-                var r = JSON.parse(e.detail.xhr.responseText);
-                if (r.success) {
-                    htmx.ajax('GET', '/KrediBasvurusu?handler=Step8', { target: '#wizard-container', swap: 'innerHTML' });
-                } else {
-                    Toastify({ text: r.message || 'Doğrulama başarısız.', duration: 3000,
-                               gravity: 'top', position: 'right', style: { background: '#ef4444' } }).showToast();
-                }
-            } catch (_) {}
-        }
-    });
 </script>
 }
