@@ -58,9 +58,11 @@ public class KurDetayModel : PageModel
         var kredi = Request.Query["kredi"].ToString();
         ViewModel.ActiveCreditType = kredi is "TASIT" or "KONUT" or "TICARI" ? kredi : "IHTIYAC";
 
+        ViewModel.Rid = Request.Query["rid"].ToString();
+
         if (ViewModel.ActiveTab == "kisisel")
         {
-            var rid = Request.Query["rid"].ToString();
+            var rid = ViewModel.Rid;
 
             if (!string.IsNullOrWhiteSpace(rid))
             {
