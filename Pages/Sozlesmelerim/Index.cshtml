@@ -11,7 +11,7 @@
         BadgeText     = "YAKINDA",
         Description   = "Sözleşmeler sayfası yakında hizmetinize açılacaktır.",
         IsPreview     = false,
-        BackdropStyle = "background: transparent;"
+        BackdropStyle = "background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);"
     };
 }
 
@@ -25,25 +25,24 @@
 
 @section Scripts {
 <script>
-    function initSozlesmelerModal() {
+    document.addEventListener('alpine:initialized', () => {
         const modalEl = document.getElementById('sozlesmelerModal');
-        if (!modalEl || !window.Alpine) return;
-
         Alpine.$data(modalEl).open = true;
 
         function updateModalLeft() {
-            if (window.innerWidth < 768) { modalEl.style.left = '0px'; return; }
+            if (window.innerWidth < 768) {
+                modalEl.style.left = '0px';
+                return;
+            }
             const sidebar = document.querySelector('#layout-desktop-sidebar .sb-wrap');
             modalEl.style.left = (sidebar ? sidebar.offsetWidth : 260) + 'px';
         }
 
         updateModalLeft();
+
         const sidebar = document.querySelector('#layout-desktop-sidebar .sb-wrap');
         if (sidebar) new ResizeObserver(updateModalLeft).observe(sidebar);
         window.addEventListener('resize', updateModalLeft);
-    }
-
-    document.addEventListener('alpine:initialized', initSozlesmelerModal);
-    document.addEventListener('htmx:afterSettle',   initSozlesmelerModal);
+    });
 </script>
 }

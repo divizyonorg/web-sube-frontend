@@ -182,7 +182,7 @@ public class EvdsService : IEvdsService
             ProductLabel = CreditTypeToLabel(creditType),
             Description = "Bankaların müşterilere fiilen kullandırılan kredi uygunluk gerçek faiz oranının özüdür.",
             RateValue = $"%{dto.MarketRateMonthly.ToString("N2", new CultureInfo("tr-TR"))}",
-            SubText = "Son 7 Gün Piyasa Ortalaması",
+            SubText = "Son 1 Aydaki Piyasa Ortalaması",
             SliderPercent = sliderPercent,
             LeftLabel = "Düşük Faiz",
             MiddleLabel = "Orta",
