@@ -1,123 +1,242 @@
 @model MyApp.Web.ViewModels.FindeksOtpViewModel
 @* ══════════════════════════════════════
-   ADIM 6 — Raporunu Oluşturuyoruz (Findeks OTP)
+   ADIM 7 — Findeks OTP / Banka Seçimi
 ══════════════════════════════════════ *@
-<div x-data="{
-         otp: ['','','','','',''],
-         seconds: 121,
-         get isComplete() { return this.otp.every(v => v !== ''); },
-         get timeLabel() {
-             const m = String(Math.floor(this.seconds / 60)).padStart(2, '0');
-             const s = String(this.seconds % 60).padStart(2, '0');
-             return m + ':' + s;
-         },
-         onInput(e, i) {
-             const v = e.target.value.replace(/\D/g, '');
-             this.otp[i] = v.slice(-1);
-             e.target.value = this.otp[i];
-             if (this.otp[i] && i < 5) e.target.parentElement.children[i + 1].focus();
-         },
-         onBack(e, i) {
-             if (!this.otp[i] && i > 0) {
-                 this.otp[i - 1] = '';
-                 e.target.parentElement.children[i - 1].focus();
+@Html.AntiForgeryToken()
+
+@if (Model.Aksiyon == "BANKA_SECIMI_GEREKLI")
+{
+    @* ── Banka seçim kartı ── *@
+    <div x-data="{
+             banks: [],
+             selectedBank: '',
+             loadingBanks: true,
+             submitting: false,
+             async loadBanks() {
+                 try {
+                     const res = await fetch('https://musteri-kayit-api-285687897296.europe-west3.run.app/api/customers/banks');
+                     const json = await res.json();
+                     this.banks = json.data || [];
+                 } catch { this.banks = []; }
+                 this.loadingBanks = false;
+             },
+             async confirm() {
+                 if (!this.selectedBank || this.submitting) return;
+                 this.submitting = true;
+                 try {
+                     const token = document.querySelector('input[name=__RequestVerificationToken]')?.value || '';
+                     const eftKodu = this.selectedBank.padStart(4, '0');
+                     const fd = new FormData();
+                     fd.append('BankaEftKodu', eftKodu);
+                     fd.append('__RequestVerificationToken', token);
+                     const res = await fetch('/KrediBasvurusu?handler=TelefonSorgulaEft', { method: 'POST', body: fd });
+                     const json = await res.json();
+                     if (json.basari) {
+                         htmx.ajax('GET', '/KrediBasvurusu?handler=Step7&telNoSorguId=' + encodeURIComponent(json.telNoSorguId), {
+                             target: '#wizard-container', swap: 'innerHTML'
+                         });
+                     } else {
+                         toast.error(json.mesaj || 'Bir hata oluştu.');
+                         this.submitting = false;
+                     }
+                 } catch {
+                     toast.error('Bir hata oluştu, lütfen tekrar deneyiniz.');
+                     this.submitting = false;
+                 }
              }
-         }
-     }"
-     x-init="setInterval(() => { if (seconds > 0) seconds--; }, 1000)"
-     class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
-
-    @* Kart başlığı — sadece logo + kapat *@
-    <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
-        <div class="w-8"></div>
-        <img src="~/images/ik_logo.png" alt="İnteraktif Kredi" class="h-[25px] object-contain">
-        <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
-            <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
-        </a>
-    </div>
-
-    @* İçerik *@
-    <div class="flex flex-col items-center px-6 pb-6">
-
-        @* Yeşil onay ikonu (3 katmanlı) *@
-        <div class="mt-6 relative w-[64px] h-[64px]">
-            <div class="absolute inset-0 bg-[rgba(70,202,136,0.18)] rounded-full"></div>
-            <div class="absolute inset-[9px] bg-[rgba(70,202,136,0.30)] rounded-full"></div>
-            <div class="absolute inset-[14px] bg-[#46CA88] rounded-full flex items-center justify-center">
-                <img src="~/icons/white/check.svg" width="14" height="18" alt="">
-            </div>
-        </div>
+         }"
+         x-init="loadBanks()"
+         class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
 
         @* Başlık *@
-        <h2 class="mt-4 font-[Poppins] font-medium text-[18px] leading-[27px] text-center text-black m-0">
-            Raporunu Oluşturuyoruz
-        </h2>
-
-        @* Açıklama *@
-        <p class="mt-3 font-[Poppins] font-light text-[14px] leading-6 text-center text-black m-0">
-            Ödemen başarıyla alındı. @Model.Mesaj
-        </p>
-
-        @* OTP kutuları *@
-        <div class="mt-6 flex justify-center gap-2">
-            @for (int i = 0; i < 6; i++) {
-                <input type="text" maxlength="1" inputmode="numeric"
-                       @@input="onInput($event, @(i))"
-                       @@keydown.backspace="onBack($event, @(i))"
-                       :class="otp[@(i)] !== ''
-                           ? 'border-[#2E6DF8] shadow-[0_2px_10px_rgba(46,109,248,0.20)]'
-                           : 'border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.08)]'"
-                       class="w-[46px] h-[54px] box-border bg-white border-2 rounded-[10px] text-center font-[Poppins] font-bold text-[22px] text-[#003F75] outline-none shrink-0">
-            }
+        <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
+            <div class="w-8"></div>
+            <img src="~/images/ik_logo.png" alt="İnteraktif Kredi" class="h-[25px] object-contain">
+            <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
+                <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
+            </a>
         </div>
 
-        @* Findeks bilgi notu *@
-        <div class="mt-4 w-full flex items-start gap-3 bg-[#F0F0F0] rounded-[10px] px-3 py-[13px]">
-            <div class="w-[18px] h-[18px] shrink-0 mt-[1px] bg-[#2E6DF8] border border-[#5389FF] rounded-[4px] flex items-center justify-center">
-                <img src="~/icons/white/alert-circle.svg" width="10" height="10" alt="" style="filter: brightness(0) invert(1);">
+        <div class="flex flex-col px-6 pb-6">
+
+            @* Uyarı ikonu *@
+            <div class="mt-6 relative w-[64px] h-[64px] self-center">
+                <div class="absolute inset-0 bg-[rgba(245,166,35,0.12)] rounded-full"></div>
+                <div class="absolute inset-[9px] bg-[rgba(245,166,35,0.20)] rounded-full"></div>
+                <div class="absolute inset-[14px] bg-[#F5A623] rounded-full flex items-center justify-center">
+                    <img src="~/icons/orange/alert-triangle.svg" width="18" height="18" alt=""
+                         style="filter: brightness(0) invert(1);">
+                </div>
             </div>
-            <p class="font-[Poppins] font-medium text-[12px] leading-[18px] text-black m-0">
-                <strong>Findeks</strong>, Türkiye'de bankalar ve finans kuruluşları tarafından kullanılan resmi kredi bilgi sistemidir.
+
+            <h2 class="mt-4 font-[Poppins] font-medium text-[18px] leading-[27px] text-center text-black m-0">
+                Telefon Eşleşmesi Bulunamadı
+            </h2>
+
+            <p class="mt-3 font-[Poppins] font-light text-[13px] leading-6 text-center text-black/70 m-0">
+                Kayıtlı telefon numaranız sistemdeki bilgilerle uyuşmuyor. Numaranızın kayıtlı olduğu bankayı seçin.
             </p>
+
+            @* Banka seçimi *@
+            <div class="mt-5 flex flex-col gap-2">
+                <label class="font-[Poppins] font-medium text-[13px] text-[#003F75]">Bankanızı Seçin</label>
+
+                <div x-show="loadingBanks" class="flex items-center justify-center py-5">
+                    <svg class="animate-spin w-5 h-5 text-[#2E6DF8]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                </div>
+
+                <select x-show="!loadingBanks"
+                        x-model="selectedBank"
+                        class="w-full h-[48px] px-4 border-2 border-[#D1DDF5] rounded-[12px] font-[Poppins] text-[14px] text-[#003F75] bg-white outline-none focus:border-[#2E6DF8] cursor-pointer">
+                    <option value="">-- Banka seçiniz --</option>
+                    <template x-for="bank in banks" :key="bank.value">
+                        <option :value="bank.value" x-text="bank.label"></option>
+                    </template>
+                </select>
+            </div>
+
+            @* Findeks notu *@
+            <div class="mt-4 w-full flex items-start gap-3 bg-[#F0F0F0] rounded-[10px] px-3 py-[13px]">
+                <div class="w-[18px] h-[18px] shrink-0 mt-[1px] bg-[#2E6DF8] border border-[#5389FF] rounded-[4px] flex items-center justify-center">
+                    <img src="~/icons/white/alert-circle.svg" width="10" height="10" alt="" style="filter: brightness(0) invert(1);">
+                </div>
+                <p class="font-[Poppins] font-medium text-[12px] leading-[18px] text-black m-0">
+                    <strong>Findeks</strong>, Türkiye'de bankalar ve finans kuruluşları tarafından kullanılan resmi kredi bilgi sistemidir.
+                </p>
+            </div>
+
+            @* Devam butonu *@
+            <button type="button"
+                    @@click="confirm()"
+                    :disabled="!selectedBank || submitting"
+                    :class="(!selectedBank || submitting) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'"
+                    class="mt-4 flex items-center justify-center w-full h-[54px] bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none font-[Poppins] font-semibold text-[15px] text-white">
+                <span x-show="!submitting">Devam Et</span>
+                <span x-show="submitting" class="flex items-center gap-2">
+                    <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    Doğrulanıyor...
+                </span>
+            </button>
+
+        </div>
+    </div>
+}
+else
+{
+    @* ── OTP kartı ── *@
+    <div x-data="{
+             otp: ['','','','','',''],
+             seconds: 121,
+             get isComplete() { return this.otp.every(v => v !== ''); },
+             get timeLabel() {
+                 const m = String(Math.floor(this.seconds / 60)).padStart(2, '0');
+                 const s = String(this.seconds % 60).padStart(2, '0');
+                 return m + ':' + s;
+             },
+             onInput(e, i) {
+                 const v = e.target.value.replace(/\D/g, '');
+                 this.otp[i] = v.slice(-1);
+                 e.target.value = this.otp[i];
+                 if (this.otp[i] && i < 5) e.target.parentElement.children[i + 1].focus();
+             },
+             onBack(e, i) {
+                 if (!this.otp[i] && i > 0) {
+                     this.otp[i - 1] = '';
+                     e.target.parentElement.children[i - 1].focus();
+                 }
+             }
+         }"
+         x-init="setInterval(() => { if (seconds > 0) seconds--; }, 1000)"
+         class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
+
+        <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
+            <div class="w-8"></div>
+            <img src="~/images/ik_logo.png" alt="İnteraktif Kredi" class="h-[25px] object-contain">
+            <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
+                <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
+            </a>
         </div>
 
-        @* Geri sayım *@
-        <p class="mt-3 font-[Poppins] font-normal text-[12px] leading-[18px] text-center text-black m-0">
-            Kalan süre: <span x-text="timeLabel"></span>
-        </p>
+        <div class="flex flex-col items-center px-6 pb-6">
 
-        @* Doğrula formu *@
-        <form hx-post="/KrediBasvurusu?handler=VerifyOtp"
-              hx-swap="none"
-              data-verify-trigger
-              class="w-full mt-3">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="Pin" :value="otp.join('')">
+            <div class="mt-6 relative w-[64px] h-[64px]">
+                <div class="absolute inset-0 bg-[rgba(70,202,136,0.18)] rounded-full"></div>
+                <div class="absolute inset-[9px] bg-[rgba(70,202,136,0.30)] rounded-full"></div>
+                <div class="absolute inset-[14px] bg-[#46CA88] rounded-full flex items-center justify-center">
+                    <img src="~/icons/white/check.svg" width="14" height="18" alt="">
+                </div>
+            </div>
 
-            <button type="submit"
-                    :disabled="!isComplete"
-                    :class="isComplete ? 'opacity-100 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
-                    class="flex justify-center items-center w-full h-[54px] bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none font-[Poppins] font-semibold text-[15px] text-white">
-                Doğrula ve Raporu Gör
-            </button>
-        </form>
+            <h2 class="mt-4 font-[Poppins] font-medium text-[18px] leading-[27px] text-center text-black m-0">
+                Raporunu Oluşturuyoruz
+            </h2>
 
-    </div>
-</div>
+            <p class="mt-3 font-[Poppins] font-light text-[14px] leading-6 text-center text-black m-0">
+                Ödemen başarıyla alındı. @Model.Mesaj
+            </p>
 
-<script>
-    (function () {
-        var form = document.querySelector('[data-verify-trigger]');
-        if (!form) return;
-        form.addEventListener('htmx:afterRequest', function (e) {
-            try {
-                var json = JSON.parse(e.detail.xhr.responseText);
-                if (json.success) {
-                    htmx.ajax('GET', '/KrediBasvurusu?handler=Step8', { target: '#wizard-container', swap: 'innerHTML' });
-                } else if (json.message) {
-                    toast.error(json.message);
+            <div class="mt-6 flex justify-center gap-2">
+                @for (int i = 0; i < 6; i++) {
+                    <input type="text" maxlength="1" inputmode="numeric"
+                           @@input="onInput($event, @(i))"
+                           @@keydown.backspace="onBack($event, @(i))"
+                           :class="otp[@(i)] !== ''
+                               ? 'border-[#2E6DF8] shadow-[0_2px_10px_rgba(46,109,248,0.20)]'
+                               : 'border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.08)]'"
+                           class="w-[46px] h-[54px] box-border bg-white border-2 rounded-[10px] text-center font-[Poppins] font-bold text-[22px] text-[#003F75] outline-none shrink-0">
                 }
-            } catch {}
-        });
-    })();
-</script>
+            </div>
+
+            <div class="mt-4 w-full flex items-start gap-3 bg-[#F0F0F0] rounded-[10px] px-3 py-[13px]">
+                <div class="w-[18px] h-[18px] shrink-0 mt-[1px] bg-[#2E6DF8] border border-[#5389FF] rounded-[4px] flex items-center justify-center">
+                    <img src="~/icons/white/alert-circle.svg" width="10" height="10" alt="" style="filter: brightness(0) invert(1);">
+                </div>
+                <p class="font-[Poppins] font-medium text-[12px] leading-[18px] text-black m-0">
+                    <strong>Findeks</strong>, Türkiye'de bankalar ve finans kuruluşları tarafından kullanılan resmi kredi bilgi sistemidir.
+                </p>
+            </div>
+
+            <p class="mt-3 font-[Poppins] font-normal text-[12px] leading-[18px] text-center text-black m-0">
+                Kalan süre: <span x-text="timeLabel"></span>
+            </p>
+
+            <form hx-post="/KrediBasvurusu?handler=VerifyOtp"
+                  hx-swap="none"
+                  data-verify-trigger
+                  class="w-full mt-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Pin" :value="otp.join('')">
+                <button type="submit"
+                        :disabled="!isComplete"
+                        :class="isComplete ? 'opacity-100 cursor-pointer' : 'opacity-50 cursor-not-allowed'"
+                        class="flex justify-center items-center w-full h-[54px] bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none font-[Poppins] font-semibold text-[15px] text-white">
+                    Doğrula ve Raporu Gör
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var form = document.querySelector('[data-verify-trigger]');
+            if (!form) return;
+            form.addEventListener('htmx:afterRequest', function (e) {
+                try {
+                    var json = JSON.parse(e.detail.xhr.responseText);
+                    if (json.success) {
+                        htmx.ajax('GET', '/KrediBasvurusu?handler=Step8', { target: '#wizard-container', swap: 'innerHTML' });
+                    } else if (json.message) {
+                        toast.error(json.message);
+                    }
+                } catch {}
+            });
+        })();
+    </script>
+}

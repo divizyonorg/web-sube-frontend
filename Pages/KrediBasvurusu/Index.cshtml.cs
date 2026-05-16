@@ -18,6 +18,7 @@ public class IndexModel : PageModel
     [BindProperty] public string CardHolderName { get; set; } = string.Empty;
     [BindProperty] public string CouponCode { get; set; } = string.Empty;
     [BindProperty] public string Pin { get; set; } = string.Empty;
+    [BindProperty] public string BankaEftKodu { get; set; } = string.Empty;
 
     public IndexModel(ICustomerProfileService customerProfileService,
                       IFinansalProfilService finansalProfilService,
@@ -92,11 +93,18 @@ public class IndexModel : PageModel
         return new JsonResult(new { status });
     }
 
-    public async Task<IActionResult> OnGetStep7Async(CancellationToken ct)
+    public async Task<IActionResult> OnGetStep7Async(string? telNoSorguId, CancellationToken ct)
     {
-        var model = await _reportService.FindeksRaporTalepAsync(ct);
+        var model = await _reportService.FindeksRaporTalepAsync(telNoSorguId ?? "0", ct);
         return Partial("~/Partials/KrediBasvurusu/_Step7.cshtml", model);
     }
+
+    public async Task<IActionResult> OnPostTelefonSorgulaEftAsync(CancellationToken ct)
+    {
+        var (basari, aksiyon, mesaj, telNoSorguId) = await _reportService.TelefonSorgulaEftAsync(BankaEftKodu, ct);
+        return new JsonResult(new { basari, aksiyon, mesaj, telNoSorguId });
+    }
+
 
     public IActionResult OnGetStep8() =>
         Partial("~/Partials/KrediBasvurusu/_Step8.cshtml");
