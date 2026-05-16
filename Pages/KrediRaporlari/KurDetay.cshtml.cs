@@ -18,6 +18,37 @@ public class KurDetayModel : PageModel
         _reportService = reportService;
     }
 
+    private static string ValidateCreditType(string kredi) =>
+        kredi is "TASIT" or "KONUT" or "TICARI" ? kredi : "IHTIYAC";
+
+    public async Task<IActionResult> OnGetFaizTrendiAsync(string kredi, CancellationToken ct)
+    {
+        var creditType = ValidateCreditType(kredi);
+        var data = await _evdsService.GetInterestRateTrendAsync(creditType);
+        return Partial("~/Partials/KurDetay/_FaizOraniTrendiCard.cshtml", data);
+    }
+
+    public async Task<IActionResult> OnGetKrediNabziAsync(string kredi, CancellationToken ct)
+    {
+        var creditType = ValidateCreditType(kredi);
+        var data = await _evdsService.GetCreditPulseAsync(creditType);
+        return Partial("~/Partials/KurDetay/_KrediNabziCard.cshtml", data);
+    }
+
+    public async Task<IActionResult> OnGetKrediTalebiRadariAsync(string kredi, CancellationToken ct)
+    {
+        var creditType = ValidateCreditType(kredi);
+        var data = await _evdsService.GetDemandRadarAsync(creditType);
+        return Partial("~/Partials/KurDetay/_KrediTalebiRadariCard.cshtml", data);
+    }
+
+    public async Task<IActionResult> OnGetMantikliKrediOraniAsync(string kredi, CancellationToken ct)
+    {
+        var creditType = ValidateCreditType(kredi);
+        var data = await _evdsService.GetLogicalRateAsync(creditType);
+        return Partial("~/Partials/KurDetay/_MantikliKrediOraniCard.cshtml", data);
+    }
+
     public async Task<IActionResult> OnGetAsync(CancellationToken ct)
     {
         var tab = Request.Query["tab"].ToString();
@@ -33,15 +64,25 @@ public class KurDetayModel : PageModel
 
             if (!string.IsNullOrWhiteSpace(rid))
             {
-                var (success, _, rapor) = await _reportService.GetAiReportAsync(rid, ct);
+                var (success, message, rapor) = await _reportService.GetAiReportAsync(rid, ct);
                 if (success && rapor is not null)
                     ViewModel.KisiselRapor = rapor;
+                else
+                {
+                    ViewModel.IsError = true;
+                    ViewModel.ErrorMessage = message;
+                }
             }
             else
             {
-                var (success, _, rapor) = await _reportService.AnalizUretAsync(ct);
+                var (success, message, rapor) = await _reportService.AnalizUretAsync(ct);
                 if (success && rapor is not null)
                     ViewModel.KisiselRapor = rapor;
+                else
+                {
+                    ViewModel.IsError = true;
+                    ViewModel.ErrorMessage = message;
+                }
             }
         }
 

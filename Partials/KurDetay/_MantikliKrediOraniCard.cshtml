@@ -1,0 +1,77 @@
+@model MyApp.Web.ViewModels.ReasonableCreditRateViewModel
+@{ Layout = null; }
+@{
+    var opts = new (string Type, string Label)[]
+    {
+        ("IHTIYAC", "İhtiyaç Kredisi"),
+        ("TASIT",   "Taşıt Kredisi"),
+        ("KONUT",   "Konut Kredisi"),
+        ("TICARI",  "Ticari Kredi")
+    };
+    var ratePct = Math.Clamp(Model.SliderPercent, 0, 100);
+}
+
+<div id="card-mantikli-kredi-orani" class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
+    <div class="flex flex-col gap-1 px-4 py-3 border-b border-black/10">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <img src="/icons/primary/info-circle.svg" width="20" height="20" alt="">
+                <span class="font-[Poppins] text-[13px] font-semibold leading-5 text-[#003F75]">Mantıklı Kredi Oranı</span>
+            </div>
+            <div x-data="{ open: false }" class="relative">
+                <button @@click="open = !open" type="button"
+                        class="flex items-center gap-1 bg-white border border-[#E5E7EB] shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-[10px] px-2 py-1">
+                    <span class="font-[Poppins] text-[11px] font-normal leading-4 text-[#003F75]">@Model.ProductLabel</span>
+                    <img src="/icons/navy/chevron-down.svg" width="12" height="12" alt="">
+                </button>
+                <div x-show="open" @@click.outside="open = false" x-transition
+                     class="absolute right-0 top-full mt-1 z-50 bg-white border border-[#E5E7EB] rounded-[10px] shadow-lg overflow-hidden min-w-[140px]">
+                    @foreach (var opt in opts)
+                    {
+                        var cls = Model.CreditType == opt.Type
+                            ? "block px-4 py-2 text-[11px] font-[Poppins] font-semibold text-[#003F75] bg-[#F2F8FF] cursor-pointer"
+                            : "block px-4 py-2 text-[11px] font-[Poppins] text-black/60 hover:bg-[#F2F8FF] cursor-pointer";
+                        <button type="button"
+                                hx-get="/KrediRaporlari/KurDetay?handler=MantikliKrediOrani&kredi=@opt.Type"
+                                hx-target="#card-mantikli-kredi-orani"
+                                hx-swap="outerHTML show:none"
+                                @@click="open = false"
+                                class="w-full text-left @cls">@opt.Label</button>
+                    }
+                </div>
+            </div>
+        </div>
+        <p class="font-[Poppins] italic font-light text-[10px] leading-[15px] text-black/50">
+            @Model.Description
+        </p>
+    </div>
+
+    <div class="relative w-full bg-white rounded-b-2xl overflow-hidden h-[188px]">
+
+        <div class="absolute left-4 right-4 top-4 text-center">
+            <span class="font-['Poppins'] font-bold text-[34px] leading-[51px] text-[#003F75]">@Model.RateValue</span>
+        </div>
+
+        <p class="absolute left-4 right-4 top-[71px] text-center font-['Poppins'] font-light text-[11px] leading-4 text-black/50">
+            @Model.SubText
+        </p>
+
+        <div class="absolute left-4 right-4 top-[103.5px]">
+            <div class="relative w-full rounded-full h-5 bg-[linear-gradient(90deg,#122B62_0%,#2E6DF8_50%,#36FC99_100%)]">
+                <div class="absolute rounded-full bg-white border border-[#E5E7EB] w-[10px] h-[28px] -top-1 shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.1),0px_2px_4px_-2px_rgba(0,0,0,0.1)]"
+                     style="left: calc(@ratePct% - 5px);"></div>
+            </div>
+            <div class="flex justify-between mt-2 px-1">
+                <span class="font-['Poppins'] font-normal text-[9px] leading-[14px] text-[#122B62] opacity-75">@Model.LeftLabel</span>
+                <span class="font-['Poppins'] font-normal text-[9px] leading-[14px] text-[#2E6DF8] opacity-75">@Model.MiddleLabel</span>
+                <span class="font-['Poppins'] font-normal text-[9px] leading-[14px] text-[#37C6B3] opacity-75">@Model.RightLabel</span>
+            </div>
+        </div>
+
+        <div class="absolute left-4 top-[157px] flex items-center gap-1.5">
+            <img src="/icons/primary/sparkle-ai.svg" width="12" height="12" alt="">
+            <span class="font-['Poppins'] italic font-normal text-[10px] leading-[15px] text-[#2E6DF8]">@Model.AiText</span>
+        </div>
+
+    </div>
+</div>

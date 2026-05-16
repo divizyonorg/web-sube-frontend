@@ -53,7 +53,7 @@
 
                 <img src="~/images/ik_logo.png"
                      alt="İnteraktif Kredi"
-                     class="h-14 w-auto object-contain mb-5" />
+                     class="h-14 w-[220px] object-contain mb-5" />
 
                 <p class="font-light text-base text-[#0056B3] mb-1.5 text-center">
                     Bireysel
@@ -62,7 +62,7 @@
                     İnteraktif Şube Girişi
                 </h1>
 
-                <div class="w-full border-[1.5px] border-[#DCE3FB] rounded-2xl px-5 py-6 bg-white lg:px-7">
+                <div class="w-full rounded-2xl px-5 py-6 bg-white lg:px-7" style="box-shadow:0 4px 32px 0 rgba(0,86,179,0.10);">
                     <form id="loginForm" method="post" class="flex flex-col gap-4">
                         @Html.AntiForgeryToken()
 
@@ -118,7 +118,7 @@
                                 </span>
                             </div>
                             <a x-show="step === 2" x-cloak href="/forgot-password"
-                               class="text-[13px] font-medium text-[#0056B3] underline">
+                               class="text-[14px] font-bold text-[#0056B3] underline">
                                 Parolamı unuttum
                             </a>
                         </div>
@@ -132,7 +132,8 @@
                         </div>
 
                         <button type="button"
-                                class="flex items-center justify-center gap-2.5 w-full lg:w-91 h-12 bg-[#F9FAFB] border-0 rounded-[40px] text-sm font-medium text-[#374151] cursor-pointer shrink-0">
+                                style="background-color:#D4E2F2;"
+                                class="flex items-center justify-center gap-2.5 w-full lg:w-91 h-12 border-0 rounded-[40px] text-sm font-medium text-[#374151] cursor-pointer shrink-0">
                             <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -160,8 +161,8 @@
                     <img src="~/images/ik_logo.png"
                          alt="İnteraktif Kredi"
                          class="h-14 w-auto object-contain mb-4 opacity-35" />
-                    <p class="font-light text-base text-[#7B9CC4] mb-2 text-center">Bireysel</p>
-                    <h2 class="font-semibold text-[30px] leading-[1.2] text-[#7B9CC4] text-center">
+                    <p class="font-light text-2xl text-[#7B9CC4] mb-2 text-center">Bireysel</p>
+                    <h2 class="font-semibold text-[32px] leading-[1.2] text-[#7B9CC4] text-center">
                         İnteraktif Şube Girişi
                     </h2>
                 </div>
@@ -203,10 +204,6 @@
                             <partial name="~/Partials/Components/_Button.cshtml"
                                      model='new ButtonViewModel { Label = "Devam Et", Variant = ButtonVariant.Primary, Width = 408 }' />
                         </div>
-
-                        <p class="text-xs text-[#9CA3AF] m-0 text-center">
-                            Demo: Geçerli kod <strong class="text-[#374151]">123456</strong>
-                        </p>
 
                     </div>
                 </div>
@@ -251,7 +248,11 @@
                             var phoneMask = null;
 
                             function initPhoneMask(initial) {
-                                phoneMask = IMask(phoneEl, { mask: '+9\\0 000 000 00 00' });
+                                // Türk GSM: +90 sonrası daima 5 ile başlar (5XX XXX XX XX)
+                                phoneMask = IMask(phoneEl, {
+                                    mask: '+9\\0 N00 000 00 00',
+                                    definitions: { 'N': /[5]/ }
+                                });
                                 if (initial) phoneMask.value = initial;
                                 phoneMask.on('accept', function () { self.phone = phoneMask.value; });
                             }
@@ -261,14 +262,33 @@
                                 self.phone = phoneMask.value;
                                 phoneEl.dispatchEvent(new Event('input', { bubbles: true }));
                             } else {
-                                phoneEl.addEventListener('keydown', function onFirstDigit(e) {
-                                    if (!/^\d$/.test(e.key)) return;
+                                function onFirstKeyDown(e) {
+                                    if (e.key !== '5') return;
                                     e.preventDefault();
-                                    phoneEl.removeEventListener('keydown', onFirstDigit);
+                                    phoneEl.removeEventListener('keydown', onFirstKeyDown);
+                                    phoneEl.removeEventListener('input', onAutoFill);
                                     initPhoneMask('+90 ' + e.key);
                                     phoneMask.updateCursor(phoneMask.value.length);
                                     self.phone = phoneMask.value;
-                                });
+                                }
+
+                                // Tarayıcı autocomplete veya yapıştırma: keydown tetiklenmez,
+                                // input eventi gelir; tam numara varsa mask'i başlat.
+                                function onAutoFill() {
+                                    if (phoneMask !== null) return;
+                                    var raw = phoneEl.value.replace(/\D/g, '');
+                                    if (raw.length < 10) return;
+                                    if (raw.startsWith('90') && raw.length >= 12) raw = raw.substring(2);
+                                    else if (raw.startsWith('0')) raw = raw.substring(1);
+                                    phoneEl.removeEventListener('keydown', onFirstKeyDown);
+                                    phoneEl.removeEventListener('input', onAutoFill);
+                                    initPhoneMask('+90 ' + raw);
+                                    phoneMask.updateCursor(phoneMask.value.length);
+                                    self.phone = phoneMask.value;
+                                }
+
+                                phoneEl.addEventListener('keydown', onFirstKeyDown);
+                                phoneEl.addEventListener('input', onAutoFill);
                             }
                         }
 

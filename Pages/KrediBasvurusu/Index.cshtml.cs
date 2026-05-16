@@ -44,8 +44,8 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostCreateAsync(CancellationToken ct)
     {
-        var (success, message, rid) = await _reportService.CreateAsync(ct);
-        return new JsonResult(new { success, message, rid });
+        var (success, message, rid, status) = await _reportService.CreateAsync(ct);
+        return new JsonResult(new { success, message, rid, status });
     }
 
     public async Task<IActionResult> OnGetStep4Async(CancellationToken ct)
@@ -64,12 +64,14 @@ public class IndexModel : PageModel
     {
         var parts = ExpDate.Split('/');
         var expMonth = parts.Length > 0 ? parts[0].Trim() : string.Empty;
-        var expYear = parts.Length > 1 ? parts[1].Trim() : string.Empty;
+        var rawYear = parts.Length > 1 ? parts[1].Trim() : string.Empty;
+        var expYear = rawYear.Length == 2 ? "20" + rawYear : rawYear;
+        var cleanCardNumber = CardNumber.Replace(" ", "");
 
-        var (success, message) = await _reportService.StartPaymentAsync(
-            Rid, CardNumber, expMonth, expYear, Cvv, CardHolderName, ct);
+        var (success, message, bankaLinki) = await _reportService.StartPaymentAsync(
+            Rid, cleanCardNumber, expMonth, expYear, Cvv, CardHolderName, ct);
 
-        return new JsonResult(new { success, message });
+        return new JsonResult(new { success, message, bankaLinki });
     }
 
     public async Task<IActionResult> OnPostApplyCouponAsync(CancellationToken ct)
@@ -82,6 +84,12 @@ public class IndexModel : PageModel
     {
         var (success, message) = await _reportService.FindeksRaporTalepOnayAsync(Pin, ct);
         return new JsonResult(new { success, message });
+    }
+
+    public async Task<IActionResult> OnGetCheckStatusAsync(string rid, CancellationToken ct)
+    {
+        var status = await _reportService.GetReportStatusAsync(rid, ct);
+        return new JsonResult(new { status });
     }
 
     public async Task<IActionResult> OnGetStep7Async(CancellationToken ct)

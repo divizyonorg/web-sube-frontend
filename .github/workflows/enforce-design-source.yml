@@ -13,6 +13,10 @@ jobs:
     steps:
       - name: Sadece Design branch'ine izin ver
         run: |
+          if [ "${{ github.base_ref }}" != "Preprod" ]; then
+            echo "Bu kontrol yalnızca Preprod hedefli PR'lar için geçerlidir. Atlanıyor."
+            exit 0
+          fi
           if [ "${{ github.head_ref }}" != "Design" ]; then
             echo "HATA: Preprod branch'ine sadece 'Design' branch'inden PR açılabilir."
             echo "Mevcut kaynak branch: ${{ github.head_ref }}"
