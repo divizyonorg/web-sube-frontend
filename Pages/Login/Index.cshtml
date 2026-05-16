@@ -248,7 +248,11 @@
                             var phoneMask = null;
 
                             function initPhoneMask(initial) {
-                                phoneMask = IMask(phoneEl, { mask: '+9\\0 000 000 00 00' });
+                                // Türk GSM: +90 sonrası daima 5 ile başlar (5XX XXX XX XX)
+                                phoneMask = IMask(phoneEl, {
+                                    mask: '+9\\0 N00 000 00 00',
+                                    definitions: { 'N': /[5]/ }
+                                });
                                 if (initial) phoneMask.value = initial;
                                 phoneMask.on('accept', function () { self.phone = phoneMask.value; });
                             }
@@ -259,7 +263,7 @@
                                 phoneEl.dispatchEvent(new Event('input', { bubbles: true }));
                             } else {
                                 phoneEl.addEventListener('keydown', function onFirstDigit(e) {
-                                    if (!/^\d$/.test(e.key)) return;
+                                    if (e.key !== '5') return; // +90 sonrası sadece 5 ile başlar
                                     e.preventDefault();
                                     phoneEl.removeEventListener('keydown', onFirstDigit);
                                     initPhoneMask('+90 ' + e.key);
