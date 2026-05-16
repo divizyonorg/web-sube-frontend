@@ -380,6 +380,7 @@
                             self.otpCode      = '';
                             self.tckn         = '';
                             if (self._tcknMask) { self._tcknMask.value = ''; self._tcknMask.updateValue(); }
+                            toast.error('SMS doğrulama süresi doldu. Lütfen tekrar deneyin.');
                         }
                     }, 1000);
                 },
