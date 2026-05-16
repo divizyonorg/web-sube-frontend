@@ -4,7 +4,7 @@ namespace MyApp.Web.Services.Interfaces;
 
 public interface IReportService
 {
-    Task<KrediRaporlariViewModel> GetKrediRaporlariAsync();
+    Task<KrediRaporlariViewModel> GetKrediRaporlariAsync(CancellationToken ct = default);
     Task<byte[]> GetReportPdfAsync(string reportNo);
 
     Task<(bool Success, string Message, string Rid)> CreateAsync(CancellationToken ct = default);

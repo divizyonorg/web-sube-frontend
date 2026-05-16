@@ -14,7 +14,7 @@
                 <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
             </div>
         </button>
-        <img src="~/images/ik_logo.png" alt="İnteraktif Kredi" class="h-[25px] object-contain">
+        <img src="~/images/IKLogo-blue.svg" width="70" height="25" alt="İnteraktif Kredi" class="object-contain">
         <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
             <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
         </a>
@@ -86,7 +86,7 @@
           data-pay-trigger
           class="px-6 pb-4 flex flex-col gap-4 mt-4">
         @Html.AntiForgeryToken()
-        <input type="hidden" name="Rid" value="@Model.Rid">
+        <input type="hidden" name="Rid" id="pay-rid">
 
         @* Kart Numarası *@
         <div class="flex flex-col gap-[5px]">
@@ -164,7 +164,7 @@
           data-coupon-trigger
           class="px-6 pb-6 flex flex-col gap-4">
         @Html.AntiForgeryToken()
-        <input type="hidden" name="Rid" value="@Model.Rid">
+        <input type="hidden" name="Rid" id="coupon-rid">
 
         <div class="flex flex-col gap-[5px]">
             <span class="font-[Poppins] font-medium text-[11px] leading-4 tracking-[0.3px] uppercase text-[#739FCC]">
@@ -185,3 +185,13 @@
     </form>
 
 </div>
+
+<script>
+    (function () {
+        var rid = window.krediRid || '';
+        var payRid = document.getElementById('pay-rid');
+        var couponRid = document.getElementById('coupon-rid');
+        if (payRid) payRid.value = rid;
+        if (couponRid) couponRid.value = rid;
+    })();
+</script>

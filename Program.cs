@@ -17,11 +17,13 @@ static Action<HttpClient> ConfigureClient(ServiceEndpoint endpoint) => client =>
     client.Timeout = TimeSpan.FromSeconds(endpoint.TimeoutSeconds);
 };
 
+// Kredi uygunluk API'si henüz aktif değil — her zaman mock kullanılır
+builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
+
 if (useMockData)
 {
     builder.Services.AddScoped<IClientService, MockClientService>();
     builder.Services.AddScoped<IReportService, MockReportService>();
-    builder.Services.AddScoped<ICreditEligibilityService, MockCreditEligibilityService>();
     builder.Services.AddScoped<ICustomerDataService, MockCustomerDataService>();
     builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
     builder.Services.AddScoped<ISssService, MockSssService>();
@@ -31,7 +33,6 @@ else
     builder.Services.AddHttpClient<IClientService, ClientService>(ConfigureClient(serviceUrls.CustomerService));
     builder.Services.AddHttpClient<IReportService, ReportService>(ConfigureClient(serviceUrls.ReportService))
         .AddHttpMessageHandler<BearerTokenHandler>();
-    builder.Services.AddHttpClient<ICreditEligibilityService, CreditEligibilityService>(ConfigureClient(serviceUrls.CustomerService));
     builder.Services.AddHttpClient<ICustomerDataService, CustomerDataService>(ConfigureClient(serviceUrls.CustomerService));
     builder.Services.AddScoped<ISanaOzelTekliflerService, MockSanaOzelTekliflerService>();
     builder.Services.AddHttpClient<ISssService, SssService>(ConfigureClient(serviceUrls.IcrmAnalyticsService));

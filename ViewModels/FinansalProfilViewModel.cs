@@ -24,7 +24,7 @@ public class FinansalProfilViewModel
     // Medeni durum
     public bool IsMarried { get; set; }
 
-    // Mülkiyet — 0=Ev Sahibiyim, 1=Kiracıyım, 2=Aile ile Oturuyorum
+    // Mülkiyet — 0=Kendi Evim, 1=Kira, 2=Aile Evi
     public int HouseStatusId { get; set; }
     public bool HasCar { get; set; }
 
@@ -39,8 +39,8 @@ public class FinansalProfilViewModel
 
     public static readonly List<LookupItemViewModel> HouseStatusOptions =
     [
-        new("0", "Ev Sahibiyim"),
-        new("1", "Kiracıyım"),
-        new("2", "Aile ile Oturuyorum"),
+        new("0", "Kendi Evim"),
+        new("1", "Kira"),
+        new("2", "Aile Evi"),
     ];
 }
