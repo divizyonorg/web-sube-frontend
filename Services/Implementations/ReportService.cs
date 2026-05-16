@@ -366,7 +366,18 @@ public class ReportService : IReportService
     }
 
     public Task<byte[]> GetReportPdfAsync(string reportNo)
-        => Task.FromResult(Array.Empty<byte>());
+    {
+        var report = new ReportItemViewModel
+        {
+            ReportNo = reportNo,
+            Rid = reportNo,
+            Title = "Kredi Detay Raporu",
+            Status = "Hazır",
+            Date = DateTime.Now.ToString("dd MMMM yyyy", new CultureInfo("tr-TR")),
+            ReportType = "Kredi Raporu"
+        };
+        return Task.FromResult(BuildMockPdf(report));
+    }
 
     private static ReportItemViewModel MapToViewModel(ReportListItemDto dto) => new()
     {
