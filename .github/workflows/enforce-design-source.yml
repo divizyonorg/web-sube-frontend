@@ -1,0 +1,25 @@
+name: Enforce Design Branch Source
+
+on:
+  pull_request:
+    branches:
+      - Preprod
+
+jobs:
+  check-source-branch:
+    name: Kaynak Branch Kontrolü
+    if: github.base_ref == 'Preprod'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sadece Design branch'ine izin ver
+        run: |
+          if [ "${{ github.base_ref }}" != "Preprod" ]; then
+            echo "Bu kontrol yalnızca Preprod hedefli PR'lar için geçerlidir. Atlanıyor."
+            exit 0
+          fi
+          if [ "${{ github.head_ref }}" != "Design" ]; then
+            echo "HATA: Preprod branch'ine sadece 'Design' branch'inden PR açılabilir."
+            echo "Mevcut kaynak branch: ${{ github.head_ref }}"
+            exit 1
+          fi
+          echo "OK: Kaynak branch 'Design' — geçti."

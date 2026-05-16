@@ -1,14 +1,16 @@
 @model MyApp.Web.ViewModels.HeaderViewModel
 
-@*
-    Desktop Top Header — tam genişlik × 85px
-    Gradient : #2E6DF8 → #0056B3
-    Shadow   : 0 4px 4px rgba(0,0,0,.25)
-    Border-b : 1px solid #2E6DF8
-    İçerik   : flex row, space-between, center, padding 0 24px
-*@
+<style>
+    .header-hamburger { display: none; }
+    @@media (max-width: 767px) {
+        .header-hamburger  { display: flex !important; }
+        .header-inner      { padding: 0 16px !important; }
+    }
+</style>
 
-<header style="position:relative;
+<header x-data
+        style="position:relative;
+               z-index:60;
                width:100%;
                height:85px;
                background:linear-gradient(90deg,#2E6DF8 0%,#0056B3 100%);
@@ -17,32 +19,42 @@
                box-sizing:border-box;
                font-family:'Poppins',sans-serif;">
 
-    @* İçerik container — absolute, tam alan kaplıyor *@
-    <div style="position:absolute;
-                left:0; top:0;
-                width:100%; height:100%;
-                box-sizing:border-box;
-                display:flex;
-                flex-direction:row;
-                justify-content:space-between;
-                align-items:center;
-                padding:0 24px;">
+    <div class="header-inner"
+         style="position:absolute; left:0; top:0; width:100%; height:100%;
+                box-sizing:border-box; display:flex; flex-direction:row;
+                justify-content:space-between; align-items:center; padding:0 24px;">
 
-        @* Logo — 150.53×40 *@
-        <img src="~/images/Image (İnteraktif Kredi).png"
-             alt="İnteraktif Kredi"
-             style="width:150.53px;
-                    height:40px;
-                    object-fit:contain;
-                    flex:none;
-                    order:0;
-                    flex-grow:0;">
+        @* Sol grup: hamburger + logo *@
+        <div style="display:flex; flex-direction:row; align-items:center; gap:12px;">
 
-        @* Avatar bileşeni — 284.39×56, order:1 *@
-        <div style="flex:none; order:1; flex-grow:0;">
+            @* Hamburger — sadece mobil *@
+            <button type="button"
+                    class="header-hamburger"
+                    @@click="$store.layout.mobileMenuOpen = true"
+                    style="align-items:center; justify-content:center;
+                           width:40px; height:40px; flex-shrink:0;
+                           background:transparent; border:none; cursor:pointer;
+                           border-radius:10px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 6H21"  stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M3 12H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M3 18H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+
+            @* Logo *@
+            <img src="~/images/Image (İnteraktif Kredi).png"
+                 alt="İnteraktif Kredi"
+                 style="width:150.49px; height:40px; object-fit:contain; flex:none;">
+
+        </div>
+
+        @* Sağ grup: Avatar bileşeni *@
+        <div style="flex:none;">
             @await Component.InvokeAsync("UserAvatar", new
             {
                 userName          = Model.UserName,
+                userRole          = Model.UserRole,
                 notificationCount = Model.NotificationCount,
                 profileImageUrl   = Model.ProfileImageUrl
             })

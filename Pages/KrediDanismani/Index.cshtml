@@ -1,0 +1,212 @@
+@page
+@model MyApp.Web.Pages.KrediDanismani.IndexModel
+@{
+    ViewData["Title"]      = "Kredi Danışmanı";
+    ViewData["ActivePage"] = "Kredi Danışmanı";
+}
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .kd-content { container-type: inline-size; container-name: kd; }
+
+        @@container kd (min-width: 860px) {
+            .kd-two-col   { flex-direction: row; gap: 2rem; }
+            .kd-right     { width: 382px; flex-shrink: 0; }
+            .kd-form-card { padding: 33px 33px 1px; }
+        }
+    </style>
+}
+
+<div class="flex flex-col gap-6">
+
+    @* ─── PageBar ─── *@
+    <div class="flex justify-between items-center pb-3 border-b border-[#DCE3FB]">
+        <button type="button" onclick="history.back()"
+                class="flex items-center gap-1 font-[Poppins] font-normal text-[14px] leading-5 text-[#1B4092]">
+            <img src="/icons/dark/chevron-left.svg" width="20" height="20" alt="">
+            Geri
+        </button>
+        <div class="flex flex-col items-end">
+            <span class="font-[Poppins] font-normal text-[14px] leading-5 text-[#003F75]">İnteraktif Kredi</span>
+            <span class="font-[Poppins] font-light text-[18px] leading-[25px] text-[#003F75]">WEB Şube</span>
+        </div>
+    </div>
+
+    @* ─── İçerik ─── *@
+    <div class="kd-content flex flex-col gap-8">
+
+        @* Başlık *@
+        <div class="flex flex-col gap-1">
+            <h1 class="font-[Manrope] font-bold text-[30px] leading-9 text-[#101828]">Kredi Danışmanı</h1>
+            <p class="font-['Source_Sans_3'] font-normal text-[16px] leading-6 text-[#4A5565]">
+                Kredi başvurunuz için uzman desteği alın
+            </p>
+        </div>
+
+        @* ─── 2 Sütun ─── *@
+        <div class="kd-two-col flex flex-col gap-6">
+
+            @* ── Sol: Başvuru Formu ── *@
+            <div class="kd-form-card flex-1 bg-white border border-[#E5E7EB] rounded-2xl flex flex-col gap-6 pt-5 px-5 pb-[1px]">
+
+                @* Form Başlık *@
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-[#0056B3] rounded-[10px] flex items-center justify-center flex-shrink-0">
+                        <img src="/icons/white/message-circle-01.svg" width="24" height="24" alt="">
+                    </div>
+                    <span class="font-[Manrope] font-bold text-[20px] leading-7 text-[#101828]">Başvuru Formu</span>
+                </div>
+
+                <form method="post" class="flex flex-col gap-6"
+                      x-data="{ tur: '', tutar: '', vade: '' }">
+                    @Html.AntiForgeryToken()
+
+                    @* Kredi Türü *@
+                    <div class="flex flex-col gap-2">
+                        <label asp-for="Form.KrediTuru"
+                               class="font-['Source_Sans_3'] font-medium text-[16px] leading-6 text-[#364153]">
+                            Kredi Türü <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <select asp-for="Form.KrediTuru"
+                                    x-model="tur"
+                                    class="w-full h-[50px] bg-white text-[#364153] font-['Source_Sans_3'] text-[16px] border border-[#D1D5DC] rounded-[10px] px-4 pr-10 cursor-pointer focus:outline-none focus:border-[#0056B3] appearance-none">
+                                <option value="">Seçiniz...</option>
+                                <option value="ihtiyac">İhtiyaç Kredisi</option>
+                                <option value="konut">Konut Kredisi</option>
+                                <option value="arac">Araç Kredisi</option>
+                                <option value="ticari">Ticari Kredi</option>
+                            </select>
+                            <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M4 6L8 10L12 6" stroke="#6A7282" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    @* Kredi Tutarı *@
+                    <div class="flex flex-col gap-2">
+                        <label asp-for="Form.KrediTutari"
+                               class="font-['Source_Sans_3'] font-medium text-[16px] leading-6 text-[#364153]">
+                            Kredi Tutarı (TL) <span class="text-red-500">*</span>
+                        </label>
+                        <input asp-for="Form.KrediTutari"
+                               type="number"
+                               placeholder="Minimum 10.000 TL"
+                               x-model="tutar"
+                               class="w-full h-[50px] border border-[#D1D5DC] rounded-[10px] px-4 font-['Source_Sans_3'] text-[16px] text-[#364153] placeholder:text-black/50 bg-white focus:outline-none focus:border-[#0056B3]" />
+                    </div>
+
+                    @* Vade *@
+                    <div class="flex flex-col gap-2">
+                        <label asp-for="Form.Vade"
+                               class="font-['Source_Sans_3'] font-medium text-[16px] leading-6 text-[#364153]">
+                            Vade (Ay) <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <select asp-for="Form.Vade"
+                                    x-model="vade"
+                                    class="w-full h-[50px] bg-white text-[#364153] font-['Source_Sans_3'] text-[16px] border border-[#D1D5DC] rounded-[10px] px-4 pr-10 cursor-pointer focus:outline-none focus:border-[#0056B3] appearance-none">
+                                <option value="">Seçiniz...</option>
+                                <option value="12">12 Ay</option>
+                                <option value="24">24 Ay</option>
+                                <option value="36">36 Ay</option>
+                                <option value="48">48 Ay</option>
+                                <option value="60">60 Ay</option>
+                                <option value="72">72 Ay</option>
+                                <option value="84">84 Ay</option>
+                                <option value="120">120 Ay</option>
+                            </select>
+                            <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M4 6L8 10L12 6" stroke="#6A7282" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    @* Ek Bilgi *@
+                    <div class="flex flex-col gap-2">
+                        <label asp-for="Form.EkBilgi"
+                               class="font-['Source_Sans_3'] font-medium text-[16px] leading-6 text-[#364153]">
+                            Ek Bilgi (Opsiyonel)
+                        </label>
+                        <textarea asp-for="Form.EkBilgi"
+                                  placeholder="Kredi başvurunuzla ilgili ek bilgiler..."
+                                  class="w-full h-[122px] border border-[#D1D5DC] rounded-[10px] p-4 font-['Source_Sans_3'] text-[16px] text-[#364153] placeholder:text-black/50 bg-white focus:outline-none focus:border-[#0056B3] resize-none"></textarea>
+                    </div>
+
+                    @* Gönder Butonu *@
+                    <button type="submit"
+                            :disabled="!tur || !tutar || !vade"
+                            :class="(!tur || !tutar || !vade)
+                                ? 'opacity-50 cursor-not-allowed'
+                                : 'hover:bg-[#004A99] cursor-pointer'"
+                            class="w-full h-[56px] flex items-center justify-center gap-2 bg-[#0056B3] rounded-[10px] font-['Source_Sans_3'] font-medium text-[18px] leading-7 text-white shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.1),0px_4px_6px_-4px_rgba(0,0,0,0.1)] transition-colors mb-8">
+                        <img src="/icons/white/send-01.svg" width="20" height="20" alt="">
+                        Başvuruyu Gönder
+                    </button>
+                </form>
+            </div>
+
+            @* ── Sağ Panel ── *@
+            <div class="kd-right flex flex-col gap-6 w-full">
+
+                @* Nasıl Çalışır? *@
+                <div class="bg-[#EFF6FF] border border-[#BEDBFF] rounded-[14px] pt-[25px] px-[25px] pb-6 flex flex-col gap-3">
+                    <h3 class="font-[Manrope] font-semibold text-[18px] leading-[27px] text-[#1C398E]">
+                        Nasıl Çalışır?
+                    </h3>
+                    <ol class="flex flex-col gap-3 list-none p-0 m-0">
+                        <li class="flex items-start gap-2">
+                            <span class="font-['Source_Sans_3'] font-bold text-[14px] leading-5 text-[#1447E6] min-w-[18px]">1.</span>
+                            <span class="font-['Source_Sans_3'] font-normal text-[14px] leading-5 text-[#1447E6]">Formu doldurun</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-['Source_Sans_3'] font-bold text-[14px] leading-5 text-[#1447E6] min-w-[18px]">2.</span>
+                            <span class="font-['Source_Sans_3'] font-normal text-[14px] leading-5 text-[#1447E6]">Danışmanımız sizi arayacak</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-['Source_Sans_3'] font-bold text-[14px] leading-5 text-[#1447E6] min-w-[18px]">3.</span>
+                            <span class="font-['Source_Sans_3'] font-normal text-[14px] leading-5 text-[#1447E6]">Size özel teklif hazırlayacak</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-['Source_Sans_3'] font-bold text-[14px] leading-5 text-[#1447E6] min-w-[18px]">4.</span>
+                            <span class="font-['Source_Sans_3'] font-normal text-[14px] leading-5 text-[#1447E6]">Başvurunuzu tamamlayın</span>
+                        </li>
+                    </ol>
+                </div>
+
+                @* İletişim Bilgileri *@
+                <div class="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[14px] pt-[25px] px-[25px] pb-6 flex flex-col gap-3">
+                    <h3 class="font-[Manrope] font-semibold text-[18px] leading-[27px] text-[#101828]">
+                        İletişim Bilgileri
+                    </h3>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center gap-2 font-['Source_Sans_3'] font-normal text-[14px] leading-5 text-[#364153]">
+                            <img src="/icons/dark/phone.svg" width="16" height="16" alt="" class="flex-shrink-0">
+                            0850 123 45 67
+                        </div>
+                        <div class="flex items-center gap-2 font-['Source_Sans_3'] font-normal text-[14px] leading-5 text-[#364153]">
+                            <img src="/icons/dark/mail-01.svg" width="16" height="16" alt="" class="flex-shrink-0">
+                            destek@hallederiz.com
+                        </div>
+                        <div class="flex items-center gap-2 font-['Source_Sans_3'] font-normal text-[14px] leading-5 text-[#364153]">
+                            <img src="/icons/dark/clock.svg" width="16" height="16" alt="" class="flex-shrink-0">
+                            Hafta içi 09:00 - 18:00
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+

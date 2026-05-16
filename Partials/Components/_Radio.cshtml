@@ -24,7 +24,9 @@
             <input type="radio"
                    name="@Model.Name"
                    value="@option.Value"
-                   @(option.Value == Model.SelectedValue ? "checked" : "")
+                   @(Model.AlpineModel != null
+                       ? Html.Raw($":checked=\"{Model.AlpineModel} === '{option.Value}'\"")
+                       : Html.Raw(option.Value == Model.SelectedValue ? "checked" : ""))
                    class="ui-radio-input sr-only" />
 
             <span class="ui-radio-circle flex items-center justify-center w-5 h-5 rounded-full border-2 border-[#C0D3E8] bg-white flex-shrink-0">

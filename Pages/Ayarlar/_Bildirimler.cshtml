@@ -1,0 +1,128 @@
+@model MyApp.Web.Pages.Ayarlar.IndexModel
+@{ Layout = null; }
+
+<div x-data="bildirimlerForm()"
+     class="bg-white border border-[#E5E7EB] rounded-[14px] pt-[33px] px-[33px] pb-[33px] font-[Poppins]">
+
+    @Html.AntiForgeryToken()
+
+    <p class="font-[Manrope] font-bold text-[20px] text-[#101828] mb-6">Bildirim Tercihleri</p>
+
+    <div class="flex flex-col gap-4">
+
+        @* E-posta Bildirimleri *@
+        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-4 gap-4">
+            <div>
+                <p class="font-[Source_Sans_3] font-medium text-[16px] text-[#101828] mb-1">E-posta Bildirimleri</p>
+                <p class="font-[Source_Sans_3] text-[14px] text-[#4A5565]">Önemli güncellemeler e-posta ile gönderilir</p>
+            </div>
+            <button type="button"
+                    @@click="emailOn = !emailOn"
+                    :class="emailOn ? 'bg-[#0056B3]' : 'bg-[#D1D5DC]'"
+                    class="w-12 h-6 rounded-full border-0 cursor-pointer relative transition-colors duration-200 shrink-0 outline-none">
+                <span class="absolute top-[4px] w-4 h-4 rounded-full bg-white shadow-sm pointer-events-none transition-all duration-200"
+                      :class="emailOn ? 'left-[28px]' : 'left-[4px]'"></span>
+            </button>
+        </div>
+
+        @* SMS Bildirimleri *@
+        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-4 gap-4">
+            <div>
+                <p class="font-[Source_Sans_3] font-medium text-[16px] text-[#101828] mb-1">SMS Bildirimleri</p>
+                <p class="font-[Source_Sans_3] text-[14px] text-[#4A5565]">Ödeme hatırlatmaları SMS ile gönderilir</p>
+            </div>
+            <button type="button"
+                    @@click="smsOn = !smsOn"
+                    :class="smsOn ? 'bg-[#0056B3]' : 'bg-[#D1D5DC]'"
+                    class="w-12 h-6 rounded-full border-0 cursor-pointer relative transition-colors duration-200 shrink-0 outline-none">
+                <span class="absolute top-[4px] w-4 h-4 rounded-full bg-white shadow-sm pointer-events-none transition-all duration-200"
+                      :class="smsOn ? 'left-[28px]' : 'left-[4px]'"></span>
+            </button>
+        </div>
+
+        @* Mobil Bildirimler (call) *@
+        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-4 gap-4">
+            <div>
+                <p class="font-[Source_Sans_3] font-medium text-[16px] text-[#101828] mb-1">Mobil Bildirimler</p>
+                <p class="font-[Source_Sans_3] text-[14px] text-[#4A5565]">Mobil uygulamadan anlık bildirimler</p>
+            </div>
+            <button type="button"
+                    @@click="mobileOn = !mobileOn"
+                    :class="mobileOn ? 'bg-[#0056B3]' : 'bg-[#D1D5DC]'"
+                    class="w-12 h-6 rounded-full border-0 cursor-pointer relative transition-colors duration-200 shrink-0 outline-none">
+                <span class="absolute top-[4px] w-4 h-4 rounded-full bg-white shadow-sm pointer-events-none transition-all duration-200"
+                      :class="mobileOn ? 'left-[28px]' : 'left-[4px]'"></span>
+            </button>
+        </div>
+
+        @* Pazarlama İletişimi (adress) *@
+        <div class="bg-[#F9FAFB] rounded-[10px] min-h-[80px] flex items-center justify-between px-4 gap-4">
+            <div>
+                <p class="font-[Source_Sans_3] font-medium text-[16px] text-[#101828] mb-1">Pazarlama İletişimi</p>
+                <p class="font-[Source_Sans_3] text-[14px] text-[#4A5565]">Kampanya ve tekliflerden haberdar olun</p>
+            </div>
+            <button type="button"
+                    @@click="pazarlamaOn = !pazarlamaOn"
+                    :class="pazarlamaOn ? 'bg-[#0056B3]' : 'bg-[#D1D5DC]'"
+                    class="w-12 h-6 rounded-full border-0 cursor-pointer relative transition-colors duration-200 shrink-0 outline-none">
+                <span class="absolute top-[4px] w-4 h-4 rounded-full bg-white shadow-sm pointer-events-none transition-all duration-200"
+                      :class="pazarlamaOn ? 'left-[28px]' : 'left-[4px]'"></span>
+            </button>
+        </div>
+
+    </div>
+
+    @* Kaydet *@
+    <div class="mt-7">
+        <button type="button"
+                @@click="!saving && kaydet()"
+                :class="saving ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:bg-[#003F75]'"
+                class="flex items-center gap-2 h-12 bg-[#0056B3] text-white border-0 rounded-[10px] px-5 font-[Source_Sans_3] text-[16px] font-medium transition-colors">
+            <img src="~/icons/white/save-02.svg" width="16" height="16" alt="">
+            Kaydet
+        </button>
+    </div>
+
+</div>
+
+<script>
+    function bildirimlerForm() {
+        return {
+            channelId:   @Model.Settings.Bildirimler.ChannelId,
+            emailOn:     @(Model.Settings.Bildirimler.Email    ? "true" : "false"),
+            smsOn:       @(Model.Settings.Bildirimler.Sms      ? "true" : "false"),
+            mobileOn:    @(Model.Settings.Bildirimler.Call     ? "true" : "false"),
+            pazarlamaOn: @(Model.Settings.Bildirimler.Adress   ? "true" : "false"),
+            saving:      false,
+
+            async kaydet() {
+                this.saving = true;
+
+                var token  = document.querySelector('[name="__RequestVerificationToken"]').value;
+                var params = new URLSearchParams();
+                params.append('__RequestVerificationToken', token);
+                params.append('KvkkChannelId', this.channelId);
+                params.append('KvkkEmail',     this.emailOn);
+                params.append('KvkkSms',       this.smsOn);
+                params.append('KvkkCall',      this.mobileOn);
+                params.append('KvkkAdress',    this.pazarlamaOn);
+
+                try {
+                    var resp = await fetch('?handler=UpdateKvkk', {
+                        method:  'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body:    params
+                    });
+                    var json = await resp.json();
+
+                    if (json.success) toast.success('Bildirim tercihleriniz güncellendi.');
+                    else              toast.error('Güncelleme başarısız, lütfen tekrar deneyin.');
+                } catch {
+                    toast.error('Bağlantı hatası oluştu.');
+                } finally {
+                    this.saving = false;
+                }
+            }
+        };
+    }
+</script>

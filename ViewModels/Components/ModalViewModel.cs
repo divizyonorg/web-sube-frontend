@@ -7,6 +7,6 @@ public class ModalViewModel
     public string Description { get; set; } = string.Empty;
     public int? Width { get; set; }
     public int? Height { get; set; }
-    // UIKit önizleme — backdrop olmadan sadece kartı render eder
     public bool IsPreview { get; set; }
+    public string BackdropStyle { get; set; } = "";
 }

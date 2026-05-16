@@ -1,7 +1,6 @@
 @page
 @{
     ViewData["Title"] = "Kütüphane Test";
-    Layout = "_Layout";
 }
 
 <div class="space-y-12 py-8">
@@ -45,9 +44,9 @@
         </div>
     </section>
 
-    <!-- ───── 5. TOASTIFY ───── -->
+    <!-- ───── 5. TOAST ───── -->
     <section class="space-y-2">
-        <h2 class="font-medium text-gray-700">5. Toastify — Bildirim</h2>
+        <h2 class="font-medium text-gray-700">5. Toast — Bildirim</h2>
         <button id="testToast"
                 class="rounded bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">
             Bildirim Göster
@@ -133,15 +132,9 @@
         IMask(phoneEl, { mask: "0(000) 000 00 00" });
     }
 
-    // 5. Toastify — addEventListener yerine onclick ile çift kayıt önle
+    // 5. Toast — addEventListener yerine onclick ile çift kayıt önle
     document.getElementById("testToast").onclick = () => {
-        Toastify({
-            text: "Toastify çalışıyor!",
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-            style: { background: "#22c55e" }
-        }).showToast();
+        toast.success("Toast çalışıyor!");
     };
 
     // 6. FilePond — zaten init edildiyse atla

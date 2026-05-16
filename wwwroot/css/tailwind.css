@@ -3,7 +3,24 @@
 @source "../../Pages/**/*.cshtml";
 @source "../../Partials/**/*.cshtml";
 @source "../../ViewComponents/**/*.cshtml";
+@source "../../Services/**/*.cs";
 @source "../../wwwroot/**/*.js";
 
 /* Alpine.js — x-cloak: component'ler initialize edilmeden görünür olmamalı */
 [x-cloak] { display: none !important; }
+
+/* Swiper sayfalama noktaları — JS tarafından oluşturulan sınıflar, Tailwind ile hedeflenemez */
+.dots .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: #2E6DF8;
+    opacity: 0.4;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    margin: 0 4px !important;
+}
+.dots .swiper-pagination-bullet-active {
+    width: 30px;
+    opacity: 1;
+    border-radius: 5px;
+}

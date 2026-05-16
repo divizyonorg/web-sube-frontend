@@ -1,0 +1,511 @@
+@page "/anasayfa"
+@model MyApp.Web.Pages.Anasayfa.IndexModel
+@{
+    ViewData["Title"]      = "Anasayfa";
+    ViewData["ActivePage"] = "Anasayfa";
+}
+
+
+@* ── PageBar ── *@
+<div class="flex items-center justify-between pb-3 border-b border-[#DCE3FB]">
+    <div class="flex flex-col">
+        <span class="text-[13px] sm:text-[14px] text-[#003F75]">Tekrar Hoşgeldin👋🏻</span>
+        <span class="text-[16px] sm:text-[18px] font-light text-[#003F75]">@Model.UserFullName</span>
+    </div>
+    <div class="text-right">
+        <div class="text-[13px] sm:text-[14px] text-[#003F75]">İnteraktif Kredi</div>
+        <div class="text-[16px] sm:text-[18px] font-light text-[#003F75]">WEB Şube</div>
+    </div>
+</div>
+
+@* ── Anasayfa içeriği ── *@
+<div class="flex flex-col gap-6 mt-6">
+
+    @* ── Birinci satır: 2 kart yan yana ── *@
+    <div class="flex flex-col md:flex-row gap-4 md:gap-6 w-full">
+        <div class="flex-1 min-w-0">
+            @await Component.InvokeAsync("CreditEligibilityCard")
+        </div>
+        @* KrediNabzı kartı *@
+        <div class="flex-1 min-w-0 flex flex-col">
+            @await Component.InvokeAsync("KrediNabziCard")
+        </div>
+    </div>
+
+    @* ── İkinci satır: Kredi Danışmanlığı kartı — 01-FO-01 *@
+    <div class="flex flex-col md:flex-row gap-4 md:gap-6 w-full">
+        <div class="flex-1 min-w-0 flex flex-col">
+            @await Component.InvokeAsync("KrediDanismanligiCard")
+        </div>
+
+        @* VIP Paketler kartı *@
+        <div class="flex-1 min-w-0 flex flex-col">
+            <section class="bg-[#E6F7FF] rounded-[15px] pt-3.5 pb-[18px] flex flex-col gap-3 font-[Poppins] flex-1">
+
+                @* Başlık *@
+                <h2 class="m-0 font-[250] text-[18px] leading-[27px] text-[#003F75] text-center px-6">
+                    Her zaman finansal itibarını koru
+                </h2>
+
+                @* Beyaz iç kart *@
+                <div class="box-border flex flex-col gap-4 bg-white border border-[#DCE3FB] rounded-[15px] p-4 flex-1">
+
+                    @* Başlık *@
+                    <div class="border-b border-black/15 pb-1">
+                        <p class="m-0 font-medium text-[14px] leading-[21px] text-[#003F75]">
+                            VIP Paketler ile Her Zaman Krediye Hazır Ol!
+                        </p>
+                    </div>
+
+                    @* Açıklama *@
+                    <p class="m-0 font-light text-[10px] leading-[15px] text-[#003F75] text-center">
+                        Finansmana erişebilmek hayat boyu ihtiyaç. Tüm finansal değerlerinizi mükemmele yaklaştırabilmek için paketlerimizi değerlendir.
+                    </p>
+
+                    @* Check listesi *@
+                    <div class="flex flex-col gap-2 px-4 flex-1">
+                        @foreach (var item in new[] { "Kredi Profili İyileştirme", "Kredi Danışmanlığı", "Kredi Uygunluk Raporu" })
+                        {
+                            <div class="flex items-center gap-2">
+                                <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                <span class="font-normal text-[12px] leading-[18px] text-[#3AD7B3]">@item</span>
+                            </div>
+                        }
+                        <span class="font-normal text-[12px] leading-[18px] text-[#3AD7B3]">ve daha fazlası..</span>
+                    </div>
+
+                    @* Buton *@
+                    <div class="flex justify-center">
+                        <a href="/VipDanismalikPaketleri"
+                            class="w-full max-w-[280px] py-[10px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] font-medium text-[16px] leading-[24px] text-white text-center cursor-pointer hover:bg-[#00468f] transition-colors no-underline block">
+                            VIP Paketleri İncele
+                        </a>
+                    </div>
+
+                </div>
+
+            </section>
+        </div>
+    </div>
+
+    @* ── Üçüncü satır: Popüler Krediler ve Avantajlı Kredi Kartları ── *@
+    <div class="flex flex-col md:flex-row gap-4 md:gap-6 w-full font-[Poppins]">
+
+        @* Popüler Krediler *@
+        <section class="flex-1 min-w-0 bg-[#E6F7FF] rounded-[15px] py-3.5 flex flex-col">
+            <header class="flex justify-between items-center px-6 h-[27px]">
+                <h2 class="m-0 font-[250] text-lg leading-[27px] text-[#003F75]">Popüler Krediler</h2>
+                <div class="flex items-center gap-2">
+                    <a href="#" class="font-normal text-xs leading-[18px] text-[#2E6DF8] no-underline">Tümünü gör</a>
+                    <button type="button" id="loans-prev" aria-label="Önceki"
+                        class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
+                        <img src="/icons/navy/chevron-left.svg" width="16" height="16" alt="" aria-hidden="true">
+                    </button>
+                    <button type="button" id="loans-next" aria-label="Sonraki"
+                        class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
+                        <img src="/icons/navy/chevron-right.svg" width="16" height="16" alt="" aria-hidden="true">
+                    </button>
+                </div>
+            </header>
+
+            <div class="p-3 flex-1">
+                <div class="swiper" id="loans-swiper">
+                    <div class="swiper-wrapper">
+                        @for (int i = 0; i < 3; i++)
+                        {
+                            <div class="swiper-slide">
+                                <article class="bg-white rounded-[10px] p-3 flex flex-col gap-3">
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center gap-2">
+                                           <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-[#F2F8FF]">
+                                             <img src="/images/garantibbva.png"
+                                                  alt="Garanti BBVA"
+                                                  class="w-full h-full object-contain" />
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-xs leading-[18px] text-[#003F75]">Garanti BBVA</span>
+                                                <span class="font-light text-xs leading-[18px] text-[rgba(0,0,0,0.2)]">Konut Kredisi</span>
+                                            </div>
+                                        </div>
+                                        <div class="box-border px-[9px] py-2 bg-[#F2F8FF] border border-[#2E6DF8] rounded-[5px] font-semibold text-xs leading-[18px] text-[#2E6DF8]">3,99%</div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
+                                            <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Tutar</span>
+                                            <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">5.000.000 TL</span>
+                                        </div>
+                                        <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
+                                            <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Vade</span>
+                                            <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">12 Ay</span>
+                                        </div>
+                                        <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
+                                            <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Aylık Taksit</span>
+                                            <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">590.000 TL</span>
+                                        </div>
+                                        <div class="bg-[#F2F8FF] rounded-[5px] px-3 py-1 flex flex-col min-h-[45.5px]">
+                                            <span class="font-light text-[9px] leading-[14px] text-[rgba(0,0,0,0.4)]">Toplam Ödeme</span>
+                                            <span class="font-semibold text-xs leading-[18px] text-[#003F75] mt-0.5">7.100.001,45 TL</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-between items-center">
+                                        <button type="button"
+                                            class="px-8 py-2 bg-[#0056B3] shadow-[0px_4px_10px_rgba(0,86,179,0.25)] rounded-[30px] border-0 text-white font-bold text-sm leading-[21px] cursor-pointer hover:bg-[#00468f]">
+                                            Başvur
+                                        </button>
+                                        <button type="button" aria-label="Detaylar"
+                                            class="w-9 h-9 bg-[#F2F8FF] border-0 rounded-[10px] flex items-center justify-center cursor-pointer hover:bg-[#e6f0ff]">
+                                            <img src="/icons/gray/info-circle.svg" width="20" height="20" alt="" aria-hidden="true">
+                                        </button>
+                                    </div>
+                                </article>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="dots flex justify-center items-center gap-2 py-3" id="loans-pagination"></div>
+        </section>
+
+        @* Avantajlı Kredi Kartları *@
+        <section class="flex-1 min-w-0 bg-[#E6F7FF] rounded-[15px] py-3.5 flex flex-col">
+            <header class="flex justify-between items-center px-6 h-[27px]">
+                <h2 class="m-0 font-[250] text-lg leading-[27px] text-[#003F75]">Avantajlı Kredi Kartları</h2>
+                <div class="flex items-center gap-2">
+                    <a href="#" class="font-normal text-xs leading-[18px] text-[#2E6DF8] no-underline">Tümünü gör</a>
+                    <button type="button" id="cards-prev" aria-label="Önceki"
+                        class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
+                        <img src="/icons/navy/chevron-left.svg" width="16" height="16" alt="" aria-hidden="true">
+                    </button>
+                    <button type="button" id="cards-next" aria-label="Sonraki"
+                        class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
+                        <img src="/icons/navy/chevron-right.svg" width="16" height="16" alt="" aria-hidden="true">
+                    </button>
+                </div>
+            </header>
+
+            <div class="p-3 flex-1">
+                <div class="swiper" id="cards-swiper">
+                    <div class="swiper-wrapper">
+                        @for (int i = 0; i < 3; i++)
+                        {
+                            <div class="swiper-slide">
+                                <article class="bg-white rounded-[15px] pt-3 pb-1 flex flex-col gap-3">
+                                    <div class="flex items-center gap-3 px-4">
+                                        <div class="w-[100px] h-[63px] rounded-[8px] overflow-hidden shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.1),0px_2px_4px_-2px_rgba(0,0,0,0.1)] flex-shrink-0">
+                                            <img src="/images/AccessKart.png"
+                                                 alt="Axess Kart"
+                                                 class="w-full h-full object-cover" />
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="font-medium text-base leading-6 text-[#003F75]">Axess</span>
+                                            <span class="font-light text-xs leading-[18px] text-[rgba(0,0,0,0.4)]">Akbank</span>
+                                            <span class="font-light text-[10px] leading-[15px] text-[rgba(0,0,0,0.4)]">Bu karta sahibim</span>
+                                        </div>
+                                    </div>
+
+                                    <ul class="list-none m-0 px-5 flex flex-col gap-1">
+                                        <li class="flex items-start gap-2 font-[250] text-xs leading-[18px] text-[#003F75]">
+                                            <img src="/icons/primary/check.svg" width="12" height="12" class="shrink-0 mt-[3px]" alt="" aria-hidden="true">
+                                            <span>Yeni müşterilere özel 85.000 TL'ye varan nakit!</span>
+                                        </li>
+                                        <li class="flex items-start gap-2 font-[250] text-xs leading-[18px] text-[#003F75]">
+                                            <img src="/icons/primary/check.svg" width="12" height="12" class="shrink-0 mt-[3px]" alt="" aria-hidden="true">
+                                            <span>%0 Faizli 25.000 TL Taksitli Nakit Avans!</span>
+                                        </li>
+                                    </ul>
+
+                                    <div class="px-3 py-1 flex justify-between items-center">
+                                        <button type="button"
+                                            class="px-8 py-2 bg-[#0056B3] shadow-[0px_4px_10px_rgba(0,86,179,0.25)] rounded-[30px] border-0 text-white font-bold text-sm leading-[21px] cursor-pointer hover:bg-[#00468f]">
+                                            Başvur
+                                        </button>
+                                        <button type="button" aria-label="Detaylar"
+                                            class="w-9 h-9 bg-[#F2F8FF] border-0 rounded-[10px] flex items-center justify-center cursor-pointer hover:bg-[#e6f0ff]">
+                                            <img src="/icons/gray/info-circle.svg" width="20" height="20" alt="" aria-hidden="true">
+                                        </button>
+                                    </div>
+                                </article>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="dots flex justify-center items-center gap-2 py-3" id="cards-pagination"></div>
+        </section>
+    </div>
+
+    @* ── Dördüncü satır: Kampanyalar ── *@
+    <style>
+        #campaigns-pagination {
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 8px !important;
+            position: static !important;
+            width: 100% !important;
+        }
+        #campaigns-pagination .swiper-pagination-bullet {
+            width: 10px !important;
+            height: 10px !important;
+            background: #2E6DF8 !important;
+            opacity: 0.4 !important;
+            border-radius: 5px !important;
+            margin: 0 !important;
+            flex-shrink: 0 !important;
+            transition: width 0.3s ease, opacity 0.3s ease;
+        }
+        #campaigns-pagination .swiper-pagination-bullet-active {
+            width: 30px !important;
+            opacity: 1 !important;
+        }
+        #campaigns-swiper {
+            overflow: hidden;
+        }
+        #campaigns-swiper .swiper-wrapper {
+            align-items: stretch;
+        }
+        #campaigns-swiper .swiper-slide {
+            height: auto;
+        }
+    </style>
+
+    <section class="w-full bg-[#E6F7FF] rounded-[15px] py-3.5 flex flex-col font-[Poppins] overflow-hidden">
+
+        <header class="flex justify-between items-center px-6 h-[27px]">
+            <h2 class="m-0 font-[250] text-lg leading-[27px] text-[#003F75]">Kampanyalar</h2>
+            <div class="flex items-center gap-2">
+                <button type="button" id="campaigns-prev" aria-label="Önceki"
+                    class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
+                    <img src="/icons/navy/chevron-left.svg" width="16" height="16" alt="" aria-hidden="true">
+                </button>
+                <button type="button" id="campaigns-next" aria-label="Sonraki"
+                    class="w-6 h-6 border-0 bg-transparent rounded-full flex items-center justify-center cursor-pointer p-0 hover:bg-[rgba(0,63,117,0.08)]">
+                    <img src="/icons/navy/chevron-right.svg" width="16" height="16" alt="" aria-hidden="true">
+                </button>
+            </div>
+        </header>
+
+        <div class="px-4 pt-3 pb-4 flex-1">
+            <div class="swiper" id="campaigns-swiper">
+                <div class="swiper-wrapper">
+
+                    @* Kart 1 *@
+                    <div class="swiper-slide py-2 px-1">
+                        <article class="bg-white border border-[#DCE3FB] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[15px] p-4 flex flex-col gap-4 h-full">
+                            <div class="border-b border-black/15 pb-1">
+                                <p class="m-0 font-['Poppins'] text-[14px] font-medium text-[#003F75] leading-[21px]">Kredi Danışmanlığı ile Kredi Sürecine Başla!</p>
+                            </div>
+                            <p class="m-0 font-['Poppins'] text-[10px] font-[300] text-[#003F75] leading-[15px] text-center">Kredi uzmanları ile senin kredi profiline bakarak seni yönlendirir. Sistemin otomatik reddetmesinin önüne geçer.</p>
+                            <div class="flex flex-col gap-2 px-4">
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru kredi türü</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru kredi limiti</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru banka, kanal ve şubesi</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <button type="button" class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] border-0 hover:bg-[#004494] transition-all cursor-pointer">
+                                    <span class="font-['Poppins'] font-medium text-[16px] leading-6 text-white">Kredi Uzmanı ile Devam Et</span>
+                                </button>
+                            </div>
+                        </article>
+                    </div>
+
+                    @* Kart 2 — VIP Paketler *@
+                    <div class="swiper-slide py-2 px-1">
+                        <article class="bg-white border border-[#DCE3FB] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[15px] p-4 flex flex-col gap-4 h-full">
+                            <div class="border-b border-black/15 pb-1">
+                                <p class="m-0 font-['Poppins'] text-[14px] font-medium text-[#003F75] leading-[21px]">VIP Paketler ile Her Zaman Krediye Hazır Ol!</p>
+                            </div>
+                            <p class="m-0 font-['Poppins'] text-[10px] font-[300] text-[#003F75] leading-[15px] text-center">Finansmana erişebilmek hayat boyu ihtiyaç. Tüm finansal değerlerinizi mükemmele yaklaştırabilmek için paketlerimizi değerlendir.</p>
+                            <div class="flex flex-col gap-2 px-4 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Kredi Profili İyileştirme</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Öncelikli Danışmanlık</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Aylık KUR Raporları</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <a href="/VipDanismalikPaketleri" class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] hover:bg-[#004494] transition-all cursor-pointer no-underline">
+                                    <span class="font-['Poppins'] font-medium text-[16px] leading-6 text-white">VIP Paketleri İncele</span>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                    @* Kart 3 *@
+                    <div class="swiper-slide py-2 px-1">
+                        <article class="bg-white border border-[#DCE3FB] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[15px] p-4 flex flex-col gap-4 h-full">
+                            <div class="border-b border-black/15 pb-1">
+                                <p class="m-0 font-['Poppins'] text-[14px] font-medium text-[#003F75] leading-[21px]">Kredi Danışmanlığı ile Kredi Sürecine Başla!</p>
+                            </div>
+                            <p class="m-0 font-['Poppins'] text-[10px] font-[300] text-[#003F75] leading-[15px] text-center">Kredi uzmanları ile senin kredi profiline bakarak seni yönlendirir. Sistemin otomatik reddetmesinin önüne geçer.</p>
+                            <div class="flex flex-col gap-2 px-4">
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru kredi türü</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru kredi limiti</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru banka, kanal ve şubesi</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <button type="button" class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] border-0 hover:bg-[#004494] transition-all cursor-pointer">
+                                    <span class="font-['Poppins'] font-medium text-[16px] leading-6 text-white">Kredi Uzmanı ile Devam Et</span>
+                                </button>
+                            </div>
+                        </article>
+                    </div>
+
+                    @* Kart 4 — VIP Paketler *@
+                    <div class="swiper-slide py-2 px-1">
+                        <article class="bg-white border border-[#DCE3FB] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[15px] p-4 flex flex-col gap-4 h-full">
+                            <div class="border-b border-black/15 pb-1">
+                                <p class="m-0 font-['Poppins'] text-[14px] font-medium text-[#003F75] leading-[21px]">VIP Paketler ile Her Zaman Krediye Hazır Ol!</p>
+                            </div>
+                            <p class="m-0 font-['Poppins'] text-[10px] font-[300] text-[#003F75] leading-[15px] text-center">Finansmana erişebilmek hayat boyu ihtiyaç. Tüm finansal değerlerinizi mükemmele yaklaştırabilmek için paketlerimizi değerlendir.</p>
+                            <div class="flex flex-col gap-2 px-4 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Kredi Profili İyileştirme</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Öncelikli Danışmanlık</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Aylık KUR Raporları</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <a href="/VipDanismalikPaketleri" class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] hover:bg-[#004494] transition-all cursor-pointer no-underline">
+                                    <span class="font-['Poppins'] font-medium text-[16px] leading-6 text-white">VIP Paketleri İncele</span>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+
+                    @* Kart 5 — Kredi Danışmanlığı (tekrar) *@
+                    <div class="swiper-slide py-2 px-1">
+                        <article class="bg-white border border-[#DCE3FB] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[15px] p-4 flex flex-col gap-4 h-full">
+                            <div class="border-b border-black/15 pb-1">
+                                <p class="m-0 font-['Poppins'] text-[14px] font-medium text-[#003F75] leading-[21px]">Kredi Danışmanlığı ile Kredi Sürecine Başla!</p>
+                            </div>
+                            <p class="m-0 font-['Poppins'] text-[10px] font-[300] text-[#003F75] leading-[15px] text-center">Kredi uzmanları ile senin kredi profiline bakarak seni yönlendirir. Sistemin otomatik reddetmesinin önüne geçer.</p>
+                            <div class="flex flex-col gap-2 px-4">
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru kredi türü</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru kredi limiti</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Doğru banka, kanal ve şubesi</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <button type="button" class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] border-0 hover:bg-[#004494] transition-all cursor-pointer">
+                                    <span class="font-['Poppins'] font-medium text-[16px] leading-6 text-white">Kredi Uzmanı ile Devam Et</span>
+                                </button>
+                            </div>
+                        </article>
+                    </div>
+
+                    @* Kart 6 — VIP Paketler (tekrar) *@
+                    <div class="swiper-slide py-2 px-1">
+                        <article class="bg-white border border-[#DCE3FB] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[15px] p-4 flex flex-col gap-4 h-full">
+                            <div class="border-b border-black/15 pb-1">
+                                <p class="m-0 font-['Poppins'] text-[14px] font-medium text-[#003F75] leading-[21px]">VIP Paketler ile Her Zaman Krediye Hazır Ol!</p>
+                            </div>
+                            <p class="m-0 font-['Poppins'] text-[10px] font-[300] text-[#003F75] leading-[15px] text-center">Finansmana erişebilmek hayat boyu ihtiyaç. Tüm finansal değerlerinizi mükemmele yaklaştırabilmek için paketlerimizi değerlendir.</p>
+                            <div class="flex flex-col gap-2 px-4 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Kredi Profili İyileştirme</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Öncelikli Danışmanlık</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <img src="/icons/teal/check-circle.svg" width="20" height="20" class="shrink-0" alt="" aria-hidden="true">
+                                    <span class="font-['Poppins'] text-[12px] font-normal text-[#3AD7B3] leading-[18px]">Aylık KUR Raporları</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <a href="/VipDanismalikPaketleri" class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] hover:bg-[#004494] transition-all cursor-pointer no-underline">
+                                    <span class="font-['Poppins'] font-medium text-[16px] leading-6 text-white">VIP Paketleri İncele</span>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="campaigns-pagination" class="py-3"></div>
+
+    </section>
+
+</div>
+
+@section Scripts {
+    <script>
+        new Swiper('#loans-swiper', {
+            loop: true,
+            navigation: { prevEl: '#loans-prev', nextEl: '#loans-next' },
+            pagination: { el: '#loans-pagination', clickable: true }
+        });
+
+        new Swiper('#cards-swiper', {
+            loop: true,
+            navigation: { prevEl: '#cards-prev', nextEl: '#cards-next' },
+            pagination: { el: '#cards-pagination', clickable: true }
+        });
+
+        new Swiper('#campaigns-swiper', {
+            loop: true,
+            spaceBetween: 16,
+            navigation: { prevEl: '#campaigns-prev', nextEl: '#campaigns-next' },
+            pagination: { el: '#campaigns-pagination', clickable: true },
+            breakpoints: {
+                0: {
+                    slidesPerView: 1,
+                    slidesPerGroup: 1
+                },
+                640: {
+                    slidesPerView: 2,
+                    slidesPerGroup: 2
+                }
+            }
+        });
+    </script>
+}
