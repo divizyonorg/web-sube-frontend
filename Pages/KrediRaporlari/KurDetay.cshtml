@@ -13,7 +13,7 @@
     <div class="flex justify-center items-center w-full">
         <div class="flex items-center bg-[#F2F8FF] rounded-[10px] p-[5px] h-12 w-fit">
 
-            <a href="?tab=kisisel"
+            <a href="?tab=kisisel@(!string.IsNullOrEmpty(Model.ViewModel.Rid) ? $"&rid={Model.ViewModel.Rid}" : "")"
                class="flex items-center gap-2 rounded-[10px] text-[12px] font-normal font-[Poppins]
                       @(Model.ViewModel.ActiveTab == "kisisel"
                           ? "grow bg-white shadow-[0px_0px_5px_rgba(46,109,248,0.5)] px-[15px] py-[10px] text-[#003F75]"
@@ -24,7 +24,7 @@
 
             <div class="w-px h-5 bg-gray-300 flex-shrink-0"></div>
 
-            <a href="?tab=piyasa"
+            <a href="?tab=piyasa@(!string.IsNullOrEmpty(Model.ViewModel.Rid) ? $"&rid={Model.ViewModel.Rid}" : "")"
                class="flex items-center gap-2 rounded-[10px] text-[12px] font-normal font-[Poppins]
                       @(Model.ViewModel.ActiveTab == "piyasa"
                           ? "grow bg-white shadow-[0px_0px_5px_rgba(46,109,248,0.5)] px-[15px] py-[10px] text-[#003F75]"

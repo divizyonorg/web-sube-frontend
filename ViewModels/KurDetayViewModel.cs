@@ -4,6 +4,7 @@ public class KurDetayViewModel
 {
     public string ActiveTab { get; set; } = "kisisel";
     public string ActiveCreditType { get; set; } = "IHTIYAC";
+    public string Rid { get; set; } = string.Empty;
 
     public bool IsError { get; set; }
     public string ErrorMessage { get; set; } = string.Empty;
