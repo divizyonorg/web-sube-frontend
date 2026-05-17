@@ -254,12 +254,7 @@ public class CustomerDataService : ICustomerDataService
         var dtos = await ApiClient.GetJsonAsync<List<DestekTalebiDto>>(
             _httpClient, Endpoints.DestekTalebiGecmisi(customerId), cancellationToken) ?? [];
 
-        var result = dtos.Select(MapToDestekTalebiViewModel).ToList();
-
-        if (result.Count == 0)
-            return await new MockCustomerDataService().GetDestekTalebiGecmisiAsync(cancellationToken);
-
-        return result;
+        return dtos.Select(MapToDestekTalebiViewModel).ToList();
     }
 
     public async Task<bool> CreateDestekTalebiAsync(int parentTopicId, string detailText, CancellationToken cancellationToken = default)
@@ -344,14 +339,20 @@ public class CustomerDataService : ICustomerDataService
             _ => ("İşlemde", "font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#A65F00] bg-[#FEF9C2] px-3 py-[3px] rounded-full")
         };
 
+        var trCulture = new System.Globalization.CultureInfo("tr-TR");
         return new DestekTalebiViewModel
         {
             Id = dto.Id,
             KonuBasligi = dto.KonuBasligi,
+            KonuDetaylari = dto.KonuDetaylari ?? string.Empty,
             DurumLabel = label,
             DurumBadgeClass = badgeClass,
-            Tarih = dto.DestekTarihi.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR")),
-            AtananBirim = dto.AtananBirim ?? string.Empty
+            Tarih = dto.DestekTarihi.ToString("dd MMMM yyyy", trCulture),
+            GuncellemeTarihi = dto.UpdateDate?.ToString("dd MMMM yyyy", trCulture) ?? string.Empty,
+            AtananBirim = dto.AtananBirim ?? string.Empty,
+            OnemDerecesi = dto.OnemDerecesi,
+            AtamaSebebi = dto.AtamaSebebi ?? string.Empty,
+            StatusText = dto.StatusText ?? string.Empty
         };
     }
 
