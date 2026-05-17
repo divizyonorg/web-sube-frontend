@@ -16,7 +16,6 @@ public interface IReportService
     Task<(bool Basari, string Aksiyon, string Mesaj, string TelNoSorguId)> TelefonSorgulaEftAsync(string bankaEftKodu, CancellationToken ct = default);
     Task<(bool Success, string Message)> FindeksRaporTalepOnayAsync(string pin, CancellationToken ct = default);
 
-    Task<(bool Basari, string Aksiyon)> GetFindeksDurumAsync(string rid, CancellationToken ct = default);
-    Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> AnalizUretAsync(string rid, CancellationToken ct = default);
+    Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> AnalizUretAsync(CancellationToken ct = default);
     Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> GetAiReportAsync(string rid, CancellationToken ct = default);
 }
