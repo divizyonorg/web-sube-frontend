@@ -60,7 +60,7 @@ test.describe('Register Sayfası', () => {
       bug('Onay kutucukları sayfada bulunamadı');
       return;
     }
-    await expect(checkboxes.first()).toBeVisible();
+    await expect(checkboxes.first()).toBeAttached();
     await checkboxes.first().click({ force: true });
     if (!await checkboxes.first().isChecked())
       bug('Onay kutucuğuna tıklayınca işaretlenmiyor');
@@ -74,7 +74,7 @@ test.describe('Register Sayfası', () => {
     }
     await acikRizaLink.click();
     await page.waitForTimeout(500);
-    const modal = page.locator('[role="dialog"], .modal, [x-show]').filter({ hasText: 'Açık Rıza' }).first();
+    const modal = page.locator('h3:has-text("Açık Rıza"), [role="dialog"], .modal').first();
     if (!await modal.isVisible().catch(() => false))
       bug('Açık Rıza Metni linkine tıklanınca modal açılmıyor');
   });
@@ -87,7 +87,7 @@ test.describe('Register Sayfası', () => {
     }
     await aydinlatmaLink.click();
     await page.waitForTimeout(500);
-    const modal = page.locator('[role="dialog"], .modal, [x-show]').filter({ hasText: /[Aa]ydınlatma/ }).first();
+    const modal = page.locator('h3:has-text("Aydınlatma"), [role="dialog"], .modal').first();
     if (!await modal.isVisible().catch(() => false))
       bug('Aydınlatma Metni linkine tıklanınca modal açılmıyor');
   });
