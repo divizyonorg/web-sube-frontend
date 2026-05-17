@@ -31,17 +31,17 @@
 
         /* ── Mobile sidebar overlay ── */
         .mobile-backdrop {
-            position: fixed; inset: 0; z-index: 40;
+            position: fixed; top: 85px; right: 0; bottom: 0; left: 0; z-index: 100;
             background: rgba(0,0,0,0.5);
             opacity: 0; pointer-events: none;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.25s ease;
         }
         .mobile-backdrop.open { opacity: 1; pointer-events: auto; }
 
         .mobile-drawer {
-            position: fixed; top: 85px; left: 0; bottom: 0; z-index: 50;
+            position: fixed; top: 85px; left: 0; bottom: 0; z-index: 200;
             transform: translateX(-100%);
-            transition: transform 0.3s ease;
+            transition: transform 0.25s ease;
         }
         .mobile-drawer.open { transform: translateX(0); }
 
