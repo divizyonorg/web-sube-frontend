@@ -231,6 +231,15 @@
                     htmx.ajax('GET', '/KrediBasvurusu?handler=Step7', { target: '#wizard-container', swap: 'innerHTML' });
                     return;
                 }
+                var cardNumber = payForm.querySelector('input[name="CardNumber"]');
+                var cardHolder = payForm.querySelector('input[name="CardHolderName"]');
+                var expDate    = payForm.querySelector('input[name="ExpDate"]');
+                var cvv        = payForm.querySelector('input[name="Cvv"]');
+                if (!cardNumber.value.trim() || !cardHolder.value.trim() || !expDate.value.trim() || !cvv.value.trim()) {
+                    e.preventDefault();
+                    toast.error('Kart Bilgileri Eksik');
+                    return;
+                }
                 payBtn.disabled = true;
                 payBtn.style.opacity = '0.6';
                 payBtn.style.cursor = 'not-allowed';
