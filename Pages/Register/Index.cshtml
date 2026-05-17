@@ -110,7 +110,7 @@
                             @* Doğrula — phoneVerified=true olunca hidden class ile gizlenir *@
                             <button type="button"
                                     id="btnDogrula"
-                                    @@click="!sendingOtp && canVerifyPhone() && sendOtp()"
+                                    @@click="sendingOtp ? null : (canVerifyPhone() ? sendOtp() : explainWhyCannotVerify())"
                                     :class="{ 'hidden': phoneVerified, 'opacity-40 cursor-not-allowed': !canVerifyPhone() || sendingOtp }"
                                     class="h-14 px-4 rounded-lg bg-[#0056B3] text-white text-sm font-semibold shrink-0 whitespace-nowrap border-0 cursor-pointer">
                                 <span :class="{ 'hidden': sendingOtp }">Doğrula</span>
@@ -222,16 +222,9 @@
                            x-text="registerErrorMsg"></p>
 
                         @* Üye Ol butonu *@
-                        <div class="[&_button]:w-full! cursor-not-allowed opacity-50 pointer-events-none"
-                             :class="{
-                                 'cursor-pointer':      canSubmit(),
-                                 'opacity-100':         canSubmit(),
-                                 'pointer-events-auto': canSubmit(),
-                                 'cursor-not-allowed':  !canSubmit(),
-                                 'opacity-50':          !canSubmit(),
-                                 'pointer-events-none': !canSubmit()
-                             }"
-                             @@click="canSubmit() && submitForm()">
+                        <div class="[&_button]:w-full!"
+                             :class="canSubmit() ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-50'"
+                             @@click="canSubmit() ? submitForm() : explainWhyCannotSubmit()">
                             <button type="button"
                                     class="w-full h-12 rounded-[40px] bg-[#0056B3] text-white text-sm font-semibold border-0 cursor-inherit flex items-center justify-center gap-2">
                                 <span :class="{ 'hidden': registering }">Üye Ol</span>
@@ -533,13 +526,29 @@
                     var self = this;
 
                     var firstEl = document.getElementById('FirstName');
-                    if (firstEl) firstEl.addEventListener('input', function () { self.firstName = firstEl.value.trim(); });
+                    if (firstEl) {
+                        firstEl.addEventListener('input', function () {
+                            this.value = this.value.replace(/[^a-zA-ZğüşıöçĞÜŞİÖÇ \-]/g, '');
+                            self.firstName = this.value.trim();
+                        });
+                    }
 
                     var lastEl = document.getElementById('LastName');
-                    if (lastEl) lastEl.addEventListener('input', function () { self.lastName = lastEl.value.trim(); });
+                    if (lastEl) {
+                        lastEl.addEventListener('input', function () {
+                            this.value = this.value.replace(/[^a-zA-ZğüşıöçĞÜŞİÖÇ \-]/g, '');
+                            self.lastName = this.value.trim();
+                        });
+                    }
 
                     var emailEl = document.getElementById('Email');
-                    if (emailEl) emailEl.addEventListener('input', function () { self.email = emailEl.value.trim(); });
+                    if (emailEl) {
+                        emailEl.addEventListener('input', function () { self.email = this.value.trim(); });
+                        emailEl.addEventListener('blur', function () {
+                            if (self.email && !/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(self.email))
+                                toast.warning('Geçerli bir e-posta adresi giriniz.');
+                        });
+                    }
 
                     var birthEl = document.getElementById('BirthDate');
                     if (birthEl) {
@@ -688,14 +697,40 @@
                 },
 
                 canSubmit() {
-                    return this.firstName.length > 0
-                        && this.lastName.length > 0
-                        && this.email.length > 0
+                    return this.firstName.length >= 2
+                        && this.lastName.length >= 2
+                        && /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(this.email)
                         && this.birthDate.length === 10
                         && this.phoneVerified
                         && this.consentOpenRiza
                         && this.consentAydinlatma
                         && !this.registering;
+                },
+
+                explainWhyCannotVerify() {
+                    if (this.tckn.length < 11)
+                        return toast.warning('Önce TCKN alanını eksiksiz doldurunuz.');
+                    if (!this.validateTckn(this.tckn))
+                        return toast.warning('Geçerli bir TC Kimlik Numarası giriniz.');
+                    if (this.phone.replace(/\D/g, '').length < 12)
+                        return toast.warning('Telefon numaranızı eksiksiz giriniz.');
+                },
+
+                explainWhyCannotSubmit() {
+                    if (!this.firstName || this.firstName.length < 2)
+                        return toast.warning('Adınızı eksiksiz giriniz (en az 2 karakter).');
+                    if (!this.lastName || this.lastName.length < 2)
+                        return toast.warning('Soyadınızı eksiksiz giriniz (en az 2 karakter).');
+                    if (!this.email || !/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(this.email))
+                        return toast.warning('Geçerli bir e-posta adresi giriniz.');
+                    if (!this.birthDate || this.birthDate.length < 10)
+                        return toast.warning('Doğum tarihinizi giriniz (GG/AA/YYYY).');
+                    if (!this.phoneVerified)
+                        return toast.warning('Telefon numaranızı doğrulamanız gerekmektedir.');
+                    if (!this.consentOpenRiza)
+                        return toast.warning('Açık Rıza Metni\'ni onaylamanız gerekmektedir.');
+                    if (!this.consentAydinlatma)
+                        return toast.warning('Aydınlatma Metni\'ni onaylamanız gerekmektedir.');
                 },
 
                 async submitForm() {

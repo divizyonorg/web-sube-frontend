@@ -211,6 +211,7 @@
         var payBtn = document.getElementById('pay-submit-btn');
         var cardFields = document.getElementById('card-fields');
         var payAmount = document.getElementById('coupon-pay-amount');
+        var cardPrice = document.getElementById('coupon-card-price');
 
         // Kupon yanıtını dinle
         var couponForm = document.querySelector('[data-coupon-trigger]');
@@ -219,13 +220,15 @@
                 try {
                     var json = JSON.parse(e.detail.xhr.responseText);
                     if (json.success) {
-                        if (json.finalAmount === 0) {
-                            freePass = true;
-                            if (cardFields) cardFields.style.display = 'none';
-                            if (payAmount) payAmount.textContent = '0 TL Öde';
-                        } else if (json.finalAmount != null) {
-                            var fmt = json.finalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 });
+                        if (json.finalAmount != null) {
+                            var isFree = json.finalAmount === 0;
+                            var fmt = isFree ? '0' : json.finalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 });
+                            if (cardPrice) cardPrice.textContent = '₺' + fmt;
                             if (payAmount) payAmount.textContent = '₺' + fmt + ' Öde';
+                            if (isFree) {
+                                freePass = true;
+                                if (cardFields) cardFields.style.display = 'none';
+                            }
                         }
                     } else if (json.message) {
                         toast.error(json.message);

@@ -61,7 +61,10 @@ public class MockReportService : IReportService
     public Task<(bool Success, string Message)> FindeksRaporTalepOnayAsync(string pin, CancellationToken ct = default)
         => Task.FromResult((true, "Tebrikler, SMS şifreniz doğrulandı. Raporunuz hazırlanıyor..."));
 
-    public Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> AnalizUretAsync(CancellationToken ct = default)
+    public Task<(bool Basari, string Aksiyon)> GetFindeksDurumAsync(string rid, CancellationToken ct = default)
+        => Task.FromResult((true, "RAPOR_TAMAM"));
+
+    public Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> AnalizUretAsync(string rid, CancellationToken ct = default)
         => Task.FromResult<(bool, string, KisiselRaporViewModel?)>((true, string.Empty, new KisiselRaporViewModel()));
 
     public Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> GetAiReportAsync(string rid, CancellationToken ct = default)
