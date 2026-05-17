@@ -64,9 +64,9 @@ public class FinansalProfilService : IFinansalProfilService
                                    System.Globalization.CultureInfo.InvariantCulture,
                                    out var amt) ? amt : 0,
             SalaryBankCode = salary?.SalaryBankEftCode ?? string.Empty,
-            IsMarried = marital?.MaritalStatus ?? false,
-            HouseStatusId = MapHouseStatus(havings?.HouseStatusName),
-            HasCar = havings?.CarStatus ?? false,
+            IsMarried = marital != null ? marital.MaritalStatus : (bool?)null,
+            HouseStatusId = havings != null ? MapHouseStatus(havings.HouseStatusName) : (int?)null,
+            HasCar = havings != null ? havings.CarStatus : (bool?)null,
         };
     }
 

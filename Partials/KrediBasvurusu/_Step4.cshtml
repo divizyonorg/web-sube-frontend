@@ -4,9 +4,9 @@
 ══════════════════════════════════════ *@
 <div x-data="{
         calismaId: '@(Model.WorkSectorId > 0 ? Model.WorkSectorId.ToString() : "")',
-        isEvli: null,
-        evDurumu: '',
-        arabavar: null
+        isEvli: @(Model.IsMarried.HasValue ? (Model.IsMarried.Value ? "true" : "false") : "null"),
+        evDurumu: '@(Model.HouseStatusId.HasValue ? Model.HouseStatusId.Value.ToString() : "")',
+        arabavar: @(Model.HasCar.HasValue ? (Model.HasCar.Value ? "true" : "false") : "null")
      }"
      class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] rounded-[20px] overflow-hidden flex flex-col">
 

@@ -22,11 +22,11 @@ public class FinansalProfilViewModel
     public List<LookupItemViewModel> SalaryBanks { get; set; } = [];
 
     // Medeni durum
-    public bool IsMarried { get; set; }
+    public bool? IsMarried { get; set; }
 
     // Mülkiyet — 0=Kendi Evim, 1=Kira, 2=Aile Evi
-    public int HouseStatusId { get; set; }
-    public bool HasCar { get; set; }
+    public int? HouseStatusId { get; set; }
+    public bool? HasCar { get; set; }
 
     public static readonly List<LookupItemViewModel> WorkingTimeOptions =
     [
