@@ -37,7 +37,7 @@ test.describe('Destek Merkezi', () => {
   test('SSS accordion açılıp kapanıyor', async ({ page }) => {
     await page.locator('text=Sıkça Sorulan Sorular').waitFor({ timeout: 15_000 });
     const sssSection = page.locator('section, div').filter({ has: page.locator('text=Sıkça Sorulan Sorular') }).first();
-    const firstBtn = sssSection.getByRole('button').first();
+    const firstBtn = sssSection.locator('button[onclick="toggleAccordion(this)"]').first();
     if (await firstBtn.count() === 0) {
       bug('SSS accordion butonu bulunamadı');
       return;
@@ -63,9 +63,9 @@ test.describe('Destek Merkezi', () => {
     await page.waitForLoadState('networkidle').catch(() => {});
   });
 
-  test('Destek Taleplerim bölümü görünür', async ({ page }) => {
+  test('Açık Destek Kayıtları bölümü görünür', async ({ page }) => {
     await page.locator('h1').first().waitFor({ timeout: 15_000 });
-    await expect(page.locator('text=Destek Taleplerim')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('text=Açık Destek Kayıtları')).toBeVisible({ timeout: 10_000 });
   });
 
   test('"Yeni Destek Talebi Oluştur" butonu görünür', async ({ page }) => {
