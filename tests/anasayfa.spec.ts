@@ -40,7 +40,7 @@ test.describe('Anasayfa', () => {
       bug('Kredi Nabzı kredi türü dropdown\'ı bulunamadı');
     } else {
       await dropdown.click();
-      await page.waitForTimeout(500);
+      await page.waitForLoadState('networkidle').catch(() => {});
     }
   });
 
@@ -70,7 +70,7 @@ test.describe('Anasayfa', () => {
   test('Popüler Krediler ileri/geri butonları çalışır', async ({ page }) => {
     await expect(page.locator('#loans-swiper')).toBeVisible({ timeout: 10_000 });
     await page.locator('#loans-next').click({ force: true });
-    await page.waitForTimeout(400);
+    await page.locator('#loans-swiper .swiper-slide-active').waitFor({ state: 'visible', timeout: 3_000 }).catch(() => {});
     await page.locator('#loans-prev').click({ force: true });
   });
 
@@ -91,7 +91,7 @@ test.describe('Anasayfa', () => {
   test('Avantajlı Kredi Kartları ileri/geri butonları çalışır', async ({ page }) => {
     await expect(page.locator('#cards-swiper')).toBeVisible({ timeout: 10_000 });
     await page.locator('#cards-next').click({ force: true });
-    await page.waitForTimeout(400);
+    await page.locator('#cards-swiper .swiper-slide-active').waitFor({ state: 'visible', timeout: 3_000 }).catch(() => {});
     await page.locator('#cards-prev').click({ force: true });
   });
 

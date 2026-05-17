@@ -64,6 +64,17 @@ public class KurDetayModel : PageModel
         {
             var rid = ViewModel.Rid;
 
+            if (string.IsNullOrWhiteSpace(rid))
+            {
+                var raporlar = await _reportService.GetKrediRaporlariAsync(ct);
+                var ilkHazir = raporlar.Reports.FirstOrDefault(r => r.IsReady);
+                if (ilkHazir is not null)
+                {
+                    rid = ilkHazir.Rid;
+                    ViewModel.Rid = rid;
+                }
+            }
+
             if (!string.IsNullOrWhiteSpace(rid))
             {
                 var (success, message, rapor) = await _reportService.GetAiReportAsync(rid, ct);
@@ -77,14 +88,8 @@ public class KurDetayModel : PageModel
             }
             else
             {
-                var (success, message, rapor) = await _reportService.AnalizUretAsync(ct);
-                if (success && rapor is not null)
-                    ViewModel.KisiselRapor = rapor;
-                else
-                {
-                    ViewModel.IsError = true;
-                    ViewModel.ErrorMessage = message;
-                }
+                ViewModel.IsError = true;
+                ViewModel.ErrorMessage = "Rapor bulunamadı.";
             }
         }
 
