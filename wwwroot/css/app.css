@@ -1515,6 +1515,9 @@
   .list-none {
     list-style-type: none;
   }
+  .\[appearance\:textfield\] {
+    appearance: textfield;
+  }
   .appearance-none {
     appearance: none;
   }
@@ -2458,9 +2461,6 @@
   }
   .p-3 {
     padding: calc(var(--spacing) * 3);
-  }
-  .p-3\.5 {
-    padding: calc(var(--spacing) * 3.5);
   }
   .p-4 {
     padding: calc(var(--spacing) * 4);
@@ -4475,6 +4475,16 @@
       & input {
         width: calc(var(--spacing) * 90) !important;
       }
+    }
+  }
+  .\[\&\:\:-webkit-inner-spin-button\]\:appearance-none {
+    &::-webkit-inner-spin-button {
+      appearance: none;
+    }
+  }
+  .\[\&\:\:-webkit-outer-spin-button\]\:appearance-none {
+    &::-webkit-outer-spin-button {
+      appearance: none;
     }
   }
   .\[\&\>div\]\:w-full\! {

@@ -106,28 +106,8 @@ public class IndexModel : PageModel
     }
 
 
-    public IActionResult OnGetStep8(string? rid) =>
-        Partial("~/Partials/KrediBasvurusu/_Step8.cshtml", rid ?? string.Empty);
-
-    public async Task<IActionResult> OnPostAnalizUretAsync(CancellationToken ct)
-    {
-        // 1. Findeks raporu RAPOR_TAMAM olana kadar bekle
-        for (int i = 0; i < 24; i++)
-        {
-            var (basari, aksiyon) = await _reportService.GetFindeksDurumAsync(Rid, ct);
-            if (basari && aksiyon == "RAPOR_TAMAM") break;
-            if (i == 23) { Response.Headers["HX-Reswap"] = "none"; return Content(string.Empty); }
-            await Task.Delay(5000, ct);
-        }
-
-        // 2. Analiz üret — cevap gelince Step9'a geç
-        var (success, _, _) = await _reportService.AnalizUretAsync(string.Empty, ct);
-        if (success)
-            return Partial("~/Partials/KrediBasvurusu/_Step9.cshtml");
-
-        Response.Headers["HX-Reswap"] = "none";
-        return Content(string.Empty);
-    }
+    public IActionResult OnGetStep8() =>
+        Partial("~/Partials/KrediBasvurusu/_Step8.cshtml");
 
     public IActionResult OnGetStep9() =>
         Partial("~/Partials/KrediBasvurusu/_Step9.cshtml");
