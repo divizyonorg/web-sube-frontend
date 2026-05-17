@@ -274,8 +274,8 @@ public class CustomerDataService : ICustomerDataService
         var request = new CreateDestekTalebiRequest
         {
             IsRegistered = true,
-            CustomerId = customerId,
-            ParentTopicId = parentTopicId,
+            CustomerId = customerId.ToString(),
+            TopicId = parentTopicId,
             Gsm = gsm,
             DetailText = detailText
         };
