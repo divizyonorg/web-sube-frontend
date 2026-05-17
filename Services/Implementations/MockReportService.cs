@@ -45,9 +45,6 @@ public class MockReportService : IReportService
     public Task<string> GetReportStatusAsync(string rid, CancellationToken ct = default)
         => Task.FromResult("PENDING");
 
-    public Task<string> GetReportStatusAsync(string rid, CancellationToken ct = default)
-        => Task.FromResult("PENDING");
-
     public Task<FindeksOtpViewModel> FindeksRaporTalepAsync(string telNoSorguId = "0", CancellationToken ct = default)
         => Task.FromResult(new FindeksOtpViewModel
         {
