@@ -56,12 +56,12 @@
                     <span class="font-['Poppins'] text-[12px] font-light leading-[18px] text-white pb-1">@Model.PeriodSuffix</span>
                 </div>
             </div>
-            <div class="flex flex-col items-end gap-0.5">
-                <div class="flex items-center gap-1">
-                    <img src="/icons/green/line-chart-up-02.svg" width="14" height="14" alt="">
-                    <span class="font-['Poppins'] text-[13px] font-semibold leading-5 text-[#46CA88]">@Model.AnnualRateValue</span>
+            <div class="relative w-[57.47px] h-[40.5px]">
+                <div class="absolute top-0 left-0 flex flex-row justify-end items-center gap-1 w-full h-[16.5px]">
+                    <img src="/icons/green/line-chart-up-02.svg" width="16" height="16" alt="">
+                    <span class="font-['Poppins'] text-[11px] font-normal leading-4 text-right text-[#46CA88]">@Model.AnnualRateValue</span>
                 </div>
-                <span class="font-['Poppins'] text-[10px] font-light leading-[15px] text-[#46CA88] opacity-75">Anlık Oran</span>
+                <span class="absolute font-['Poppins'] text-[10px] font-light leading-[15px] text-right text-[#46CA88]" style="left:15.69px;top:22.5px;">Son 3 Ay</span>
             </div>
         </div>
 

@@ -20,6 +20,7 @@ public class ReportService : IReportService
         public const string ApplyCoupon = "/api/v1/reports/apply-coupon";
         public const string FindeksRaporTalep = "/api/v1/findeks/rapor-talep-master";
         public const string FindeksRaporTalepOnay = "/api/v1/findeks/rapor-talep-onay";
+        public const string TelefonSorgulaEft = "/api/v1/findeks/telefon-sorgula-eft";
         public const string AnalizUret = "/analiz-uret";
         public const string GetAiReport = "/api/v1/reports/ai-report/{0}";
         public const string ListKredi = "/api/v1/reports/list?type=KREDI&updated_after=2025-01-01";
@@ -115,12 +116,12 @@ public class ReportService : IReportService
         }
     }
 
-    public async Task<FindeksOtpViewModel> FindeksRaporTalepAsync(CancellationToken ct = default)
+    public async Task<FindeksOtpViewModel> FindeksRaporTalepAsync(string telNoSorguId = "0", CancellationToken ct = default)
     {
         try
         {
             var response = await _httpClient.PostAsJsonAsync(
-                Endpoints.FindeksRaporTalep, new { telNoSorguId = "0" }, ct);
+                Endpoints.FindeksRaporTalep, new { telNoSorguId }, ct);
             var body = await response.Content.ReadAsStringAsync(ct);
             _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.FindeksRaporTalep, (int)response.StatusCode);
             if (!response.IsSuccessStatusCode)
@@ -142,6 +143,34 @@ public class ReportService : IReportService
         {
             _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.FindeksRaporTalep);
             return new FindeksOtpViewModel { Basari = false, Mesaj = "Bağlantı hatası oluştu." };
+        }
+    }
+
+    public async Task<(bool Basari, string Aksiyon, string Mesaj, string TelNoSorguId)> TelefonSorgulaEftAsync(string bankaEftKodu, CancellationToken ct = default)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync(
+                Endpoints.TelefonSorgulaEft, new { bankaEftKodu }, ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.TelefonSorgulaEft, (int)response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.TelefonSorgulaEft, body);
+                return (false, string.Empty, TryParseMessage(body) ?? "Telefon sorgulama başarısız.", string.Empty);
+            }
+            using var doc = JsonDocument.Parse(body);
+            var root = doc.RootElement;
+            var basari = root.TryGetProperty("basari", out var b) && b.GetBoolean();
+            var aksiyon = root.TryGetProperty("aksiyon", out var a) ? a.GetString() ?? string.Empty : string.Empty;
+            var mesaj = root.TryGetProperty("mesaj", out var m) ? m.GetString() ?? string.Empty : string.Empty;
+            var telNoSorguId = root.TryGetProperty("telNoSorguId", out var t) ? t.GetString() ?? string.Empty : string.Empty;
+            return (basari, aksiyon, mesaj, telNoSorguId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "POST {Endpoint} exception", Endpoints.TelefonSorgulaEft);
+            return (false, string.Empty, "Bağlantı hatası oluştu.", string.Empty);
         }
     }
 
