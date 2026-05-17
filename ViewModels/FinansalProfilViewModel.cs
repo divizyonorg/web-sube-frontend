@@ -30,11 +30,11 @@ public class FinansalProfilViewModel
 
     public static readonly List<LookupItemViewModel> WorkingTimeOptions =
     [
-        new("1 Yıldan Az",     "1 Yıldan Az"),
-        new("1-3 Yıl",         "1-3 Yıl"),
-        new("3-5 Yıl",         "3-5 Yıl"),
-        new("5-10 Yıl",        "5-10 Yıl"),
-        new("10 Yıl ve Üzeri", "10 Yıl ve Üzeri"),
+        new("1y-alti",   "1 yıldan az"),
+        new("1-3y",      "1–3 yıl"),
+        new("3-5y",      "3–5 yıl"),
+        new("5-10y",     "5–10 yıl"),
+        new("10y-uzeri", "10 yıl ve üzeri"),
     ];
 
     public static readonly List<LookupItemViewModel> HouseStatusOptions =
