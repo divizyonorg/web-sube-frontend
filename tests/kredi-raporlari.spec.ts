@@ -51,10 +51,11 @@ test.describe('Kredi Raporları', () => {
   });
 
   test('KurDetay sayfasına gidiliyor', async ({ page }) => {
-    await page.goto('/KrediRaporlari/KurDetay');
+    const response = await page.goto('/KrediRaporlari/KurDetay');
     await page.waitForLoadState('domcontentloaded');
-    if (await page.locator('text=404').or(page.locator('text=Bulunamadı')).count() > 0)
-      bug('/KrediRaporlari/KurDetay sayfası 404 döndürüyor');
+    const status = response?.status() ?? 0;
+    if (status >= 400)
+      bug(`/KrediRaporlari/KurDetay sayfası HTTP ${status} hatası döndürüyor`);
   });
 
   // ─── Bug 4: "Raporu Gör" yanlış yönlendiriyor ────────────────────────────
