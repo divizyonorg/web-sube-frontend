@@ -1,38 +1,40 @@
 @* ══════════════════════════════════════
-   ADIM 1 — Giriş Kartı
+   ADIM 1 — Giriş Kartı (mavi gradient)
 ══════════════════════════════════════ *@
-<div class="w-full max-w-[420px] bg-white border border-[#E2EAF5] rounded-[24px] overflow-hidden flex flex-col">
+<div class="relative w-full max-w-[420px] h-[580px] bg-[linear-gradient(190deg,#001E8A_6.17%,#0041C2_36.85%,#006EFF_71.91%,#2E88FF_93.83%)] rounded-[24px] overflow-hidden flex flex-col">
 
-    @* Kart başlığı — Step2 ile aynı yapı *@
-    <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
-        <div class="w-8"></div>
-        <img src="~/images/IKLogo-blue.svg" width="70" height="25" alt="İnteraktif Kredi" class="object-contain">
-        <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
-            <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
-        </a>
+    @* Kapat butonu *@
+    <a href="/anasayfa"
+       class="absolute right-5 top-5 w-8 h-8 bg-[rgba(255,255,255,0.18)] rounded-full flex items-center justify-center no-underline">
+        <img src="~/icons/white/x-close.svg" width="16" height="16" alt="">
+    </a>
+
+    @* Logo *@
+    <div class="px-8 pt-12 flex justify-center">
+        <img src="~/images/IKLogo.svg" width="79" height="28" alt="interaktif kredi">
     </div>
 
     @* Başlık ve alt başlık *@
-    <div class="px-8 pt-6 flex flex-col gap-2">
-        <h2 class="font-[Poppins] font-semibold text-[20px] leading-8 text-center text-[#003F75] m-0">
+    <div class="px-8 pt-8 flex flex-col gap-[14px]">
+        <h2 class="font-[Poppins] font-semibold text-[24px] leading-8 text-center text-white m-0">
             Senin için en doğru finansal rotayı çizelim
         </h2>
-        <p class="font-[Poppins] font-normal text-[13px] leading-[21px] text-center text-[#739FCC] m-0">
+        <p class="font-[Poppins] font-light text-[16px] leading-[26px] text-center text-[rgba(255,255,255,0.85)] m-0">
             Birkaç kısa soruyla ihtiyacını anlayalım
         </p>
     </div>
 
     @* Seçim butonları *@
-    <div class="px-6 mt-6 flex flex-col gap-3">
+    <div class="px-6 mt-4 flex flex-col gap-4">
 
         <button hx-get="/KrediBasvurusu?handler=Step2"
                 hx-target="#wizard-container"
                 hx-swap="innerHTML"
-                class="flex items-center px-4 py-4 gap-3 w-full bg-[linear-gradient(135deg,#0056B3_0%,#2E6DF8_100%)] rounded-[15px] border-none cursor-pointer shadow-[0_4px_14px_rgba(0,86,179,0.25)]">
-            <div class="w-[50px] h-[50px] flex items-center justify-center shrink-0 bg-white/20 rounded-[12px]">
-                <img src="~/icons/black/coins-hand-light.svg" width="28" height="28" alt="" style="filter:brightness(0) invert(1);">
+                class="flex items-center px-4 py-[14px] gap-3 w-full h-[90px] bg-white rounded-[15px] border-none cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+            <div class="w-[54px] h-[54px] flex items-center justify-center shrink-0">
+                <img src="~/icons/black/coins-hand-light.svg" width="40" height="40" alt="">
             </div>
-            <span class="font-[Poppins] font-semibold text-[15px] leading-[22px] text-white flex-1 text-left">
+            <span class="font-[Poppins] font-normal text-[15px] leading-[22px] text-center text-black flex-1">
                 Hemen krediye ihtiyacım var
             </span>
         </button>
@@ -40,11 +42,11 @@
         <button hx-get="/KrediBasvurusu?handler=Step2"
                 hx-target="#wizard-container"
                 hx-swap="innerHTML"
-                class="flex items-center px-4 py-4 gap-3 w-full bg-[linear-gradient(135deg,#0056B3_0%,#2E6DF8_100%)] rounded-[15px] border-none cursor-pointer shadow-[0_4px_14px_rgba(0,86,179,0.25)]">
-            <div class="w-[50px] h-[50px] flex items-center justify-center shrink-0 bg-white/20 rounded-[12px]">
-                <img src="~/icons/black/user-check.svg" width="28" height="28" alt="" style="filter:brightness(0) invert(1);">
+                class="flex items-center px-4 py-[14px] gap-3 w-full h-[90px] bg-white rounded-[15px] border-none cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+            <div class="w-[54px] h-[54px] flex items-center justify-center shrink-0">
+                <img src="~/icons/black/user-check.svg" width="40" height="40" alt="">
             </div>
-            <span class="font-[Poppins] font-semibold text-[15px] leading-[22px] text-white flex-1 text-left">
+            <span class="font-[Poppins] font-normal text-[15px] leading-[22px] text-center text-black flex-1">
                 Sadece kredi profilimi öğrenmek istiyorum
             </span>
         </button>
@@ -52,8 +54,8 @@
     </div>
 
     @* Bilgi notu *@
-    <div class="px-8 mt-5 pb-7">
-        <p class="font-[Poppins] font-normal text-[11px] leading-[17px] text-center text-[#A8BFDA] m-0">
+    <div class="px-8 mt-auto pb-6">
+        <p class="font-[Poppins] font-light text-[10px] leading-[17px] text-center text-[rgba(255,255,255,0.75)] m-0">
             Bu bilgiler kredi notunu etkilemez.<br>
             Sadece sana özel öneriler sunmamıza yardımcı olur.
         </p>

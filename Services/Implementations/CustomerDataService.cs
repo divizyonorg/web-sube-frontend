@@ -254,26 +254,51 @@ public class CustomerDataService : ICustomerDataService
         var dtos = await ApiClient.GetJsonAsync<List<DestekTalebiDto>>(
             _httpClient, Endpoints.DestekTalebiGecmisi(customerId), cancellationToken) ?? [];
 
-        var result = dtos.Select(MapToDestekTalebiViewModel).ToList();
-
-        if (result.Count == 0)
-            return await new MockCustomerDataService().GetDestekTalebiGecmisiAsync(cancellationToken);
-
-        return result;
+        return dtos.Select(MapToDestekTalebiViewModel).ToList();
     }
 
     public async Task<bool> CreateDestekTalebiAsync(int parentTopicId, string detailText, CancellationToken cancellationToken = default)
     {
         AttachToken();
         var customerId = GetCustomerIdFromCookie();
+        var gsm = await GetPrimaryGsmAsync(cancellationToken);
+
+        _logger.LogInformation("CreateDestekTalebi → customerId={CustomerId} gsm={Gsm} parentTopicId={ParentTopicId}",
+            customerId, gsm, parentTopicId);
+
         var request = new CreateDestekTalebiRequest
         {
             IsRegistered = true,
-            CustomerId = customerId,
-            ParentTopicId = parentTopicId,
+            CustomerId = customerId.ToString(),
+            TopicId = parentTopicId,
+            Gsm = gsm,
             DetailText = detailText
         };
-        return await ApiClient.PostJsonAsync(_httpClient, Endpoints.CreateDestekTalebi, request, cancellationToken);
+
+        var response = await _httpClient.PostAsJsonAsync(Endpoints.CreateDestekTalebi, request, cancellationToken);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        _logger.LogInformation("POST {Endpoint} → {Status}: {Body}", Endpoints.CreateDestekTalebi, (int)response.StatusCode, body);
+
+        return response.IsSuccessStatusCode;
+    }
+
+    private async Task<string> GetPrimaryGsmAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await ApiClient.GetJsonAsync<DynamicDataResponseDto>(
+                _httpClient, Endpoints.DynamicData("CONTACT"), cancellationToken);
+            foreach (var item in response?.Data ?? [])
+            {
+                if (!item.Details.HasValue) continue;
+                var details = item.Details.Value.Deserialize<ContactDetailsDto>();
+                if (details is not null && details.IsPrimary &&
+                    details.Type.Equals("GSM", StringComparison.OrdinalIgnoreCase))
+                    return details.Value;
+            }
+        }
+        catch { }
+        return string.Empty;
     }
 
     private int GetCustomerIdFromCookie()
@@ -290,7 +315,14 @@ public class CustomerDataService : ICustomerDataService
             var padded = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
             var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(padded));
             using var doc = JsonDocument.Parse(json);
-            return doc.RootElement.TryGetProperty("cid", out var cid) && cid.ValueKind == JsonValueKind.Number ? cid.GetInt32() : 0;
+
+            foreach (var claimName in new[] { "cid", "customer_id", "customerId", "id" })
+            {
+                if (!doc.RootElement.TryGetProperty(claimName, out var prop)) continue;
+                if (prop.ValueKind == JsonValueKind.Number) return prop.GetInt32();
+                if (prop.ValueKind == JsonValueKind.String && int.TryParse(prop.GetString(), out var parsed)) return parsed;
+            }
+            return 0;
         }
         catch
         {
@@ -307,14 +339,20 @@ public class CustomerDataService : ICustomerDataService
             _ => ("İşlemde", "font-[Source_Sans_3] font-medium text-[12px] leading-[16px] text-[#A65F00] bg-[#FEF9C2] px-3 py-[3px] rounded-full")
         };
 
+        var trCulture = new System.Globalization.CultureInfo("tr-TR");
         return new DestekTalebiViewModel
         {
             Id = dto.Id,
             KonuBasligi = dto.KonuBasligi,
+            KonuDetaylari = dto.KonuDetaylari ?? string.Empty,
             DurumLabel = label,
             DurumBadgeClass = badgeClass,
-            Tarih = dto.DestekTarihi.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR")),
-            AtananBirim = dto.AtananBirim ?? string.Empty
+            Tarih = dto.DestekTarihi.ToString("dd MMMM yyyy", trCulture),
+            GuncellemeTarihi = dto.UpdateDate?.ToString("dd MMMM yyyy", trCulture) ?? string.Empty,
+            AtananBirim = dto.AtananBirim ?? string.Empty,
+            OnemDerecesi = dto.OnemDerecesi,
+            AtamaSebebi = dto.AtamaSebebi ?? string.Empty,
+            StatusText = dto.StatusText ?? string.Empty
         };
     }
 

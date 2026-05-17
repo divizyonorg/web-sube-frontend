@@ -3,7 +3,7 @@
 ══════════════════════════════════════ *@
 @Html.AntiForgeryToken()
 <div x-data="{
-         vade: null,
+         vade: 24,
          krediAmaci: '',
          krediTutar: '',
          loading: false,
@@ -49,11 +49,18 @@
              }
          }
      }"
-     class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] rounded-[20px] overflow-hidden flex flex-col">
+     class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
 
     @* Kart başlığı *@
     <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
-        <div class="w-8"></div>
+        <button hx-get="/KrediBasvurusu?handler=Step2"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="border-none bg-transparent cursor-pointer p-0">
+            <div class="w-5 h-5 flex items-center justify-center">
+                <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
+            </div>
+        </button>
         <img src="~/images/IKLogo-blue.svg" width="70" height="25" alt="İnteraktif Kredi" class="object-contain">
         <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
             <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
@@ -62,6 +69,9 @@
 
     @* İlerleme çubuğu *@
     <div class="flex flex-col px-6 pt-5 gap-2 shrink-0">
+        <span class="font-[Poppins] font-normal text-xs leading-[18px] text-[#333]">
+            Adım 1/3: Kredi Detayları
+        </span>
         <div class="flex flex-row gap-1 w-full">
             <div class="flex-1 h-1.5 bg-[#006EFF] rounded-full"></div>
             <div class="flex-1 h-1.5 bg-[#D9D9D9] rounded-full"></div>
@@ -102,7 +112,7 @@
             <div class="flex flex-wrap gap-2">
                 <template x-for="ay in [6, 12, 24, 36, 48, 60]" :key="ay">
                     <button @@click="vade = ay"
-                            :class="vade !== null && vade === ay
+                            :class="vade === ay
                                 ? 'bg-linear-to-r from-[#0056B3] to-[#2E6DF8] border-transparent text-white font-semibold'
                                 : 'bg-[#F0F4FC] border-[#D1DDF5] text-[#003F75] font-normal'"
                             class="box-border px-4 py-2 h-[37.5px] rounded-full border cursor-pointer font-[Poppins] text-[13px] leading-5">
@@ -120,7 +130,7 @@
             <div class="relative box-border w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
                 <select x-model="krediAmaci"
                         class="w-full h-full border-none outline-none py-[11px] pl-3.5 pr-10 appearance-none font-[Poppins] text-[14px] text-[#003F75] bg-transparent cursor-pointer">
-                    <option value="" disabled selected>Seçiniz...</option>
+                    <option value="" disabled selected></option>
                     <option value="konut">Konut</option>
                     <option value="tasit">Taşıt</option>
                     <option value="egitim">Eğitim</option>
@@ -153,24 +163,15 @@
             </div>
         </div>
 
-        @* Navigasyon butonları *@
-        <div class="mt-5 flex gap-3">
-            <button type="button"
-                    hx-get="/KrediBasvurusu?handler=Step2"
-                    hx-target="#wizard-container"
-                    hx-swap="innerHTML"
-                    class="flex justify-center items-center h-14 w-14 shrink-0 bg-white border border-[#D1DDF5] rounded-[59px] cursor-pointer">
-                <img src="~/icons/blue/chevron-left.svg" width="8" height="14" alt="">
-            </button>
-            <button type="button"
-                    @@click="devamEt()"
-                    :disabled="loading"
-                    :class="loading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'"
-                    class="flex-1 flex justify-between items-center px-8 py-4 h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none">
-                <span class="font-[Poppins] font-semibold text-[16px] text-white" x-text="loading ? 'Lütfen bekleyin...' : 'Devam Et'"></span>
-                <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="" x-show="!loading">
-            </button>
-        </div>
+        @* Devam Et *@
+        <button type="button"
+                @@click="devamEt()"
+                :disabled="loading"
+                :class="loading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'"
+                class="mt-5 flex justify-between items-center px-8 py-4 w-full h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none">
+            <span class="font-[Poppins] font-semibold text-[16px] text-white" x-text="loading ? 'Lütfen bekleyin...' : 'Devam Et'"></span>
+            <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="" x-show="!loading">
+        </button>
 
     </div>
 </div>

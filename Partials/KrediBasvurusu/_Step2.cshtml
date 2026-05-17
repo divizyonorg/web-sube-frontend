@@ -2,11 +2,18 @@
 @* ══════════════════════════════════════
    ADIM 2 — Profil Onayı
 ══════════════════════════════════════ *@
-<div class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] rounded-[20px] overflow-hidden flex flex-col">
+<div class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
 
     @* Kart başlığı *@
     <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
-        <div class="w-8"></div>
+        <button hx-get="/KrediBasvurusu?handler=Step1"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="border-none bg-transparent cursor-pointer p-0">
+            <div class="w-5 h-5 flex items-center justify-center">
+                <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
+            </div>
+        </button>
         <img src="~/images/IKLogo-blue.svg" width="70" height="25" alt="İnteraktif Kredi" class="object-contain">
         <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
             <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
@@ -17,13 +24,18 @@
     <div class="flex flex-col px-6 pb-6">
 
         @* Profil başlığı *@
-        <div class="mt-5 flex flex-col gap-0.5">
-            <span class="font-[Poppins] font-semibold text-[18px] leading-7 text-[#003F75]">
-                Profilinizi Onaylayın
-            </span>
-            <span class="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#739FCC]">
-                Kimlik bilgileriniz hesabınızdan alınıyor
-            </span>
+        <div class="mt-5 flex items-center gap-[10px]">
+            <div class="w-9 h-9 rounded-[10px] bg-[linear-gradient(135deg,#0056B3_0%,#2E6DF8_100%)] flex items-center justify-center shrink-0">
+                <img src="~/icons/white/user-circle.svg" width="20" height="20" alt="">
+            </div>
+            <div class="flex flex-col gap-0.5">
+                <span class="font-[Poppins] font-semibold text-[16px] leading-6 text-[#003F75]">
+                    Profilinizi Onaylayın
+                </span>
+                <span class="font-[Poppins] font-normal text-[11px] leading-4 text-[#739FCC]">
+                    Kimlik bilgileriniz hesabınızdan alınıyor
+                </span>
+            </div>
         </div>
 
         @* Profil satırları *@
@@ -31,11 +43,11 @@
 
             @* Ad Soyad *@
             <div class="flex items-center py-3 gap-3 border-b border-[#EEF2FA]">
-                <div class="w-9 h-9 rounded-lg bg-[#EEF4FF] flex items-center justify-center shrink-0">
+                <div class="w-9 h-9 rounded-lg bg-[linear-gradient(135deg,#E8F0FE_0%,#C7D9FB_100%)] flex items-center justify-center shrink-0">
                     <img src="~/icons/blue/user.svg" width="17" height="17" alt="">
                 </div>
                 <div class="flex-1 flex flex-col gap-0.5">
-                    <span class="font-[Poppins] font-medium text-[11px] leading-[15px] tracking-[0.3px] uppercase text-[#8BACD4]">Ad Soyad</span>
+                    <span class="font-[Poppins] font-medium text-[10px] leading-[15px] tracking-[0.3px] uppercase text-[#739FCC]">Ad Soyad</span>
                     <span class="font-[Poppins] font-semibold text-[14px] leading-[21px] text-[#003F75]">@Model.FullName</span>
                 </div>
                 @if (!string.IsNullOrEmpty(Model.FullName))
@@ -46,11 +58,11 @@
 
             @* T.C. Kimlik No *@
             <div class="flex items-center py-3 gap-3 border-b border-[#EEF2FA]">
-                <div class="w-9 h-9 rounded-lg bg-[#EEF4FF] flex items-center justify-center shrink-0">
+                <div class="w-9 h-9 rounded-lg bg-[linear-gradient(135deg,#E8F0FE_0%,#C7D9FB_100%)] flex items-center justify-center shrink-0">
                     <img src="~/icons/blue/id-card.svg" width="17" height="17" alt="">
                 </div>
                 <div class="flex-1 flex flex-col gap-0.5">
-                    <span class="font-[Poppins] font-medium text-[11px] leading-[15px] tracking-[0.3px] uppercase text-[#8BACD4]">T.C. Kimlik No</span>
+                    <span class="font-[Poppins] font-medium text-[10px] leading-[15px] tracking-[0.3px] uppercase text-[#739FCC]">T.C. Kimlik No</span>
                     <span class="font-[Poppins] font-semibold text-[14px] leading-[21px] text-[#003F75]">@Model.Tckn</span>
                 </div>
                 @if (!string.IsNullOrEmpty(Model.Tckn))
@@ -61,11 +73,11 @@
 
             @* Doğum Tarihi *@
             <div class="flex items-center py-3 gap-3 border-b border-[#EEF2FA]">
-                <div class="w-9 h-9 rounded-lg bg-[#EEF4FF] flex items-center justify-center shrink-0">
+                <div class="w-9 h-9 rounded-lg bg-[linear-gradient(135deg,#E8F0FE_0%,#C7D9FB_100%)] flex items-center justify-center shrink-0">
                     <img src="~/icons/blue/calendar.svg" width="17" height="17" alt="">
                 </div>
                 <div class="flex-1 flex flex-col gap-0.5">
-                    <span class="font-[Poppins] font-medium text-[11px] leading-[15px] tracking-[0.3px] uppercase text-[#8BACD4]">Doğum Tarihi</span>
+                    <span class="font-[Poppins] font-medium text-[10px] leading-[15px] tracking-[0.3px] uppercase text-[#739FCC]">Doğum Tarihi</span>
                     <span class="font-[Poppins] font-semibold text-[14px] leading-[21px] text-[#003F75]">@Model.Birthday</span>
                 </div>
                 @if (!string.IsNullOrEmpty(Model.Birthday))
@@ -76,11 +88,11 @@
 
             @* Cep Telefonu *@
             <div class="flex items-center py-3 gap-3">
-                <div class="w-9 h-9 rounded-lg bg-[#EEF4FF] flex items-center justify-center shrink-0">
+                <div class="w-9 h-9 rounded-lg bg-[linear-gradient(135deg,#E8F0FE_0%,#C7D9FB_100%)] flex items-center justify-center shrink-0">
                     <img src="~/icons/blue/phone.svg" width="17" height="17" alt="">
                 </div>
                 <div class="flex-1 flex flex-col gap-0.5">
-                    <span class="font-[Poppins] font-medium text-[11px] leading-[15px] tracking-[0.3px] uppercase text-[#8BACD4]">Cep Telefonu</span>
+                    <span class="font-[Poppins] font-medium text-[10px] leading-[15px] tracking-[0.3px] uppercase text-[#739FCC]">Cep Telefonu</span>
                     <span class="font-[Poppins] font-semibold text-[14px] leading-[21px] text-[#003F75]">@Model.PhoneNumber</span>
                 </div>
                 @if (!string.IsNullOrEmpty(Model.PhoneNumber))
@@ -118,22 +130,14 @@
             </div>
         </div>
 
-        @* Navigasyon butonları *@
-        <div class="mt-6 flex gap-3">
-            <button hx-get="/KrediBasvurusu?handler=Step1"
-                    hx-target="#wizard-container"
-                    hx-swap="innerHTML"
-                    class="flex justify-center items-center h-14 w-14 shrink-0 bg-white border border-[#D1DDF5] rounded-[59px] cursor-pointer">
-                <img src="~/icons/blue/chevron-left.svg" width="8" height="14" alt="">
-            </button>
-            <button hx-get="/KrediBasvurusu?handler=Step3"
-                    hx-target="#wizard-container"
-                    hx-swap="innerHTML"
-                    class="flex-1 flex justify-between items-center px-8 py-4 h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
-                <span class="font-[Poppins] font-semibold text-[16px] text-white">Devam Et</span>
-                <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="">
-            </button>
-        </div>
+        @* Devam Et *@
+        <button hx-get="/KrediBasvurusu?handler=Step3"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="mt-6 flex justify-between items-center px-8 py-4 w-full h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
+            <span class="font-[Poppins] font-semibold text-[16px] text-white">Devam Et</span>
+            <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="">
+        </button>
 
     </div>
 </div>

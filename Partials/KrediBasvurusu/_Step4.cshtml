@@ -4,15 +4,22 @@
 ══════════════════════════════════════ *@
 <div x-data="{
         calismaId: '@(Model.WorkSectorId > 0 ? Model.WorkSectorId.ToString() : "")',
-        isEvli: null,
-        evDurumu: '',
-        arabavar: null
+        isEvli: @(Model.IsMarried.ToString().ToLower()),
+        evDurumu: '@Model.HouseStatusId',
+        arabavar: @(Model.HasCar.ToString().ToLower())
      }"
-     class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] rounded-[20px] overflow-hidden flex flex-col">
+     class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
 
     @* Kart başlığı *@
     <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
-        <div class="w-8"></div>
+        <button hx-get="/KrediBasvurusu?handler=Step3"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="border-none bg-transparent cursor-pointer p-0">
+            <div class="w-5 h-5 flex items-center justify-center">
+                <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
+            </div>
+        </button>
         <img src="~/images/IKLogo-blue.svg" width="70" height="25" alt="İnteraktif Kredi" class="object-contain">
         <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
             <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
@@ -21,6 +28,9 @@
 
     @* İlerleme çubuğu *@
     <div class="flex flex-col px-6 pt-5 gap-2 shrink-0">
+        <span class="font-[Poppins] font-normal text-xs leading-[18px] text-[#333]">
+            Adım 2/3: Gelir Bilgileri
+        </span>
         <div class="flex flex-row gap-1 w-full">
             <div class="flex-1 h-1.5 bg-[#006EFF] rounded-full"></div>
             <div class="flex-1 h-1.5 bg-[#006EFF] rounded-full"></div>
@@ -36,22 +46,16 @@
     </div>
 
     @* Bilgi kutusu *@
-    <div class="mx-6 mt-5 bg-[#EEF4FF] border border-[#C7D9FB] rounded-[12px] px-4 py-3 flex items-start gap-3">
-        <div class="w-8 h-8 shrink-0 rounded-[8px] bg-[#006EFF] flex items-center justify-center mt-[1px]">
-            <img src="~/icons/white/alert-circle.svg" width="15" height="15" alt="" style="filter:brightness(0) invert(1);">
-        </div>
-        <div class="flex flex-col gap-1 flex-1">
-            <p class="font-[Poppins] font-semibold text-[13px] leading-5 text-[#003F75] m-0">
-                Bilgileri otomatik doldur
-            </p>
-            <p class="font-[Poppins] font-normal text-[11px] leading-[17px] text-[#4A7EAD] m-0">
-                Gelir bilgilerinizi otomatik doldurmak için
-            </p>
+    <div class="relative mx-6 mt-5 bg-[#F0F6FF] border border-[#C7D9FB] rounded-[10px] px-3 pt-[13px] pb-[13px] pl-[37px]">
+        <img src="~/icons/blue/info-circle.svg" width="16" height="16" alt=""
+             class="absolute left-3 top-[15px]">
+        <p class="font-[Poppins] font-normal text-[11px] leading-4 text-[#0056B3] m-0">
+            Finansal profilinizden bilgileri otomatik doldurma için
+        </p>
+        <div>
             <a href="/Ayarlar"
-               class="mt-1 inline-flex items-center gap-1 no-underline">
-                <span class="font-[Poppins] font-semibold text-[12px] text-[#0056B3]">Ayarlar › Finansal Profil</span>
-                <img src="~/icons/blue/external-link.svg" width="11" height="11" alt="">
-            </a>
+               class="font-[Poppins] font-semibold text-[16px] leading-6 text-[#0056B3] underline">Ayarlar › Finansal Profil</a>
+            <span class="font-[Poppins] font-normal text-[11px] text-[#0056B3]"> sayfasını ziyaret edin.</span>
         </div>
     </div>
 
@@ -85,7 +89,7 @@
             </span>
             <div class="relative box-border w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
                 <select class="w-full h-full border-none outline-none py-[11px] pl-3.5 pr-10 appearance-none font-[Poppins] text-[14px] text-[#003F75] bg-transparent cursor-pointer">
-                    <option value="" disabled selected>Seçiniz...</option>
+                    <option value=""></option>
                     @foreach (var o in Model.Occupations)
                     {
                         <option value="@o.Value" selected="@(o.Value == Model.OccupationId.ToString() ? "selected" : null)">@o.Label</option>
@@ -119,7 +123,7 @@
             </span>
             <div class="relative box-border w-full h-[45px] bg-white border border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.06)] rounded-lg overflow-hidden">
                 <select class="w-full h-full border-none outline-none py-[11px] pl-3.5 pr-10 appearance-none font-[Poppins] text-[14px] text-[#003F75] bg-transparent cursor-pointer">
-                    <option value="" disabled selected>Seçiniz...</option>
+                    <option value=""></option>
                     @foreach (var t in MyApp.Web.ViewModels.FinansalProfilViewModel.WorkingTimeOptions)
                     {
                         <option value="@t.Value" selected="@(t.Value == Model.TotalWorkingTime ? "selected" : null)">@t.Label</option>
@@ -138,17 +142,17 @@
             <div class="flex gap-3">
                 <button type="button"
                         @@click="isEvli = false"
-                        :class="isEvli === false
-                            ? 'bg-[#006EFF] border-[#006EFF] text-white font-semibold'
-                            : 'bg-white border-[#D1DDF5] text-[#6B7280] font-normal'"
+                        :class="!isEvli
+                            ? 'bg-[#122B62] border-[#122B62] text-white font-semibold'
+                            : 'bg-white border-[#E0E0E0] text-[#A1A1A1] font-normal'"
                         class="box-border flex-1 h-[47px] border rounded-[10px] cursor-pointer font-[Poppins] text-[14px] leading-[21px]">
                     Bekar
                 </button>
                 <button type="button"
                         @@click="isEvli = true"
-                        :class="isEvli === true
-                            ? 'bg-[#006EFF] border-[#006EFF] text-white font-semibold'
-                            : 'bg-white border-[#D1DDF5] text-[#6B7280] font-normal'"
+                        :class="isEvli
+                            ? 'bg-[#122B62] border-[#122B62] text-white font-semibold'
+                            : 'bg-white border-[#E0E0E0] text-[#A1A1A1] font-normal'"
                         class="box-border flex-1 h-[47px] border rounded-[10px] cursor-pointer font-[Poppins] text-[14px] leading-[21px]">
                     Evli
                 </button>
@@ -166,8 +170,8 @@
                     <button type="button"
                             @@click="evDurumu = '@h.Value'"
                             :class="evDurumu === '@h.Value'
-                                ? 'bg-[#006EFF] border-[#006EFF] text-white font-semibold'
-                                : 'bg-white border-[#D1DDF5] text-[#6B7280] font-normal'"
+                                ? 'bg-[#122B62] border-[#122B62] text-white font-semibold'
+                                : 'bg-white border-[#E0E0E0] text-[#A1A1A1] font-normal'"
                             class="box-border flex-1 h-[45.5px] border rounded-[10px] cursor-pointer font-[Poppins] text-[13px] leading-5">
                         @h.Label
                     </button>
@@ -183,39 +187,31 @@
             <div class="flex gap-3">
                 <button type="button"
                         @@click="arabavar = true"
-                        :class="arabavar === true
-                            ? 'bg-[#006EFF] border-[#006EFF] text-white font-semibold'
-                            : 'bg-white border-[#D1DDF5] text-[#6B7280] font-normal'"
+                        :class="arabavar
+                            ? 'bg-[#122B62] border-[#122B62] text-white font-semibold'
+                            : 'bg-white border-[#E0E0E0] text-[#A1A1A1] font-normal'"
                         class="box-border flex-1 h-[47px] border rounded-[10px] cursor-pointer font-[Poppins] text-[14px] leading-[21px]">
                     Evet
                 </button>
                 <button type="button"
                         @@click="arabavar = false"
-                        :class="arabavar === false
-                            ? 'bg-[#006EFF] border-[#006EFF] text-white font-semibold'
-                            : 'bg-white border-[#D1DDF5] text-[#6B7280] font-normal'"
+                        :class="!arabavar
+                            ? 'bg-[#122B62] border-[#122B62] text-white font-semibold'
+                            : 'bg-white border-[#E0E0E0] text-[#A1A1A1] font-normal'"
                         class="box-border flex-1 h-[47px] border rounded-[10px] cursor-pointer font-[Poppins] text-[14px] leading-[21px]">
                     Hayır
                 </button>
             </div>
         </div>
 
-        @* Navigasyon butonları *@
-        <div class="mt-5 flex gap-3">
-            <button hx-get="/KrediBasvurusu?handler=Step3"
-                    hx-target="#wizard-container"
-                    hx-swap="innerHTML"
-                    class="flex justify-center items-center h-14 w-14 shrink-0 bg-white border border-[#D1DDF5] rounded-[59px] cursor-pointer">
-                <img src="~/icons/blue/chevron-left.svg" width="8" height="14" alt="">
-            </button>
-            <button hx-get="/KrediBasvurusu?handler=Step5"
-                    hx-target="#wizard-container"
-                    hx-swap="innerHTML"
-                    class="flex-1 flex justify-between items-center px-8 py-4 h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
-                <span class="font-[Poppins] font-semibold text-[16px] text-white">Devam Et</span>
-                <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="">
-            </button>
-        </div>
+        @* Devam Et *@
+        <button hx-get="/KrediBasvurusu?handler=Step5"
+                hx-target="#wizard-container"
+                hx-swap="innerHTML"
+                class="mt-5 flex justify-between items-center px-8 py-4 w-full h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
+            <span class="font-[Poppins] font-semibold text-[16px] text-white">Devam Et</span>
+            <img src="~/icons/white/chevron-right.svg" width="20" height="20" alt="">
+        </button>
 
     </div>
 </div>
