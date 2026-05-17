@@ -40,6 +40,9 @@
     /* Mobil kapatma butonu */
     .sb-close-mobile { display: none; }
 
+    /* Yatay scrollbar engelle */
+    .sb-wrap, .sb-inner, .sb-inner nav { overflow-x: hidden; }
+
     /* Active state — CSS sınıfı ile yönetilir (HTMX navigasyonu sonrası JS günceller) */
     .sb-nav-item.is-active {
         background: linear-gradient(90deg, #0056B3 0%, #2E6DF8 100%) !important;

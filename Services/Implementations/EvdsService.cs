@@ -76,7 +76,7 @@ public class EvdsService : IEvdsService
             RateLabel = $"{label} Faizi",
             RateValue = $"%{monthlyRate.ToString("N2", new CultureInfo("tr-TR"))}",
             PeriodSuffix = "/ Ay",
-            AnnualRateValue = $"%{entry.Rate.ToString("N2", new CultureInfo("tr-TR"))} / Yıl",
+            AnnualRateValue = $"%{(monthlyRate * 3).ToString("N2", new CultureInfo("tr-TR"))}",
             MarketAverageLabel = "Ortalama Piyasa Faizi",
             OpportunityLabel = "FIRSAT: Yılın En Düşük Seviyesi"
         };
