@@ -77,14 +77,8 @@ public class KurDetayModel : PageModel
             }
             else
             {
-                var (success, message, rapor) = await _reportService.AnalizUretAsync(ct);
-                if (success && rapor is not null)
-                    ViewModel.KisiselRapor = rapor;
-                else
-                {
-                    ViewModel.IsError = true;
-                    ViewModel.ErrorMessage = message;
-                }
+                ViewModel.IsError = true;
+                ViewModel.ErrorMessage = "Rapor bulunamadı.";
             }
         }
 
