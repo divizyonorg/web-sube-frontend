@@ -232,7 +232,7 @@ else
             try {
                 var json = JSON.parse(e.detail.xhr.responseText);
                 if (json.success) {
-                    htmx.ajax('GET', '/KrediBasvurusu?handler=Step8', { target: '#wizard-container', swap: 'innerHTML' });
+                    htmx.ajax('GET', '/KrediBasvurusu?handler=Step8&rid=' + encodeURIComponent(window.krediRid || ''), { target: '#wizard-container', swap: 'innerHTML' });
                 } else if (json.message) {
                     toast.error(json.message);
                 }
