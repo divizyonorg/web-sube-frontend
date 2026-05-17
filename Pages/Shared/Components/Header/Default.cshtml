@@ -30,7 +30,7 @@
             @* Hamburger — sadece mobil *@
             <button type="button"
                     class="header-hamburger"
-                    @@click="$store.layout.mobileMenuOpen = true"
+                    @@click="$store.layout.mobileMenuOpen = !$store.layout.mobileMenuOpen"
                     style="align-items:center; justify-content:center;
                            width:40px; height:40px; flex-shrink:0;
                            background:transparent; border:none; cursor:pointer;
