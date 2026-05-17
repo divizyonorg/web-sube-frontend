@@ -36,6 +36,7 @@
                id="@Model.Name"
                name="@Model.Name"
                value="@Model.Value"
+               autocomplete="off"
                placeholder="@(Model.Placeholder ?? "Aramak istediğiniz konuyu yazın...")"
                class="w-full h-16 bg-white border-2 border-[#E5E7EB] rounded-[14px] pl-12 pr-4 py-4 font-[Poppins] font-normal text-[18px] leading-[27px] text-[rgba(10,10,10,0.5)] outline-none focus:border-[#0056B3] transition" />
     </div>
@@ -54,6 +55,7 @@ else if (Model.Type == InputFieldType.Search)
                id="@Model.Name"
                name="@Model.Name"
                value="@Model.Value"
+               autocomplete="off"
                placeholder="@(Model.Placeholder ?? "Ara...")"
                class="grow bg-transparent font-[Poppins] font-normal text-[13px] leading-[17px] text-[#7A94B8] outline-none placeholder:text-[#7A94B8]" />
     </div>
@@ -80,6 +82,7 @@ else
         <input id="@Model.Name"
                name="@Model.Name"
                type="@htmlType"
+               autocomplete="off"
                x-model="value"
                @@focus="focused = true"
                @@blur="focused = false"
