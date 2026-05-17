@@ -93,12 +93,6 @@ public class IndexModel : PageModel
         return new JsonResult(new { status });
     }
 
-    public async Task<IActionResult> OnGetStep7Async(CancellationToken ct)
-    {
-        var status = await _reportService.GetReportStatusAsync(rid, ct);
-        return new JsonResult(new { status });
-    }
-
     public async Task<IActionResult> OnGetStep7Async(string? telNoSorguId, CancellationToken ct)
     {
         var model = await _reportService.FindeksRaporTalepAsync(telNoSorguId ?? "0", ct);

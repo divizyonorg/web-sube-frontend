@@ -20,6 +20,7 @@ public class ReportService : IReportService
         public const string ApplyCoupon = "/api/v1/reports/apply-coupon";
         public const string FindeksRaporTalep = "/api/v1/findeks/rapor-talep-master";
         public const string FindeksRaporTalepOnay = "/api/v1/findeks/rapor-talep-onay";
+        public const string TelefonSorgulaEft = "/api/v1/findeks/telefon-sorgula-eft";
         public const string AnalizUret = "/analiz-uret";
         public const string GetAiReport = "/api/v1/reports/ai-report/{0}";
         public const string ListKredi = "/api/v1/reports/list?type=KREDI&updated_after=2025-01-01";
