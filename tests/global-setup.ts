@@ -25,7 +25,7 @@ export default async function globalSetup() {
 
   if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
 
-  const browser = await chromium.launch({ headless: !process.env.CI, slowMo: 300 });
+  const browser = await chromium.launch({ headless: !!process.env.CI, slowMo: 300 });
   const context = await browser.newContext();
   const page    = await context.newPage();
 
