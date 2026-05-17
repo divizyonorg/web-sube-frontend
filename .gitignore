@@ -78,7 +78,7 @@ CLAUDE.md
 
 # Playwright
 /test-results/
-/playwright-report/trace/
+/playwright-report/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
