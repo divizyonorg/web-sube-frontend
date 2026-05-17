@@ -20,7 +20,8 @@ public class IndexModel : PageModel
     public async Task<IActionResult> OnGetAsync(CancellationToken ct)
     {
         var profile = await _customerDataService.GetProfileAsync(ct);
-        UserFullName = profile.FullName.Split(' ')[0];
+        var tr = new System.Globalization.CultureInfo("tr-TR");
+        UserFullName = tr.TextInfo.ToTitleCase(profile.FullName.ToLower(tr));
         return Page();
     }
 

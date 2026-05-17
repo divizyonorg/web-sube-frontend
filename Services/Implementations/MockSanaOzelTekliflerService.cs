@@ -10,7 +10,7 @@ public class MockSanaOzelTekliflerService : ISanaOzelTekliflerService
         new()
         {
             Id            = 1,
-            GradientClass = "bg-gradient-to-r from-[#AD46FF] to-[#8200DB]",
+            GradientClass = "bg-gradient-to-br from-[#0056B3] to-[#2E6DF8]",
             Badge         = "Öne Çıkan",
             Title         = "Düşük Faizli İhtiyaç Kredisi",
             Subtitle      = "Sadece sizin için özel %0.99 faiz oranı",
@@ -23,7 +23,7 @@ public class MockSanaOzelTekliflerService : ISanaOzelTekliflerService
         new()
         {
             Id            = 2,
-            GradientClass = "bg-gradient-to-r from-[#2B7FFF] to-[#1447E6]",
+            GradientClass = "bg-gradient-to-br from-[#0056B3] to-[#2E6DF8]",
             Badge         = "Yeni",
             Title         = "Konut Kredisi Kampanyası",
             Subtitle      = "İlk 6 ay ödemesiz, düşük faiz avantajı",
@@ -36,7 +36,7 @@ public class MockSanaOzelTekliflerService : ISanaOzelTekliflerService
         new()
         {
             Id            = 3,
-            GradientClass = "bg-gradient-to-r from-[#00C950] to-[#008236]",
+            GradientClass = "bg-gradient-to-br from-[#0056B3] to-[#2E6DF8]",
             Badge         = "Popüler",
             Title         = "Araç Kredisi Fırsatı",
             Subtitle      = "0 km ve 2. el araçlar için özel faiz",

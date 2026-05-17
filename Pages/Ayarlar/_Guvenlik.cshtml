@@ -8,7 +8,7 @@
     @* ── Dış beyaz card ─────────────────────────────────────── *@
     <div class="bg-white border border-[#E5E7EB] rounded-[14px] pt-[33px] px-[33px] pb-[33px] flex flex-col gap-6 font-[Poppins]">
 
-        <p class="font-[Manrope] font-bold text-[20px] text-[#101828]">Güvenlik Ayarları</p>
+        <p class="font-[Poppins] font-bold text-[20px] text-[#101828]">Güvenlik Ayarları</p>
 
         @* ── SMS OTP Aktif Kartı ─────────────────────────────── *@
         <div class="bg-gradient-to-br from-[#E6F7FF] to-[#F0F8FF] border border-[#DCE3FB] rounded-[14px] p-5 flex items-center gap-4 min-h-[110px]">
@@ -33,9 +33,9 @@
             <div class="bg-[#F0FDF4] border border-[#B9F8CF] rounded-[14px] p-[18px] min-h-[90px] flex flex-col justify-center">
                 <div class="flex items-center gap-2.5 mb-1.5">
                     <img src="~/icons/green/check-circle.svg" width="22" height="22" alt="" class="shrink-0">
-                    <span class="font-[Source_Sans_3] font-semibold text-[14px] text-[#0D542B]">Güvenli Doğrulama</span>
+                    <span class="font-[Poppins] font-semibold text-[14px] text-[#0D542B]">Güvenli Doğrulama</span>
                 </div>
-                <p class="font-[Source_Sans_3] text-[12px] text-[#008236] leading-[1.5] pl-8">
+                <p class="font-[Poppins] text-[12px] text-[#008236] leading-[1.5] pl-8">
                     Her giriş benzersiz bir OTP kodu ile doğrulanır.
                 </p>
             </div>
@@ -43,9 +43,9 @@
             <div class="bg-[#EFF6FF] border border-[#BEDBFF] rounded-[14px] p-[18px] min-h-[90px] flex flex-col justify-center">
                 <div class="flex items-center gap-2.5 mb-1.5">
                     <img src="~/icons/blue/lock-02.svg" width="22" height="22" alt="" class="shrink-0">
-                    <span class="font-[Source_Sans_3] font-semibold text-[14px] text-[#1C398E]">Şifresiz Erişim</span>
+                    <span class="font-[Poppins] font-semibold text-[14px] text-[#1C398E]">Şifresiz Erişim</span>
                 </div>
-                <p class="font-[Source_Sans_3] text-[12px] text-[#1447E6] leading-[1.5] pl-8">
+                <p class="font-[Poppins] text-[12px] text-[#1447E6] leading-[1.5] pl-8">
                     Sisteminizde şifre tutulmaz, oltalama saldırılarına karşı maksimum koruma.
                 </p>
             </div>
@@ -66,7 +66,7 @@
                     <input id="otpPhoneInput"
                            type="text"
                            @@focus="focused = true" @@blur="focused = false"
-                           class="flex-1 bg-transparent outline-none border-0 font-[Source_Sans_3] text-[16px] text-[#0A0A0A]" />
+                           class="flex-1 bg-transparent outline-none border-0 font-[Poppins] text-[16px] text-[#0A0A0A]" />
                 </div>
 
                 <button type="button"
@@ -80,9 +80,9 @@
             </div>
 
             <p x-show="updateError" x-cloak x-text="updateError"
-               class="font-[Source_Sans_3] text-[13px] text-[#DC2626] mt-2"></p>
+               class="font-[Poppins] text-[13px] text-[#DC2626] mt-2"></p>
 
-            <p class="font-[Source_Sans_3] text-[12px] text-[#6A7282] mt-2.5 leading-[1.5]">
+            <p class="font-[Poppins] text-[12px] text-[#6A7282] mt-2.5 leading-[1.5]">
                 Numara değişikliği için yeni telefonunuza doğrulama kodu gönderilecektir.
             </p>
 

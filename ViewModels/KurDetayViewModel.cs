@@ -31,6 +31,7 @@ public class InterestRateTrendViewModel
     public string AnnualRateValue { get; set; } = string.Empty;
     public string MarketAverageLabel { get; set; } = "Ortalama Piyasa Faizi";
     public string OpportunityLabel { get; set; } = "FIRSAT: Yılın En Düşük Seviyesi";
+    public double[] ChartData { get; set; } = [];
 }
 
 public class MarketSliderCardViewModel
