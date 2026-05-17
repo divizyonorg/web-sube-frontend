@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { bug } from './bug';
+import { bug, info } from './bug';
 
 const SIDEBAR_PAGES = [
   { label: 'Anasayfa',             href: '/anasayfa',            check: 'Tekrar Hoşgeldin' },
@@ -29,7 +29,7 @@ test.describe('Navigasyon', () => {
 
   test('kullanıcı avatarı/adı görünür', async ({ page }) => {
     await page.locator('header, [class*="header"]').first().waitFor({ timeout: 10_000 });
-    const avatar = page.locator('[class*="avatar"], [class*="user"]').first();
+    const avatar = page.locator('button.ua-profile-btn').first();
     if (await avatar.count() === 0)
       bug('Header\'da kullanıcı avatarı/adı bulunamadı');
   });
@@ -37,9 +37,7 @@ test.describe('Navigasyon', () => {
   // ─── Bug 1: Header'da kullanıcı adı kısaltılıyor ─────────────────────────
   test('[BUG-1] Header\'da kullanıcı adı "..." ile kısaltılmamalı', async ({ page }) => {
     await page.locator('header, [class*="header"]').first().waitFor({ timeout: 10_000 });
-    const nameEl = page
-      .locator('header [class*="name"], header [class*="user"] span, header strong, header p[class*="name"]')
-      .first();
+    const nameEl = page.locator('[data-user-name]').first();
     if (await nameEl.count() === 0) {
       info('[BUG-1] Header\'da kullanıcı adı elementi bulunamadı');
       return;
@@ -52,7 +50,7 @@ test.describe('Navigasyon', () => {
 
   test('bildirim alanı görünür', async ({ page }) => {
     await page.locator('header, [class*="header"]').first().waitFor({ timeout: 10_000 });
-    const notif = page.locator('[class*="notif"], [class*="badge"]').first();
+    const notif = page.locator('button:has(img[src*="bell"])').first();
     if (await notif.count() === 0)
       bug('Header\'da bildirim alanı bulunamadı');
   });
@@ -124,12 +122,18 @@ test.describe('Navigasyon', () => {
 
   // ─── Logout ───────────────────────────────────────────────────────────────
   test('çıkış yapılabiliyor ve login sayfasına yönlendiriyor', async ({ page }) => {
-    const logoutBtn = page
-      .locator('button:has-text("Çıkış"), a:has-text("Çıkış"), button:has-text("Çık"), a[href*="logout"], a[href*="Logout"], form[action*="logout"] button')
-      .first();
+    // Logout butonu .ua-dropdown içinde — önce profil butonuna tıklayarak dropdown açılır
+    const profileBtn = page.locator('button.ua-profile-btn').first();
+    if (await profileBtn.count() === 0) {
+      bug('Profil butonu bulunamadı — çıkış testi yapılamıyor');
+      return;
+    }
+    await profileBtn.click();
+    await page.locator('.ua-dropdown').first().waitFor({ state: 'visible', timeout: 5_000 });
 
+    const logoutBtn = page.locator('.ua-dropdown button:has-text("Çıkış")').first();
     if (await logoutBtn.count() === 0) {
-      bug('Çıkış yap butonu/linki sayfada bulunamadı');
+      bug('Çıkış yap butonu .ua-dropdown içinde bulunamadı');
       return;
     }
 

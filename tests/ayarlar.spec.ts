@@ -54,7 +54,7 @@ test.describe('Ayarlar', () => {
       resp => resp.url().includes('/Ayarlar') && resp.status() === 200,
       { timeout: 10_000 }
     ).catch(() => {});
-    const toast = page.locator('[class*="toast"], [class*="alert"], [class*="notification"], text=başarıyla, text=kaydedildi').first();
+    const toast = page.locator('[data-toast]').first();
     if (await toast.count() === 0)
       bug('[BUG-5] Profil Bilgileri kaydedildiğinde başarı/bildirim mesajı gösterilmiyor');
   });
@@ -71,7 +71,7 @@ test.describe('Ayarlar', () => {
       resp => resp.url().includes('/Ayarlar') && resp.status() === 200,
       { timeout: 10_000 }
     ).catch(() => {});
-    const toast = page.locator('[class*="toast"], [class*="alert"], [class*="notification"], text=başarıyla, text=kaydedildi').first();
+    const toast = page.locator('[data-toast]').first();
     if (await toast.count() === 0)
       bug('[BUG-6] Finansal/Demografik Profil kaydedildiğinde başarı bildirimi gösterilmiyor');
   });
