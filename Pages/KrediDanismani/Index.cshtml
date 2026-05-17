@@ -20,18 +20,6 @@
 
 <div class="flex flex-col gap-6">
 
-    @* ─── PageBar ─── *@
-    <div class="flex justify-between items-center pb-3 border-b border-[#DCE3FB]">
-        <button type="button" onclick="history.back()"
-                class="flex items-center gap-1 font-[Poppins] font-normal text-[14px] leading-5 text-[#1B4092]">
-            <img src="/icons/dark/chevron-left.svg" width="20" height="20" alt="">
-            Geri
-        </button>
-        <div class="flex flex-col items-end">
-            <span class="font-[Poppins] font-normal text-[14px] leading-5 text-[#003F75]">İnteraktif Kredi</span>
-            <span class="font-[Poppins] font-light text-[18px] leading-[25px] text-[#003F75]">WEB Şube</span>
-        </div>
-    </div>
 
     @* ─── İçerik ─── *@
     <div class="kd-content flex flex-col gap-8">
@@ -94,9 +82,11 @@
                             Kredi Tutarı (TL) <span class="text-red-500">*</span>
                         </label>
                         <input asp-for="Form.KrediTutari"
-                               type="number"
+                               type="text"
+                               id="krediTutariInput"
                                placeholder="Minimum 10.000 TL"
-                               x-model="tutar"
+                               x-on:input="tutar = $event.target.value"
+                               inputmode="numeric"
                                class="w-full h-[50px] border border-[#D1D5DC] rounded-[10px] px-4 font-['Source_Sans_3'] text-[16px] text-[#364153] placeholder:text-black/50 bg-white focus:outline-none focus:border-[#0056B3]" />
                     </div>
 
@@ -209,4 +199,17 @@
     </div>
 
 </div>
+
+@section Scripts {
+<script>
+    IMask(document.getElementById('krediTutariInput'), {
+        mask: Number,
+        thousandsSeparator: '.',
+        radix: ',',
+        scale: 0,
+        signed: false,
+        min: 0
+    });
+</script>
+}
 

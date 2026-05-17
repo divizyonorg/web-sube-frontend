@@ -45,14 +45,9 @@ public class IndexModel : PageModel
         Label = "ÇALIŞMA SÜRESİ",
         Name = "calismaSuresi",
         AlpineModel = "suresi",
-        Options =
-        [
-            new() { Value = "1y-alti",   Label = "1 yıldan az" },
-            new() { Value = "1-3y",      Label = "1–3 yıl" },
-            new() { Value = "3-5y",      Label = "3–5 yıl" },
-            new() { Value = "5-10y",     Label = "5–10 yıl" },
-            new() { Value = "10y-uzeri", Label = "10 yıl ve üzeri" },
-        ]
+        Options = FinansalProfilViewModel.WorkingTimeOptions
+            .Select(o => new SelectOption { Value = o.Value, Label = o.Label })
+            .ToList()
     };
 
     public SelectViewModel MaasBankasi { get; } = new()

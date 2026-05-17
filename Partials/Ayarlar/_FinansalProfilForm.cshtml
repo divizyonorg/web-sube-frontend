@@ -105,13 +105,13 @@
             <div class="flex gap-3">
                 <label class="flex-1 flex items-center gap-3 border border-[#DCE3FB] rounded-xl px-4 py-3 cursor-pointer has-[:checked]:border-[#2E6DF8] has-[:checked]:bg-[#F0F5FF]">
                     <input type="radio" name="IsMarried" value="false"
-                           @(!Model.IsMarried ? "checked" : "")
+                           @(Model.IsMarried == false ? "checked" : "")
                            class="accent-[#2E6DF8]">
                     <span class="font-[Poppins] text-[14px] text-[#003F75]">Bekar</span>
                 </label>
                 <label class="flex-1 flex items-center gap-3 border border-[#DCE3FB] rounded-xl px-4 py-3 cursor-pointer has-[:checked]:border-[#2E6DF8] has-[:checked]:bg-[#F0F5FF]">
                     <input type="radio" name="IsMarried" value="true"
-                           @(Model.IsMarried ? "checked" : "")
+                           @(Model.IsMarried == true ? "checked" : "")
                            class="accent-[#2E6DF8]">
                     <span class="font-[Poppins] text-[14px] text-[#003F75]">Evli</span>
                 </label>
@@ -143,7 +143,7 @@
                         class="w-full h-11 border border-[#DCE3FB] rounded-xl px-3 text-[14px] font-[Poppins] text-[#003F75] outline-none">
                     @foreach (var h in MyApp.Web.ViewModels.FinansalProfilViewModel.HouseStatusOptions)
                     {
-                        <option value="@h.Value" selected="@(h.Value == Model.HouseStatusId.ToString() ? "selected" : null)">@h.Label</option>
+                        <option value="@h.Value" selected="@(h.Value == Model.HouseStatusId?.ToString() ? "selected" : null)">@h.Label</option>
                     }
                 </select>
             </div>
@@ -152,7 +152,7 @@
                 <span class="font-[Poppins] text-[14px] text-[#003F75]">Araban Var Mı?</span>
                 <label class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" name="HasCar" value="true"
-                           @(Model.HasCar ? "checked" : "")
+                           @(Model.HasCar == true ? "checked" : "")
                            class="sr-only peer">
                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer
                                 peer-checked:after:translate-x-full peer-checked:after:border-white

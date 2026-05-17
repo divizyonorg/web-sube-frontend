@@ -23,19 +23,29 @@ export default defineConfig({
     trace: 'on',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    storageState: 'tests/.auth/state.json',
     launchOptions: {
       slowMo: process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0,
     },
   },
 
   projects: [
+    // Oturum gerektirmeyen testler — storageState yok
     {
-      name: 'chromium',
+      name: 'chromium-unauth',
       use: { ...devices['Desktop Chrome'] },
       testMatch: [
         'tests/login.spec.ts',
         'tests/register.spec.ts',
+      ],
+    },
+    // Oturum gerektiren testler — globalSetup'ın ürettiği state kullanılır
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'tests/.auth/state.json',
+      },
+      testMatch: [
         'tests/anasayfa.spec.ts',
         'tests/navigasyon.spec.ts',
         'tests/kredi-basvurusu.spec.ts',

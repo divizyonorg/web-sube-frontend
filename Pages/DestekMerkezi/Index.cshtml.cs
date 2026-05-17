@@ -19,9 +19,9 @@ public class IndexModel : PageModel
         _customerDataService = customerDataService;
     }
 
-    public async Task<IActionResult> OnPostCreateTalebiAsync(int parentTopicId, string detailText)
+    public async Task<IActionResult> OnPostCreateTalebiAsync(int parentTopicId, string detailText, CancellationToken ct)
     {
-        var success = await _customerDataService.CreateDestekTalebiAsync(parentTopicId, detailText);
+        var success = await _customerDataService.CreateDestekTalebiAsync(parentTopicId, detailText, ct);
         return new JsonResult(new { success });
     }
 

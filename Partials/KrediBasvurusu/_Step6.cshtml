@@ -2,18 +2,11 @@
 @* ══════════════════════════════════════
    ADIM 5 — Kredi Güven Raporu'nu Al (3/3)
 ══════════════════════════════════════ *@
-<div class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
+<div class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] rounded-[20px] overflow-hidden flex flex-col">
 
     @* Kart başlığı *@
     <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
-        <button hx-get="/KrediBasvurusu?handler=Step5"
-                hx-target="#wizard-container"
-                hx-swap="innerHTML"
-                class="border-none bg-transparent cursor-pointer p-0">
-            <div class="w-5 h-5 flex items-center justify-center">
-                <img src="~/icons/blue/chevron-left.svg" width="5" height="10" alt="">
-            </div>
-        </button>
+        <div class="w-8"></div>
         <img src="~/images/IKLogo-blue.svg" width="70" height="25" alt="İnteraktif Kredi" class="object-contain">
         <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
             <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
@@ -22,9 +15,6 @@
 
     @* İlerleme çubuğu — Adım 3/3 (tümü mavi) *@
     <div class="flex flex-col px-6 pt-5 gap-2 shrink-0">
-        <span class="font-[Poppins] font-normal text-xs leading-[18px] text-[#333]">
-            Adım 3/3: Ödemeni Tamamla
-        </span>
         <div class="flex flex-row gap-1 w-full">
             <div class="flex-1 h-[6px] bg-[#006EFF] rounded-full"></div>
             <div class="flex-1 h-[6px] bg-[#006EFF] rounded-full"></div>
@@ -152,7 +142,7 @@
 
         @* Ödeme butonu *@
         <button type="submit" id="pay-submit-btn"
-                class="flex justify-between items-center px-8 py-4 w-full h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
+                class="w-full flex justify-between items-center px-8 py-4 h-14 bg-linear-to-r from-[#0056B3] to-[#2E6DF8] rounded-[59px] border-none cursor-pointer">
             <span id="coupon-pay-amount" class="font-[Poppins] font-semibold text-[16px] text-white">₺39,90 Öde</span>
             <img src="~/icons/white/credit-card.svg" width="20" height="20" alt="">
         </button>
@@ -239,6 +229,15 @@
                 if (freePass) {
                     e.preventDefault();
                     htmx.ajax('GET', '/KrediBasvurusu?handler=Step7', { target: '#wizard-container', swap: 'innerHTML' });
+                    return;
+                }
+                var cardNumber = payForm.querySelector('input[name="CardNumber"]');
+                var cardHolder = payForm.querySelector('input[name="CardHolderName"]');
+                var expDate    = payForm.querySelector('input[name="ExpDate"]');
+                var cvv        = payForm.querySelector('input[name="Cvv"]');
+                if (!cardNumber.value.trim() || !cardHolder.value.trim() || !expDate.value.trim() || !cvv.value.trim()) {
+                    e.preventDefault();
+                    toast.error('Kart Bilgileri Eksik');
                     return;
                 }
                 payBtn.disabled = true;

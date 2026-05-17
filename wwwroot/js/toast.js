@@ -1,6 +1,7 @@
 const Toast = (() => {
     const MAX = 4;
     const _containers = {};
+    const _activeMessages = new Set();
 
     const _borderColor = {
         success: '#36FC99',
@@ -53,7 +54,10 @@ const Toast = (() => {
         toast.style.transition = 'opacity 200ms ease-in, transform 200ms ease-in';
         toast.style.opacity = '0';
         toast.style.transform = `translateY(${isBottom ? '16px' : '-16px'})`;
-        setTimeout(() => toast.remove(), 200);
+        setTimeout(() => {
+            _activeMessages.delete(toast.dataset.toastKey || '');
+            toast.remove();
+        }, 200);
     }
 
     function show({
@@ -65,6 +69,11 @@ const Toast = (() => {
         position = 'bottom-right',
         pauseOnHover = true,
     } = {}) {
+        // Aynı mesaj zaten gösteriliyorsa tekrar render etme
+        const dedupeKey = variant + ':' + message;
+        if (_activeMessages.has(dedupeKey)) return;
+        _activeMessages.add(dedupeKey);
+
         const container = _getContainer(position);
         const isBottom = position.startsWith('bottom');
 
@@ -76,6 +85,7 @@ const Toast = (() => {
 
         const toast = document.createElement('div');
         toast.dataset.toast = '';
+        toast.dataset.toastKey = dedupeKey;
         toast.setAttribute('role', 'status');
         toast.setAttribute('aria-live', 'polite');
 
@@ -142,6 +152,7 @@ const Toast = (() => {
         if (closable) {
             toast.querySelector('[data-toast-close]')?.addEventListener('click', () => {
                 clearTimeout(timer);
+                _activeMessages.delete(dedupeKey);
                 _dismiss(toast, isBottom);
             });
         }

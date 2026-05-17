@@ -197,11 +197,29 @@ public class ReportService : IReportService
         }
     }
 
-    public async Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> AnalizUretAsync(CancellationToken ct = default)
+    public async Task<(bool Basari, string Aksiyon)> GetFindeksDurumAsync(string rid, CancellationToken ct = default)
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync(Endpoints.AnalizUret, new { }, ct);
+            var response = await _httpClient.GetAsync($"/api/v1/findeks/durum/{rid}", ct);
+            if (!response.IsSuccessStatusCode) return (false, string.Empty);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            using var doc = JsonDocument.Parse(body);
+            var basari = doc.RootElement.TryGetProperty("basari", out var b) && b.GetBoolean();
+            var aksiyon = doc.RootElement.TryGetProperty("aksiyon", out var a) ? a.GetString() ?? string.Empty : string.Empty;
+            return (basari, aksiyon);
+        }
+        catch
+        {
+            return (false, string.Empty);
+        }
+    }
+
+    public async Task<(bool Success, string Message, KisiselRaporViewModel? Rapor)> AnalizUretAsync(string rid, CancellationToken ct = default)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsync(Endpoints.AnalizUret, null, ct);
             var body = await response.Content.ReadAsStringAsync(ct);
             _logger.LogInformation("POST {Endpoint} → {Status}", Endpoints.AnalizUret, (int)response.StatusCode);
             if (!response.IsSuccessStatusCode)
@@ -209,10 +227,15 @@ public class ReportService : IReportService
                 _logger.LogWarning("POST {Endpoint} başarısız: {Body}", Endpoints.AnalizUret, body);
                 return (false, TryParseMessage(body) ?? "Analiz oluşturulamadı.", null);
             }
-            var dto = JsonSerializer.Deserialize<AnalizUretResponseDto>(body);
-            if (dto?.FrontendUi is null)
-                return (false, "Geçersiz API yanıtı.", null);
-            return (true, string.Empty, MapFromAnalizUret(dto.FrontendUi));
+            KisiselRaporViewModel? rapor = null;
+            try
+            {
+                var dto = JsonSerializer.Deserialize<AnalizUretResponseDto>(body);
+                if (dto?.FrontendUi is not null)
+                    rapor = MapFromAnalizUret(dto.FrontendUi);
+            }
+            catch (Exception ex) { _logger.LogError(ex, "MapFromAnalizUret hatası"); }
+            return (true, string.Empty, rapor);
         }
         catch (Exception ex)
         {

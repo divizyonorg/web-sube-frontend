@@ -12,7 +12,7 @@
         style="position:relative;
                z-index:60;
                width:100%;
-               height:85px;
+               height:68px;
                background:linear-gradient(90deg,#2E6DF8 0%,#0056B3 100%);
                box-shadow:0px 4px 4px rgba(0,0,0,0.25);
                border-bottom:1px solid #2E6DF8;
@@ -42,11 +42,20 @@
                 </svg>
             </button>
 
-            @* Logo *@
-            <a href="/anasayfa" style="display:flex; flex:none;">
+            @* Logo + Web Şube — ana sayfaya link *@
+            <a href="/Anasayfa" style="display:flex; align-items:center; gap:12px; text-decoration:none; flex:none;">
                 <img src="~/images/Image (İnteraktif Kredi).png"
                      alt="İnteraktif Kredi"
-                     style="width:150.49px; height:40px; object-fit:contain;">
+                     style="width:118px; height:30px; object-fit:contain; flex:none;">
+
+                @* Dikey ayırıcı *@
+                <div style="width:2px; height:28px; background:rgba(255,255,255,0.90); flex:none; border-radius:1px;"></div>
+
+                @* Web Şube yazısı *@
+                <span style="font-family:'Poppins',sans-serif; font-weight:600; font-size:16px;
+                             line-height:1; color:rgba(255,255,255,0.90); white-space:nowrap; flex:none;">
+                    Web Şube
+                </span>
             </a>
 
         </div>

@@ -13,88 +13,83 @@
 }
 
 <section id="kredinabzi-card"
-         class="bg-[#E6F7FF] rounded-[15px] pt-3.5 pb-0 flex flex-col gap-3 font-[Poppins] flex-1 overflow-hidden">
+         class="bg-[#E6F7FF] rounded-[15px] pt-3.5 flex flex-col gap-3 font-[Poppins] flex-1 overflow-hidden">
 
     @* Başlık *@
-    <h2 class="m-0 font-[250] text-[18px] leading-[27px] text-[#003F75] text-center px-6">
+    <h2 class="m-0 font-[250] text-[18px] leading-[27px] text-[#003F75] text-center px-6 min-h-[54px] flex items-center justify-center">
         Bankalarda kredi muslukları açık mı?
     </h2>
 
     @* Beyaz iç kart *@
-    <div class="flex flex-col gap-3 bg-white border border-[#DCE3FB] rounded-[15px] p-3">
+    <div class="px-3 flex flex-col flex-1">
+        <div class="flex flex-col gap-4 bg-white rounded-[15px] p-4 flex-1">
 
-        @* Başlık satırı: Kredi Nabzı + dropdown *@
-        <div class="border-b border-black/15 pb-1 flex flex-col gap-1">
-            <div class="flex justify-between items-center">
-                @* Sol: ikon + "Kredi Nabzı" *@
-                <div class="flex items-center gap-2">
-                    <svg width="26" height="19" viewBox="0 0 26 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="0.5" y="12.5" width="4" height="6" rx="0.5" stroke="#2E6DF8" stroke-width="1.4717"/>
-                        <rect x="7.5" y="8.5" width="4" height="10" rx="0.5" stroke="#2E6DF8" stroke-width="1.4717"/>
-                        <rect x="14.5" y="4.5" width="4" height="14" rx="0.5" stroke="#2E6DF8" stroke-width="1.4717"/>
-                        <rect x="21.5" y="0.5" width="4" height="18" rx="0.5" stroke="#2E6DF8" stroke-width="1.4717"/>
-                    </svg>
-                    <span class="font-medium text-[14px] leading-[21px] text-[#003F75]">Kredi Nabzı</span>
-                </div>
-                @* Sağ: dropdown *@
-                <div class="relative" id="@cardId">
-                    <button type="button"
-                        onclick="document.getElementById('@cardId').querySelector('.nabzi-menu').classList.toggle('hidden')"
-                        class="bg-white shadow-[0px_0px_5px_rgba(0,63,117,0.2)] rounded-[5px] px-2 py-0.5 flex items-center gap-1 cursor-pointer border-0">
-                        <span class="font-normal text-[12px] leading-[18px] text-[#003F75] whitespace-nowrap">@Model.ProductLabel</span>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" class="transition-transform duration-150">
-                            <path d="M3 4.5L6 7.5L9 4.5" stroke="#003F75" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                    <div class="nabzi-menu hidden absolute right-0 top-full mt-1 z-20 bg-white border border-[#DCE3FB] rounded-[8px] shadow-[0px_4px_12px_rgba(0,0,0,0.12)] overflow-hidden min-w-[130px]">
-                        @foreach (var opt in options)
-                        {
-                            <button type="button"
-                                hx-get="/anasayfa?handler=KrediNabzi&creditType=@opt.Type"
-                                hx-target="#kredinabzi-card"
-                                hx-swap="outerHTML"
-                                class="w-full text-left px-3 py-1.5 text-[12px] leading-[18px] border-0 cursor-pointer transition-colors duration-100
-                                       @(Model.CreditType == opt.Type ? "bg-[#F2F8FF] text-[#0056B3] font-medium" : "text-[#003F75] font-normal hover:bg-[#F8FBFF]")">
-                                @opt.Full
-                            </button>
-                        }
+            @* Başlık + Açıklama — sabit yükseklik wrapper ile progress bar hizalaması *@
+            <div class="flex flex-col gap-4 min-h-[70px]">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium text-[16px] leading-[24px] text-[#003F75]">Kredi Nabzı</span>
+                    @* Sağ: dropdown *@
+                    <div class="relative" id="@cardId">
+                        <button type="button"
+                            onclick="document.getElementById('@cardId').querySelector('.nabzi-menu').classList.toggle('hidden')"
+                            class="bg-white shadow-[0px_0px_5px_rgba(0,63,117,0.2)] rounded-[5px] px-2 py-0.5 flex items-center gap-1 cursor-pointer border-0">
+                            <span class="font-normal text-[12px] leading-[18px] text-[#003F75] whitespace-nowrap">@Model.ProductLabel</span>
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" class="transition-transform duration-150">
+                                <path d="M3 4.5L6 7.5L9 4.5" stroke="#003F75" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <div class="nabzi-menu hidden absolute right-0 top-full mt-1 z-20 bg-white border border-[#DCE3FB] rounded-[8px] shadow-[0px_4px_12px_rgba(0,0,0,0.12)] overflow-hidden min-w-[130px]">
+                            @foreach (var opt in options)
+                            {
+                                <button type="button"
+                                    hx-get="/anasayfa?handler=KrediNabzi&creditType=@opt.Type"
+                                    hx-target="#kredinabzi-card"
+                                    hx-swap="outerHTML"
+                                    class="w-full text-left px-3 py-1.5 text-[12px] leading-[18px] border-0 cursor-pointer transition-colors duration-100
+                                           @(Model.CreditType == opt.Type ? "bg-[#F2F8FF] text-[#0056B3] font-medium" : "text-[#003F75] font-normal hover:bg-[#F8FBFF]")">
+                                    @opt.Full
+                                </button>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-            @* Açıklama metni *@
-            <p class="m-0 font-light italic text-[9px] leading-[14px] text-black/50">
-                @(string.IsNullOrEmpty(Model.Description)
-                    ? "Bankalar bazen faizleri düşük tutsa bile, perde arkasında başvuru şartlarını zorlaştırabilirler. Bu analiz tam olarak kredi nabzını ölçer."
-                    : Model.Description)
-            </p>
-        </div>
 
-        @* Gradient çubuk *@
-        <div class="flex flex-col gap-2 px-2">
-            <div class="relative w-full h-5 rounded-full overflow-visible">
-                <div class="absolute inset-0 rounded-full"
-                     style="background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);"></div>
-                <div class="absolute top-1/2 -translate-y-1/2 w-[10px] h-[25px] bg-white shadow-[0px_1px_4px_rgba(0,0,0,0.2)] rounded-[6px]"
-                     style="left: calc(@clampedPercent% - 5px);"></div>
+                @* Açıklama metni *@
+                <p class="m-0 font-light text-[10px] leading-[15px] text-[#003F75]">
+                    @(string.IsNullOrEmpty(Model.Description)
+                        ? "Bankalar bazen faizleri düşük tutsa bile, perde arkasında başvuru şartlarını zorlaştırabilirler. Bu analiz tam olarak kredi nabzını ölçer."
+                        : Model.Description)
+                </p>
             </div>
-            <div class="flex justify-between px-6">
-                <span class="font-normal text-[8px] leading-[12px] text-[#122B62] opacity-75">@Model.LeftLabel</span>
-                <span class="font-normal text-[8px] leading-[12px] text-[#2E6DF8] opacity-75">@Model.MiddleLabel</span>
-                <span class="font-normal text-[8px] leading-[12px] text-[#37C6B3] opacity-75">@Model.RightLabel</span>
-            </div>
-        </div>
 
-        @* Alt satır: AI etiketi + yıldız *@
-        <div class="flex justify-between items-center px-1">
-            <span class="font-normal text-[10px] leading-[15px] text-[#003F75]">@Model.AiText</span>
-            <img src="/icons/Outher/pearlStar.svg" width="14" height="14" alt="" aria-hidden="true">
+            @* Gradient çubuk *@
+            <div class="flex flex-col gap-2 px-2">
+                <div class="relative w-full h-5 rounded-full overflow-visible">
+                    <div class="absolute inset-0 rounded-full"
+                         style="background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);"></div>
+                    <div class="absolute top-1/2 -translate-y-1/2 w-[10px] h-[25px] bg-white shadow-[0px_1px_4px_rgba(0,0,0,0.2)] rounded-[6px]"
+                         style="left: calc(@clampedPercent% - 5px);"></div>
+                </div>
+                <div class="flex justify-between px-6">
+                    <span class="font-normal text-[8px] leading-[12px] text-[#122B62] opacity-75">@Model.LeftLabel</span>
+                    <span class="font-normal text-[8px] leading-[12px] text-[#2E6DF8] opacity-75">@Model.MiddleLabel</span>
+                    <span class="font-normal text-[8px] leading-[12px] text-[#37C6B3] opacity-75">@Model.RightLabel</span>
+                </div>
+            </div>
+
+            @* Alt satır: AI etiketi + yıldız *@
+            <div class="flex justify-between items-center px-1">
+                <span class="font-normal text-[10px] leading-[15px] text-[#003F75]">@Model.AiText</span>
+                <img src="/icons/Outher/pearlStar.svg" width="14" height="14" alt="" aria-hidden="true">
+            </div>
+
         </div>
     </div>
 
-    @* Buton *@
-    <div class="flex justify-center px-3 pb-[18px]">
+    @* Buton — beyaz kartın dışında *@
+    <div class="flex justify-center px-3 pb-3">
         <a href="/KrediRaporlari/KurDetay?tab=piyasa"
-            class="w-full max-w-[280px] py-[10px] bg-[#0056B3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[40px] font-medium text-[16px] leading-[24px] text-white text-center cursor-pointer hover:bg-[#00468f] transition-colors no-underline block">
+            class="w-full max-w-[280px] py-[10px] bg-[#0056B3] rounded-[40px] font-medium text-[16px] leading-[24px] text-white text-center cursor-pointer hover:bg-[#00468f] transition-colors no-underline block">
             Kredi Piyasasını İzle
         </a>
     </div>
