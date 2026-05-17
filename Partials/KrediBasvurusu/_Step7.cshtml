@@ -46,7 +46,7 @@
              }
          }"
          x-init="loadBanks()"
-         class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
+         class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] rounded-[20px] overflow-hidden flex flex-col">
 
         @* Başlık *@
         <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
@@ -91,7 +91,7 @@
                 <select x-show="!loadingBanks"
                         x-model="selectedBank"
                         class="w-full h-[48px] px-4 border-2 border-[#D1DDF5] rounded-[12px] font-[Poppins] text-[14px] text-[#003F75] bg-white outline-none focus:border-[#2E6DF8] cursor-pointer">
-                    <option value="">-- Banka seçiniz --</option>
+                    <option value="" disabled selected>Seçiniz...</option>
                     <template x-for="bank in banks" :key="bank.value">
                         <option :value="bank.value" x-text="bank.label"></option>
                     </template>
@@ -153,7 +153,7 @@ else
              }
          }"
          x-init="setInterval(() => { if (seconds > 0) seconds--; }, 1000)"
-         class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] shadow-[0_4px_24px_rgba(0,86,179,0.10)] rounded-[20px] overflow-hidden flex flex-col">
+         class="box-border w-full max-w-[420px] bg-white border border-[#E2EAF5] rounded-[20px] overflow-hidden flex flex-col">
 
         <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
             <div class="w-8"></div>
@@ -182,13 +182,15 @@ else
             </p>
 
             <div class="mt-6 flex justify-center gap-2">
-                <template x-for="(v, i) in otp" :key="i">
+                @for (int i = 0; i < 6; i++) {
                     <input type="text" maxlength="1" inputmode="numeric"
-                           @@input="onInput($event, i)"
-                           @@keydown.backspace="onBack($event, i)"
-                           :class="v !== '' ? 'border-[#2E6DF8] shadow-[0_2px_10px_rgba(46,109,248,0.20)]' : 'border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.08)]'"
-                           class="w-[46px] h-[54px] box-border bg-white border-2 rounded-[10px] text-center font-[Poppins] font-bold text-[22px] text-[#003F75] outline-none shrink-0" />
-                </template>
+                           @@input="onInput($event, @(i))"
+                           @@keydown.backspace="onBack($event, @(i))"
+                           :class="otp[@(i)] !== ''
+                               ? 'border-[#2E6DF8] shadow-[0_2px_10px_rgba(46,109,248,0.20)]'
+                               : 'border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.08)]'"
+                           class="w-[46px] h-[54px] box-border bg-white border-2 rounded-[10px] text-center font-[Poppins] font-bold text-[22px] text-[#003F75] outline-none shrink-0">
+                }
             </div>
 
             <div class="mt-4 w-full flex items-start gap-3 bg-[#F0F0F0] rounded-[10px] px-3 py-[13px]">
@@ -206,7 +208,7 @@ else
 
             <form hx-post="/KrediBasvurusu?handler=VerifyOtp"
                   hx-swap="none"
-                  hx-on::after-request="try { var j = JSON.parse(event.detail.xhr.responseText); if (j.success) { htmx.ajax('GET', '/KrediBasvurusu?handler=Step8&rid=' + encodeURIComponent(window.krediRid || ''), { target: '#wizard-container', swap: 'innerHTML' }); } else if (j.message) { toast.error(j.message); } } catch {}"
+                  data-verify-trigger
                   class="w-full mt-3">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="Pin" :value="otp.join('')">
@@ -222,3 +224,19 @@ else
     </div>
 }
 
+<script>
+    (function () {
+        var form = document.querySelector('[data-verify-trigger]');
+        if (!form) return;
+        form.addEventListener('htmx:afterRequest', function (e) {
+            try {
+                var json = JSON.parse(e.detail.xhr.responseText);
+                if (json.success) {
+                    htmx.ajax('GET', '/KrediBasvurusu?handler=Step8', { target: '#wizard-container', swap: 'innerHTML' });
+                } else if (json.message) {
+                    toast.error(json.message);
+                }
+            } catch {}
+        });
+    })();
+</script>

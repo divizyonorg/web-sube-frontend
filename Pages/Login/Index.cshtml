@@ -172,8 +172,17 @@
                             shadow-[0_4px_24px_rgba(0,0,0,0.08)]
                             lg:max-w-120 lg:shadow-[0_25px_60px_rgba(0,0,0,0.3)]">
 
-                    <img src="~/images/sms.png"
-                         class="w-full h-50 object-cover object-top block" />
+                    <div class="relative">
+                        <img src="~/images/sms.png"
+                             class="w-full h-50 object-cover object-top block" />
+                        <button type="button"
+                                @@click="showOtpModal = false; clearInterval(timerInterval)"
+                                class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border-0 cursor-pointer hover:bg-white transition-colors">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
 
                     <div class="px-5 pt-6 pb-8 flex flex-col items-center gap-4 lg:px-9 lg:pt-7 lg:pb-8">
 
