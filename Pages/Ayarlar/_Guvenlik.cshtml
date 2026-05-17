@@ -61,12 +61,12 @@
 
                 <div x-data="{ focused: false }"
                      :class="focused ? 'border-[#0056B3]' : 'border-[#D1D5DC]'"
-                     class="border rounded-[10px] bg-white transition-colors flex-1 h-[50px] flex items-center gap-3 pl-[15px] pr-4">
+                     class="border rounded-[10px] bg-white transition-colors sm:flex-1 h-[50px] flex items-center gap-3 px-[15px]">
                     <img src="~/icons/gray/phone.svg" width="20" height="20" alt="" class="shrink-0">
                     <input id="otpPhoneInput"
                            type="text"
                            @@focus="focused = true" @@blur="focused = false"
-                           class="flex-1 bg-transparent outline-none border-0 font-[Poppins] text-[14px] text-[#1F2937]" />
+                           class="flex-1 bg-transparent outline-none border-0 font-[Source_Sans_3] text-[16px] text-[#0A0A0A]" />
                 </div>
 
                 <button type="button"

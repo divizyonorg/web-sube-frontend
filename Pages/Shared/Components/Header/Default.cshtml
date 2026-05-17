@@ -30,7 +30,7 @@
             @* Hamburger — sadece mobil *@
             <button type="button"
                     class="header-hamburger"
-                    @@click="$store.layout.mobileMenuOpen = true"
+                    @@click="$store.layout.mobileMenuOpen = !$store.layout.mobileMenuOpen"
                     style="align-items:center; justify-content:center;
                            width:40px; height:40px; flex-shrink:0;
                            background:transparent; border:none; cursor:pointer;
@@ -49,10 +49,10 @@
                      style="width:118px; height:30px; object-fit:contain; flex:none;">
 
                 @* Dikey ayırıcı *@
-                <div style="width:2px; height:28px; background:rgba(255,255,255,0.90); flex:none; border-radius:1px;"></div>
+                <div class="hidden md:block" style="width:2px; height:28px; background:rgba(255,255,255,0.90); flex:none; border-radius:1px;"></div>
 
                 @* Web Şube yazısı *@
-                <span style="font-family:'Poppins',sans-serif; font-weight:600; font-size:16px;
+                <span class="hidden md:block" style="font-family:'Poppins',sans-serif; font-weight:600; font-size:16px;
                              line-height:1; color:rgba(255,255,255,0.90); white-space:nowrap; flex:none;">
                     Web Şube
                 </span>
