@@ -128,6 +128,8 @@
                         <div class="relative">
                             <input type="number" placeholder="0"
                                    x-model="esGeliri"
+                                   min="0"
+                                   @@blur="if (esGeliri < 0) esGeliri = 0"
                                    class="w-full py-2.5 pl-3 pr-9 border border-[#B0CAED] rounded-[8px] font-[Poppins] font-semibold text-[14px] text-[rgba(0,63,117,0.5)] bg-white outline-none transition-colors focus:border-[#0056B3]" />
                             <span class="absolute right-3 top-1/2 -translate-y-1/2 font-[Poppins] text-[13px] text-[#739FCC] pointer-events-none">₺</span>
                         </div>

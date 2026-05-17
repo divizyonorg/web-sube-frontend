@@ -35,7 +35,7 @@ test.describe('Anasayfa', () => {
 
   test('Kredi Nabzı dropdown kredi türünü değiştiriyor', async ({ page }) => {
     await page.locator('text=Kredi Nabzı').first().waitFor({ timeout: 10_000 });
-    const dropdown = page.locator('select, [x-data] button').filter({ hasText: /İhtiyaç|Konut|Araç|Ticari/ }).first();
+    const dropdown = page.locator('#kredinabzi-card button, select').filter({ hasText: /İhtiyaç|Konut|Araç|Ticari/ }).first();
     if (await dropdown.count() === 0) {
       bug('Kredi Nabzı kredi türü dropdown\'ı bulunamadı');
     } else {
@@ -53,7 +53,7 @@ test.describe('Anasayfa', () => {
 
   test('VIP Paketler kartı içeriği görünür', async ({ page }) => {
     await expect(page.locator('text=VIP Paketler').first()).toBeVisible({ timeout: 10_000 });
-    const vipLink = page.locator('a[href="/VipDanismalikPaketleri"]').first();
+    const vipLink = page.locator('#layout-main a[href="/VipDanismalikPaketleri"]').first();
     await expect(vipLink).toBeAttached();
     if (!await vipLink.isVisible())
       bug('VIP Paketleri İncele linki DOM\'da var ama görünmüyor — CSS hidden sorunu');
