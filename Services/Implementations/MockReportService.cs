@@ -45,7 +45,7 @@ public class MockReportService : IReportService
     public Task<string> GetReportStatusAsync(string rid, CancellationToken ct = default)
         => Task.FromResult("PENDING");
 
-    public Task<FindeksOtpViewModel> FindeksRaporTalepAsync(CancellationToken ct = default)
+    public Task<FindeksOtpViewModel> FindeksRaporTalepAsync(string telNoSorguId = "0", CancellationToken ct = default)
         => Task.FromResult(new FindeksOtpViewModel
         {
             Basari = true,
@@ -54,7 +54,6 @@ public class MockReportService : IReportService
             TalepId = "MOCK-280625398",
             RaporDbId = "KRD-MOCK-00001",
         });
-    }
 
     public Task<(bool Basari, string Aksiyon, string Mesaj, string TelNoSorguId)> TelefonSorgulaEftAsync(string bankaEftKodu, CancellationToken ct = default)
         => Task.FromResult((true, "ESLESME_BASARILI", "Banka numarası uyuştu.", "MOCK-TEL-00001"));
