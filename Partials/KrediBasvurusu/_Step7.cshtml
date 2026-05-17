@@ -206,7 +206,7 @@ else
 
             <form hx-post="/KrediBasvurusu?handler=VerifyOtp"
                   hx-swap="none"
-                  data-verify-trigger
+                  hx-on::after-request="try { var j = JSON.parse(event.detail.xhr.responseText); if (j.success) { htmx.ajax('GET', '/KrediBasvurusu?handler=Step8&rid=' + encodeURIComponent(window.krediRid || ''), { target: '#wizard-container', swap: 'innerHTML' }); } else if (j.message) { toast.error(j.message); } } catch {}"
                   class="w-full mt-3">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="Pin" :value="otp.join('')">
@@ -222,19 +222,3 @@ else
     </div>
 }
 
-<script>
-    (function () {
-        var form = document.querySelector('[data-verify-trigger]');
-        if (!form) return;
-        form.addEventListener('htmx:afterRequest', function (e) {
-            try {
-                var json = JSON.parse(e.detail.xhr.responseText);
-                if (json.success) {
-                    htmx.ajax('GET', '/KrediBasvurusu?handler=Step8&rid=' + encodeURIComponent(window.krediRid || ''), { target: '#wizard-container', swap: 'innerHTML' });
-                } else if (json.message) {
-                    toast.error(json.message);
-                }
-            } catch {}
-        });
-    })();
-</script>
