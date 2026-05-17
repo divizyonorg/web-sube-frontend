@@ -7,7 +7,17 @@
         .ua-name-wrap        { display: none !important; }
         .ua-chevron          { display: none !important; }
         .ua-dropdown         { left: auto !important; right: 0 !important; }
-        .ua-notif-dropdown   { width: calc(100vw - 48px) !important; max-width: 340px !important; left: 0 !important; right: auto !important; }
+        .ua-notif-dropdown   {
+            right: 0 !important;
+            left: auto !important;
+            width: calc(100vw - 32px) !important;
+            max-width: 340px !important;
+        }
+        .ua-notif-dropdown > div,
+        .ua-notif-dropdown > a  { width: 100% !important; box-sizing: border-box !important; }
+        .ua-notif-item           { width: 100% !important; box-sizing: border-box !important; }
+        .ua-notif-item > div[style*="left:68px"] { width: calc(100% - 108px) !important; }
+        .ua-notif-item > div[style*="left:68px"] p { width: 100% !important; }
     }
     .ua-dropdown, .ua-notif-dropdown {
         animation: ua-fade-in 0.15s ease;
