@@ -198,6 +198,10 @@
                     this._esMask.on('accept', () => {
                         this.esGeliri = parseInt(this._esMask.unmaskedValue) || 0;
                     });
+                    el.addEventListener('keydown', (e) => {
+                        if (e.key === '0' && this._esMask.unmaskedValue === '')
+                            e.preventDefault();
+                    });
                 });
             },
 
