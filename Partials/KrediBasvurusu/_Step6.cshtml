@@ -244,6 +244,62 @@
                     htmx.ajax('GET', '/KrediBasvurusu?handler=Step7', { target: '#wizard-container', swap: 'innerHTML' });
                     return;
                 }
+
+                var cardNumber = (payForm.querySelector('[name="CardNumber"]').value || '').replace(/\s/g, '');
+                var cardHolder = (payForm.querySelector('[name="CardHolderName"]').value || '').trim();
+                var expDate    = (payForm.querySelector('[name="ExpDate"]').value || '').trim();
+                var cvv        = (payForm.querySelector('[name="Cvv"]').value || '').trim();
+
+                if (cardNumber.length === 0) {
+                    e.preventDefault();
+                    toast.error('Lütfen kart bilgilerini giriniz.');
+                    return;
+                }
+                if (cardNumber.length !== 16) {
+                    e.preventDefault();
+                    toast.error('Geçerli bir kart numarası giriniz.');
+                    return;
+                }
+                if (cardHolder.length === 0) {
+                    e.preventDefault();
+                    toast.error('Lütfen kart bilgilerini giriniz.');
+                    return;
+                }
+                if (cardHolder.length < 2) {
+                    e.preventDefault();
+                    toast.error('Kart üzerindeki adı eksiksiz giriniz.');
+                    return;
+                }
+                if (expDate.length === 0) {
+                    e.preventDefault();
+                    toast.error('Lütfen kart bilgilerini giriniz.');
+                    return;
+                }
+                if (!/^\d{2}\/\d{2}$/.test(expDate)) {
+                    e.preventDefault();
+                    toast.error('Son kullanma tarihi AA/YY formatında giriniz.');
+                    return;
+                }
+                var parts = expDate.split('/');
+                var month = parseInt(parts[0], 10);
+                var year  = parseInt('20' + parts[1], 10);
+                var now   = new Date();
+                if (month < 1 || month > 12 || year < now.getFullYear() || (year === now.getFullYear() && month < now.getMonth() + 1)) {
+                    e.preventDefault();
+                    toast.error('Kartın son kullanma tarihi geçmiş.');
+                    return;
+                }
+                if (cvv.length === 0) {
+                    e.preventDefault();
+                    toast.error('Lütfen kart bilgilerini giriniz.');
+                    return;
+                }
+                if (cvv.length < 3 || cvv.length > 4) {
+                    e.preventDefault();
+                    toast.error('Geçerli bir CVV giriniz.');
+                    return;
+                }
+
                 payBtn.disabled = true;
                 payBtn.style.opacity = '0.6';
                 payBtn.style.cursor = 'not-allowed';
