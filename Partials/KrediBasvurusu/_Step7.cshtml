@@ -182,16 +182,13 @@ else
             </p>
 
             <div class="mt-6 flex justify-center gap-2">
-                @for (int i = 0; i < 6; i++)
-                {
+                <template x-for="(v, i) in otp" :key="i">
                     <input type="text" maxlength="1" inputmode="numeric"
-                           @@input="onInput($event, @(i))"
-                           @@keydown.backspace="onBack($event, @(i))"
-                           :class="otp[@(i)] !== ''
-                               ? 'border-[#2E6DF8] shadow-[0_2px_10px_rgba(46,109,248,0.20)]'
-                               : 'border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.08)]'"
+                           @@input="onInput($event, i)"
+                           @@keydown.backspace="onBack($event, i)"
+                           :class="v !== '' ? 'border-[#2E6DF8] shadow-[0_2px_10px_rgba(46,109,248,0.20)]' : 'border-[#D1DDF5] shadow-[0_1px_3px_rgba(0,0,0,0.08)]'"
                            class="w-[46px] h-[54px] box-border bg-white border-2 rounded-[10px] text-center font-[Poppins] font-bold text-[22px] text-[#003F75] outline-none shrink-0" />
-                }
+                </template>
             </div>
 
             <div class="mt-4 w-full flex items-start gap-3 bg-[#F0F0F0] rounded-[10px] px-3 py-[13px]">
