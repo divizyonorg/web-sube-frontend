@@ -36,12 +36,15 @@
                 <h1 class="font-[Poppins] text-[30px] font-bold leading-9 text-[#101828]">Kredi Raporların</h1>
                 <p class="font-[Poppins] text-base text-[#4A5565] mt-1">Tüm kredi raporlarına buradan ulaşabilirsiniz</p>
             </div>
-            <a href="/KrediBasvurusu" class="rapor-yeni-btn flex items-center gap-2 bg-[#0056B3] hover:bg-[#004799] text-white font-[Poppins] text-base font-medium rounded-[10px] px-5 py-[10px] transition-colors no-underline">
+            <button type="button"
+                    x-data
+                    @@click="$store.krediModal.open = true"
+                    class="rapor-yeni-btn flex items-center gap-2 bg-[#0056B3] hover:bg-[#004799] text-white font-[Poppins] text-base font-medium rounded-[10px] px-5 py-[10px] transition-colors border-none cursor-pointer">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path d="M8 3.33V12.67M3.33 8H12.67" stroke="white" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 Yeni Rapor Oluştur
-            </a>
+            </button>
         </div>
 
         @* ─── Özet Kartlar ─── *@
@@ -52,7 +55,7 @@
                  style="background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);">
                 <div class="flex flex-col gap-2">
                     <span class="font-[Poppins] text-[14px] font-[500] leading-[20px] text-[#1447E6]">Toplam Rapor</span>
-                    <p class="font-[Poppins] font-bold text-[24px] leading-[32px] text-[#1C398E] m-0">@Model.ViewModel.TotalCount</p>
+                    <p class="font-[Poppins] font-bold text-[20px] leading-[32px] text-[#1C398E] m-0">@Model.ViewModel.TotalCount</p>
                 </div>
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" class="flex-shrink-0 opacity-40 pointer-events-none select-none">
                     <rect x="12" y="14" width="14" height="18" rx="2" stroke="#1C398E" stroke-width="2"/>
@@ -66,7 +69,7 @@
                  style="background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);">
                 <div class="flex flex-col gap-2">
                     <span class="font-[Poppins] text-[14px] font-[500] leading-[20px] text-[#008236]">Hazır Rapor</span>
-                    <p class="font-[Poppins] font-bold text-[24px] leading-[32px] text-[#0D542B] m-0">@Model.ViewModel.ReadyCount</p>
+                    <p class="font-[Poppins] font-bold text-[20px] leading-[32px] text-[#0D542B] m-0">@Model.ViewModel.ReadyCount</p>
                 </div>
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" class="flex-shrink-0 opacity-40 pointer-events-none select-none">
                     <path d="M14 8H22L28 14V32C28 33.105 27.105 34 26 34H14C12.895 34 12 33.105 12 32V10C12 8.895 12.895 8 14 8Z" stroke="#0D542B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -80,7 +83,7 @@
                  style="background: linear-gradient(135deg, #FEFCE8 0%, #FEF9C2 100%);">
                 <div class="flex flex-col gap-2">
                     <span class="font-[Poppins] text-[14px] font-[500] leading-[20px] text-[#A65F00]">İşleniyor</span>
-                    <p class="font-[Poppins] font-bold text-[24px] leading-[32px] text-[#733E0A] m-0">@Model.ViewModel.ProcessingCount</p>
+                    <p class="font-[Poppins] font-bold text-[20px] leading-[32px] text-[#733E0A] m-0">@Model.ViewModel.ProcessingCount</p>
                 </div>
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" class="flex-shrink-0 opacity-40 pointer-events-none select-none">
                     <path d="M11 20C11 15.03 15.03 11 20 11C23.87 11 27.18 13.28 28.66 16.57" stroke="#733E0A" stroke-width="2" stroke-linecap="round"/>

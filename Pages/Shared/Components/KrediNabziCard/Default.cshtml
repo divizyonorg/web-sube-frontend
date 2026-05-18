@@ -16,7 +16,7 @@
          class="bg-[#E6F7FF] rounded-[15px] pt-3.5 flex flex-col gap-3 font-[Poppins] flex-1 overflow-hidden">
 
     @* Başlık *@
-    <h2 class="m-0 font-[250] text-[18px] leading-[27px] text-[#003F75] text-center px-6 min-h-[54px] flex items-center justify-center">
+    <h2 class="m-0 font-[250] text-[20px] leading-[27px] text-[#003F75] text-center px-6 min-h-[54px] flex items-center justify-center">
         Bankalarda kredi muslukları açık mı?
     </h2>
 
@@ -27,7 +27,7 @@
             @* Başlık + Açıklama *@
             <div class="flex flex-col gap-4 min-h-[70px]">
                 <div class="flex justify-between items-center">
-                    <span class="font-medium text-[16px] leading-[24px] text-[#003F75]">Kredi Nabzı</span>
+                    <span class="font-medium text-[18px] leading-[24px] text-[#003F75]">Kredi Nabzı</span>
                     @* Dropdown *@
                     <div class="relative" id="@cardId">
                         <button type="button"
@@ -55,7 +55,7 @@
                 </div>
 
                 @* Açıklama metni *@
-                <p class="m-0 font-light text-[12px] leading-[18px] text-[#003F75]">
+                <p class="m-0 font-[250] text-[14px] leading-[18px] text-[#003F75]">
                     @(string.IsNullOrEmpty(Model.Description)
                         ? "Bankalar bazen faizleri düşük tutsa bile, perde arkasında başvuru şartlarını zorlaştırabilirler. Bu analiz tam olarak kredi nabzını ölçer."
                         : Model.Description)

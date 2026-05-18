@@ -7,17 +7,19 @@
     <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
         <div class="w-8"></div>
         <img src="~/images/IKLogo-blue.svg" width="70" height="25" alt="İnteraktif Kredi" class="object-contain">
-        <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
-            <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
-        </a>
+        <button type="button"
+        onclick="Alpine.store('krediModal').confirmClose = true"
+        class="w-11 h-11 rounded-full flex items-center justify-center border-none bg-transparent cursor-pointer p-0">
+    <img src="~/icons/slate/x-close.svg" width="20" height="20" alt="">
+</button>
     </div>
 
     @* Başlık ve alt başlık *@
-    <div class="px-8 pt-6 flex flex-col gap-2">
+    <div class="px-6 pt-6 flex flex-col gap-2">
         <h2 class="font-[Poppins] font-semibold text-[20px] leading-8 text-center text-[#003F75] m-0">
             Senin için en doğru finansal rotayı çizelim
         </h2>
-        <p class="font-[Poppins] font-normal text-[13px] leading-[21px] text-center text-[#739FCC] m-0">
+        <p class="font-[Poppins] font-[250] text-[14px] leading-[21px] text-center text-[#739FCC] m-0">
             Birkaç kısa soruyla ihtiyacını anlayalım
         </p>
     </div>
@@ -52,7 +54,7 @@
     </div>
 
     @* Bilgi notu *@
-    <div class="px-8 mt-5 pb-7">
+    <div class="px-6 mt-5 pb-7">
         <p class="font-[Poppins] font-normal text-[11px] leading-[17px] text-center text-[#A8BFDA] m-0">
             Bu bilgiler kredi notunu etkilemez.<br>
             Sadece sana özel öneriler sunmamıza yardımcı olur.
