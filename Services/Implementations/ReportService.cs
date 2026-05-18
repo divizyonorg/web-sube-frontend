@@ -355,10 +355,10 @@ public class ReportService : IReportService
     private static int MapMarkerPosition(string profilSeviyesi) => profilSeviyesi.ToUpperInvariant() switch
     {
         "YÜKSEK" => 85,
-        "ORTA"   => 60,
+        "ORTA" => 60,
         "KRİTİK" => 35,
-        "DÜŞÜK"  => 12,
-        _        => 60
+        "DÜŞÜK" => 12,
+        _ => 60
     };
 
     private static string MapUygunlukEtiketi(string profilSeviyesi) => profilSeviyesi.ToUpperInvariant() switch

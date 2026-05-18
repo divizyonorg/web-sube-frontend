@@ -32,18 +32,18 @@ public class CreditEligibilityService : ICreditEligibilityService
         var (bg, text) = dto.Status.ToLowerInvariant() switch
         {
             "premium" => ("#E6F7F0", "#0D9166"),
-            "uygun"   => ("#E8F4FD", "#1D459C"),
-            "kritik"  => ("#FFF9E6", "#B45309"),
-            "dusuk"   => ("#FEE2E2", "#DC2626"),
-            _         => ("#E8F4FD", "#1D459C")
+            "uygun" => ("#E8F4FD", "#1D459C"),
+            "kritik" => ("#FFF9E6", "#B45309"),
+            "dusuk" => ("#FEE2E2", "#DC2626"),
+            _ => ("#E8F4FD", "#1D459C")
         };
 
         return new CreditEligibilityCardViewModel
         {
-            HasData              = true,
-            StatusLabel          = dto.Status,
-            StatusBgColor        = bg,
-            StatusTextColor      = text,
+            HasData = true,
+            StatusLabel = dto.Status,
+            StatusBgColor = bg,
+            StatusTextColor = text,
             SliderPositionPercent = ClampPercent(dto.Score)
         };
     }

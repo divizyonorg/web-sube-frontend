@@ -8,19 +8,19 @@ public class UygunlukSeridiViewModel
     public string StatusBgColor => UygunlukEtiketi.ToLowerInvariant() switch
     {
         "yüksek" => "#E6F7F0",
-        "orta"   => "#E8F4FD",
+        "orta" => "#E8F4FD",
         "kritik" => "#FFF9E6",
-        "düşük"  => "#FEE2E2",
-        _        => "#E8F4FD"
+        "düşük" => "#FEE2E2",
+        _ => "#E8F4FD"
     };
 
     public string StatusTextColor => UygunlukEtiketi.ToLowerInvariant() switch
     {
         "yüksek" => "#0D9166",
-        "orta"   => "#1D459C",
+        "orta" => "#1D459C",
         "kritik" => "#B45309",
-        "düşük"  => "#DC2626",
-        _        => "#1D459C"
+        "düşük" => "#DC2626",
+        _ => "#1D459C"
     };
 
     public string AnalizBaslik { get; set; } = "Finansal durumunu analiz ettik!";
