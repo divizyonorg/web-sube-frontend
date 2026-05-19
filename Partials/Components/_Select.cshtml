@@ -22,7 +22,7 @@
                        -webkit-appearance:none; -moz-appearance:none; appearance:none;
                        cursor:pointer; outline:none; box-sizing:border-box; transition:border-color 0.15s;"
                 onfocus="this.style.borderColor='#0056B3'" onblur="this.style.borderColor='#DCE3FB'">
-            <option value="">@(Model.Placeholder ?? "")</option>
+            <option value="" disabled selected>@(Model.Placeholder ?? "Seçiniz")</option>
             @foreach (var option in Model.Options)
             {
                 if (option.Value == Model.SelectedValue)

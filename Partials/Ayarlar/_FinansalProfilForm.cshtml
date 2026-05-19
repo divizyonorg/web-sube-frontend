@@ -19,7 +19,7 @@
                 <label class="font-[Poppins] font-medium text-[11px] uppercase tracking-wide text-[#739FCC]">Çalışma Durumu</label>
                 <select name="WorkSectorId" data-tomselect
                         class="w-full h-11 border border-[#DCE3FB] rounded-xl px-3 text-[14px] font-[Poppins] text-[#003F75] outline-none">
-                    <option value="">Seçiniz…</option>
+                    <option value="" disabled selected>Seçiniz</option>
                     @foreach (var s in Model.WorkSectors)
                     {
                         <option value="@s.Value" selected="@(s.Value == Model.WorkSectorId.ToString() ? "selected" : null)">@s.Label</option>
@@ -31,7 +31,7 @@
                 <label class="font-[Poppins] font-medium text-[11px] uppercase tracking-wide text-[#739FCC]">Meslek</label>
                 <select name="OccupationId" data-tomselect
                         class="w-full h-11 border border-[#DCE3FB] rounded-xl px-3 text-[14px] font-[Poppins] text-[#003F75] outline-none">
-                    <option value="">Seçiniz…</option>
+                    <option value="" disabled selected>Seçiniz</option>
                     @foreach (var o in Model.Occupations)
                     {
                         <option value="@o.Value" selected="@(o.Value == Model.OccupationId.ToString() ? "selected" : null)">@o.Label</option>
@@ -43,7 +43,7 @@
                 <label class="font-[Poppins] font-medium text-[11px] uppercase tracking-wide text-[#739FCC]">Çalışma Süresi</label>
                 <select name="TotalWorkingTime" data-tomselect
                         class="w-full h-11 border border-[#DCE3FB] rounded-xl px-3 text-[14px] font-[Poppins] text-[#003F75] outline-none">
-                    <option value="">Seçiniz…</option>
+                    <option value="" disabled selected>Seçiniz</option>
                     @foreach (var t in MyApp.Web.ViewModels.FinansalProfilViewModel.WorkingTimeOptions)
                     {
                         <option value="@t.Value" selected="@(t.Value == Model.TotalWorkingTime ? "selected" : null)">@t.Label</option>
@@ -141,6 +141,7 @@
                 <label class="font-[Poppins] font-medium text-[11px] uppercase tracking-wide text-[#739FCC]">Yaşadığın Ev Kime Ait</label>
                 <select name="HouseStatusId" data-tomselect
                         class="w-full h-11 border border-[#DCE3FB] rounded-xl px-3 text-[14px] font-[Poppins] text-[#003F75] outline-none">
+                    <option value="" disabled selected>Seçiniz</option>
                     @foreach (var h in MyApp.Web.ViewModels.FinansalProfilViewModel.HouseStatusOptions)
                     {
                         <option value="@h.Value" selected="@(h.Value == Model.HouseStatusId?.ToString() ? "selected" : null)">@h.Label</option>
