@@ -14,7 +14,7 @@
     <div class="relative flex justify-center items-center w-full">
 
         @* Geri butonu *@
-        <a href="/KrediRaporlari" class="absolute left-0 flex items-center gap-1 no-underline">
+        <a href="/anasayfa" class="absolute left-0 flex items-center gap-1 no-underline">
             <img src="/icons/dark/chevron-left.svg" width="20" height="20" alt="">
             <span class="font-[Poppins] font-normal text-[14px] leading-5 text-[#1B4092]">Geri</span>
         </a>
@@ -22,7 +22,7 @@
         <div class="flex items-center bg-[#F2F8FF] rounded-[10px] p-[5px] h-12 w-fit">
 
             <a href="?tab=kisisel@(!string.IsNullOrEmpty(Model.ViewModel.Rid) ? $"&rid={Model.ViewModel.Rid}" : "")"
-               class="flex items-center gap-2 rounded-[10px] text-[12px] font-normal font-[Poppins]
+               class="flex items-center gap-2 rounded-[10px] text-[13px] font-normal font-[Poppins]
                       @(Model.ViewModel.ActiveTab == "kisisel"
                           ? "grow bg-white shadow-[0px_0px_5px_rgba(46,109,248,0.5)] px-[15px] py-[10px] text-[#003F75]"
                           : "bg-transparent p-[10px] text-black/50")">
@@ -33,7 +33,7 @@
             <div class="w-px h-5 bg-gray-300 flex-shrink-0"></div>
 
             <a href="?tab=piyasa@(!string.IsNullOrEmpty(Model.ViewModel.Rid) ? $"&rid={Model.ViewModel.Rid}" : "")"
-               class="flex items-center gap-2 rounded-[10px] text-[12px] font-normal font-[Poppins]
+               class="flex items-center gap-2 rounded-[10px] text-[13px] font-normal font-[Poppins]
                       @(Model.ViewModel.ActiveTab == "piyasa"
                           ? "grow bg-white shadow-[0px_0px_5px_rgba(46,109,248,0.5)] px-[15px] py-[10px] text-[#003F75]"
                           : "bg-transparent p-[10px] text-black/50")">
@@ -46,9 +46,9 @@
 
     @* ─── Alt başlık (sana özel ✨ yapay zeka analizi…) ─── *@
     <div class="flex justify-center items-center gap-1">
-        <span class="font-[Poppins] text-[12px] font-normal leading-[18px] text-[#003F75]">Sana özel</span>
+        <span class="font-[Poppins] text-[13px] font-normal leading-5 text-[#003F75]">Sana özel</span>
         <img src="/icons/primary/sparkle.svg" width="14" height="14" alt="">
-        <span class="font-[Poppins] text-[12px] font-normal leading-[18px] text-[#003F75]">yapay zeka analizi ve finansal yol haritan</span>
+        <span class="font-[Poppins] text-[13px] font-normal leading-5 text-[#003F75]">yapay zeka analizi ve finansal yol haritan</span>
     </div>
 
     @* ─── Tab içeriği ─── *@
@@ -56,7 +56,7 @@
     {
         @if (Model.ViewModel.IsError)
         {
-            <div class="mt-4 w-full flex flex-col items-center px-4">
+            <div class="mt-4 w-full max-w-[1210px] flex flex-col items-center px-4">
                 <div class="w-full max-w-sm bg-white border border-[#DCE3FB] rounded-2xl overflow-hidden">
 
                     <div class="bg-[linear-gradient(120.44deg,#2E6DF8_70.34%,#1B4092_100.84%)] px-5 py-4 flex items-center gap-3">
@@ -99,7 +99,7 @@
         }
         else
         {
-            <div class="mt-6 w-full">
+            <div class="w-full max-w-[1210px] flex flex-col gap-5 px-2 sm:px-4 pt-2 pb-6" hx-boost="false">
                 <partial name="~/Partials/_UygunlukSeridi.cshtml" model="Model.ViewModel.KisiselRapor.UygunlukSeridi" />
             </div>
         }
@@ -111,7 +111,7 @@
 
             @* Info banner *@
             <div class="bg-[#F9FAFB] border border-[#DCE3FB] rounded-2xl text-center py-5 px-4">
-                <span class="font-['Poppins'] font-medium text-[13px] leading-5 text-[#0A0A0A]">
+                <span class="font-['Poppins'] font-medium text-[14px] leading-[22px] text-[#0A0A0A]">
                     Kişisel durumunu analiz ettik. Şimdi de piyasadaki koşulların senin için ne anlama geldiğine bakalım.
                 </span>
             </div>
@@ -131,6 +131,10 @@
         </div>
     }
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest/dist/apexcharts.min.js"></script>
+}
 
 <script>
     (function () {

@@ -16,7 +16,7 @@
          class="bg-[#E6F7FF] rounded-[15px] pt-3.5 flex flex-col gap-3 font-[Poppins] flex-1 overflow-hidden">
 
     @* Başlık *@
-    <h2 class="m-0 font-[250] text-[18px] leading-[27px] text-[#003F75] text-center px-6 min-h-[54px] flex items-center justify-center">
+    <h2 class="m-0 font-[250] text-[20px] leading-[27px] text-[#003F75] text-center px-6 min-h-[54px] flex items-center justify-center">
         Bankalarda kredi muslukları açık mı?
     </h2>
 
@@ -24,11 +24,11 @@
     <div class="px-3 flex flex-col flex-1">
         <div class="flex flex-col gap-4 bg-white rounded-[15px] p-4 flex-1">
 
-            @* Başlık + Açıklama — sabit yükseklik wrapper ile progress bar hizalaması *@
+            @* Başlık + Açıklama *@
             <div class="flex flex-col gap-4 min-h-[70px]">
                 <div class="flex justify-between items-center">
-                    <span class="font-medium text-[16px] leading-[24px] text-[#003F75]">Kredi Nabzı</span>
-                    @* Sağ: dropdown *@
+                    <span class="font-medium text-[18px] leading-[24px] text-[#003F75]">Kredi Nabzı</span>
+                    @* Dropdown *@
                     <div class="relative" id="@cardId">
                         <button type="button"
                             onclick="document.getElementById('@cardId').querySelector('.nabzi-menu').classList.toggle('hidden')"
@@ -55,38 +55,52 @@
                 </div>
 
                 @* Açıklama metni *@
-                <p class="m-0 font-light text-[10px] leading-[15px] text-[#003F75]">
+                <p class="m-0 font-[250] text-[14px] leading-[18px] text-[#003F75]">
                     @(string.IsNullOrEmpty(Model.Description)
                         ? "Bankalar bazen faizleri düşük tutsa bile, perde arkasında başvuru şartlarını zorlaştırabilirler. Bu analiz tam olarak kredi nabzını ölçer."
                         : Model.Description)
                 </p>
             </div>
 
-            @* Gradient çubuk *@
-            <div class="flex flex-col gap-2 px-2">
+            @* Animasyonlu slider + badge *@
+            <div x-data="{ pos: 50 }"
+                 x-init="setTimeout(() => pos = @clampedPercent, 60)"
+                 class="flex flex-col gap-2 px-2">
+
+                @* Badge — thumb üstünde, animasyonlu *@
+                <div class="relative w-full" style="height: 42px;">
+                    <div :style="`position: absolute; left: ${pos}%; transform: translateX(-50%); bottom: 6px; display: flex; align-items: center; border-radius: 9999px; padding: 6px 18px; background-color: @Model.StatusBgColor; transition: left 0.8s cubic-bezier(0.4,0,0.2,1); white-space: nowrap;`">
+                        <span class="font-['Poppins'] text-[15px] font-semibold leading-[22px]"
+                              style="color: @Model.StatusTextColor;">@Model.StatusLabel</span>
+                    </div>
+                </div>
+
+                @* Gradient çubuk *@
                 <div class="relative w-full h-5 rounded-full overflow-visible">
                     <div class="absolute inset-0 rounded-full"
                          style="background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);"></div>
                     <div class="absolute top-1/2 -translate-y-1/2 w-[10px] h-[25px] bg-white shadow-[0px_1px_4px_rgba(0,0,0,0.2)] rounded-[6px]"
-                         style="left: calc(@clampedPercent% - 5px);"></div>
+                         :style="`left: calc(${pos}% - 5px); transition: left 0.8s cubic-bezier(0.4,0,0.2,1);`"></div>
                 </div>
-                <div class="flex justify-between px-6">
-                    <span class="font-normal text-[8px] leading-[12px] text-[#122B62] opacity-75">@Model.LeftLabel</span>
-                    <span class="font-normal text-[8px] leading-[12px] text-[#2E6DF8] opacity-75">@Model.MiddleLabel</span>
-                    <span class="font-normal text-[8px] leading-[12px] text-[#37C6B3] opacity-75">@Model.RightLabel</span>
+
+                @* Eksen etiketleri *@
+                <div class="flex justify-between px-1">
+                    <span class="font-normal text-[11px] leading-[16px] text-[#122B62] opacity-75">@Model.LeftLabel</span>
+                    <span class="font-normal text-[11px] leading-[16px] text-[#2E6DF8] opacity-75">@Model.MiddleLabel</span>
+                    <span class="font-normal text-[11px] leading-[16px] text-[#37C6B3] opacity-75">@Model.RightLabel</span>
                 </div>
             </div>
 
-            @* Alt satır: AI etiketi + yıldız *@
+            @* Alt satır: AI etiketi *@
             <div class="flex justify-between items-center px-1">
-                <span class="font-normal text-[10px] leading-[15px] text-[#003F75]">@Model.AiText</span>
+                <span class="font-normal text-[12px] leading-[18px] text-[#003F75]">@Model.AiText</span>
                 <img src="/icons/Outher/pearlStar.svg" width="14" height="14" alt="" aria-hidden="true">
             </div>
 
         </div>
     </div>
 
-    @* Buton — beyaz kartın dışında *@
+    @* Buton *@
     <div class="flex justify-center px-3 pb-3">
         <a href="/KrediRaporlari/KurDetay?tab=piyasa"
             class="w-full max-w-[280px] py-[10px] bg-[#0056B3] rounded-[40px] font-medium text-[16px] leading-[24px] text-white text-center cursor-pointer hover:bg-[#00468f] transition-colors no-underline block">

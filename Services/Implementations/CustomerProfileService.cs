@@ -37,9 +37,13 @@ public class CustomerProfileService : ICustomerProfileService
             return null;
         }
 
-        var contact = contactTask.Result?.Data
+        var gsmEntries = contactTask.Result?.Data
+            .Where(d => d.Details.Type.Equals("GSM", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        var contact = gsmEntries?
             .FirstOrDefault(d => d.Details.IsPrimary && d.Details.IsActive)?.Details
-            ?? contactTask.Result?.Data.FirstOrDefault()?.Details;
+            ?? gsmEntries?.FirstOrDefault()?.Details;
 
         return MapToViewModel(fullName, contact);
     }

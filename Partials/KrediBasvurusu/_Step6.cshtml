@@ -8,9 +8,11 @@
     <div class="box-border flex justify-between items-center px-4 py-3 h-[57px] border-b border-black/[0.08] shrink-0">
         <div class="w-8"></div>
         <img src="~/images/IKLogo-blue.svg" width="70" height="25" alt="İnteraktif Kredi" class="object-contain">
-        <a href="/anasayfa" class="w-8 h-8 rounded-full flex items-center justify-center no-underline">
-            <img src="~/icons/slate/x-close.svg" width="16" height="16" alt="">
-        </a>
+        <button type="button"
+        onclick="Alpine.store('krediModal').confirmClose = true"
+        class="w-11 h-11 rounded-full flex items-center justify-center border-none bg-transparent cursor-pointer p-0">
+    <img src="~/icons/slate/x-close.svg" width="20" height="20" alt="">
+</button>
     </div>
 
     @* İlerleme çubuğu — Adım 3/3 (tümü mavi) *@
@@ -231,15 +233,35 @@
                     htmx.ajax('GET', '/KrediBasvurusu?handler=Step7', { target: '#wizard-container', swap: 'innerHTML' });
                     return;
                 }
-                var cardNumber = payForm.querySelector('input[name="CardNumber"]');
-                var cardHolder = payForm.querySelector('input[name="CardHolderName"]');
-                var expDate    = payForm.querySelector('input[name="ExpDate"]');
-                var cvv        = payForm.querySelector('input[name="Cvv"]');
-                if (!cardNumber.value.trim() || !cardHolder.value.trim() || !expDate.value.trim() || !cvv.value.trim()) {
-                    e.preventDefault();
-                    toast.error('Kart Bilgileri Eksik');
-                    return;
+
+                var cardNumberVal = payForm.querySelector('input[name="CardNumber"]').value.replace(/\s/g, '');
+                var cardHolderVal = payForm.querySelector('input[name="CardHolderName"]').value.trim();
+                var expDateVal    = payForm.querySelector('input[name="ExpDate"]').value.trim();
+                var cvvVal        = payForm.querySelector('input[name="Cvv"]').value.trim();
+
+                // Kart Numarası
+                if (cardNumberVal.length === 0) { e.preventDefault(); toast.error('Lütfen kart bilgilerini giriniz.'); return; }
+                if (!/^\d{16}$/.test(cardNumberVal)) { e.preventDefault(); toast.error('Geçerli bir kart numarası giriniz.'); return; }
+
+                // Kart Sahibi
+                if (cardHolderVal.length === 0) { e.preventDefault(); toast.error('Lütfen kart bilgilerini giriniz.'); return; }
+                if (cardHolderVal.length < 2) { e.preventDefault(); toast.error('Kart üzerindeki adı eksiksiz giriniz.'); return; }
+
+                // Son Kullanma
+                if (expDateVal.length === 0) { e.preventDefault(); toast.error('Lütfen kart bilgilerini giriniz.'); return; }
+                if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expDateVal)) { e.preventDefault(); toast.error('Son kullanma tarihi AA/YY formatında giriniz.'); return; }
+                var expParts = expDateVal.split('/');
+                var expYear  = 2000 + parseInt(expParts[1], 10);
+                var expMonth = parseInt(expParts[0], 10);
+                var now = new Date();
+                if (expYear < now.getFullYear() || (expYear === now.getFullYear() && expMonth < now.getMonth() + 1)) {
+                    e.preventDefault(); toast.error('Kartın son kullanma tarihi geçmiş.'); return;
                 }
+
+                // CVV
+                if (cvvVal.length === 0) { e.preventDefault(); toast.error('Lütfen kart bilgilerini giriniz.'); return; }
+                if (!/^\d{3,4}$/.test(cvvVal)) { e.preventDefault(); toast.error('Geçerli bir CVV giriniz.'); return; }
+
                 payBtn.disabled = true;
                 payBtn.style.opacity = '0.6';
                 payBtn.style.cursor = 'not-allowed';

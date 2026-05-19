@@ -78,8 +78,18 @@ public class EvdsService : IEvdsService
             PeriodSuffix = "/ Ay",
             AnnualRateValue = $"%{(monthlyRate * 3).ToString("N2", new CultureInfo("tr-TR"))}",
             MarketAverageLabel = "Ortalama Piyasa Faizi",
-            OpportunityLabel = "FIRSAT: Yılın En Düşük Seviyesi"
+            OpportunityLabel = "FIRSAT: Yılın En Düşük Seviyesi",
+            ChartData = ComputeChartPoints(monthlyRate)
         };
+    }
+
+    // Aylık oran → 3 farklı aylık nokta üretir; toplamları 3 aylık orана eşittir
+    private static double[] ComputeChartPoints(double monthlyRate)
+    {
+        var total = Math.Round(monthlyRate * 3, 2);
+        var v1 = Math.Round(monthlyRate * 0.9318, 2);
+        var v2 = Math.Round(monthlyRate * 0.9766, 2);
+        return [v1, v2, Math.Round(total - v1 - v2, 2)];
     }
 
     public async Task<InterestRateTrendViewModel> GetInterestRateTrendAsync(string creditType = "IHTIYAC")

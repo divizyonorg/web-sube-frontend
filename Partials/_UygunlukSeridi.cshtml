@@ -1,258 +1,354 @@
 @model MyApp.Web.ViewModels.UygunlukSeridiViewModel
 
-<div class="flex flex-col items-center w-full bg-[#F9FAFB] p-5 gap-4 shadow-[0px_-2px_4px_rgba(0,0,0,0.25)] rounded-t-[25px]">
+@* ─── Kart 1 · Kredi Uygunluk Durumun ─── *@
+<div class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
 
-    <p class="font-[Poppins] font-medium text-[18px] leading-[27px] text-[#003F75] text-center">
-        Kredi Uygunluk Durumun
-    </p>
+    <div class="flex flex-col gap-1.5 px-4 py-3 border-b border-black/10">
+        <div class="flex items-center gap-2">
+            <img src="/icons/Outher/user-check-01.svg" width="20" height="20" alt="">
+            <span class="font-[Poppins] text-[18px] font-semibold leading-6 text-[#003F75]">Kredi Uygunluk Durumun</span>
+        </div>
+        <p class="font-[Poppins] font-[250] text-[14px] leading-[21px] text-black/50">
+            Türkiye'deki bankaların sana benzer kredi profiline son 30 günde verdiği kararlara göre hesaplanmıştır.
+        </p>
+    </div>
 
-    <div class="w-full flex flex-col px-2 gap-1">
+    <div class="bg-white rounded-b-2xl px-4 pt-4 pb-4 flex flex-col gap-4">
 
-        <div class="relative w-full h-[35px] rounded-full shadow-[inset_0px_0px_4px_rgba(0,0,0,0.2)] bg-[linear-gradient(90deg,rgba(255,255,255,0.5)_0%,#37B8C7_20%,#2E6DF8_50%,#122B62_100%)]">
+        @{ var sliderPos = Math.Clamp(Model.MarkerPositionPercent, 0, 100); }
+        <div x-data="{ pos: 50 }"
+             x-init="setTimeout(() => pos = @sliderPos, 60)"
+             class="flex flex-col gap-2">
 
-            <div class="absolute top-0 h-full w-px bg-[rgba(217,217,217,0.5)]" style="left:25%;"></div>
-            <div class="absolute top-0 h-full w-px bg-[rgba(217,217,217,0.5)]" style="left:59%;"></div>
-            <div class="absolute top-0 h-full w-px bg-[rgba(217,217,217,0.5)]" style="left:82%;"></div>
+            <div class="relative w-full" style="height: 42px;">
+                <div :style="`position: absolute; left: ${pos}%; transform: translateX(-50%); bottom: 6px; display: flex; align-items: center; border-radius: 9999px; padding: 6px 18px; background-color: @Model.StatusBgColor; transition: left 0.8s cubic-bezier(0.4,0,0.2,1); white-space: nowrap;`">
+                    <span class="font-['Poppins'] text-[14px] font-semibold leading-[21px] capitalize"
+                          style="color: @Model.StatusTextColor;">@Model.UygunlukEtiketi</span>
+                </div>
+            </div>
 
-            <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
-                 style="left: @(Model.MarkerPositionPercent)%;">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
-                     style="filter: drop-shadow(0px 0px 3.56px rgba(46,110,247,0.5));">
-                    <path d="M7 4L10.44 10.07H3.56L7 4Z" fill="#1D459C" />
-                </svg>
+            <div class="relative w-full h-5 rounded-full overflow-visible">
+                <div class="absolute inset-0 rounded-full"
+                     style="background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);"></div>
+                <div class="absolute top-1/2 -translate-y-1/2 w-[10px] h-[25px] bg-white shadow-[0px_1px_4px_rgba(0,0,0,0.2)] rounded-[6px]"
+                     :style="`left: calc(${pos}% - 5px); transition: left 0.8s cubic-bezier(0.4,0,0.2,1);`"></div>
+            </div>
+
+            <div class="flex justify-between">
+                <span class="font-['Poppins'] text-[14px] font-normal leading-[21px] text-black/50">düşük</span>
+                <span class="font-['Poppins'] text-[14px] font-normal leading-[21px] text-black/50">kritik</span>
+                <span class="font-['Poppins'] text-[14px] font-normal leading-[21px] text-black/50">premium</span>
             </div>
         </div>
 
-        <div class="relative w-full h-9">
-            <span class="absolute left-0 top-0 font-[Poppins] font-normal text-[9px] leading-[14px] text-black/50">premium</span>
-
-            <span class="absolute font-[Poppins] font-semibold text-[22px] leading-[33px] text-[#1D459C] -translate-x-1/2"
-                  style="left: @(Model.MarkerPositionPercent)%; top: 0;">@Model.UygunlukEtiketi</span>
-
-            <span class="absolute font-[Poppins] font-normal text-[9px] leading-[14px] text-black/50 top-0"
-                  style="left: calc(59% - 10px);">kritik</span>
-
-            <span class="absolute font-[Poppins] font-normal text-[9px] leading-[14px] text-black/50 top-0"
-                  style="left: calc(82% - 13px);">düşük</span>
-        </div>
-    </div>
-
-    <div class="w-full flex flex-col bg-[#F9FAFB] rounded-[20px] p-4 gap-4 shadow-[0px_0px_4px_rgba(0,0,0,0.2)]">
-
         <div class="flex flex-col gap-[2px]">
-            <p class="font-[Poppins] font-medium text-[14px] leading-[21px] text-[#0A0A0A]">
-                @Model.AnalizBaslik
-            </p>
-            <p class="font-[Poppins] font-normal text-[10px] leading-[15px] text-[#0A0A0A]">
-                @Model.AnalizAltBaslik
-            </p>
+            <p class="font-[Poppins] font-medium text-[14px] leading-[21px] text-[#0A0A0A]">@Model.AnalizBaslik</p>
+            <p class="font-[Poppins] font-[250] text-[14px] leading-[21px] text-[#0A0A0A]">@Model.AnalizAltBaslik</p>
         </div>
 
-        <div class="flex flex-col gap-1 pl-5">
+        <div class="flex flex-col gap-1">
             @foreach (var vurgu in Model.AnalizVurgular)
             {
-                <p class="font-[Poppins] text-[12px] leading-[18px] text-[#003F75] @(vurgu.IsBold ? "font-medium" : "font-light")">
+                <p class="font-[Poppins] text-[14px] leading-[21px] text-[#003F75] @(vurgu.IsBold ? "font-medium" : "font-[250]")">
                     @vurgu.Text
                 </p>
             }
         </div>
 
-        <div class="relative pl-6">
-            <div class="absolute left-3 top-5 h-[74px] border-l border-dashed border-[#2E6DF8]"></div>
-            <p class="font-[Poppins] font-medium text-[12px] leading-[18px] text-[#2E6DF8]">
-                @Model.BuSekildeBulguBaslik
-            </p>
-            <ul class="mt-[6px] flex flex-col gap-1">
+        <div class="flex flex-col gap-2">
+            <p class="font-[Poppins] font-medium text-[14px] leading-[21px] text-[#0A0A0A]">@Model.BuSekildeBulguBaslik @Model.NelerYapilabilirBaslik</p>
+            <ul class="flex flex-col gap-1">
                 @foreach (var madde in Model.BuSekildeBulgular)
                 {
                     <li class="flex items-start gap-[6px]">
                         <img src="~/icons/Outher/dot-bullet.svg" class="shrink-0 mt-1 w-2 h-2" alt="">
-                        <span class="font-[Poppins] font-light text-[12px] leading-5 text-[#003F75]">@madde</span>
+                        <span class="font-[Poppins] font-[250] text-[14px] leading-5 text-[#003F75]">@madde</span>
                     </li>
                 }
-            </ul>
-        </div>
-
-        <div class="relative pl-6">
-            <div class="absolute left-3 top-5 h-[74px] border-l border-dashed border-[#2E6DF8]"></div>
-            <p class="font-[Poppins] font-medium text-[12px] leading-[18px] text-[#2E6DF8]">
-                @Model.NelerYapilabilirBaslik
-            </p>
-            <ul class="mt-[6px] flex flex-col gap-1">
                 @foreach (var madde in Model.NelerYapilabilir)
                 {
                     <li class="flex items-start gap-[6px]">
                         <img src="~/icons/Outher/dot-bullet.svg" class="shrink-0 mt-1 w-2 h-2" alt="">
-                        <span class="font-[Poppins] font-light text-[12px] leading-5 text-[#003F75]">@madde</span>
+                        <span class="font-[Poppins] font-[250] text-[14px] leading-5 text-[#003F75]">@madde</span>
                     </li>
                 }
             </ul>
         </div>
 
+        <p class="font-[Poppins] font-[250] text-[14px] leading-[21px] text-center text-black/50">
+            Bu bir başvuru sonucu değil, sana özel yapay zeka destekli bir kredi uygunluk analizidir.
+        </p>
+
     </div>
-
-    <p class="font-[Poppins] font-light text-[9px] leading-[14px] text-center text-black/50 self-center">
-        Bu bir başvuru sonucu değil, sana özel yapay zeka destekli bir kredi uygunluk analizidir.
-    </p>
-
 </div>
 
-<div class="flex flex-col items-center w-full bg-[linear-gradient(98.13deg,#2E6DF8_39.12%,#0056B3_101.17%)] py-8 px-4 gap-5">
-    <img src="~/icons/Outher/check-circle.svg" class="w-6 h-6" alt="">
-    <p class="font-[Poppins] font-light text-[14px] text-white text-center w-full">@Model.CtaDescription</p>
-    <p class="font-[Poppins] font-medium text-[14px] text-white">@Model.CtaTitle</p>
-    <a href="@Model.CtaButtonHref"
-       class="font-[Poppins] flex items-center justify-center w-[280px] h-[44px] bg-white rounded-[40px] text-[#0056B3] font-medium text-[16px] no-underline">
-        @Model.CtaButtonText
-    </a>
+@* ─── CTA · Mavi Gradyan ─── *@
+<div class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl overflow-hidden">
+    <div class="flex flex-col items-center bg-[linear-gradient(98.13deg,#2E6DF8_39.12%,#0056B3_101.17%)] py-8 px-4 gap-5">
+        <img src="~/icons/Outher/check-circle.svg" class="w-6 h-6" alt="">
+        <p class="font-[Poppins] font-semibold text-[18px] text-white">@Model.CtaTitle</p>
+        <p class="font-[Poppins] font-[250] text-[14px] text-white text-center w-full">@Model.CtaDescription</p>
+        <a href="@Model.CtaButtonHref"
+           class="font-[Poppins] flex items-center justify-center w-[280px] h-[44px] bg-white rounded-[40px] text-[#0056B3] font-medium text-[14px] no-underline">
+            @Model.CtaButtonText
+        </a>
+    </div>
 </div>
 
-<div class="flex flex-col w-full bg-white p-4 gap-3">
+@* ─── Kart 2 · Finansal Göstergeler ─── *@
+<div class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
 
-    <div class="flex flex-col">
-        <p class="font-[Poppins] font-normal text-[14px] text-[#003F75]">Mevcut Durumuna Göz At</p>
-        <p class="font-[Poppins] font-medium text-[16px] text-[#003F75]">En Önemli Finansal Göstergeler</p>
+    <div class="flex flex-col gap-1.5 px-4 py-3 border-b border-black/10">
+        <div class="flex items-center gap-2">
+            <img src="/icons/primary/activity.svg" width="20" height="20" alt="">
+            <span class="font-[Poppins] text-[18px] font-semibold leading-6 text-[#003F75]">En Önemli Finansal Göstergeler</span>
+        </div>
+        <p class="font-[Poppins] font-[250] text-[14px] leading-[21px] text-black/50">
+            Kredi profili değerlendirmesinde kullanılan temel göstergelerinin güncel durumu.
+        </p>
     </div>
 
-    <div class="flex flex-col gap-[15px]">
-        @foreach (var gosterge in Model.FinansalGostergeler)
-        {
-            <div class="bg-[#F2F8FF] rounded-[10px] shadow-[0px_0px_4px_rgba(0,0,0,0.20)] p-4 flex flex-col gap-2">
-                <div class="flex items-center gap-2">
-                    <img src="@Url.Content(gosterge.IkonYolu)" class="w-5 h-5" alt="">
-                    <span class="font-[Poppins] font-normal text-[14px] text-[#003F75]">@gosterge.Baslik</span>
-                </div>
-                <div class="relative w-full h-[35px] rounded-[20px] shadow-[inset_0px_0px_4px_rgba(0,0,0,0.2)] flex items-center bg-[linear-gradient(270deg,rgba(255,255,255,0.9)_5.3%,#122B62_13%,#2E6DF8_49.5%,#32B5C8_80%,#36F99B_90%)]">
-                    <span class="font-[Poppins] font-bold text-[12px] text-white whitespace-nowrap ml-3">@gosterge.LeftLabel</span>
-                </div>
-                @foreach (var satir in gosterge.Aciklama)
+    <div class="bg-white rounded-b-2xl px-4 py-4">
+        <div class="flex flex-col divide-y-2 divide-[#C8D6E8]">
+            @if (Model.FinansalGostergeler.Any())
+            {
+                @foreach (var gosterge in Model.FinansalGostergeler)
                 {
-                    <p class="font-[Poppins] italic font-light text-[12px] text-[#003F75] leading-[18px]">@satir</p>
-                }
-            </div>
-        }
-    </div>
-
-</div>
-
-<div class="flex flex-col w-full bg-white p-4 gap-3">
-
-    <div class="flex flex-col">
-        <p class="font-[Poppins] font-normal text-[14px] text-[#003F75]">@Model.OlumluNoktalarUstBaslik</p>
-        <p class="font-[Poppins] font-medium text-[16px] text-[#003F75]">@Model.OlumluNoktalarBaslik</p>
-    </div>
-
-    <div class="flex flex-col bg-[#F9FAFB] shadow-[0px_0px_4px_rgba(0,0,0,0.20)] rounded-[15px] py-5 px-4 gap-5">
-        @foreach (var madde in Model.OlumluNoktalar)
-        {
-            <div class="flex items-center gap-3">
-                <img src="~/icons/Outher/stars-02.svg" class="w-[22px] h-5 shrink-0" alt="">
-                <span class="font-[Poppins] font-light text-[14px] text-[#003F75] leading-[19px]">@madde</span>
-            </div>
-        }
-    </div>
-
-</div>
-
-<div class="flex flex-col w-full bg-[#F9FAFB] px-4 pt-4 gap-3">
-
-    <div class="flex flex-col">
-        <p class="font-[Poppins] font-normal text-[14px] text-[#003F75]">@Model.KrediTuruUstBaslik</p>
-        <p class="font-[Poppins] font-medium text-[16px] text-[#003F75]">@Model.KrediTuruBaslik</p>
-    </div>
-
-    <div class="grid grid-cols-2 gap-[10px]">
-        @foreach (var kart in Model.KrediTuruKartlari)
-        {
-            <div class="bg-white shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] px-[10px] py-[15px] flex flex-col items-center gap-[10px]">
-                <p class="font-[Poppins] font-semibold text-[16px] text-[#003F75] text-center">@kart.Baslik</p>
-                <div class="flex items-center gap-2">
-                    <div class="w-[68px] h-[15px] rounded-[20px] shadow-[inset_0px_0px_4px_rgba(0,0,0,0.2)]"
-                         style="background: @(kart.IsYuksekOlasilik ? "linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #37B8C7 80%, #FFFFFF 100%)" : "linear-gradient(90deg, #122B62 0%, #2E6DF8 18%, #FFFFFF 37%, #FFFFFF 100%)");">
-                    </div>
-                    <span class="font-[Poppins] font-light text-[14px] text-[#003F75]">@kart.OlasilikEtiketi</span>
-                </div>
-                <button type="button" class="font-[Poppins] border border-[rgba(217,217,217,0.5)] rounded-[10px] py-1 px-3 font-light text-[9px] text-[#2E6DF8] underline bg-transparent cursor-pointer">
-                    detayları gör
-                </button>
-            </div>
-        }
-    </div>
-
-</div>
-
-<div class="flex flex-col w-full bg-[#F9FAFB] px-4 pt-4 gap-4">
-
-    <p class="font-[Poppins] font-medium text-[16px] text-[#003F75]">@Model.UyarilarBaslik</p>
-
-    <div class="flex flex-col gap-4">
-        @foreach (var uyari in Model.UyariKartlari)
-        {
-            <div class="relative rounded-[15px] min-h-[108px] @(uyari.IsKritik ? "bg-[#0056B3]" : "bg-[#2E6DF8]")">
-                <div class="bg-[#F9FAFB] shadow-[0px_0px_4px_rgba(0,0,0,0.20)] rounded-[15px] ml-[9px] mr-7 min-h-[108px] flex flex-col justify-between">
-                    <div class="pt-3 px-3.5">
+                    var _d = new string((gosterge.LeftLabel ?? "").Where(char.IsDigit).ToArray());
+                    int.TryParse(_d, out int gPct);
+                    if (gPct == 0) gPct = 50;
+                    <div class="bg-white rounded-[10px] p-4 flex flex-col gap-2">
                         <div class="flex items-center gap-2">
-                            <img src="~/icons/Outher/alert-triangle.svg" class="w-5 h-[18px] shrink-0" alt="">
-                            <span class="font-[Poppins] font-normal text-[12px] text-black capitalize">@uyari.Baslik</span>
+                            <img src="@Url.Content(gosterge.IkonYolu)" class="w-5 h-5" alt="">
+                            <span class="font-[Poppins] font-medium text-[14px] text-[#003F75]">@gosterge.Baslik</span>
                         </div>
-                        <div class="w-full h-px bg-black/15 mt-2"></div>
-                        <p class="font-[Poppins] italic font-light text-[10px] text-black mt-[6px]">@uyari.Aciklama</p>
+                        <div x-data="{ pos: 0 }" x-init="setTimeout(() => pos = @gPct, 60)" class="flex flex-col gap-2">
+                            <div class="relative w-full" style="height: 42px;">
+                                <div :style="`position: absolute; left: ${pos}%; transform: translateX(-50%); bottom: 6px; display: flex; align-items: center; border-radius: 9999px; padding: 4px 14px; background-color: #EEF4FF; transition: left 0.8s cubic-bezier(0.4,0,0.2,1); white-space: nowrap;`">
+                                    <span class="font-['Poppins'] text-[14px] font-semibold" style="color: #2E6DF8;">%@gPct</span>
+                                </div>
+                            </div>
+                            <div class="relative w-full h-5 rounded-full overflow-visible">
+                                <div class="absolute inset-0 rounded-full"
+                                     style="background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);"></div>
+                                <div class="absolute top-1/2 -translate-y-1/2 w-[10px] h-[25px] bg-white shadow-[0px_1px_4px_rgba(0,0,0,0.2)] rounded-[6px]"
+                                     :style="`left: calc(${pos}% - 5px); transition: left 0.8s cubic-bezier(0.4,0,0.2,1);`"></div>
+                            </div>
+                        </div>
+                        @foreach (var satir in gosterge.Aciklama)
+                        {
+                            <p class="font-[Poppins] font-[250] text-[14px] text-[#003F75] leading-[21px]">@satir</p>
+                        }
                     </div>
-                    <div class="flex items-center justify-end pr-2 pb-2 gap-1">
-                        <img src="~/icons/blue/chevron-left.svg" class="w-[6px] h-[10px]" alt="">
-                        <button type="button" class="font-[Poppins] bg-[#F9FAFB] border border-black/25 shadow-[0px_0px_1px_rgba(0,0,0,0.1)] rounded-[16px] py-[3px] px-[10px] font-light text-[9px] underline text-black cursor-pointer">
+                }
+            }
+            else
+            {
+                <div class="bg-white rounded-[10px] p-4 flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <img src="/icons/primary/activity.svg" class="w-5 h-5" alt="">
+                        <span class="font-[Poppins] font-medium text-[14px] text-[#003F75]">Aylık Nakit Akışı Dengesi</span>
+                    </div>
+                    <div x-data="{ pos: 0 }" x-init="setTimeout(() => pos = 95, 60)" class="flex flex-col gap-2">
+                        <div class="relative w-full" style="height: 42px;">
+                            <div :style="`position: absolute; left: ${pos}%; transform: translateX(-50%); bottom: 6px; display: flex; align-items: center; border-radius: 9999px; padding: 4px 14px; background-color: #EEF4FF; transition: left 0.8s cubic-bezier(0.4,0,0.2,1); white-space: nowrap;`">
+                                <span class="font-['Poppins'] text-[14px] font-semibold" style="color: #2E6DF8;">%95</span>
+                            </div>
+                        </div>
+                        <div class="relative w-full h-5 rounded-full overflow-visible">
+                            <div class="absolute inset-0 rounded-full"
+                                 style="background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);"></div>
+                            <div class="absolute top-1/2 -translate-y-1/2 w-[10px] h-[25px] bg-white shadow-[0px_1px_4px_rgba(0,0,0,0.2)] rounded-[6px]"
+                                 :style="`left: calc(${pos}% - 5px); transition: left 0.8s cubic-bezier(0.4,0,0.2,1);`"></div>
+                        </div>
+                    </div>
+                    <p class="font-[Poppins] font-[250] text-[14px] text-[#003F75] leading-[21px]">Gelirinin %90'ı borçlara gidiyor.</p>
+                    <p class="font-[Poppins] font-[250] text-[14px] text-[#003F75] leading-[21px]">Bu, bankalar için "yeni kredi alanı yok" demektir.</p>
+                </div>
+
+                <div class="bg-white rounded-[10px] p-4 flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <img src="/icons/Outher/credit-card-01.svg" class="w-5 h-5" alt="">
+                        <span class="font-[Poppins] font-medium text-[14px] text-[#003F75]">Yasal Kart Limit Kotası</span>
+                    </div>
+                    <div x-data="{ pos: 0 }" x-init="setTimeout(() => pos = 85, 60)" class="flex flex-col gap-2">
+                        <div class="relative w-full" style="height: 42px;">
+                            <div :style="`position: absolute; left: ${pos}%; transform: translateX(-50%); bottom: 6px; display: flex; align-items: center; border-radius: 9999px; padding: 4px 14px; background-color: #EEF4FF; transition: left 0.8s cubic-bezier(0.4,0,0.2,1); white-space: nowrap;`">
+                                <span class="font-['Poppins'] text-[14px] font-semibold" style="color: #2E6DF8;">%85</span>
+                            </div>
+                        </div>
+                        <div class="relative w-full h-5 rounded-full overflow-visible">
+                            <div class="absolute inset-0 rounded-full"
+                                 style="background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);"></div>
+                            <div class="absolute top-1/2 -translate-y-1/2 w-[10px] h-[25px] bg-white shadow-[0px_1px_4px_rgba(0,0,0,0.2)] rounded-[6px]"
+                                 :style="`left: calc(${pos}% - 5px); transition: left 0.8s cubic-bezier(0.4,0,0.2,1);`"></div>
+                        </div>
+                    </div>
+                    <p class="font-[Poppins] font-[250] text-[14px] text-[#003F75] leading-[21px]">Yasal kart limit kotası dolmak üzere.</p>
+                    <p class="font-[Poppins] font-[250] text-[14px] text-[#003F75] leading-[21px]">Yeni kart veya limit artışı şu an mümkün değil.</p>
+                </div>
+
+                <div class="bg-white rounded-[10px] p-4 flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <img src="/icons/Outher/credit-card-01.svg" class="w-5 h-5" alt="">
+                        <span class="font-[Poppins] font-medium text-[14px] text-[#003F75]">Kredi Limit Kullanım Oranı</span>
+                    </div>
+                    <div x-data="{ pos: 0 }" x-init="setTimeout(() => pos = 95, 60)" class="flex flex-col gap-2">
+                        <div class="relative w-full" style="height: 42px;">
+                            <div :style="`position: absolute; left: ${pos}%; transform: translateX(-50%); bottom: 6px; display: flex; align-items: center; border-radius: 9999px; padding: 4px 14px; background-color: #EEF4FF; transition: left 0.8s cubic-bezier(0.4,0,0.2,1); white-space: nowrap;`">
+                                <span class="font-['Poppins'] text-[14px] font-semibold" style="color: #2E6DF8;">%95</span>
+                            </div>
+                        </div>
+                        <div class="relative w-full h-5 rounded-full overflow-visible">
+                            <div class="absolute inset-0 rounded-full"
+                                 style="background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);"></div>
+                            <div class="absolute top-1/2 -translate-y-1/2 w-[10px] h-[25px] bg-white shadow-[0px_1px_4px_rgba(0,0,0,0.2)] rounded-[6px]"
+                                 :style="`left: calc(${pos}% - 5px); transition: left 0.8s cubic-bezier(0.4,0,0.2,1);`"></div>
+                        </div>
+                    </div>
+                    <p class="font-[Poppins] font-[250] text-[14px] text-[#003F75] leading-[21px]">Kredi limitlerinin %85'ini kullanıyorsun.</p>
+                    <p class="font-[Poppins] font-[250] text-[14px] text-[#003F75] leading-[21px]">Bu durum kredi profilini olumsuz etkiliyor.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+
+@* ─── Kart 3 · Olumlu Noktalar ─── *@
+<div class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
+
+    <div class="flex flex-col gap-1.5 px-4 py-3 border-b border-black/10">
+        <div class="flex items-center gap-2">
+            <img src="/icons/Outher/stars-02.svg" width="20" height="20" alt="">
+            <span class="font-[Poppins] text-[18px] font-semibold leading-6 text-[#003F75]">@Model.OlumluNoktalarBaslik</span>
+        </div>
+        <p class="font-[Poppins] font-[250] text-[14px] leading-[21px] text-black/50">
+            @Model.OlumluNoktalarUstBaslik
+        </p>
+    </div>
+
+    <div class="bg-white rounded-b-2xl px-4 py-4">
+        <ul class="flex flex-col gap-1">
+            @foreach (var madde in Model.OlumluNoktalar)
+            {
+                <li class="flex items-start gap-[6px]">
+                    <img src="~/icons/Outher/dot-bullet.svg" class="shrink-0 mt-1 w-2 h-2" alt="">
+                    <span class="font-[Poppins] font-[250] text-[14px] text-[#2E6DF8] leading-[21px]">@madde</span>
+                </li>
+            }
+        </ul>
+    </div>
+
+</div>
+
+@* ─── Kart 4 · Kredi Türü Analizi ─── *@
+<div class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
+
+    <div class="flex flex-col gap-1.5 px-4 py-3 border-b border-black/10">
+        <div class="flex items-center gap-2">
+            <img src="/icons/Outher/credit-card-01.svg" width="20" height="20" alt="">
+            <span class="font-[Poppins] text-[18px] font-semibold leading-6 text-[#003F75]">@Model.KrediTuruBaslik</span>
+        </div>
+        <p class="font-[Poppins] font-[250] text-[14px] leading-[21px] text-black/50">
+            @Model.KrediTuruUstBaslik
+        </p>
+    </div>
+
+    <div class="bg-white rounded-b-2xl px-4 py-4">
+        <div class="flex flex-row gap-[10px]">
+            @foreach (var kart in Model.KrediTuruKartlari)
+            {
+                <div class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-[10px] px-[10px] py-[15px] flex flex-col gap-[10px] flex-1">
+                    <div class="flex items-center justify-between gap-2">
+                        <p class="font-[Poppins] font-semibold text-[14px] text-[#003F75]">@kart.Baslik</p>
+                        <button type="button" class="font-[Poppins] border border-[rgba(217,217,217,0.5)] rounded-[10px] py-1 px-3 font-[250] text-[14px] text-[#2E6DF8] underline bg-transparent cursor-pointer whitespace-nowrap">
                             detayları gör
                         </button>
                     </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-[68px] h-[15px] rounded-[20px] shadow-[inset_0px_0px_4px_rgba(0,0,0,0.2)]"
+                             style="background: @kart.BarGradient;">
+                        </div>
+                        <span class="font-[Poppins] font-[250] text-[14px] text-[#003F75]">@kart.OlasilikEtiketi</span>
+                    </div>
                 </div>
-                <div class="absolute right-0 top-0 bottom-0 w-7 flex items-center justify-center">
-                    <span class="font-[Poppins] font-medium text-[10px] text-white -rotate-90 whitespace-nowrap">@(uyari.IsKritik ? "KRİTİK" : "ÖNEMLİ")</span>
-                </div>
-            </div>
-        }
+            }
+        </div>
     </div>
 
 </div>
 
-<div class="flex flex-col w-full bg-white px-4 pt-4 mt-4">
-    <div class="border border-[#2E6DF8] rounded-[15px] overflow-hidden">
+@* ─── Kart 5 · Uyarılar ─── *@
+<div class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
 
-        <div class="flex items-center bg-[linear-gradient(120.44deg,#2E6DF8_70.34%,#1B4092_100.84%)] h-[44px] py-3 px-4 gap-3">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
-                <circle cx="10" cy="10" r="9" stroke="#FFFFFF" stroke-width="1.67"/>
-                <path d="M10 5.83V10.83" stroke="#FFFFFF" stroke-width="1.67" stroke-linecap="round"/>
-                <circle cx="10" cy="14.17" r="1" fill="#FFFFFF"/>
-            </svg>
-            <span class="font-[Poppins] font-normal text-[14px] text-white text-center flex-1">@Model.BireyselCtaUyariMetni</span>
+    <div class="flex flex-col gap-1.5 px-4 py-3 border-b border-black/10">
+        <div class="flex items-center gap-2">
+            <img src="/icons/Outher/alert-triangle.svg" width="20" height="20" alt="">
+            <span class="font-[Poppins] text-[18px] font-semibold leading-6 text-[#003F75]">@Model.UyarilarBaslik</span>
         </div>
-
-        <div class="flex flex-col items-center bg-white px-4 pt-5 pb-4 gap-4">
-            <p class="font-[Poppins] font-normal text-center text-[12px] text-[#003F75]">@Model.BireyselCtaAciklama</p>
-
-            <div class="text-center">
-                <p class="font-[Poppins] font-medium text-[18px] text-[#003F75]">@Model.BireyselCtaBaslikSatir1</p>
-                <p class="font-[Poppins] font-medium text-[18px] text-[#003F75]">@Model.BireyselCtaBaslikSatir2</p>
-            </div>
-
-            <div class="flex flex-col w-full gap-[10px] h-20">
-                @foreach (var madde in Model.BireyselCtaChecklistMaddeleri)
-                {
-                    <div class="flex items-center gap-2">
-                        <img src="~/icons/check-circle-broken.svg" class="w-5 h-5 shrink-0" alt="">
-                        <span class="font-[Poppins] font-normal text-[12px] text-[#3AD7B3]">@madde</span>
-                    </div>
-                }
-            </div>
-
-            <p class="font-[Poppins] font-light text-center text-[10px] text-[#003F75]">@Model.BireyselCtaAltAciklama</p>
-
-            <a href="@Model.BireyselCtaButonHref"
-               class="font-[Poppins] flex items-center justify-center w-[280px] h-[44px] bg-[#0056B3] rounded-[40px] font-medium text-[16px] text-white no-underline">
-                @Model.BireyselCtaButonMetni
-            </a>
-
-            <p class="font-[Poppins] font-light text-center text-[9px] text-[#003F75]">@Model.BireyselCtaButonAltiNot</p>
-        </div>
-
+        <p class="font-[Poppins] font-[250] text-[14px] leading-[21px] text-black/50">
+            Kredi sürecinizi olumsuz etkileyebilecek faktörler ve alınabilecek önlemler.
+        </p>
     </div>
+
+    <div class="bg-white rounded-b-2xl px-4 py-4">
+        <div class="flex flex-col gap-3">
+            @foreach (var uyari in Model.UyariKartlari)
+            {
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="shrink-0 px-2.5 py-[3px] rounded-full font-[Poppins] font-semibold text-[14px] text-white @(uyari.IsKritik ? "bg-[#0056B3]" : "bg-[#2E6DF8]")">
+                            @(uyari.IsKritik ? "KRİTİK" : "ÖNEMLİ")
+                        </span>
+                        <span class="font-[Poppins] font-medium text-[14px] text-[#003F75] capitalize flex-1">@uyari.Baslik</span>
+                        <button type="button" class="shrink-0 font-[Poppins] border border-[#DCE3FB] rounded-[16px] py-[5px] px-4 font-[250] text-[14px] text-[#2E6DF8] bg-white cursor-pointer">
+                            detayları gör
+                        </button>
+                    </div>
+                    <p class="font-[Poppins] font-[250] text-[14px] text-[#003F75] leading-[21px]">@uyari.Aciklama</p>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+
+@* ─── Kart 6 · Bireysel CTA ─── *@
+<div class="bg-[#F2F8FF] border border-[#2E6DF8] rounded-2xl overflow-hidden">
+
+    <div class="flex items-center bg-[linear-gradient(120.44deg,#2E6DF8_70.34%,#1B4092_100.84%)] px-4 py-3 gap-3">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+            <circle cx="10" cy="10" r="9" stroke="#FFFFFF" stroke-width="1.67"/>
+            <path d="M10 5.83V10.83" stroke="#FFFFFF" stroke-width="1.67" stroke-linecap="round"/>
+            <circle cx="10" cy="14.17" r="1" fill="#FFFFFF"/>
+        </svg>
+        <span class="font-[Poppins] font-medium text-[14px] text-white flex-1">@Model.BireyselCtaUyariMetni</span>
+    </div>
+
+    <div class="bg-white flex flex-col items-center px-4 pt-5 pb-4 gap-4">
+        <p class="font-[Poppins] font-[250] text-center text-[14px] text-[#003F75] leading-[21px]">@Model.BireyselCtaAciklama</p>
+
+        <p class="font-[Poppins] font-semibold text-[18px] text-[#003F75] text-center">@Model.BireyselCtaBaslikSatir1 @Model.BireyselCtaBaslikSatir2</p>
+
+        <div class="flex flex-col w-full gap-[10px]">
+            @foreach (var madde in Model.BireyselCtaChecklistMaddeleri)
+            {
+                <div class="flex items-center gap-2">
+                    <img src="~/icons/check-circle-broken.svg" class="w-5 h-5 shrink-0" alt="">
+                    <span class="font-[Poppins] font-[250] text-[14px] text-[#3AD7B3]">@madde</span>
+                </div>
+            }
+        </div>
+
+        <p class="font-[Poppins] font-[250] text-center text-[14px] leading-[21px] text-[#003F75]">@Model.BireyselCtaAltAciklama</p>
+
+        <a href="@Model.BireyselCtaButonHref"
+           class="font-[Poppins] flex items-center justify-center w-[280px] h-[44px] bg-[#0056B3] rounded-[40px] font-medium text-[14px] text-white no-underline">
+            @Model.BireyselCtaButonMetni
+        </a>
+
+        <p class="font-[Poppins] font-[250] text-center text-[14px] leading-[21px] text-[#003F75]">@Model.BireyselCtaButonAltiNot</p>
+    </div>
+
 </div>

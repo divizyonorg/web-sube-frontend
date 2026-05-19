@@ -11,16 +11,16 @@
 }
 
 <div id="card-kredi-talebi-radari" class="bg-[#F2F8FF] border border-[#DCE3FB] rounded-2xl">
-    <div class="flex flex-col gap-1 px-4 py-3 border-b border-black/10">
+    <div class="flex flex-col gap-1.5 px-4 py-3 border-b border-black/10">
         <div class="flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <img src="/icons/primary/radar.svg" width="20" height="20" alt="">
-                <span class="font-[Poppins] text-[13px] font-semibold leading-5 text-[#003F75]">Kredi Talebi Radarı</span>
+                <span class="font-[Poppins] text-[15px] font-semibold leading-6 text-[#003F75]">Kredi Talebi Radarı</span>
             </div>
             <div x-data="{ open: false }" class="relative">
                 <button @@click="open = !open" type="button"
-                        class="flex items-center gap-1 bg-white border border-[#E5E7EB] shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-[10px] px-2 py-1">
-                    <span class="font-[Poppins] text-[11px] font-normal leading-4 text-[#003F75]">@Model.ProductLabel</span>
+                        class="flex items-center gap-1 bg-white border border-[#E5E7EB] shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-[10px] px-2.5 py-1.5">
+                    <span class="font-[Poppins] text-[12px] font-normal leading-[18px] text-[#003F75]">@Model.ProductLabel</span>
                     <img src="/icons/navy/chevron-down.svg" width="12" height="12" alt="">
                 </button>
                 <div x-show="open" @@click.outside="open = false" x-transition
@@ -28,8 +28,8 @@
                     @foreach (var opt in opts)
                     {
                         var cls = Model.CreditType == opt.Type
-                            ? "block px-4 py-2 text-[11px] font-[Poppins] font-semibold text-[#003F75] bg-[#F2F8FF] cursor-pointer"
-                            : "block px-4 py-2 text-[11px] font-[Poppins] text-black/60 hover:bg-[#F2F8FF] cursor-pointer";
+                            ? "block px-4 py-2 text-[12px] font-[Poppins] font-semibold text-[#003F75] bg-[#F2F8FF] cursor-pointer"
+                            : "block px-4 py-2 text-[12px] font-[Poppins] text-black/60 hover:bg-[#F2F8FF] cursor-pointer";
                         <button type="button"
                                 hx-get="/KrediRaporlari/KurDetay?handler=KrediTalebiRadari&kredi=@opt.Type"
                                 hx-target="#card-kredi-talebi-radari"
@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <p class="font-[Poppins] italic font-light text-[10px] leading-[15px] text-black/50">
+        <p class="font-[Poppins] italic font-light text-[12px] leading-[18px] text-black/50">
             @Model.Description
         </p>
     </div>

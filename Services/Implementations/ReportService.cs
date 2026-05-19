@@ -339,7 +339,14 @@ public class ReportService : IReportService
                     IsKritik = r.Baslik.Contains("kritik", StringComparison.OrdinalIgnoreCase)
                 })
                 .ToList(),
-            KrediTuruKartlari = [],
+            // TODO: AI report endpoint kredi_olasilik_tahmini döndürmüyor; gerçek veri gelene kadar mock gösterilir
+            KrediTuruKartlari =
+            [
+                new() { Baslik = "Borç Kapama",   OlasilikEtiketi = MapOlasilikEtiketi("ORTA"),   IsYuksekOlasilik = IsYuksek("ORTA")   },
+                new() { Baslik = "Konut Kredisi",  OlasilikEtiketi = MapOlasilikEtiketi("DÜŞÜK"),  IsYuksekOlasilik = IsYuksek("DÜŞÜK")  },
+                new() { Baslik = "Taşıt Kredisi",  OlasilikEtiketi = MapOlasilikEtiketi("DÜŞÜK"),  IsYuksekOlasilik = IsYuksek("DÜŞÜK")  },
+                new() { Baslik = "Nakit Kredi",    OlasilikEtiketi = MapOlasilikEtiketi("DÜŞÜK"),  IsYuksekOlasilik = IsYuksek("DÜŞÜK")  }
+            ],
             FinansalGostergeler = []
         };
         return new KisiselRaporViewModel { UygunlukSeridi = vm };
@@ -347,11 +354,11 @@ public class ReportService : IReportService
 
     private static int MapMarkerPosition(string profilSeviyesi) => profilSeviyesi.ToUpperInvariant() switch
     {
-        "YÜKSEK" => 15,
-        "ORTA" => 40,
-        "KRİTİK" => 65,
-        "DÜŞÜK" => 88,
-        _ => 40
+        "YÜKSEK" => 85,
+        "ORTA" => 60,
+        "KRİTİK" => 35,
+        "DÜŞÜK" => 12,
+        _ => 60
     };
 
     private static string MapUygunlukEtiketi(string profilSeviyesi) => profilSeviyesi.ToUpperInvariant() switch

@@ -1,71 +1,74 @@
 @model MyApp.Web.ViewModels.CreditEligibility.CreditEligibilityCardViewModel
 
 @* Dış kart (açık mavi arka plan) *@
-<div class="flex flex-col gap-3 bg-[#E6F7FF] rounded-[15px] pt-3.5">
+<div class="flex flex-col gap-3 bg-[#E6F7FF] rounded-[15px] pt-3.5 flex-1">
 
     @* Başlık *@
     <div class="flex items-center justify-center min-h-[54px] px-6">
-        <span class="font-['Poppins'] text-[18px] font-[250] leading-[27px] text-[#003F75] text-center">Krediye uygun musun?</span>
+        <span class="font-['Poppins'] text-[20px] font-[250] leading-[27px] text-[#003F75] text-center">Krediye uygun musun?</span>
     </div>
 
     @* İç beyaz kart *@
     <div class="px-3 flex flex-col flex-1">
         <div class="flex flex-col gap-4 bg-white rounded-[15px] p-4 flex-1">
 
-            @* Başlık + Açıklama — sabit yükseklik wrapper ile progress bar hizalaması *@
+            @* Başlık + Açıklama *@
             <div class="flex flex-col gap-4 min-h-[70px]">
-                <span class="font-['Poppins'] text-[16px] font-medium text-[#003F75]">Kredi Uygunluk Durumun</span>
-                <p class="m-0 font-['Poppins'] text-[10px] font-[250] text-[#003F75] leading-[15px]">
+                <span class="font-['Poppins'] text-[18px] font-medium text-[#003F75]">Kredi Uygunluk Durumun</span>
+                <p class="m-0 font-['Poppins'] text-[14px] font-[250] text-[#003F75] leading-[18px]">
                     Kredi uygunluk durumun Türkiye'de kredi veren tüm bankaların sana yakın kredi profiline
                     son 30 gün içinde verdiği kredi kararlarına bakarak oluşturulur, gerçeğe en yakın sonuçtur.
                 </p>
             </div>
 
             @* Slider alanı *@
-            @{ var pos = Math.Clamp(Model.SliderPositionPercent, 0, 100); }
-            <div class="flex flex-col gap-2 px-2">
+            @{ var sliderPos = Math.Clamp(Model.SliderPositionPercent, 0, 100); }
 
-                @if (!Model.HasData)
-                {
-                    <div class="flex items-center justify-center py-6">
-                        <span class="font-['Poppins'] text-[12px] font-[250] text-[#003F75]/50">Uygunluk verisi yüklenemedi.</span>
+            @if (!Model.HasData)
+            {
+                <div class="flex items-center justify-center py-6">
+                    <span class="font-['Poppins'] text-[12px] font-[250] text-[#003F75]/50">Uygunluk verisi yüklenemedi.</span>
+                </div>
+            }
+            else
+            {
+                <div x-data="{ pos: 50 }"
+                     x-init="setTimeout(() => pos = @sliderPos, 60)"
+                     class="flex flex-col gap-2 px-2">
+
+                    @* Badge — thumb üstünde, animasyonlu *@
+                    <div class="relative w-full" style="height: 42px;">
+                        <div :style="`position: absolute; left: ${pos}%; transform: translateX(-50%); bottom: 6px; display: flex; align-items: center; border-radius: 9999px; padding: 6px 18px; background-color: @Model.StatusBgColor; transition: left 0.8s cubic-bezier(0.4,0,0.2,1); white-space: nowrap;`">
+                            <span class="font-['Poppins'] text-[15px] font-semibold leading-[22px] capitalize"
+                                  style="color: @Model.StatusTextColor;">@Model.StatusLabel</span>
+                        </div>
                     </div>
-                }
-                else
-                {
+
                     @* Gradient çubuk *@
                     <div class="relative w-full h-5 rounded-full overflow-visible">
                         <div class="absolute inset-0 rounded-full"
                              style="background: linear-gradient(90deg, #122B62 0%, #2E6DF8 50%, #36FC99 100%);"></div>
                         <div class="absolute top-1/2 -translate-y-1/2 w-[10px] h-[25px] bg-white shadow-[0px_1px_4px_rgba(0,0,0,0.2)] rounded-[6px]"
-                             style="left: calc(@(pos)% - 5px);"></div>
-                    </div>
-
-                    @* Durum etiketi *@
-                    <div class="relative w-full h-[28px]">
-                        <span class="absolute font-['Poppins'] text-[22px] font-semibold text-[#1D459C] leading-none whitespace-nowrap"
-                              style="left: @(pos)%; top: 0; transform: translateX(-50%);">
-                            @Model.StatusLabel
-                        </span>
+                             :style="`left: calc(${pos}% - 5px); transition: left 0.8s cubic-bezier(0.4,0,0.2,1);`"></div>
                     </div>
 
                     @* Ölçek etiketleri *@
                     <div class="flex justify-between">
-                        <span class="font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50">premium</span>
-                        <span class="font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50">kritik</span>
-                        <span class="font-['Poppins'] text-[9px] font-normal leading-[14px] text-black/50">düşük</span>
+                        <span class="font-['Poppins'] text-[11px] font-normal leading-[16px] text-black/50">düşük</span>
+                        <span class="font-['Poppins'] text-[11px] font-normal leading-[16px] text-black/50">kritik</span>
+                        <span class="font-['Poppins'] text-[11px] font-normal leading-[16px] text-black/50">premium</span>
                     </div>
-                }
 
-            </div>
+                </div>
+            }
 
         </div>
     </div>
 
-    @* K.U.R Butonu — beyaz kartın dışında *@
+    @* K.U.R Butonu *@
     <div class="flex justify-center px-3 pb-3">
         <a href="@Model.KurDetayUrl"
-           class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] rounded-[40px] hover:bg-[#004494] transition-all">
+           class="flex items-center justify-center w-full max-w-[280px] h-[44px] bg-[#0056B3] rounded-[40px] hover:bg-[#004494] transition-all no-underline">
             <span class="font-['Poppins'] font-medium text-[16px] leading-6 text-center text-white">K.U.R Raporunu Gör</span>
         </a>
     </div>

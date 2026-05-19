@@ -56,6 +56,9 @@
             .main-content { padding: 0 !important; }
             .page-content { padding: 16px; }
         }
+
+        /* Kredi modal overlay — display:flex CSS class'ta tutulur, x-show display:none ile çakışmasın */
+        .kredi-overlay { display: flex; align-items: center; justify-content: center; }
     </style>
 
 </head>
@@ -95,6 +98,74 @@
          class="mobile-drawer"
          :class="{ 'open': $store.layout.mobileMenuOpen }">
         @await Component.InvokeAsync("Sidebar", new { activePage = ViewData["ActivePage"]?.ToString() ?? "" })
+    </div>
+
+    @* ── Kredi Başvurusu Modal ── *@
+    <div x-data
+         x-show="$store.krediModal.open"
+         x-cloak
+         class="kredi-overlay"
+         style="position:fixed; inset:0; z-index:1000;
+                background:rgba(0,0,0,0.65);
+                overflow-y:auto; padding:20px 16px; box-sizing:border-box;">
+
+        <div id="wizard-container"
+             hx-boost="false"
+             style="width:100%; max-width:420px; flex-shrink:0; margin:auto;">
+            <partial name="~/Partials/KrediBasvurusu/_Step1.cshtml" />
+        </div>
+
+    </div>
+
+    @* ── Kapatma Onay Modalı ── *@
+    <div x-data
+         x-show="$store.krediModal.confirmClose"
+         x-cloak
+         class="kredi-overlay"
+         style="position:fixed; inset:0; z-index:1100;
+                background:rgba(0,0,0,0.45);
+                padding:16px; box-sizing:border-box;">
+
+        <div style="background:#FFFFFF; border-radius:20px; padding:28px 24px;
+                    width:100%; max-width:320px; box-sizing:border-box;
+                    box-shadow:0 8px 40px rgba(0,0,0,0.22);">
+
+            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; margin-bottom:24px;">
+                <div style="width:48px; height:48px; border-radius:50%;
+                            background:#FEF2F2; display:flex; align-items:center; justify-content:center; margin-bottom:4px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 9v4M12 17h.01" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                              stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3 style="font-family:'Poppins'; font-weight:600; font-size:16px; color:#003F75; margin:0;">
+                    Başvuruyu iptal et?
+                </h3>
+                <p style="font-family:'Poppins'; font-weight:400; font-size:13px; line-height:20px; color:#6A7282; margin:0;">
+                    Girdiğiniz bilgiler kaydedilmeyecek.<br>Çıkmak istediğinize emin misiniz?
+                </p>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button type="button"
+                        @@click="$store.krediModal.confirmClose = false; $store.krediModal.open = false; setTimeout(function(){ if(window.htmx) htmx.ajax('GET','/KrediBasvurusu?handler=Step1',{target:'#wizard-container',swap:'innerHTML'}); }, 300)"
+                        style="width:100%; height:46px; border-radius:12px;
+                               background:linear-gradient(90deg,#EF4444,#DC2626);
+                               border:none; cursor:pointer;
+                               font-family:'Poppins'; font-weight:600; font-size:14px; color:#FFFFFF;">
+                    Evet, kapat
+                </button>
+                <button type="button"
+                        @@click="$store.krediModal.confirmClose = false"
+                        style="width:100%; height:46px; border-radius:12px;
+                               background:#F3F4F6; border:none; cursor:pointer;
+                               font-family:'Poppins'; font-weight:600; font-size:14px; color:#374151;">
+                    Hayır, devam et
+                </button>
+            </div>
+
+        </div>
     </div>
 
     <div style="display:flex; height:calc(100vh - 68px); overflow:hidden;">

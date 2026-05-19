@@ -30,9 +30,10 @@ public class MockEvdsService : IEvdsService
                 RateLabel = $"{CreditTypeToLabel(creditType)} Faizi",
                 RateValue = "%3,15",
                 PeriodSuffix = "/ Ay",
-
+                AnnualRateValue = "%9,45",
                 MarketAverageLabel = "Ortalama Piyasa Faizi",
-                OpportunityLabel = "Piyasa ortalamalarını takip edin"
+                OpportunityLabel = "Piyasa ortalamalarını takip edin",
+                ChartData = ComputeChartPoints(3.15)
             },
             CreditPulse = new MarketSliderCardViewModel
             {
@@ -83,8 +84,10 @@ public class MockEvdsService : IEvdsService
             RateLabel = $"{CreditTypeToLabel(creditType)} Faizi",
             RateValue = "%3,15",
             PeriodSuffix = "/ Ay",
+            AnnualRateValue = "%9,45",
             MarketAverageLabel = "Ortalama Piyasa Faizi",
-            OpportunityLabel = "Piyasa ortalamalarını takip edin"
+            OpportunityLabel = "Piyasa ortalamalarını takip edin",
+            ChartData = ComputeChartPoints(3.15)
         });
 
     public Task<MarketSliderCardViewModel> GetDemandRadarAsync(string creditType = "IHTIYAC")
@@ -116,6 +119,15 @@ public class MockEvdsService : IEvdsService
             RightLabel = "Yüksek Faiz",
             AiText = "Yapay Zeka Destekli Mantıklı Kredi Oranı"
         });
+
+    // Aylık oran → 3 farklı aylık nokta üretir; toplamları 3 aylık orana eşittir
+    private static double[] ComputeChartPoints(double monthlyRate)
+    {
+        var total = Math.Round(monthlyRate * 3, 2);
+        var v1 = Math.Round(monthlyRate * 0.9318, 2);
+        var v2 = Math.Round(monthlyRate * 0.9766, 2);
+        return [v1, v2, Math.Round(total - v1 - v2, 2)];
+    }
 
     private static string CreditTypeToLabel(string creditType) => creditType switch
     {

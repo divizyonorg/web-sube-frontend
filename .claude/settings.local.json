@@ -46,7 +46,10 @@
       "Bash(New-Item -ItemType Directory -Path \"C:\\\\Users\\\\simsi\\\\Downloads\\\\web20\\\\MyApp.Web\\\\Pages\\\\Api\" -Force)",
       "Bash(Out-Null)",
       "Bash(Write-Output \"ok\")",
-      "Bash(git restore *)"
+      "Bash(git restore *)",
+      "Bash(xargs cat)",
+      "Bash(grep -v \".cs$\")",
+      "Bash(xargs sed -i '' -e 's/font-\\\\['\\\\''Source_Sans_3'\\\\'',sans-serif\\\\]/font-[Poppins]/g' -e 's/font-\\\\['\\\\''Source_Sans_3'\\\\''\\\\]/font-[Poppins]/g' -e 's/font-\\\\[Source_Sans_3\\\\]/font-[Poppins]/g' -e 's/font-\\\\['\\\\''Manrope'\\\\'',sans-serif\\\\]/font-[Poppins]/g' -e 's/font-\\\\['\\\\''Manrope'\\\\''\\\\]/font-[Poppins]/g' -e 's/font-\\\\[Manrope\\\\]/font-[Poppins]/g')"
     ]
   }
 }

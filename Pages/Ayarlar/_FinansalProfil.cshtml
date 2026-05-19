@@ -1,7 +1,8 @@
 @model MyApp.Web.Pages.Ayarlar.IndexModel
 @{ Layout = null; }
 
-<div x-data='finansalProfilForm(
+<div class="bg-white border border-[#E5E7EB] rounded-[14px] p-[33px] font-[Poppins]"
+     x-data='finansalProfilForm(
     @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Settings.MaritalStatus)),
     @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new {
         calisma  = Model.CalismaDurumu.SelectedValue  ?? "",
