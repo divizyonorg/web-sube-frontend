@@ -8,11 +8,18 @@
 
 @section Scripts {
 <script>
-    (function openKrediModal() {
-        if (window.Alpine && Alpine.store) {
-            Alpine.store('krediModal').open = true;
+    (function () {
+        // Replace /KrediBasvurusu in history with /anasayfa so the back button
+        // never lands back here and re-fires the modal.
+        if (window.location.pathname === '/KrediBasvurusu') {
+            history.replaceState(null, '', '/anasayfa');
+        }
+        if (window.openKrediModal) {
+            window.openKrediModal();
         } else {
-            setTimeout(openKrediModal, 50);
+            (function retry() {
+                window.openKrediModal ? window.openKrediModal() : setTimeout(retry, 50);
+            })();
         }
     })();
 </script>

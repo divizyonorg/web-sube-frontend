@@ -35,7 +35,12 @@ public class IndexModel : PageModel
         _logger = logger;
     }
 
-    public IActionResult OnGet() => Page();
+    public IActionResult OnGet()
+    {
+        if (!string.IsNullOrEmpty(Request.Cookies["auth_token"]))
+            return Redirect("/anasayfa");
+        return Page();
+    }
 
     public async Task<IActionResult> OnPostSendOtpAsync()
     {
