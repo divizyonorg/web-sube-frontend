@@ -11,15 +11,15 @@
 
 
     @* ─── Tab geçişi ─── *@
-    <div class="relative flex justify-center items-center w-full">
+    <div class="flex flex-col items-center gap-2 w-full sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center">
 
         @* Geri butonu *@
-        <a href="/anasayfa" class="absolute left-0 flex items-center gap-1 no-underline">
+        <a href="/anasayfa" class="sm:justify-self-start flex items-center gap-1 no-underline">
             <img src="/icons/dark/chevron-left.svg" width="20" height="20" alt="">
             <span class="font-[Poppins] font-normal text-[14px] leading-5 text-[#1B4092]">Geri</span>
         </a>
 
-        <div class="flex items-center bg-[#F2F8FF] rounded-[10px] p-[5px] h-12 w-fit">
+        <div class="self-center flex items-center bg-[#F2F8FF] rounded-[10px] p-[5px] h-12 w-fit">
 
             <a href="?tab=kisisel@(!string.IsNullOrEmpty(Model.ViewModel.Rid) ? $"&rid={Model.ViewModel.Rid}" : "")"
                class="flex items-center gap-2 rounded-[10px] text-[13px] font-normal font-[Poppins]
@@ -42,10 +42,11 @@
             </a>
 
         </div>
+        <div class="hidden sm:block"></div>
     </div>
 
     @* ─── Alt başlık (sana özel ✨ yapay zeka analizi…) ─── *@
-    <div class="flex justify-center items-center gap-1">
+    <div class="flex flex-wrap justify-center items-center gap-x-1 gap-y-0 px-4 text-center">
         <span class="font-[Poppins] text-[13px] font-normal leading-5 text-[#003F75]">Sana özel</span>
         <img src="/icons/primary/sparkle.svg" width="14" height="14" alt="">
         <span class="font-[Poppins] text-[13px] font-normal leading-5 text-[#003F75]">yapay zeka analizi ve finansal yol haritan</span>
