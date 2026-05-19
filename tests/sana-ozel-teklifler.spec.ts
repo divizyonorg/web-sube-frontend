@@ -15,7 +15,7 @@ test.describe('Sana Özel Teklifler', () => {
 
   test('bilgi banneri görünür', async ({ page }) => {
     await page.locator('h1, h2').first().waitFor({ timeout: 15_000 });
-    if (await page.locator('[class*="banner"], [class*="info"], [class*="uyari"]').count() === 0)
+    if (await page.locator('[aria-label="Bilgilendirme"], [class*="banner"], [class*="info"], [class*="uyari"]').count() === 0)
       bug('Bilgi banneri bulunamadı');
   });
 

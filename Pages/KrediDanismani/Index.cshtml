@@ -97,8 +97,11 @@
                                type="text"
                                id="krediTutariInput"
                                placeholder="Minimum 10.000 TL"
-                               x-on:input="tutar = $event.target.value"
+                               x-on:input="$event.target.value = $event.target.value.replace(/[^0-9]/g, '').replace(/^0+([1-9])/, '$1').replace(/^0+$/, ''); tutar = $event.target.value"
                                inputmode="numeric"
+                               min="10000"
+                               max="10000000"
+                               maxlength="10"
                                class="w-full h-[50px] border border-[#D1D5DC] rounded-[10px] px-4 font-['Source_Sans_3'] text-[16px] text-[#364153] placeholder:text-black/50 bg-white focus:outline-none focus:border-[#0056B3]" />
                     </div>
 

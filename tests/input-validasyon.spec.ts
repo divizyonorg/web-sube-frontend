@@ -252,8 +252,9 @@ test.describe('Register — Telefon Input Validasyonu', () => {
     await page.waitForTimeout(200);
     const val = await phoneInput.inputValue().then(v => v.replace(/\D/g, ''));
     info(`Telefon — 14 rakam girince temizlenmiş değer: "${val}"`);
-    if (val.length > 11)
-      bug(`[BUG-INPUT-9] Telefon alanına ${val.length} hane girilebiliyor — maksimum 11 olmalı`);
+    // 12 hane kabul edilebilir — IMask ülke kodu (90) ekliyor (+90 5XX XXX XX XX)
+    if (val.length > 12)
+      bug(`[BUG-INPUT-9] Telefon alanına ${val.length} hane girilebiliyor — maksimum 12 (IMask ile ülke kodu dahil) olmalı`);
   });
 
 });

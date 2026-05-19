@@ -111,6 +111,7 @@
                             <button type="button"
                                     id="btnDogrula"
                                     @@click="sendingOtp ? null : (canVerifyPhone() ? sendOtp() : explainWhyCannotVerify())"
+                                    :disabled="!canVerifyPhone() || sendingOtp"
                                     :class="{ 'hidden': phoneVerified, 'opacity-40 cursor-not-allowed': !canVerifyPhone() || sendingOtp }"
                                     class="h-14 px-4 rounded-lg bg-[#0056B3] text-white text-sm font-semibold shrink-0 whitespace-nowrap border-0 cursor-pointer">
                                 <span :class="{ 'hidden': sendingOtp }">Doğrula</span>
@@ -226,6 +227,7 @@
                              :class="canSubmit() ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-50'"
                              @@click="canSubmit() ? submitForm() : explainWhyCannotSubmit()">
                             <button type="button"
+                                    :disabled="!canSubmit() || registering"
                                     class="w-full h-12 rounded-[40px] bg-[#0056B3] text-white text-sm font-semibold border-0 cursor-inherit flex items-center justify-center gap-2">
                                 <span :class="{ 'hidden': registering }">Üye Ol</span>
                                 <span :class="{ 'hidden': !registering, 'inline-flex': registering }" class="hidden items-center gap-2">

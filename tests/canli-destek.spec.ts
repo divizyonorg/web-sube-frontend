@@ -21,7 +21,7 @@ test.describe('Canlı Destek', () => {
 
   test('karşılama mesajı görünür', async ({ page }) => {
     await page.locator('h1').first().waitFor({ timeout: 15_000 });
-    if (await page.locator('[class*="message"], [class*="chat"], [class*="msg"]').count() === 0)
+    if (await page.locator('#chatMessages, [class*="message"], [class*="chat"], [class*="msg"]').count() === 0)
       bug('Sohbet mesaj alanı bulunamadı');
   });
 

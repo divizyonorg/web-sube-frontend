@@ -23,7 +23,7 @@ test.describe('Faturalarım', () => {
 
   test('fatura listesi görünür', async ({ page }) => {
     await page.locator('h1, h2').first().waitFor({ timeout: 15_000 });
-    const count = await page.locator('table tr').filter({ hasNot: page.locator('th') }).count();
+    const count = await page.locator('p:has-text("Fatura No")').count();
     info(`Fatura satırı sayısı: ${count}`);
     if (count === 0)
       bug('Fatura listesi boş — statik demo veri bile görünmüyor olabilir');

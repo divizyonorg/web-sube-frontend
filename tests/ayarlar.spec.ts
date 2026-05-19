@@ -50,12 +50,9 @@ test.describe('Ayarlar', () => {
     const saveBtn = page.locator('button:has-text("Kaydet"), button:has-text("Güncelle"), button[type="submit"]').first();
     if (await saveBtn.count() === 0) { bug('[BUG-5] Kaydet butonu bulunamadı'); return; }
     await saveBtn.click({ force: true });
-    await page.waitForResponse(
-      resp => resp.url().includes('/Ayarlar') && resp.status() === 200,
-      { timeout: 10_000 }
-    ).catch(() => {});
-    const toast = page.locator('[data-toast]').first();
-    if (await toast.count() === 0)
+    const toast5 = page.locator('[data-toast]').first();
+    const appeared5 = await toast5.waitFor({ state: 'attached', timeout: 8_000 }).then(() => true).catch(() => false);
+    if (!appeared5)
       bug('[BUG-5] Profil Bilgileri kaydedildiğinde başarı/bildirim mesajı gösterilmiyor');
   });
 
@@ -67,12 +64,9 @@ test.describe('Ayarlar', () => {
     const saveBtn = page.locator('button:has-text("Kaydet"), button[type="submit"]').first();
     if (await saveBtn.count() === 0) { bug('[BUG-6] Finansal Profil kaydet butonu bulunamadı'); return; }
     await saveBtn.click({ force: true });
-    await page.waitForResponse(
-      resp => resp.url().includes('/Ayarlar') && resp.status() === 200,
-      { timeout: 10_000 }
-    ).catch(() => {});
-    const toast = page.locator('[data-toast]').first();
-    if (await toast.count() === 0)
+    const toast6 = page.locator('[data-toast]').first();
+    const appeared6 = await toast6.waitFor({ state: 'attached', timeout: 8_000 }).then(() => true).catch(() => false);
+    if (!appeared6)
       bug('[BUG-6] Finansal/Demografik Profil kaydedildiğinde başarı bildirimi gösterilmiyor');
   });
 

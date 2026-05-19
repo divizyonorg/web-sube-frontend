@@ -57,12 +57,12 @@ test.describe('Navigasyon', () => {
 
   // ─── Sidebar ──────────────────────────────────────────────────────────────
   test('sidebar görünür', async ({ page }) => {
-    const sidebar = page.locator('aside, nav, [class*="sidebar"]').first();
+    const sidebar = page.locator('#layout-desktop-sidebar').first();
     await expect(sidebar).toBeVisible({ timeout: 10_000 });
   });
 
   test('tüm sidebar linkleri DOM\'da mevcut', async ({ page }) => {
-    await page.locator('aside, nav, [class*="sidebar"]').first().waitFor({ timeout: 10_000 });
+    await page.locator('#layout-desktop-sidebar').first().waitFor({ timeout: 10_000 });
     for (const p of SIDEBAR_PAGES) {
       const link = page.locator(`a[href="${p.href}"]`).first();
       if (await link.count() === 0)
